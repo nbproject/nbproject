@@ -1,0 +1,57 @@
+<!--
+   Author: Sacha Zyto (sacha@csail.mit.edu) 
+   License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+   
+   Here, we fetch notes (using an noteObserver)
+  -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>NB4</title>
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link type="text/css" href="/content/modules/ui.perspective.css" rel="stylesheet" />
+    <link type="text/css" href="/content/modules/ui.viewport.css" rel="stylesheet" />
+    <link type="text/css" href="/content/ui/admin/template.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/modules/head.js/head_chrome.js"></script> 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="/content/modules/dev/ui.notepaneView8.js"></script>	-->
+<!--  <script type="text/javascript" src="/content/modules/dev/ui.docView8.js"></script>	 --> 
+<!-- <script type="text/javascript" src="/content/modules/dev/ui.perspective5.js"></script>		-->
+<!--  <script type="text/javascript" src="/content/ui/admin/step13.js"></script> -->
+<!-- <script type="text/javascript" src="/content/modules/dev/ui.threadview2.js"></script>		-->
+<!-- <script type="text/javascript" src="/content/modules/dev/ui.sampleview2.js"></script>		-->
+<!-- <script type="text/javascript" src="/content/modules/dev/ui.editorview1.js"></script>	-->
+
+    <script>
+
+ head.js(
+      "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js", 
+      "/content/modules/dev/mods2.js", 
+      "/content/modules/dev/ui.view4.js", 
+      "/content/modules/dev/ui.perspective5.js", 
+      "/content/compiled/apidev.js", 
+      "/content/ui/admin/conf.js", 
+      "/content/modules/dev/pers2.js", 
+      "/content/modules/dev/ui.sampleview2.js", 
+      "/content/modules/dev/ui.viewport3.js", 
+      "/content/ui/admin/step14.js", 
+      function(){$(function(){NB.pers.params = NB.dom.getParams(); NB.pers.preinit();});}
+      );
+
+    </script>
+  </head>
+  <body>
+    <div id="pers1" label="Home">
+      <div id="view-1" style="min-width: 250px;"  >
+      </div>
+      <div class="separator" orientation="vertical"/>
+      <div class="pers-protection">
+	      <div id="view-3" style="min-height: 150px;" ></div>
+	      <div class="separator" orientation="horizontal"/>
+      	      <div id="view-4"></div>      
+      </div>
+    </div>
+<!--    <div style="display: none"><div id="obs-1"/></div> -->
+  </body>
+</html>
+

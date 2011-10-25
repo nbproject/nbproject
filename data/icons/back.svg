@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   width="800"
+   height="800"
+   viewBox="0 0 1 1"
+   id="svg1291">
+  <defs
+     id="defs3">
+    <linearGradient
+       id="linearGradient2088">
+      <stop
+         id="stop2090"
+         style="stop-color:#87a8b7;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2092"
+         style="stop-color:#7f718e;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2076">
+      <stop
+         id="stop2078"
+         style="stop-color:#6574ed;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop2080"
+         style="stop-color:#cfc3db;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="12.615197"
+       y1="25.909756"
+       x2="48.374069"
+       y2="62.720371"
+       id="linearGradient2082"
+       xlink:href="#linearGradient2076"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.186331,0,0,0.780016,0.107298,-8.33335e-2)" />
+    <linearGradient
+       x1="12.615197"
+       y1="25.909756"
+       x2="48.374069"
+       y2="62.720371"
+       id="linearGradient2086"
+       xlink:href="#linearGradient2088"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.186331,0,0,0.780016,1.940631,-8.33335e-2)" />
+    <linearGradient
+       x1="12.615197"
+       y1="25.909756"
+       x2="49.793751"
+       y2="72.021538"
+       id="linearGradient2396"
+       xlink:href="#linearGradient2076"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.9045628e-2,0,0,2.0546929e-2,2.824809e-3,-0.3835619)" />
+    <linearGradient
+       x1="12.615197"
+       y1="25.909756"
+       x2="48.374069"
+       y2="62.720371"
+       id="linearGradient2399"
+       xlink:href="#linearGradient2088"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.9045628e-2,0,0,2.0546929e-2,3.2257558e-2,-0.3835619)" />
+  </defs>
+  <path
+     d="M 0.53225161,0.012386406 C 0.5202928,0.00014370812 0.30465898,0.2446274 0.29270013,0.25687009 C 0.2807413,0.26911258 0.05361292,0.47686848 0.05361292,0.50135367 C 0.05361292,0.52583895 0.2807413,0.73441814 0.29270013,0.74666043 C 0.30465898,0.75890322 0.5202928,1.003387 0.53225161,0.99114424 C 0.53947436,0.98375019 0.53782374,0.83634706 0.53550136,0.69891635 L 0.95425216,0.69891635 C 0.9583673,0.69891635 0.96168016,0.69304221 0.96168016,0.68574557 L 0.96168016,0.31696209 C 0.96168016,0.30966537 0.9583673,0.30379121 0.95425216,0.30379121 L 0.53550136,0.30379121 C 0.53782374,0.16636042 0.53947436,0.019780447 0.53225161,0.012386406 z"
+     id="path2084"
+     style="fill:url(#linearGradient2399);fill-opacity:1;stroke:none;stroke-width:0.375;stroke-miterlimit:4;stroke-opacity:1" />
+  <path
+     d="M 0.50281886,0.012386406 C 0.49086004,0.00014370812 0.27522624,0.2446274 0.26326741,0.25687009 C 0.25130855,0.26911258 0.024180164,0.47686848 0.024180164,0.50135367 C 0.024180164,0.52583895 0.25130855,0.73441814 0.26326741,0.74666043 C 0.27522624,0.75890322 0.49086004,1.003387 0.50281886,0.99114424 C 0.5100416,0.98375019 0.50839098,0.83634706 0.50606861,0.69891635 L 0.92481949,0.69891635 C 0.92893454,0.69891635 0.93224742,0.69304221 0.93224742,0.68574557 L 0.93224742,0.31696209 C 0.93224742,0.30966537 0.92893454,0.30379121 0.92481949,0.30379121 L 0.50606861,0.30379121 C 0.50839098,0.16636042 0.5100416,0.019780447 0.50281886,0.012386406 z"
+     id="rect1303"
+     style="fill:url(#linearGradient2396);fill-opacity:1;stroke:none;stroke-width:0.375;stroke-miterlimit:4;stroke-opacity:1" />
+  <path
+     d="M 0.10277899,0.47912796 C 0.10277899,0.47912796 0.23388851,0.30351679 0.25796986,0.30351679 C 0.28205119,0.30351679 0.4506206,0.0664418 0.46667479,0.09278325 C 0.48272905,0.11912498 0.30613254,0.30351679 0.30613254,0.30351679 C 0.30613254,0.30351679 0.18840153,0.45717657 0.10277899,0.47912796 z"
+     id="path2096"
+     style="fill:#d0f1fc;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+  <rect
+     width="0.36924723"
+     height="0.026341675"
+     rx="0.008027113"
+     ry="0.013170837"
+     x="0.54694599"
+     y="0.32985935"
+     id="rect2098"
+     style="fill:#d0f1fc;fill-opacity:1;stroke:none;stroke-width:0.375;stroke-miterlimit:4;stroke-opacity:1" />
+</svg>

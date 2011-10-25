@@ -1,0 +1,205 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+
+div.notepaneView{
+overflow: hidden;
+//background-color: #E6E6E6 !important;
+//font-size: small;
+}
+
+div.location-lens{
+margin: 0px 0px 0px 0px;
+padding-top: 3px;
+padding-bottom: 3px;
+cursor: pointer;
+}
+
+
+div.notepaneView div.lens-odd{
+background-color: #f0f0f0;
+}
+
+
+
+div.location-shortbody{
+overflow: hidden;
+padding-left: 5px;
+}
+
+div.location-shortbody-ellipsis{
+background-image: url(/content/data/icons/png/fuzzy_border_right_20.png);
+background-repeat: repeat-y;
+position: absolute;
+width: 20px;
+height: 25px;
+right: 8px;
+margin-top: -4px;
+}
+
+
+div.location-shortbody-text{
+width: 3000px;
+font-size: medium; 
+font-family: arial;
+color: #222266;
+}
+
+div.location-bold{
+font-weight: bold;
+}
+
+
+div.location-lens.hovered{
+	background-color: #ffffd0 !important;
+}
+
+
+div.location-lens.selected{
+	background-color: #aaffff !important;
+}
+
+
+
+div.location-lens.selected div.location-shortbody-text{
+    color: #ffffff;
+}
+
+div.location-pagesummary{
+    color: #7070A0;
+    font-size: large;
+    font-style: italic;
+    padding-left: 5px;
+    padding-top: 20px;
+//    text-align: center;
+}
+
+div.location-pagesummary.selected{
+    color: #2020cc;
+    background-color: #a0ffff;
+}
+
+div.notepaneView-pages{
+overflow-y: auto;
+}
+
+div.location-flags{
+float: left;
+width: 60px;
+}
+
+ins.locationflag{
+width: 12px;
+margin-right: 0px;
+margin-left: 3px;
+font-family: monospace;
+display: inline-block;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+padding: 2px;
+text-decoration: none;
+float: left;
+}
+
+ins.lf-numnotes{
+color: #a0a0a0;
+background-color: #e0e0e0;
+border: thin solid #c7c7c7;
+}
+
+ins.lf-numnewnotes{
+color: #7070ff;
+font-weight: bold;
+background-color: #ffff70;
+border: thin solid #c0c0a0;
+}
+
+div.notepaneView span.standout{
+font-weight: bold; 
+color: #e0f0ff;
+}
+
+div.notepaneView div.collectioninfo{
+    background-color: #B0B0B0;
+    color: #D0D0D0;
+    font-size: x-large;
+    padding: 5px;
+    text-align: center;
+}
+
+
+
+
+div.threadview-branch{
+padding-top: 5px;
+padding-left: 10px;
+}
+
+
+
+div.threadview div.note-lens{
+//color: #404040;
+padding-top: 5px;
+padding-bottom: 5px;
+border: thin solid #fefefe;
+
+}
+
+div.threadview div.note-lens:hover{
+background-color:  #ffffd0;
+border: thin solid #c0c0c0;
+}
+
+div.threadview span.note-bold{
+font-weight: bold; 
+color: #000000;
+}
+
+div.threadview span.author{
+color: #a0a0a0;
+font-style: italic;
+margin-left: 10px;
+}
+
+div.threadview span.created{
+color: #a0a0a0;
+}
+
+div.threadview div.lensmenu{
+float: right;
+padding: 5px;
+opacity: 0.2;
+background-color: #e0e0e0;
+border: thin solid #c0c0c0;
+margin-left: 8px;
+margin-top: -5px;
+}
+
+div.threadview div.note-lens:hover div.lensmenu{
+opacity: 1.0;
+}
+
+div.note-abridgedlens{
+color: #a0a0a0;
+font-family: monospace;
+border: thin solid transparent;
+}
+
+
+div.note-abridgedlens:hover {
+
+    border: thin solid #A0A0A0;
+
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,34 @@
+{% extends "web/base.html" %}
+{% block title %}Properties for {{form.instance.name}}{% endblock %}
+{% block style %}
+ul.errorlist{
+	color: #ff0000;
+	font-weight: bold;
+	list-style: none;	
+}
+{% endblock %} 
+{% block content %}
+
+  <h1>Properties for {{form.instance.name}}</h1>
+  
+  <p> Subscribe link: <br/><a href="/subscribe?key={{form.instance.invitekey}}"><b>{{conf_url}}</b></a> </p>
+
+  <div>
+    <form action="" method="post">
+   
+      <table>
+	{% for field in form %}
+	
+	<tr>
+          <td>{% if field.required %} * {% endif %}{{ field.label_tag }}</td><td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+	</tr>
+        {% endfor %}
+	<tr><td/><td><input style="margin-top: 10px", type="submit" value="Save Changes" /></td></tr>
+	
+      </table>
+    </form>    
+  </div>
+
+
+{% endblock %}
+

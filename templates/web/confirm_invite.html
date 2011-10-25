@@ -1,0 +1,8 @@
+{% extends "web/base.html" %}
+{% block title %}NB Invitation Confirmed{% endblock %}
+{% block content %}
+<h1>Congratulations !</h1> 
+<b>{{o.user.email}}</b> is now a member of the <b>{{o.ensemble.name}}</b> group{% if o.admin %}, with admin privileges{% endif %}.
+<br/><br/>
+<a href="/?ckey={{o.user.confkey}}">Go the My NB Desktop</a>  
+{% endblock %}

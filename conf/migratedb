@@ -1,0 +1,69 @@
+# A complete restore session: 
+# CAUTION ! Make sure the 2 variables below correspond to OLD_DB and NEW_DB in Makefile. 
+# CAUTION Don't do this on the production machine. 
+OLD_DB=notabene
+NEW_DB=nb3
+APPS_DIR=~/oeit/nb_trunk/apps
+pg_dump -U nbadmin -h nb.csail.mit.edu -Fc $OLD_DB > /tmp/nb.backup.custom
+dropdb  -U nbadmin -h localhost $OLD_DB
+createdb -U nbadmin -h localhost $OLD_DB
+pg_restore  -Fc -d $OLD_DB -U nbadmin -h localhost  /tmp/nb.backup.custom
+cd $APPS_DIR
+python manage.py sqlclear base > /tmp/cleardb.sql
+psql -d $NEW_DB -h localhost  -U nbadmin <  /tmp/cleardb.sql
+python manage.py syncdb
+cd ..
+make migratedb
+./conf/migratedb.sh 
+#the end...
+
+#Then, to port new DB to another postgres server...
+SRVNAME=nb.csail.mit.edu
+pg_dump -U nbadmin -h localhost -Fc $NEW_DB > /tmp/nb3.backup.custom
+#the following assumes an empty DB called $NEW_DB on $SRVNAME
+pg_restore -Fc -U nbadmin -h $SRVNAME -d $NEW_DB /tmp/nb3.backup.custom
+
+
+
+##in order to port more features: 
+#1- use sql template below in migratedb.sql to include tables to port
+#2- add export/import sequence in migratedb.sh.skel
+#3- add sequences if any to updatesequences.sql 
+
+#indexes: 
+
+--indexes: 
+BEGIN;
+CREATE  INDEX base_user_confkey_idx ON base_user (confkey);
+--CREATE  INDEX base_membership_ensemble_idx ON base_membership (ensemble_id);
+--CREATE  INDEX base_membership_user_idx ON base_membership (user_id);
+--CREATE  INDEX base_comment_location_idx ON base_comment (location_id);
+--CREATE  INDEX base_comment_author_idx ON base_comment (author_id);
+--CREATE  INDEX base_location_source_idx ON base_location (source_id);
+--CREATE  INDEX base_location_ensemble_idx ON base_location (ensemble_id);
+--CREATE  INDEX base_commentseen_comment_idx ON base_commentseen (comment_id);
+--CREATE  INDEX base_commentseen_user_idx ON base_commentseen (user_id);
+--CREATE  INDEX ownership_source_idx ON base_ownership (source_id);
+--CREATE  INDEX ownership_ensemble_idx ON base_ownership (ensemble_id);
+COMMIT;
+
+--see which we prefer when we do fulltext search! 
+--CREATE INDEX nb2comment_body_gin_idx ON nb2_comment USING gin(to_tsvector('english', body));
+--CREATE INDEX nb2comment_body_gist_idx ON nb2_comment USING gist(to_tsvector(body));
+
+
+
+-- Views needed by django apps--
+
+create or replace view base_v_comment as 
+select c.id, l.source_id, l.ensemble_id, c.type, c.author_id, l.page, c.parent_id, c.ctime, l.y, l.x, l.w, l.h
+from base_comment c, base_location l 
+where c.location_id = l.id and c.deleted=false and c.moderated=false;
+
+
+
+
+---------------------------------------- BEGIN TEMPLATE ----------------------------------------
+drop table if exists base_$ cascade;
+create table base_$ as select id,            from $ order by id; 
+---------------------------------------- END TEMPLATE -----------------------------------------

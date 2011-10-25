@@ -1,0 +1,111 @@
+Installation Procedure: 
+
+1-Dependencies: 
+On a typical debian-like (ubuntu etc...) distribution, NB requires the following packages: (note that packages in square brackets are optional)
+   * python (>= 2.6)
+   * postgresql (>= 8.4)
+   * imagemagick
+   * [pdfedit]
+   * [unison]
+   * postgresql-plpython-8.4
+   * python-pypdf
+   * context (for rich, i.e. annotated pdf generation)
+
+To make sure you have these installed, you can run the following command: 
+sudo make prereqs_common
+
+Then, you have 2 choices for how to deploy NB: As a standalone app (based on a twisted server), or as a django app (requires apache and django)
+
+- For the twisted version: 
+   * python-twisted
+   To make sure you have these installed, you can run the following command: 
+    sudo make prereqs_twisted
+
+- For the apache django version: 
+    * apache (>= 2)
+    * python-psycopg2 not yet
+    * django (>=1.2). 
+      Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the 1.2 version so it can be installed from the svn as:
+      export DJANGO_DIR=/opt/django/django1.2.1
+      sudo mkdir -p $DJANGO_DIR
+      cd $DJANGO_DIR
+      svn co http://code.djangoproject.com/svn/django/tags/releases/1.2.1 . 
+      sudo chown -R www-data:www-data $DJANGO_DIR
+      cd /usr/lib/python2.6/dist-packages
+      sudo ln -s $DJANGO_DIR/django/ .
+
+    * libapache2-mod-wsgi
+    To make sure you have these installed, you can run the following command: 
+    sudo make prereqs_django
+
+-> then edit vals in servers/settings.py
+-> sudo make create_dirs   #create root folder and some folders below that for nb data
+-> make django       #make Apache aware of Django framework
+-> make api          #Since there is alot of js, this improves performance 
+-> make compat       #do this for Python 2.5 compatibility (otherwise compat is 2.7)  
+-> edit params in content/ui/classic/conf.js: Tell which server(s) the client should use to fetch various pieces data
+
+
+
+2- Database installation: 
+   * The user-readable schema is in conf/nb_skeleton.sql, and a version that's usable to create and empty database is conf/nb_skeleton.dump  It assumes the owner of the DB is 'nbadmin', so add that user and db if they don't exist: 
+   * if neccessary, log in as someone who has postgres create role and create database privileges, such as postgres
+   * createuser nbadmin -P #important to setup as superuser since only superusers can create a language (used for plpythonu) 
+   * createdb -U nbadmin -h localhost notabene
+   * You may also have to allow remote connections
+     * sudo nano /etc/postgresql/8.4/main/pg_hba.conf 
+          o host    notabene       nbadmin       127.0.0.1/0     password
+     * sudo nano /etc/postgresql/8.4/main/
+   * if you make a mistake:
+          o dropdb  -U nbadmin -h localhost notabene
+          o createdb -U nbadmin -h localhost notabene
+	  o cd conf
+          o pg_restore  -s -d notabene -U nbadmin -h localhost  nb_skeleton.dump
+
+3- Main configuration file: conf/default.conf 
+   You need to fill in the values with the parameters of your server. Most of the values that you need to fill are located towards the beggining of the file. Note that it's important that your system has the following directories (with permissions so that the nb server  can write to them): 
+   - The directory that contains all the NB media files (indicated by "HTTPD_MEDIA" in the default.conf)
+   - The directory that contains the PDFs (indicated by "REPOSITORY_DIR", and relative to  "HTTPD_MEDIA" )
+   - The directory that contains the images files (indicated by "CACHE_DIR" and  relative to  "HTTPD_MEDIA" )
+   - for rich pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
+
+4- Crontab setup
+   # m h  dom mon dow   command
+   * * * * * (cd /var/local/home/sacha/nb;   ./utils_notify immediate >> log_immediate)
+   1 0 * * * (cd /var/local/home/sacha/nb;   ./utils_notify digest >> log_digest)
+   # Also, make sure MAILTO is set, so it doesn't start to send mail anywhere if the scripts above crash
+
+5- Add the first user in the database: 
+  At this point the database is empty, so unless you have your own NB database backup file, you probably want to add a first user in the DB. This can be done as follows: 
+  * psql -h localhost -U nbadmin notabene
+  * insert into users(email, password, valid) values('yourname@yourserver.com', 'secret', 1);
+  * After that, you can use the the usename / password that you just created to login onto nb. 
+  
+6- Use the Legacy UI to create new groups: 
+  * if that's not done already, start the nb server, using the following procedure, for instance: 
+       cd path/of/your/nb/server
+       sudo nohup ./runserver
+       [Ctrl-Z]
+       bg
+
+       Note: nohup isn't necessary for debugging purposes, only if you intend to be able to log out from the shell from which you started the nb server. If you use nohup, the messages from the standard output and error will be logged in the nohup.log file). 
+
+  * The Legacy admin UI can be used to create groups for your users (don't use it for any other purpose). It's located at 
+    	http://your_server_name/?t=legacy_admin (or http://your_server_name:port_number/?t=legacy_admin if you didn't started the nb server with admin rights). Port
+  * You can then use the regular UI: 	http://your_server_name/  to add files and invite participants...
+
+
+7- Special notes for apache / django install: 
+   - http://docs.djangoproject.com/en/1.2/howto/deployment/modwsgi/
+     - Add to httpd.conf: 
+       	   WSGIScriptAlias / /var/local/home/sacha/nb/servers/apache/django.wsgi
+
+
+8- Backup 
+   - Database:  use the pg_dump command, for instance, if NB was installed on host nb.csail.mit.edu, that the DB belonged to postgres used nbadmin, and that the DB was called notabene, you'd use the following: 
+     -pg_dump -U nbadmin -h nb.csail.mit.edu -Fc notabene > nb.backup.YYYYMMDD
+   - uploaded PDF files: Use your favorite file backup technique (tar, rdiff-backup, unison etc...) to backup the directory: 
+     "%s%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) (cf your settings.py files for actual values). 
+
+
+Questions: sacha@csail.mit.edu

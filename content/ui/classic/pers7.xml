@@ -1,0 +1,58 @@
+<!--
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"      id = "ROOT" >
+  <head>
+    <title>NB - an annotation tool for PDFs</title>
+    <link rel="stylesheet" href="/modules/jquery/themes/flora/flora.all.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/modules/logging.css" /> 
+    <link href="/modules/contextmenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/pdf/pdf.css" /> 
+    <link rel="stylesheet" type="text/css" href="/pdf/pers7.css" /> 
+    <!--    <script type="application/javascript;version=1.7" src="/modules/separator.js.min"/> -->
+    <script src="/modules/jquery/jquery.js" type="text/javascript"></script>
+    <script src="/modules/jquery/ui/jquery.ui.all.js" type="text/javascript"></script>
+    <script type="application/javascript;version=1.7" src="/modules/separator.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/Module.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/NB.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/mvc.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/logging.js"/>
+    <script src="/modules/contextmenu/jquery.contextMenu.js" type="text/javascript"></script>
+    <script type="application/javascript;version=1.7" src="/pdf/pdf.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/auth.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/dom.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/rpc.js"/>
+    <script type="application/javascript;version=1.7" src="/pdf/pers7.js"/> 
+
+
+  </head> 
+  <body>
+    <div id="main-panel" class="separable">
+      <div id="vp1" flex="1">
+	<div id="login_reminder">Hello, <span class="username"><!--$(FULLNAME)--></span></div>
+	<a  href="javascript:NB.pers.logout()">Log out</a>
+	<br/>
+	<div id="TC"/></div>
+      <div class="vseparator"/>
+      <div id="vp2" flex="1">
+	<div id="vp2-1" flex="1"   style="overflow: hidden;" >
+	  
+	  <div id="Viewer" />
+	</div>
+	<div class="hseparator"/>
+	<div id="vp2-2" flex="1" style="overflow: auto;"   >
+	  <div id="Sidetab"  />
+	  <div id="LOGVIEW"/>
+	  <!--Additional Views can be here: thumnails, inbox etc... -->
+	</div>
+      </div>
+    </div>
+    
+    <div id="util_windows">
+      <div id="user_settings" email="<!--$(EMAIL)-->" password="<!--$(PASSWORD)-->"/>
+    </div>
+    <div id="POPUPVIEW"/>
+  </body>
+</html>

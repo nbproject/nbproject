@@ -1,0 +1,491 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+body{
+margin: 0px;
+overflow: hidden; 
+font-family: arial;
+}
+
+
+div.branch{
+	padding: 3px;
+
+}
+span.branchname{
+	font-weight: bold;
+	cursor: pointer;
+	background: transparent url(/data/icons/png/folder-16.png) no-repeat center left;
+	padding: 3px 3px 3px 20px;
+
+
+}
+
+div.leaf{
+	padding: 3px 3px 3px 20px;
+	cursor: pointer;
+	background: transparent url(/data/icons/png/pdf-16.png) no-repeat center left;
+	
+
+}
+
+
+div.leaves{
+	padding: 0px 0px 0px 20px;
+
+}
+
+div.leaf_processing{
+	padding: 3px 3px 3px 20px;
+	color: #A0A0A0;
+}
+
+
+div.leaf-selected{
+	background-color: #FFE0B0;
+	padding: 3px 3px 3px 20px;
+	cursor: default;
+}
+
+div.leaf:hover, span.branchname:hover {
+	color: #6622FF;
+}
+
+
+
+
+#right_header{
+//      float: right;
+font-weight: bold;
+position: absolute;
+right: 100px;
+
+}
+
+#login_reminder{
+font-size: x-large;
+}
+
+
+#centerpanel{
+padding:0px 0px 0px 0px;
+
+}
+
+#add_file_dialog{
+//padding: 10px;
+
+}
+
+
+
+#add_file_button{
+position: absolute;
+left: 300px;
+}
+
+
+
+#groups_button{
+position: absolute;
+left: 450px;
+}
+
+
+#processing_add{
+display: none;
+}
+
+#paper_view{
+position: absolute;
+top: 0px;
+left: 0px;
+width: 100%;
+height: 100%;
+overflow: hidden;
+//cursor: -moz-grabbing;
+//cursor: -moz-grab;
+//-moz-user-select: none;
+display: none;
+}
+
+
+
+#collage_view, #home_view{
+position: absolute;
+top: 0px;
+left: 0px;
+display:none;
+height: 100%;
+width: 100%;
+//offset: 0 0 0 0;
+
+//margin: 0px 97px 0px 0px;
+//right: 97px
+
+}
+
+
+#docs_list{
+float: left;
+width: 12%;
+overflow: auto;
+max-height: 100%;
+}
+
+.secondary_toolbar{
+display: none;
+}
+
+
+#announcements{
+margin-left: 12%;
+}
+
+
+#util_windows{
+display: none;
+}
+
+
+#controls_bottomleft{
+position: absolute;
+border: thin solid #AAAAAA;
+bottom: 0px;
+left:0px;
+background-color: #DDDDDD;
+opacity: 0.6;
+}
+
+
+
+
+#controls_bottomright{
+position: absolute;
+border: thin solid #AAAAAA;
+bottom: 0px;
+right:95px;
+background-color: #DDDDDD;
+opacity: 0.6;
+}
+
+
+
+
+
+#page_bar, #default_settings{
+display: inline;
+}
+
+
+
+
+#doc_div, #svgpanel, #text_annotations, #text_links{
+position: absolute;
+top: 0px;
+left: 0px;
+width: 2000px;
+height: 1645px; //SACHA: HACK used to position links
+}
+
+
+
+#home_header{
+width: 100%;
+background-color: #DDDDDD;
+
+}
+
+
+
+.tile{
+border: 0px none ; 
+margin: 0px; 
+padding: 0px; 
+position: absolute; 
+//width: 256px; 
+//height: 256px; 
+-moz-user-select: none;
+}
+
+
+#controlpanel{
+border: thin solid #AAAAAA; 
+margin: 0px; 
+padding: 0px 10px 10px 10px; 
+position: absolute; 
+width: 74px;
+height: 100%;
+right: 0px;
+background-color: #DDDDDD;
+opacity: 0.6;
+}
+
+.toolbar_button{
+//position: absolute;
+width: 64px;
+height: 64px;
+margin: 20px 5px 20px 5px;
+background-repeat: no-repeat;
+border-width:3px;
+padding: 2px;
+background-image: url(/data/icons/png/empty_button.png);
+border-color: #DDDDDD;
+border-style:solid;
+}
+
+
+
+
+
+#pagestats{
+font-size: 38px;
+color: #777700;
+font-weight:bold;
+float: left;
+height: 38px;
+margin: 13px 5px 5px 5px;
+padding: 0px;
+}
+
+.left{
+float: left;
+}
+
+.right{
+float: right;
+}
+
+.mini_button{
+padding: 5px;
+opacity: 0.7;
+height: 24px;
+width: 24px;
+cursor: pointer;
+}
+
+
+.mini_button:hover{
+opacity: 1.0;
+}
+
+
+.mini_button[selected="1"]{
+background-image: url(/data/icons/png/32_titlebar_pattern_2_att.png);
+background-position: center center;
+opacity: 1.0;
+}
+
+
+
+.simple_button{
+float: left;
+padding: 5px;
+opacity: 0.7;
+}
+
+.simple_button:hover{
+opacity: 1.0;
+}
+
+
+.simple_button[selected="1"]{
+background-image: url(/data/icons/png/light2.png);
+background-position: center center;
+opacity: 1.0;
+}
+
+
+.detached_button{
+//position: absolute;
+float: left;
+width: 64px;
+height: 64px;
+margin: 5px 5px 5px 5px;
+background-repeat: no-repeat;
+padding: 2px;
+background-image: url(/data/icons/png/empty_button.png);
+}
+
+
+.detached_button:hover{
+background-image: url(/data/icons/png/empty_button_selected.png);
+}
+
+
+.button_icon{
+opacity: 0.5;
+}
+
+.toolbar_button:hover{
+//background-color: #FF3333;
+background-image: url(/data/icons/png/empty_button_selected.png);
+}
+
+
+.toolbar_button[selected="1"]{
+//border-style:solid;
+border-color: #333333;
+
+}
+
+
+
+#move_mode{
+//background-image: url(/data/icons/png/move.png);
+}
+
+
+
+#text_mode{
+//background-image: url(/data/icons/png/text.png);
+}
+
+
+#draw_mode{
+//background-image: url(/data/icons/png/draw.png);
+}
+
+#editbox-msg{
+padding: 10px 5px 5px 20px;
+color: #777777;
+font-family: sans-serif;
+
+}
+
+#notebox, #editbox{
+position: absolute;
+border: thin solid #777777;
+}
+
+
+
+#notebox-titlebar, #editbox-titlebar{
+background-image:  url(/data/icons/png/40_titlebar_pattern_1.png);
+padding: 3px 0px 3px 0px;
+height: 34px;
+}
+
+
+
+
+#notebox-body, #editbox-body{
+background-color: #FFFF77;
+opacity: 0.85;
+
+}
+
+#annotate-text, #edit-text{
+background-color: #FFFF22;
+}
+
+.existing_annotation{
+cursor:pointer;
+position: absolute;
+opacity: 0.85;
+background-color: #FFFFAA;
+foreground-color: #2222DD;
+max-width: 300px;
+}
+
+
+.existing_link{
+cursor:pointer;
+position: absolute;
+}
+
+
+.existing_link:hover{
+border-bottom: thin solid #3333FF;
+}
+
+
+
+
+.fixdialog{
+padding-right: 50px;
+}
+
+#banner{
+position: absolute;
+display: none;
+top: 30%;
+left: 30%;
+font-size:x-large;
+min-height:10%;
+min-width:40%;
+text-align:center;
+z-index: 100;
+color: #332200;
+background-color:#E0E0E3;
+border:1px solid #A0A0A0;
+}
+
+//exhibit lenses: 
+
+      div.annotation-lens{
+      border: 1px solid #DDDDEE;
+      margin-bottom: 2em;
+      position: relative;
+      }
+
+      div.annotation-title{
+      background:#DDDDEE none repeat scroll 0%;
+      color:#333366;
+      font-weight:bold;
+      padding:0.25em;
+      }
+
+      span.notecontext{
+      color: #555555;
+      font-size: small;
+      }
+      
+
+      span.notebody{
+      color: #222277;
+      background-color: #FFFFAA;
+      }
+      
+      
+      span.notecomment{
+      color: #FF0000;
+      font-weight: bold;
+      }
+
+
+      
+      textarea.editarea{
+      min-width: 350px;
+      }
+
+      span.CreationTime{
+      font-size: small;
+      float: right;
+      }
+
+
+      span.Author{
+      font-size: small;
+      }
+
+
+      span.Title{
+      font-size: small;
+      }
+
+
+      span.notebody:hover{
+      border-style:solid;	
+      border-width: 1px;	
+      border-color: #AAAAAA;
+      }
+
+      .exhibit-tileView-body {
+      list-style-type: none;
+      margin: 0; 
+      padding: 0;
+      }

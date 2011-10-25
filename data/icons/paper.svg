@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="64"
+   id="svg1"
+   version="1.0"
+   width="64"
+   x="0"
+   y="0"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="paper.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/var/local/home/sacha/myServer/content/data/icons/png/paper.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <sodipodi:namedview
+     inkscape:window-height="975"
+     inkscape:window-width="1399"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     inkscape:zoom="1.1291429"
+     inkscape:cx="218.75"
+     inkscape:cy="211.66498"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:current-layer="svg1" />
+  <metadata
+     id="metadata3">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Lemon SVG theme</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>icon</rdf:li>
+            <rdf:li />
+            <rdf:li>lemon_theme_icon</rdf:li>
+            <rdf:li>icons</rdf:li>
+            <rdf:li>hash</rdf:li>
+            <rdf:li>action</rdf:li>
+            <rdf:li>computer</rdf:li>
+            <rdf:li>theme</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Jose Hevia</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jose Hevia</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Jose Hevia</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 218.75 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="437.5 : 218.75 : 1"
+       inkscape:persp3d-origin="218.75 : 145.83333 : 1"
+       id="perspective23" />
+    <linearGradient
+       id="linearGradient580">
+      <stop
+         id="stop581"
+         offset="0"
+         style="stop-color:#ffff8a;stop-opacity:0.6667;" />
+      <stop
+         id="stop582"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0.3961;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient53">
+      <stop
+         id="stop54"
+         offset="0"
+         style="stop-color:#faff00;stop-opacity:1;" />
+      <stop
+         id="stop55"
+         offset="1"
+         style="stop-color:#02ff00;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient48">
+      <stop
+         id="stop49"
+         offset="0"
+         style="stop-color:#000f67;stop-opacity:1;" />
+      <stop
+         id="stop50"
+         offset="1"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient51"
+       xlink:href="#linearGradient53" />
+    <linearGradient
+       id="linearGradient52"
+       x1="0.13846301"
+       x2="0.430769"
+       xlink:href="#linearGradient53"
+       y1="0.38281101"
+       y2="0.53906298" />
+    <linearGradient
+       id="linearGradient32"
+       x1="0.101911"
+       x2="0.94267499"
+       xlink:href="#linearGradient48"
+       y1="0.46540901"
+       y2="0.45282999" />
+    <linearGradient
+       id="linearGradient33"
+       x1="-6.8458159e-09"
+       x2="1"
+       xlink:href="#linearGradient48"
+       y1="-4.1814939e-08"
+       y2="1" />
+    <radialGradient
+       cx="0.5"
+       cy="0.5"
+       fx="0.5"
+       fy="0.5"
+       id="radialGradient579"
+       r="0.5"
+       xlink:href="#linearGradient53" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient53"
+       id="linearGradient2400"
+       gradientTransform="scale(0.998865,1.0011363)"
+       x1="46.023689"
+       y1="219.70795"
+       x2="391.20883"
+       y2="219.70795"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient53"
+       id="linearGradient2407"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="scale(0.998865,1.0011363)"
+       x1="46.023689"
+       y1="219.70795"
+       x2="391.20883"
+       y2="219.70795" />
+  </defs>
+  <g
+     id="g2402"
+     transform="matrix(0.9983412,0,0,0.9586986,10.760245,-357.9768)">
+    <g
+       transform="matrix(9.9859821e-2,0,0,0.1052673,-0.65256,383.64105)"
+       id="g2396">
+      <path
+         d="M 13.13314,424.4478 C 118.3825,424.0991 317.066,423.6844 426.1921,424.1907 C 425.6447,329.5049 425.1554,56.44783 425.7032,15.49794 C 355.6307,15.80867 79.73299,14.87694 15.29093,15.18752 C 16.49537,42.59098 12.10471,368.6546 13.13314,424.4478 z"
+         id="path607"
+         style="font-size:12px;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#007f00;stroke-width:27.40119934;stroke-linejoin:bevel" />
+      <path
+         d="M 45.97145,47.16892 L 45.97145,392.7463 L 390.7648,392.7463 L 390.7648,47.16892 L 45.97145,47.16892 z"
+         id="path580"
+         style="font-size:12px;fill:url(#linearGradient2407);fill-opacity:1;fill-rule:evenodd" />
+    </g>
+  </g>
+</svg>

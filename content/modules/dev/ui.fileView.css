@@ -1,0 +1,24 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+div.files{
+overflow-y: auto;
+}
+
+
+div.fileView div.file-lens{
+border: thin solid #e0e0e0;
+cursor: pointer;
+}
+
+
+
+div.fileView div.file-lens:hover{
+background-color: #f5f5E6;
+}
+
+div.fileView{
+font-size: x-small;
+}

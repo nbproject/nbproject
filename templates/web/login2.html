@@ -1,0 +1,50 @@
+<!--
+   Author: Sacha Zyto (sacha@csail.mit.edu) 
+   License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+{% extends "web/base.html" %}
+{% block title %}NB Login required{% endblock %}
+
+{% block css %}
+{% endblock %}
+{% block style %}
+
+.email{
+font-size: large;
+}
+
+.error-msg{
+display: none;
+color: #FF0000;
+font-weight: bold;
+}
+
+#success{
+display: none;
+}
+{% endblock %}
+
+{% block js %}   
+<script type="text/javascript" src="/content/modules/head.js/head_chrome.js"></script> 
+<script>
+      head.js(
+      "/content/modules/dev/mods2.js",
+      "/content/modules/dev/ui.concierge1.js", 
+      "/content/compiled/apidev.js", 
+      "/content/ui/admin/conf.js", 
+      "/content/modules/dev/pers2.js", 
+      "/content/ui/admin/login2.js", 
+      function(){$(function(){NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
+      );
+    </script>
+{% endblock %}
+
+
+{% block content %}
+<h1>This page requires authentication....</h1>
+<div id="auth_fragment"></div>
+<button id="auth_submit">OK</button>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+Hello {% if c.author.firstname %}{{c.author.firstname}}{% else %}{{c.author.email}}{% endif %}, 
+
+The following comment: 
+
+{{rc.body|safe}}
+
+...has been posted as a reply to:
+
+{{rc.parent.body|safe}}
+
+Please visit {{V.protocol}}://{{V.hostname}}/c/{{rc.id}}?org=mr_i to see the whole discussion, in its context. 
+
+You've received this email because you participated to this discussion, on {{c.location.source.title}}. To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=mr_i
+
+Dutifully yours,
+
+NBNB  -  the NB Notification Bot

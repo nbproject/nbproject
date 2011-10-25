@@ -1,0 +1,7 @@
+Dear {% if firstname %}{{firstname}}{% else %}{{email}}{% endif %}, 
+
+NB has finished processing the PDF file that you've submitted: '{{title}}' (submitted on {{submitted}}). 
+You can open this pdf directly by visiting:  {{protocol}}://{{hostname}}/f/{{id_source}}
+
+Dutifully yours,
+NBNB  -  the NB Notification Bot

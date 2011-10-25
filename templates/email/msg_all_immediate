@@ -1,0 +1,16 @@
+Hello {{m.user.firstname}}, 
+
+{{c.author.firstname}} {{c.author.lastname}} ({{c.author.email}}) wrote:  
+{{c.body|safe}}
+{% if c.parent and c.parent.type > 1 %}
+
+...as a reply to: 
+{{c.parent.body|safe}}
+{% endif %}
+
+Please visit {{V.protocol}}://{{V.hostname}}/c/{{c.id}}?org=mall_i to see the whole discussion, in its context. 
+You've received this email because you have staff privileges on {{c.location.ensemble.name}}. To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=mall_i
+
+Dutifully yours,
+NBNB  -  the NB Notification Bot
+

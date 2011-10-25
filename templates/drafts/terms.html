@@ -1,0 +1,26 @@
+{% extends "drafts/base.html" %}
+
+{% block title %}Terms and conditions{% endblock %}
+{% block overridecss %}
+div.content{
+width: 450px !important;
+height: 350px;
+}
+{% endblock %}
+
+
+{% block widgetcss %}
+
+{% endblock %}
+
+{% block content %}
+
+<div id='register_user_dialog' > 
+  <table> <tr><td>Firstname</td><td><input type='text'  id='register_user_firstname' ></input></td></tr> <tr><td>Lastname</td><td><input type='text'  id='register_user_lastname' ></input></td></tr> <tr style='display:none'><td>Pseudonym</td><td><input type='text'  id='register_user_pseudonym' ></input></td></tr><tr><td>Email</td><td><input type='text'  id='register_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='register_user_password1' ></input></td></tr><tr><td>Confirm Password</td><td><input type='password'  id='register_user_password2' ></input></td></tr></table>
+  <div>
+    <input type='checkbox' id='termsandconditions'/> 
+    <label for='termsandconditions' >I agree with <a href='terms_ocw'>NB Terms and Conditions</a></label></div>
+  <div class='form_errors'/>
+</div>
+
+{% endblock %}

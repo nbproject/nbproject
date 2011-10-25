@@ -1,0 +1,116 @@
+<!--
+    Author: Sacha Zyto (sacha@csail.mit.edu) 
+    License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+    MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>NB Glossary</title>
+    <link rel="stylesheet" type="text/css" href="/pdf/login5.css" />
+    <link rel="stylesheet" type="text/css" href="/pdf/glossary.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+  </head> 
+  <body>
+    <div align="center">
+      <table id="header" class="patron">
+	<tr class="row">
+	  <td>
+	    <a href="/">
+	      <div id="logo" >
+		<img border="0" alt="NB" src="/data/icons/png/logo2_48.png"/>
+	      </div>
+	    </a>
+	  </td>
+	  <td>
+	    <div class="navbar bulle" >
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py">About</a>
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py?a=news">News</a>
+	      <a href="http://people.csail.mit.edu/sacha/nb/tut-latest/">Tutorial</a>
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py?a=faq">FAQ</a>
+	      <a href="http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">Contact Us</a>
+	    </div>
+
+	  </td>
+	</tr>
+      </table>
+      
+      <table id="main" class="patron">
+	<tr class="row">
+	  <td>
+	    <h1> Glossary (work in progress...)</h1>
+	    <ul>
+	      <!--
+
+		  <li id="item-">
+		    <b> </b>
+		    <div class="definition">
+
+		  </div></li>
+
+		  -->	  
+	      <li id="item-activepage">
+		<b>Active page</b>
+		<div class="definition"> This is the page for which annotations are currently being displayed, and that you can annotate by dragging a area on the PDF with your mouse. <br/><img src="/data/img/activepage.png"/></div></li>
+
+	      <li id="item-collageview">
+		<b>Collage View</b>
+		<div class="definition">  A collage view displays a collection of <a href="#item-thread">threads</a> along with some preview of the material that is related to that annotation. Unlike the <a href="#item-documentview">Document View</a>, the Collage View focuses on the annotations rather than on the material itself. The figure below shows a sample Collage View.  <br/><img src="/data/img/collageview.png"/></div></li>
+	      
+	      <li id="item-contextmenu">
+		<b>Context Menu </b>
+		<div class="definition">
+		  <span class="n">n</span><span class="b">b</span> uses context menus to avoid UI clutter. When you're on any <a href="#item-note">note</a> of an expanded <a href="#item-thread">thread</a>, you can open the context menu by right-clicking on that note (mac users: Control+click) or by clicking on the <i>options...</i> link located in that note.  
+	      </div></li>
+
+	      <li id="item-documentview">
+		<b>Document View</b>
+		<div class="definition"> The Document View displays a PDF document in the browser (similar to a regular PDF reader) along with annotations.</div></li>
+
+	      <li id="item-favorite">
+		<b>Favorites</b>
+		<div class="definition">
+		  A comment that you've marked as favorite, using the <a href="#item-contextmenu">Context Menu</a>. You can choose to see only favorite comments as you read along. From the home page you can monitor new ongoing discussions related to your favorite comments. 
+	      </div></li>
+	      
+	      
+	      <li id="item-fulltext-search">
+		    <b>Full text search </b>
+		    <div class="definition">
+		      All your annotations on <span class="n">n</span><span class="b">b</span> are searchable (but the contents of the PDFs themselves isn't searchable yet). Use the following tips to improve your searches. <ul>
+<li><b>Avoid substrings that aren't real words in the search bar.</b> <span class="n">n</span><span class="b">b</span> uses an index optimized for search expressions that are real English words. For example, searching for <em>cla</em> may not return any result, but searching for <em>class</em> may return hundreds of results.</li>
+<li><b>The order of the search terms doesn't matter.</b> For instance, searching for <em>middle class</em> and <em>class middle</em> will return the same results. </li>
+<li><b>Use your own strings to create your bookmarks, tags and collections.</b> <span class="n">n</span><span class="b">b</span> doesn't have a feature for users to group their annotations using custom tags or collections (yet...).  However, you can simulate that feature in the following way: Assuming you've found an interesting place in the lecture, just write a private annotation on that place (or write a private reply to an exisiting note, if there's already a note at that place) .This new annotations should contain a unique string that you will easily remember made of letters, digits, and the hyphen character "-" (e.g. <em>review-for-6042-final</em>). You can then use this string in the <span class="n">n</span><span class="b">b</span> search bar to find all the annotations that you've marked with that string.</li>
+</ul>
+	      </div></li>
+
+	      <li id="item-globalcomment">
+		<b>Global Comment</b>
+		<div class="definition">
+		  A type of <a href="#item-note">note</a> that isn't related to any particular location in the text. Writing global comments are appropriate to write reflections on the document as a whole, rather that focusing on some precise locations in the material.
+	      </div></li>
+	      
+	      <li id="item-note">
+		<b>Note</b>
+		<div class="definition">
+		  A single annotation written about the open document. There are essentially 3 ways to create a note. 
+		  <ol>
+		    <li>To create a new <a href="#item-thread">thread</a> about some region of the PDF material, drag your mouse cursor over that region of the PDF. An in-place editor will appear, where you can type your note, and save it. </li>
+		    <li>To create a <a href="#item-globalcomment">global comment</a> on that PDF, click on <img src="/data/icons/png/pen_24.png"/> or or the "New..." link located on the top right corner of the document  </li>
+		    <li>To reply to an existing note, click the <i>Reply</i> button on the <a href="#item-contextmenu">context menu</a>. </li>
+		  </ol>
+	      </div></li>
+
+
+	      <li id="item-thread">
+		<b>Thread</b>
+		<div class="definition">Threads are conversations, and they consists of one or many <a href="#item-note">notes</a> about the same location in the text. You can add a note to a thread by clicking the <i>Reply</i> button on the <a href="#item-contextmenu">context menu</a>. By default, NB shows you many threads in Collapsed Form (indicated by a '>'). To expand a thread, just click anywhere on that thread.<br/> Note that expanding a thread also highlights and scrolls the PDF so that you can see what location in the material this thread discusses. </div></li>
+
+	    </ul>
+	  </td>
+	</tr>
+      </table>
+      <div id="credits">  <a href="/"><span class="n">n</span><span class="b">b</span></a> is a project of the  <a href="http://groups.csail.mit.edu/haystack">Haystack</a> Group at <a href="http://web.mit.edu">MIT</a> and currently requires <a href="http://www.mozilla.com/en-US/firefox/personal.html"> <img src="/data/icons/png/firefox_20.png" border="0"/> Firefox</a> <a style="margin-left: 10px" href="http://www.twitter.com/planet_nb">Follow us on <img  border="0" style="position: relative; top: 8px" src="http://twitter-badges.s3.amazonaws.com/twitter-b.png" alt="Follow planet_nb on Twitter"/></a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{% extends "drafts/splash.html" %}
+
+{% block title %}splash screen - non-registered user{% endblock %}
+{% block splashstyle %}
+#splash-welcome{
+font-size: xx-large; 
+color: #a0a0a0;
+}
+
+span.ui-icon{
+display: inline-block;
+}
+
+{% endblock %}
+
+{% block splashcontent %}
+<span id='splash-welcome'>Welcome to NB</span>, a PDF reader with a forum right on top of every document ! 
+<br/>
+<ul id='splash-list-instructions'>
+<li>Use your mouse or the <span class="ui-icon ui-icon-circle-triangle-w"/> and <span class="ui-icon ui-icon-circle-triangle-e" /> keys to move from discussion to discussion.</li>
+<li>Use your mouse or the  <span class="ui-icon ui-icon-circle-triangle-n"/> and  <span class="ui-icon ui-icon-circle-triangle-s"/> keys to scroll up and down the document.</li>
+<li>New user ? <a href='javascript:$.concierge.get_component("register_user_menu")()'>Register</a> now to be able to post comments...</li>
+<li>Existing user ? <a href='javascript:$.concierge.get_component("login_user_menu")()'>Log in</a> now...</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,51 @@
+********************************************************************************
+*** NB Server and various client user interfaces
+*** http://nb.csail.mit.edu
+*** Developed in part of the Haystack group http://groups.csail.mit.edu/haystack/
+*** Copyright (c) 2010 Massachusetts Institute of Technology.
+*** code released under the MIT License 
+*** (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*** Contact: Sacha Zyto <sacha@csail.mit.edu>
+********************************************************************************
+
+cf INSTALL for installation instructions. 
+
+The NB server is meant to be run to be run either:                           
+
+1- As a django app on a django-enabled apache server
+2- (For development only) As a standalone application, using the embedded django development server. 
+3- As a standalone application (which uses a twisted-based server). 
+
+Startup instructions: 
+
+1- On a django-enabled apache server
+   Make sure that your apache configuration file (httpd.conf for instance) has the following line
+   WSGIScriptAlias / $(PATH_TO_NB)/servers/apache/django.wsgi
+   ... where $(PATH_TO_NB) refers to to location of the nb directory. 
+
+2- Using the embedded django development server
+   cd  $(PATH_TO_NB)/servers
+   python manage.py runserver
+
+3- As a twisted-powered standalone application: 
+   cd $(PATH_TO_NB)
+   sudo nohup ./runserver
+   [Ctrl-Z]
+   bg
+   (I can then logout from the terminal I started the process)
+
+
+Thanks for your interest in NB ! 
+
+Please keep in mind that... 
+
+- NB comes without any kind of  warranty !  
+
+- NB wasn't designed to be particularly secure (don't use it to store confidential information !)
+
+- NB is an active research project that *** NEEDS YOUR PARTICIPATION ***: 
+  So, how can you participate ? 
+  1- Contact us (sacha@csail.mit.edu) to donate (some of) your annotations: If you setup an NB server, please, consider granting us read access to (part of) your NB database (email sacha@csail.mit.edu). This is VITAL so we can so we can use the notes for our research (extract statistics, look at themes of annotations, and usage patterns, see how usage habits change when feature X is being introduced). Of course, we will need to ask users their permission in order to be able to use quotes from their notes in any kind of published research (and if anything gets published, it will be anonymized), in accordance with the COUHES protocol: http://web.mit.edu/committees/couhes/
+  2- Add features and fix bugs. 
+
+

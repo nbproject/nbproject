@@ -1,0 +1,31 @@
+{% extends "drafts/base.html" %}
+
+{% block title %}Terms and conditions{% endblock %}
+
+{% block overridecss %}
+div.content{
+width: 600px !important;
+//height: 350px;
+padding: 15px;
+margin: 15px;
+font-family: Tahoma, sans-serif;
+color: #404040;
+font-size: medium;
+background-color: #E0F0FF;
+}
+{% endblock %}
+
+
+{% block widgetcss %}
+
+{% endblock %}
+
+{% block content %}
+By registering to the NB service, you acknowledge and accept the following NB Terms and Rules of use: 
+<ul>
+<li>NB is graciously provided as an "as is" service: We do not provide any guarantee about the NB service. This includes but is not limited to: <ul><li>availibilty of the service</li><li>confidentiality of the information you've entered on NB</li><li>data loss or alteration</li><li>any consequence due to a misuse of the service by malicious users</li></ul>  </li>
+<li>You can't modify or delete a note after a reply has been posted to it. </li>
+<li>By default, every note you write is <i>public</i>, which means that anyone on the internet can see it, along with your full name. </li>
+<li>Your public notes, and any feedback information that you provide us may be quoted in our research publications, after having been anonymized. If you decide that you would not like those to be quoteable in our research publications, you need to uncheck the corresponding option in the "Preferences" pane.</li>
+</ul>
+{% endblock %}

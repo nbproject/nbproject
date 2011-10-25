@@ -1,0 +1,77 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+html, body, #pers1{
+padding:0px;
+margin: 0px;
+width: 100%;
+height: 100%;
+overflow: hidden;
+//background-color: #CCCCCC;
+ font-family: Tahoma, Helvetica,arial, sans-serif;
+ font-size: small;
+}
+
+td {
+vertical-align: top;
+}
+
+#pers1 div.ui-widget-content { 
+padding:0; 
+}
+
+#pers1 div.ui-tabs{
+border: none;
+}     
+
+#pers1 .ui-tabs-nav li a {
+//font-size: 70%;
+padding: 3px 14px 3px 5px;
+}     
+
+
+
+
+#view-5, #view-9, #view-10{
+min-width: 155px;
+}
+
+#util_windows{
+display: none;
+}
+
+#view-92 ol.exhibit-tileView-body{
+list-style-type: none;
+//list-style-image: url(/data/icons/png/pdf-16.png);
+font-size:small;
+padding-left:3px;
+}
+
+table.exhibit-tabularView-body{
+border-collapse: collapse;
+border: thin solid #A0A0A0;
+background-color: #FFFFDD;
+}
+
+.contextMenu {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+.contextMenu li.reply a { background-image: url(/data/icons/png/comment_16.png); }
+.contextMenu li.follow a { background-image: url(/data/icons/png/add_16.png); }
+.contextMenu li.samequestion a { background-image: url(/data/icons/png/question_16.png); }
+
+.contextMenu li.highlight a { background-image: url(/data/icons/png/star_16.png); }
+.contextMenu li.hide a { background-image: url(/data/icons/png/close_16.png); }
+
+.welcome{
+font-size: x-large;
+color: #5555FF;
+padding-right: 30px;
+}
+
+.home-options > a{
+padding-left: 10px;
+padding-right: 10px;

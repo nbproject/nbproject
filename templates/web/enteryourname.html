@@ -1,0 +1,69 @@
+{% extends "web/base.html" %}
+{% block title %}What's your name ?{% endblock %}
+{% block style %}
+ul.errorlist{
+	color: #ff0000;
+	font-weight: bold;
+	list-style: none;	
+}
+#differences{
+margin: 20px;
+padding: 10px;
+border: thin solid #c0c0c0;
+color: #707070; 	
+}
+
+#intro{
+margin: 20px;
+padding: 10px;
+color: #505050; 	
+}
+
+#form{
+margin: 20px;
+padding: 10px;
+font-size: large; 	
+}
+
+{% endblock %} 
+{% block content %}
+  <div id="intro">
+  <h1>Welcome to the new NB !</h1>
+  We've been working hard to make NB more fun to use, but now, we need your help: Currently, NB only knows you as <b>{{user_form.instance.email}}</b>. Conversations are much more pleasant when people know who they're talking to. 
+  </div>
+  <div id="form">
+  <b>Hence, please take a few moments to enter your...</b>.  
+  
+    <form action="" method="post">
+      <table>
+	{% for field in user_form %}
+	
+	<tr>
+        <td>{{ field.label_tag }} </td>  <td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+
+	</tr>
+	
+        {% endfor %}  
+	
+      </table>
+          {{ user_form.non_field_errors }} 
+               
+<div><input style="margin-top: 10px", type="submit" value="Send" /></div>	   
+    </form>
+    </div>  
+    <div id="differences">
+    	
+    	
+    <b>Note</b><i> The new NB has a few notables differences with the old version:</i>
+    <ul>
+    	<li>It works with many more browsers, including Firefox, Chrome, Safari and Internet Explorer 9</li>
+    	<li>By default, your comments are signed. This makes discussions much more pleasant. If you wish to remain anonymous when posting a comment, check the <b>Anonymous</b> option when writing a post. Please note that some classes may not allow anonymous comments, and that your class staff can see your name even on anonymous comments.</li>
+    	<li>Some features are still upcoming, such as <ul><li>Collage Views</li><li>Fulltext Search</li><li>Rating comments</li></ul></li>
+    	</ul>
+    </div>  
+  
+
+
+
+{% endblock %}
+

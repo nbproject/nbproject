@@ -1,0 +1,194 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+html, body, div.viewport, div.dummy-viewport, div.outerview {
+padding:0px;
+margin: 0px;
+overflow: hidden;
+}
+
+html, body, div.dummy-viewport, div.viewport{
+width: 100%;
+height: 100%;
+font-family: Tahoma, Helvetica,arial, sans-serif;
+font-size: small;
+}
+
+
+div.perspective{
+position: absolute;
+top: 24px;
+width: 100%;
+bottom: 0px;
+}
+
+div.ui-tabs-panel{
+padding: 0 !important;
+}
+
+.ui-tabs .ui-tabs-hide {
+    position: absolute;
+    left: 10000px;
+    display: block !important;
+}
+
+div.util_windows{
+display: none;
+}
+
+#login-window{
+position: absolute;
+top: 5px;
+right: 20px;
+color: #404040;
+font-weight: bold;
+}
+
+#login-window a{
+margin-left: 10px;
+margin-right: 10px;
+}
+
+#login-name{
+margin-right: 10px;
+}
+
+.ui-tabs-nav li a {
+    padding-top: 3px !important; 
+    padding-bottom: 3px !important;
+    font-family: Verdana;
+}
+
+
+div.ui-view-popup{
+-moz-user-select:none;
+-webkit-user-select:none;
+background-color:#AACCFF;
+border:thin solid #7799AA;
+bottom:30px;
+font-size:large;
+min-height:40px;
+min-width:320px;
+opacity:0;
+padding:10px;
+position:fixed;
+right:30px;
+z-index:100;
+}
+
+
+/*Beginning of standard icon theme */
+
+div.nbicon{
+background-image: url("/content/data/icons/png/default_theme.png");
+ background-repeat: no-repeat;
+display: inline-block;
+margin: 0;
+padding: 0;
+text-decoration: none;
+width: 18px;
+height: 18px;
+//position: absolute;
+}
+
+div.nbicon.dark{
+background-color: #000044;
+}
+
+div.foldericon{
+    background-position: -40px 0px;
+}
+
+div.pdficon{
+    background-position: -60px 0px;
+}
+
+div.adminicon{
+    background-position: -80px 0px;
+}
+
+div.privateicon{
+    background-position: -100px 0px;
+}
+
+div.meicon{
+    background-position: -120px 0px;
+}
+
+div.stafficon{
+    background-position: -140px 0px;
+}
+
+
+
+
+.aftericon {
+    margin-left: 5px;
+}
+
+.ui-effects-transfer { 
+    border: 2px solid black;
+}
+
+div.form_errors{
+font-weight: bold; 
+color: #a01111;
+}
+
+
+/* mini-splashscreen (developed using draft framework) */
+
+div.minisplashscreen{
+padding: 15px;
+margin: 15px;
+font-family: Tahoma, sans-serif;
+color: #808080;
+font-size: medium;
+background-color: #E0F0FF;
+border: thin solid #c0c0c0;
+}
+
+#splash-list-instructions{
+padding-left: 10px;
+}
+
+#splash-list-instructions li{
+list-style: none;
+}
+
+#splash-welcome, #reg_welcome{
+font-size: xx-large; 
+letter-spacing: 6px;
+color: #a0a0a0;
+text-align: center;
+}
+
+#nb-def{
+text-align: right;
+font-style: italic;
+color: #b0b0b0;
+}
+
+#reg_benefits{
+color: #a0a0a0;
+font-style: italic;
+margin: 10px;
+}
+
+span.ui-icon{
+display: inline-block;
+}
+
+
+div.loadingpane{
+margin-top: 50px;
+}
+
+
+div.loadingpane-msg{
+font-size: x-large;
+color: #c0c0c0;
+}

@@ -1,0 +1,32 @@
+<!--
+   Author: Sacha Zyto (sacha@csail.mit.edu) 
+   License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>A minimal example of NB framework</title>
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link type="text/css" href="../modules/ui.perspective.css" rel="stylesheet" />
+    <link type="text/css" href="template.css" rel="stylesheet" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script> 
+    <script type="application/javascript;version=1.7" src="../modules/dev/ui.perspective2.js"> </script> 
+    <script type="application/javascript;version=1.7" src="../compiled/apidev.js"></script> 
+    <script type="application/javascript;version=1.7" src="conf2.js"></script> 
+    <script type="application/javascript;version=1.7" src="../modules/dev/pers.js"></script> 
+    <script type="application/javascript;version=1.7" src="minimal.js"> </script> 
+  </head>
+  <body>
+    <div id="pers1">
+      <div id="view-1" style="min-width: 250px;"  >
+	Sample View 1 <br/>In reality these would be components <br/> which inherit from ui.view
+      </div>
+      <div class="separator" orientation="vertical"/>
+      <div id="view-2" closable="false" >
+	Sample View 2  <br/> Views can be resized, send events and listen to events
+      </div>
+    </div>
+  </body>
+</html>
+

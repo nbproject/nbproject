@@ -1,0 +1,259 @@
+<!--
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:ex="http://simile.mit.edu/exhibit" >
+  <head>
+    <title>[18]Shallow NB2</title>
+    <!-- local version -->
+    <link type="text/css" href="/modules/newJquery/development-bundle/themes/base/ui.all.css" rel="stylesheet" />
+    <script type="text/javascript" src="/modules/newJquery/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="/modules/newJquery/development-bundle/ui/ui.core.js"></script>
+    <script type="text/javascript" src="/modules/newJquery/development-bundle/ui/ui.sortable.js"></script> 
+    <script type="text/javascript" src="/modules/newJquery/development-bundle/ui/ui.tabs.js"></script> 
+    <script type="text/javascript" src="/modules/newJquery/development-bundle/ui/ui.draggable.js"></script> 
+    <script type="text/javascript" src="/modules/newJquery/development-bundle/ui/ui.datepicker.js"></script> 
+
+    <!-- googleapi version -->
+    <!--
+	<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" rel="stylesheet" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script> 
+	-->
+
+    <!-- homemade HTTP server version (twisted)-->
+    <link type="text/css" href="/modules/ui.viewport.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/ui.perspective.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.view.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.fileLister.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.thumbnailView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.docView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.homepage.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.notepaneView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.collectionView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.drawable.css" rel="stylesheet" />
+    <link href="/modules/contextmenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+
+
+
+    <!--    <link rel="stylesheet" type="text/css" href="/pdf/pdf.css" /> -->
+    <link rel="stylesheet" type="text/css" href="/pdf/pdftree.css" />
+    <link type="text/css" href="/pdf/pers18.css" rel="stylesheet" />
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.viewport.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.view.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.perspective.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.sourcetree.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.fileLister.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.fileLister2.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.thumbnailView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.noteObserver.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.docView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.homepage.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.notepaneView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.collectionView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.drawable.js"/> 
+    <script src="/modules/contextmenu/jquery.contextMenu.js" type="text/javascript"></script>
+
+
+    <!--    <script type="text/javascript"                    src="/modules/exhibit/exhibit-api.js?autoCreate=false&amp;bundle=false"   ></script>-->
+
+    <script type="text/javascript"                    src="/modules/newExhibit/trunk/src/webapp/api/exhibit-api.js?autoCreate=false&amp;bundle=false"   ></script>
+
+    <!-- <script type="text/javascript"  src="http://api.simile-widgets.org/exhibit/2.2.0/exhibit-api.js?autoCreate=false&amp;bundle=false" ></script>
+      -->
+    <!--    
+	    <script type="application/javascript;version=1.7" src="/modules/ui.viewport.js"/> 
+	    -->
+    
+    <!-- regular apache-->
+    <!--    <script type="application/javascript;version=1.7" src="./ui.viewport.js"/> -->
+
+
+    <!-- pdf stuff -->
+
+    <script type="application/javascript;version=1.7" src="/modules/Module.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/NB.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/auth.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/dom.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/rpc.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/mvc.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/dev/models.js"/>
+    <script type="application/javascript;version=1.7" src="/pdf/pdf.js"/> 
+    <script type="application/javascript;version=1.7" src="/pdf/pers18.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/headless-facet.js"/> 
+
+    <!-- jstree trial -->
+    <!--
+	<script type="application/javascript;version=1.7" src="/modules/jsTree/_lib/css.js"/> 
+	<script type="application/javascript;version=1.7" src="/modules/jsTree/source/tree_component.js"/> 
+	<link rel="stylesheet" type="text/css" href="/modules/jsTree/source/tree_component.css" />
+	-->
+
+
+  </head>
+  <body>
+	    <ul id="contextmenu_notepane" class="contextMenu"><li class="edit"><a href="#edit">Edit...</a></li><li class="reply"><a href="#reply">Reply...</a></li><li class="follow separator"><a href="#follow">Follow</a></li><li class="samequestion"><a href="#samequestion">Same question !</a></li><li class="hide"><a href="#hide">Hide...</a></li><li class="delete separator"><a href="#delete">Delete...</a></li></ul>
+
+    <div id="pers1">
+      <div id="viewport1" >
+	<div id="view-92" label="Files">
+	  <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Channel" ex:facetClass="HeadlessFacet" ex:collapsible="true" ex:collapsed="true" ex:expression=".ensemble.name"/>
+	  <!--  <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Expression" ex:expression=".numpages + 0 &gt; 7"/> -->
+	  <!--	  <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Channel" ex:facetClass="CloudFacet" ex:expression=".ensemble.name"/> -->
+
+
+	  <div id="collection1" ex:role="collection" ex:itemTypes="file"/>
+	  <div id="viewpanel" ex:role="viewPanel">
+	    <div ex:role="view" ex:collectionID="collection1" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />
+	  </div>		
+	  <div ex:role="lens" class="file-lens" ex:itemTypes="file"  ex:id_item-content=".ID" onclick="NB.pers.on_file(event)"  >
+	    <span ex:content=".title"/>
+	  </div>
+	  <div ex:role="lens" class="ens-lens" ex:itemTypes="ensemble" >
+	    <span ex:content=".name"/>
+	    <ul ex:content="!ensemble" ><li><span ex:content=".title"/></li></ul> 
+	      <div ex:content="!ensemble"/>
+
+	    <!--	    <div ex:content="!ensemble"/>-->
+	  </div>
+	</div>
+	<div id="view-10" label="Nav">THUMBNAILS</div>
+      </div>
+      <div class="separator" orientation="vertical" />
+      <div class="pers-protection">
+	<div id="viewport2">
+          <div id="view-4" label="Home">
+	    <p>This is View 4</p>
+	  </div>
+	  <div id="view-9" label="Files"><p>This is View 9</p></div>
+
+	  <div id="view-42" label="Home2" class="view">
+	    <span class="welcome">Welcome, <!--$(EMAIL)--> !</span> <span class="home-options"><a href="javascript:NB.pers.settings_menu()">Settings</a><a href="javascript:NB.pers.admin_menu()">Admin</a><a href="javascript:NB.pers.logout()">Log out</a></span>
+	    <div class="panel" style="padding:10px" >
+	      <div id="collection3" ex:role="collection" ex:itemTypes="assignment"/>
+
+	      <div id="vpanel3" ex:role="viewPanel">	      <div ex:role="view"  
+								   ex:viewClass="Tabular"
+								   ex:columns=".duedate, .file.ensemble.name, concat('&lt;a href=\'javascript:NB.pers.on_file(null, ',.file.ID, ')\'&gt;',.file.title, '&lt;/a&gt;'), '3 new messages'"
+								   ex:columnLabels="due date, channel, file, At a Glance"
+								   ex:columnFormats="list, list, list"
+								   ex:collectionID="collection3" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />
+
+
+	      </div>
+	    </div>
+	  </div>
+
+	  <div id="view-43" label="Channels" class="view">
+	    <div id="col_ensemble" ex:role="collection" ex:itemTypes="ensemble"/>
+	    <div id="vp2" ex:role="viewPanel">
+	      <div ex:role="view" ex:collectionID="col_ensemble" />
+	    </div>
+	  </div>
+
+	  <div id="view-44" label="Locations" class="view">
+	    <div id="col_loc" ex:role="collection" ex:itemTypes="location"/>
+	    <div filtertype="file" ex:role="facet" ex:collectionID="col_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".file.ID"/>
+	    <div filtertype="page" ex:role="facet" ex:collectionID="col_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+
+
+
+	    <div id="vp44" ex:role="viewPanel">
+
+<!--	      <div ex:role="view" ex:collectionID="collection_notepane"  /> -->
+
+
+
+	      <div ex:role="view" ex:collectionID="col_loc" />
+
+
+<div ex:role="lens" class="loc-lens" ex:itemTypes="location"  ex:id_item-content=".ID" onclick="NB.pers.on_note(event)"   >
+	     <!-- <span ex:content=".top"/> -->
+	      <div ex:content="!location"><div  ex:id_item-content=".ID" class="note-lens">
+  <span class="created" ex:content=".created"/>
+	      <span class="email" ex:content=".email"/>
+	      <br/>
+	      <span class="body" ex:content=".body"/>
+</div>
+
+</div>
+	  </div>
+
+
+</div>
+</div>
+	</div>
+
+
+
+
+	<div class="separator" orientation="vertical" end="227px"/>
+	<div id="viewport3">
+	  <div id="view-5" label="Details"><p>No object Selected</p>
+
+	  </div>
+          <div id="view-7" label="Notepane">
+	    <div filtertype="file" ex:role="facet" ex:collectionID="collection_notepane" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".file.ID"/>
+	    <div filtertype="page" ex:role="facet" ex:collectionID="collection_notepane" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+
+
+	    <div id="collection_notepane" ex:role="collection" ex:itemTypes="note"/>
+
+ <div filtertype="file" ex:role="facet" ex:collectionID="collection_notepane_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".id_source"/> 
+	    <div filtertype="page" ex:role="facet" ex:collectionID="collection_notepane_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+
+
+	    <div id="collection_notepane_loc" ex:role="collection" ex:itemTypes="location"/>
+
+
+
+
+
+
+
+	    <div id="viewpanel_notepane" ex:role="viewPanel">
+<!--	      <div ex:role="view" ex:collectionID="collection_notepane" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" /> -->
+<div ex:role="view" ex:collectionID="collection_notepane_loc" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />
+	    </div>
+		
+<!--<div ex:role="lens" class="location-lens" ex:itemTypes="location"  ex:id_item-content=".ID" onclick="NB.pers.on_note(event)"   >-->
+<div ex:role="lens" class="location-lens" ex:itemTypes="location"  ex:id_item-content=".ID">
+
+<!--	      <span ex:content=".top"/> -->
+	      <div ex:content="!location"><div  ex:id_item-content=".ID" class="note-lens"  >
+  <span class="created" ex:content=".created"/>
+	      <span class="email" ex:content=".email"/>
+	      <br/>
+	      <span class="body" ex:content=".body"/>
+</div>
+
+</div>
+	  </div>
+
+<!--	    <div ex:role="lens" class="note-lens" ex:itemTypes="note"  ex:id_item-content=".ID" onclick="NB.pers.on_note(event)"  > -->
+	    <div ex:role="lens" class="note-lens" ex:itemTypes="note"  ex:id_item-content=".ID"  ex:signed-content=".signed" ex:id_type-content=".id_type">
+
+	      <span class="created" ex:content=".created"/>
+	      <span class="email" ex:content=".email"/>
+	      <br/>
+	      <span class="body" ex:content=".body"/>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+    <div id="util_windows">
+      <!--	  <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Channel" ex:expression=".ensemble.name"/>  -->
+      <div class="queries">
+	<div  ex:role="facet" ex:collectionID="collection_notes" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".file.ID"/>
+	<div  ex:role="facet" ex:collectionID="collection_notes" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+
+	<div id="collection_notes" ex:role="collection" ex:itemTypes="note"/>
+      </div>
+      <div id="obs-1"/>
+      <div id="user_settings" email="<!--$(EMAIL)-->" password="<!--$(PASSWORD)-->"/>
+    </div>
+  </body>
+</html>
+

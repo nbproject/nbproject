@@ -1,0 +1,18 @@
+Dear {{contact}},
+You just got an invitation to the NB channel '{{name}}'
+Channel Description: {{description}}
+
+To accept this invitation please visit {{link}} 
+{% if password %}
+To login to NB after this time, please use the credentials below:
+email:    {{email}}
+password: {{password}}
+{% endif %}
+{% if msg_perso %}
+The administrator of {{name}} has sent you the message below:
+{{msg_perso}}
+{% endif %}
+
+NB is a cyber-community where users can write and share annotations on PDF documents. 
+Happy Annotating !  
+The NB/Haystack Team - http://groups.csail.mit.edu/haystack

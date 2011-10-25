@@ -1,0 +1,10 @@
+Dear NB Administrator, 
+
+The following PDF conversion process(es) on the {{hostname}} server haven't started for a while. If you think that this isn't normal, please check the processing queue, and clear it if necessary, so that new PDF documents can be processed. 
+
+{% for o in objs %}
+File {{o.source.title}} (id={{o.source.id}}) was submitted on: {{o.submitted}}
+{% endfor %}
+
+Dutifully yours,
+NBNB  -  the NB Notification Bot

@@ -1,0 +1,41 @@
+<!--
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Foo...</title>
+
+    <!-- jstree trial -->
+        <script type="application/javascript;version=1.7" src="jsTree/_lib/jquery.js"> </script>
+        <script type="application/javascript;version=1.7" src="jsTree/_lib/css.js"></script> 
+        <script type="application/javascript;version=1.7" src="jsTree/source/tree_component.js"></script> 
+	<link rel="stylesheet" type="text/css" href="jsTree/source/tree_component.css" ></link>
+
+
+    <script> 
+      $(document).ready(function(){
+
+    $("#demo2").tree({
+	    data  : {
+		type  : "json",
+		    json  : [ 
+			     { attributes: { id : "pjson_1" }, state: "open", data: "Root node 1", children : [
+													       { attributes: { id : "pjson_2" }, data: { title : "Custom icon", icon : "../media/images/ok.png" } },
+													       { attributes: { id : "pjson_3" }, data: "Child node 2" },
+													       { attributes: { id : "pjson_4" }, data: "Some other child node" }
+													       ]}, 
+			     { attributes: { id : "pjson_5" }, data: "Root node 2" } 
+			      ]
+		    }
+	});
+      });
+    </script>
+  </head>
+  <body>
+here's a tree
+<div id="demo2"></div>
+  </body>
+</html>
+

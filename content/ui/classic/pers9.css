@@ -1,0 +1,54 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+@import "/data/css/lenses1.css";
+body{
+ font-family: helvetica,arial;
+}
+
+#facets, #searchbar{
+display: none;
+}
+
+#util_windows{
+display: none;
+}
+
+.username{
+color:#333300;
+font-weight:bold;
+}
+
+#login_reminder{
+font-style:italic;
+font-size: small;
+}
+
+#TC{
+margin-top: 10px;
+background-color:   #FFFFFF;
+border: thin solid #EEEED5;
+}
+
+.button{
+cursor: pointer;
+width: 30px;
+height: 30px;
+margin: 0px 10px 0px 0px !important;
+background-repeat: no-repeat;
+padding: 3px !important;
+background-image: url(/data/icons/png/empty_button_30.png);
+float: left;
+}
+
+.titlebar{
+margin-top: 20px !important;
+min-height: 20px;
+}
+
+.button:hover{
+background-image: url(/data/icons/png/empty_button_selected_30.png);
+}

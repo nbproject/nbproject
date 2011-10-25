@@ -1,0 +1,59 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>NB Password Reminder</title>
+    <link rel="stylesheet" type="text/css" href="login5.css" />
+    <link rel="stylesheet" type="text/css" href="lost1.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <!--    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> -->
+    <script type="application/javascript;version=1.7" src="/content/compat/api.js"></script>
+    <script type="application/javascript;version=1.7" src="login.js"></script>
+    <script type="application/javascript;version=1.7" src="lost1.js"></script> 
+  </head>
+  <body>
+    <div align="center">
+      <table id="header" class="patron">
+	<tr class="row">
+	  <td>
+	    <a href="/">
+	      <div id="logo" >
+		<img border="0" alt="NB" src="/content/data/icons/png/logo2_48.png"/>
+	      </div>
+	    </a>
+	  </td>
+	  <td>
+	    <div class="navbar bulle" >
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py">About</a>
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py?a=news">News</a>
+	      <a href="http://people.csail.mit.edu/sacha/nb/tut-latest/">Tutorial</a>
+	      <a href="http://scripts.mit.edu/~sacha/nb/main.py?a=faq">FAQ</a>
+	      <a href="http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">Contact Us</a>
+	    </div>
+
+	  </td>
+	</tr>
+      </table>
+      
+      <table id="main">
+	<tr class="row">
+	  <td>
+	    <div class="section" id="form1" label="Lost Password">
+	      <table>
+		<tr><td>Your email</td><td><input type="text" id="email" /></td></tr>
+	      </table>
+	      <div align="center">
+		<button onclick="NB.lost.onLostButton()" >Send me a password reminder</button> 
+		<div class="error-msg"> Sorry, but <span class="email"></span> is not an valid <span class="n">n</span><span class="b">b</span> user. Please enter an email that corresponds to a valid user name</div>
+	      </div>
+	    </div>
+	    
+	    <div class="section" id="success" label="Password reminder Sent !" >
+	      An password reminder has been sent to:  <span class="email"></span><br/> <span>If you don't see it in a few moments, please check your <b>Spam Folder</b> for messages from <b>NB Notifications</b>.</span> 
+	    </div>
+	  </td>
+	</tr>
+      </table>
+      <div id="credits">  <a href="/"><span class="n">n</span><span class="b">b</span></a> is a project of the  <a href="http://groups.csail.mit.edu/haystack">Haystack</a> Group at <a href="http://web.mit.edu">MIT</a> and currently requires <a href="http://www.mozilla.com/en-US/firefox/personal.html"> <img src="/content/data/icons/png/firefox_20.png" border="0"/> Firefox</a> <a style="margin-left: 10px" href="http://www.twitter.com/planet_nb">Follow us on <img  border="0" style="position: relative; top: 8px" src="http://twitter-badges.s3.amazonaws.com/twitter-b.png" alt="Follow planet_nb on Twitter"/></a>
+      </div>
+    </div>
+  </body>
+</html>

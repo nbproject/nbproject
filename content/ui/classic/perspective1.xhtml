@@ -1,0 +1,96 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>jQuery Perspective demo</title>
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script> 
+
+    <!-- homemade HTTP server version (twisted)-->
+    <link type="text/css" href="/modules/ui.viewport.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/ui.perspective.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.view.css" rel="stylesheet" />
+
+    <style><![CDATA[
+html, body, #pers1{
+padding:0px;
+margin: 0px;
+width: 100%;
+height: 100%;
+overflow: hidden;
+ font-family: Tahoma, Helvetica,arial, sans-serif;
+ font-size: small;
+}
+#pers1 div.ui-widget-content { 
+padding:0; 
+}
+#pers1 div.ui-tabs{
+border: none;
+}     
+#pers1 .ui-tabs-nav li a {
+padding: 3px 14px 3px 5px;
+}     
+#view-5, #view-1, #view-2{
+min-width: 210px;
+}
+#util_windows{
+display: none;
+}
+
+
+
+
+]]>
+      
+    </style>
+
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.viewport.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.view.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.perspective.js"/> 
+    
+    <!-- regular apache-->
+    <!--    <script type="application/javascript;version=1.7" src="./ui.viewport.js"/> -->
+
+    <script type="application/javascript;version=1.7"> <![CDATA[
+     $(document).ready(function(){
+    $("#pers1").perspective();
+    $("#viewport1, #viewport2, #viewport3, #viewport4").viewport({maxAppendTo:"#pers1", dock_visible: false} );
+});
+    ]]>
+    </script>
+
+  </head>
+  <body>
+    <div id="pers1">
+      <div id="viewport1" >
+	<div id="view-1" label="Hierarchy"><p>This is View 1</p></div>
+	<div id="view-2" label="Thumbnails">THUMBNAILS</div>
+      </div>
+      <div class="separator" orientation="vertical"/>
+      <div class="pers-protection">
+	<div class="pers-protection">
+	  <div id="viewport2">
+            <div id="view-4" label="Home">
+	      <p>This is View 4</p>
+	    </div>
+	  </div>
+	  <div class="separator" orientation="horizontal" end="200px"/>
+	  <div id="viewport4">
+            <div id="view-3" label="Console">
+	      <p>This is a console</p>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="separator" orientation="vertical" end="220px"/>
+	<div id="viewport3">
+	  <div id="view-5" label="Details"><p>No object Selected</p></div>
+          <div id="view-6" label="Notepane">
+	    <p>This is View 6</p>
+	    <p>This is another paragraph in View 6.</p>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </body>
+</html>
+

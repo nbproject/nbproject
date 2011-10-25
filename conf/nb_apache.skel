@@ -1,0 +1,21 @@
+NameVirtualHost *:NB_HTTP_PORT
+
+<VirtualHost *:NB_HTTP_PORT>
+
+ServerName NB_SERVERNAME
+
+Alias /content/ NB_CONTENTDIR/
+
+<Directory NB_CONTENTDIR>
+Order deny,allow
+Allow from all
+</Directory>
+
+WSGIScriptAlias / NB_WSGIDIR/django.wsgi
+
+<Directory NB_WSGIDIR/>
+Order allow,deny
+Allow from all
+</Directory>
+
+</VirtualHost>

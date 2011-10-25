@@ -1,0 +1,22 @@
+<div ex:content="!location"><div  ex:id_item-content=".ID" class="note-lens"  >
+    <span class="created" ex:content=".created"/>
+    <span ID="author_email" ex:class-subcontent="email{{.signed}} admin{{.admin}}" ex:content=".email" ex:title-subcontent="Signed: {{.sgn}}"/>
+    <span class="optionmenu">+</span>
+    <div align="right" class="note-type">
+      <span ex:if-exists=".gradee.v" class="my-student" title="This student is in my section" >section</span>
+      <div ex:select=".p">
+		<img ex:case="1" src="/content/data/icons/png/approved.png" title="This has been approved by the staff as an authoritative answer"/>
+      </div>
+      <span ex:class-subcontent="note-indicator marked{{!comment.answerplease}}"> 
+	<span ex:content=".n_answerplease"/>
+	<img src="/content/data/icons/png/question_16.png"/>
+      </span>
+      <span ex:class-subcontent="note-indicator marked{{!comment.subscribe}}"> 
+	<span ex:content=".n_subscribe"/>
+	<img src="/content/data/icons/png/cloudy_16.png"/>
+      </span>
+      <img ex:src-subcontent="/content/data/icons/png/type{{.id_type}}_16.png"/>
+    </div>
+    <span class="body" ex:content=".body"/>
+  </div>
+</div>

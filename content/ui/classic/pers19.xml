@@ -1,0 +1,296 @@
+<!--
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:ex="http://simile.mit.edu/exhibit" >
+  <head>
+    <title>NB 2.0 (<!--$(FULLNAME)-->)</title>
+
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css" rel="stylesheet" />
+
+
+    <link type="text/css" href="/modules/ui.viewport.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/ui.perspective.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.view.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.thumbnailView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.pollView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.docView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.ensembleView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.adminView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.mynotesView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.notepaneView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.fileView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.collectionView.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.drawable.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/dev/ui.editor.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/contextmenu/jquery.contextMenu.css" rel="stylesheet" />
+    <link type="text/css" href="/modules/tablesorter/style.css" rel="stylesheet" />
+
+    <link type="text/css" href="/pdf/pers19.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.viewport.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.view.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.perspective.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.thumbnailView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.pollView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.noteObserver.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.docView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.ensembleView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.adminView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.mynotesView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.notepaneView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.fileView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.collectionView.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.drawable.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/ui.editor.js"/> 
+    <script type="text/javascript"		      src="/modules/tablesorter/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript"		      src="/modules/contextmenu/jquery.contextMenu.js"></script>
+    <script type="text/javascript"                    src="/modules/newExhibit/trunk/src/webapp/api/exhibit-api.js?autoCreate=false"   ></script> 
+
+    <!---    <script type="text/javascript"                    src="/modules/newExhibit/trunk/src/webapp/api/exhibit-api.js?autoCreate=false&amp;exhibit-use-local-resources=true"   ></script> -->
+
+
+    <!-- pdf stuff -->
+
+    <script type="application/javascript;version=1.7" src="/modules/Module.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/NB.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/auth.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/dom.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/rpc.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/observer.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/mvc.js"/>
+    <script type="application/javascript;version=1.7" src="/modules/dev/models.js"/>
+    <script type="application/javascript;version=1.7" src="/pdf/pers19.js"/> 
+    <script type="application/javascript;version=1.7" src="/modules/dev/headless-facet.js"/> 
+
+
+  </head>
+  <body>
+    <ul id="contextmenu_notepane" class="contextMenu"><li class="edit"><a href="#edit">Edit...</a></li><li class="reply"><a href="#reply">Reply...</a></li><li class="subscribe separator"><a href="#subscribe">Unclear...</a></li><li class="unsubscribe"><a href="#unsubscribe">Clear now...</a></li><li class="answerplease separator"><a href="#answerplease">Answer please</a></li><li class="answered"><a href="#answered">Answered !</a></li><li class="hide separator"><a href="#hide">Hide...</a></li><li class="delete separator"><a href="#delete">Delete...</a></li></ul>
+
+    <div id="pers1">
+      <div id="viewport1" >
+	<div id="view-92" label="Files" closable="false">
+	  <div class="panel controls">
+	    <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Class" ex:collapsible="true" ex:collapsed="true" ex:expression=".ensemble.name"/>
+	  </div>
+	  <div id="collection1" ex:role="collection" ex:itemTypes="file"/>
+	  <div class="panel files">
+
+	    <div id="viewpanel_files" ex:role="viewPanel">
+	      <div ex:role="view" ex:collectionID="collection1" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" ex:showAll="true" />
+	    </div>		
+	  </div>
+	  <div ex:role="lens" class="file-lens" ex:itemTypes="file"  ex:id_item-content=".ID" onclick="NB.pers.on_file(event)"  >
+	    <span ex:content=".title"/>
+	  </div>
+	</div>
+	<div id="view-10" label="Nav" closable="false" >THUMBNAILS</div>
+      </div>
+      <div class="separator" orientation="vertical"/>
+      <div class="pers-protection">
+	<div id="viewport2">
+	  <div id="view-42" label="Home" class="view" closable="false" >
+	    <div class="home-header"><span class="welcome">Welcome, <!--$(FULLNAME)--> !</span> <span class="home-options"><a href="javascript:NB.pers.settings_menu()">Settings</a><a href="javascript:NB.pers.admin_menu()" id="adminlink" style="display: none">Admin</a><a target="_blank" href="http://people.csail.mit.edu/sacha/nb/tut-latest">Tutorial</a> <a target="_blank" href="?t=form1">Feedback</a> <a href="javascript:NB.pers.logout()">Log out</a></span></div>
+	    <div class="section" id="mystats" label="At a glance..."> 
+	      <table>
+		<tr align="center">
+		  <td>
+		    <div class="announcer" align="center" id="announcer_newauth" title="Discussions to which you participated  that have new replies" onclick="NB.pers.myNotes('newauth')" >
+		      <span class="announcer-text" id="mystats_newauth">0</span>
+		      <br/>
+		      new
+		    </div>
+		    <div>out of  <a  title="Discussions to which you participated" class="comments-number" id="mystats_auth" href="javascript:NB.pers.myNotes('auth')">0</a></div>
+		    <div class="group-comments"> <a class="comments-number" title="New discussions from classmates" id="mystats_newauth_group" href="javascript:NB.pers.myNotes('newauth_group')">0</a> out of <a  title="Discussions from classmates"  class="comments-number" classmates="All discussions from classmates" id="mystats_auth_group" href="javascript:NB.pers.myNotes('auth_group')">0</a>  </div>
+		  </td>
+		  <td>
+		    <div class="announcer" align="center" id="announcer_newquestion" title="Discussions to which you requested a reply that have new replies"  onclick="NB.pers.myNotes('newquestion')">
+		      <span class="announcer-text" id="mystats_newquestion">0</span>
+		      <br/>
+		      new
+		    </div>
+		    <div>out of  <a  title="Discussions to which you requested a reply" class="comments-number" id="mystats_question" href="javascript:NB.pers.myNotes('question')">0</a></div>
+		    <div class="group-comments"> <a class="comments-number" title="Discussions to which classmates have requested a reply that have new replies" id="mystats_newquestion_group" href="javascript:NB.pers.myNotes('newquestion_group')">0</a> out of <a class="comments-number" title="Discussions to which classmates have requested a reply" id="mystats_question_group" href="javascript:NB.pers.myNotes('question_group')">0</a>  </div>
+
+		  </td>
+		  <td>
+		    <div class="announcer" align="center" id="announcer_newunclear" title="Discussions for which you've marked something as unclear that have new replies"  onclick="NB.pers.myNotes('newunclear')">
+		      <span class="announcer-text" id="mystats_newunclear">0</span>
+		      <br/>
+		      new
+		    </div>
+		    <div>out of  <a title="Discussions for which you've marked something as unclear" class="comments-number" id="mystats_unclear" href="javascript:NB.pers.myNotes('unclear')">0</a></div>
+		    <div class="group-comments"> <a class="comments-number" title="Discussions for which classmates have marked something as unclear that have new replies" id="mystats_newunclear_group" href="javascript:NB.pers.myNotes('newunclear_group')">0</a> out of <a class="comments-number" title="Discussions for which classmates have marked something as unclear" id="mystats_unclear_group" href="javascript:NB.pers.myNotes('unclear_group')">0</a>  </div>
+		  </td>
+		</tr>
+	      </table>
+	      <!--
+		  <span>  You've written <a id="mystats_numnotes" href="javascript:NB.pers.myNotes()">0</a> notes using NB... </span>
+		  <br/>
+		  <span> There's been <a id="mystats_newauth" href="javascript:NB.pers.myNotes()">0</a> new notes on discussions you've participated.  </span>
+		  -->
+	    </div>
+	    <div class="section" id="announcements" label="Annoucements"> 
+	      <table>
+ <tr><td>Dec 9th 2009</td><td><b style="color: #FF3333">New !</b> We want to know how to improve NB ! You can help us by responding to the polls located on the right of this announcement... For more informations please check <a target="_blank" href="http://people.csail.mit.edu/sacha/nb/rules-latest">the details</a></td></tr>
+		  <tr><td>Dec 2nd 2009</td><td><b style="color: #FF3333">New !</b> Staff members can now approve comments. Comments that have been approved by staff are marked by the following: <img src="/data/icons/png/approved.png"/></td></tr>
+	
+	      </table>
+	    </div>
+	    <div class="section" id="assignments" label="Assignments" style="display: none"> 
+	      <div id="collection3" ex:role="collection" ex:itemTypes="assignment"/>
+	      <div id="vpanel3" ex:role="viewPanel">	      
+		<div ex:role="view"  ex:viewClass="Tabular" ex:columns=".duedate, .file.ensemble.name, concat('&lt;a href=\'javascript:NB.pers.on_file(null, ',.file.ID, ')\'&gt;',.file.title, '&lt;/a&gt;'), '3 new messages'"  ex:columnLabels="due date, Class, File, Description" ex:columnFormats="list, list, list" ex:collectionID="collection3" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="separator" orientation="vertical" end="227px"/>
+	<div id="viewport3">
+	  <div id="view-5" label="Polls" closable="false"><p>No object Selected</p>
+	  </div>
+          <div id="view-7" label="Notes" closable="false" >
+	    <div filtertype="file" ex:role="facet" ex:collectionID="collection_notepane_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".id_source"/> 
+	    <div filtertype="page" ex:role="facet" ex:collectionID="collection_notepane_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+	    <div id="collection_notepane_loc" ex:role="collection" ex:itemTypes="location"/>
+	    <div id="viewpanel_notepane" ex:role="viewPanel">
+	      <div ex:role="view" ex:collectionID="collection_notepane_loc" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" ex:showAll="true"/>
+	    </div>
+	    
+	    <!--<div ex:role="lens" class="location-lens" ex:itemTypes="location"  ex:id_item-content=".ID" onclick="NB.pers.on_note(event)"   >-->
+	    <div ex:role="lens" class="location-lens" ex:itemTypes="location"  ex:id_item-content=".ID">
+	      <div ex:select=".page">
+		<img ex:case="0" src="/data/icons/png/pen_24.png" title="This is a discussion about the whole document"/>
+	      </div>
+
+	      
+	      <!--$(INCLUDE:note_lens_1.xml)-->
+
+	    </div>
+
+
+	    <div ex:role="lens" class="note-lens" ex:itemTypes="note"  ex:id_item-content=".ID"  ex:signed-content=".signed" ex:id_type-content=".id_type">
+
+	      <span class="created" ex:content=".created"/>
+	      <span class="email" ex:content=".email"/>
+	      <br/>
+	      <span class="body" ex:content=".body"/>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+    <div class="util_windows">
+      <!--	  <div ex:role="facet" ex:collectionID="collection1"  ex:facetLabel="Channel" ex:expression=".ensemble.name"/>  -->
+      <div class="queries">
+	<div id="col_loc" ex:role="collection" ex:itemTypes="location"/>
+	<div filtertype="file" ex:role="facet" ex:collectionID="col_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="File" ex:expression=".file.ID"/>
+	<div filtertype="page" ex:role="facet" ex:collectionID="col_loc" ex:facetClass="HeadlessFacet" ex:facetLabel="Page" ex:expression=".page"/>
+	<div ex:role="view" ex:collectionID="col_loc" />
+      </div>
+
+      <iframe id="upload_target" name="upload_target" src="" style="display: none"></iframe>
+      <div id="add_file_dialog" >
+	<form id="file_upload_form" target="upload_target" method="post" enctype="multipart/form-data" action="SET_IN_JS_FILE">
+
+	  <table>
+	    <tr>
+	      <td>Group</td>
+	      <td> <select id="add_file_ensemble"/></td>
+	    </tr>
+	    <tr>
+	      <td>File</td>
+	      <td><input type="file" name="file" id="add_file_upload" /></td>
+	    </tr>
+	  </table>
+	</form>
+      </div>
+
+
+
+      <div id="invite_dialog">
+	<div>To access the following group  <select id="invite_dialog_ensemble"/></div>
+	<br/>
+	<span class="fixdialog" >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/>
+	<textarea id="invite_dialog_emails"  rows="5" cols="50"/>
+	<br/>
+	<input type="checkbox" id="invite_dialog_admin" style="padding-left: 20px"/> <label for="invite_dialog_admin">Grant administrative rights to these users</label>
+	<br/>
+	<br/>
+	<span class="fixdialog" ><em>Optional</em> Add a personal message (will appear on the invitation)</span>
+	<br/>
+	<textarea id="invite_dialog_msg"  rows="7" cols="50"/>
+
+      </div>
+	
+	<div id="obs-1"/>
+      <div id="user_settings" email="<!--$(EMAIL)-->" password="<!--$(PASSWORD)-->"/>
+      <div id="settings_panel">
+	<table>
+	  <tr style="display: none"><td>Password</td><td>New Password <input type="password" id="new_password1"/> Please Retype <input type="password" id="new_password2"/>  </td></tr>
+	  <tr><td>Email Notifications</td>
+	    <td>
+	      <table>
+		<tr><td>Notes that I wrote</td><td><select  class="settings_selector" id_item="email_confirmation_author" onchange="NB.pers.on_setting_change(event)"/></td></tr>
+		<tr><td>Replies to notes that I wrote</td><td><select class="settings_selector" id_item="email_confirmation_reply_author" onchange="NB.pers.on_setting_change(event)"/></td></tr>
+		<tr><td>Replies to notes that I marked <q>Answer please</q></td><td><select  class="settings_selector" id_item="email_confirmation_reply_answerplease" onchange="NB.pers.on_setting_change(event)" /></td></tr>
+		<tr><td>Replies to notes that I marked <q>Unclear</q></td><td><select  class="settings_selector" id_item="email_confirmation_reply_unclear" onchange="NB.pers.on_setting_change(event)" /></td></tr>
+	      </table>
+	    </td>
+	  </tr>
+
+	</table>
+      </div>
+      <div filtertype="ensemble" ex:role="facet" ex:selection="1" ex:collectionID="collection_ensemble" ex:facetClass="HeadlessFacet" ex:expression=".admin"/> 
+      <div id="collection_ensemble" ex:role="collection" ex:itemTypes="ensemble"/>
+      <div id="viewpanel_admin" ex:role="viewPanel">
+	<div ex:role="view" ex:collectionID="collection_ensemble" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />
+	<!--	<div ex:role="view"  ex:viewClass="Tabular" ex:columns=".duedate, .file.ensemble.name, concat('&lt;a href=\'javascript:NB.pers.on_file(null, ',.file.ID, ')\'&gt;',.file.title, '&lt;/a&gt;'), '3 new messages'"  ex:columnLabels="due date, Class, File, Description" ex:columnFormats="list, list, list" ex:collectionID="collection3" ex:showToolbox="false" ex:showSummary="false"  ex:showControls="false" />-->
+      </div>		
+      <div ex:role="lens" class="ensemble-lens" ex:itemTypes="ensemble"  ex:id_item-content=".ID" >
+	<span onclick="NB.pers.adminToggle(event)" class="admin_controls_ensemblename" ex:content=".name"/> 
+	<span class="admin_controls_ensemble">
+	    <a  class="adminview_col n0"  target="_blank"  ex:href-subcontent="/?t=p20&amp;view=newauth_admin&amp;id_ensemble={{.ID}}" ex:content="!stat_id_ensemble.unseen"/> 
+	    <span class="adminview_col n1" >new /</span> 
+	    <a target="_blank" class="adminview_col n2" ex:href-subcontent="/?t=p20&amp;view=auth_admin&amp;id_ensemble={{.ID}}"  ex:content="!stat_id_ensemble.total" /> 
+	    <a target="_blank"  class="adminview_col n3"  ex:href-subcontent="/?t=p20&amp;view=newauth_grader&amp;id_ensemble={{.ID}}"  ex:content="!stat_id_ensemble.unseen_g" /> 
+	    <span class="adminview_col n4">new /</span> 
+	    <a target="_blank"  class="adminview_col n5" ex:href-subcontent="/?t=p20&amp;view=auth_grader&amp;id_ensemble={{.ID}}"  ex:content="!stat_id_ensemble.total_g"/> 
+	    <span class="extra_links">
+<!--	    <a class="add_file" ex:href-subcontent="javascript:NB.pers.addFile({{.ID}})">Add</a> -->
+	    <a class="users" ex:href-subcontent="javascript:NB.pers.ensemble_menu(null, {{.ID}})">Details</a>
+</span>
+
+	</span>
+	<ul ex:content="!ensemble" class="admin-files">
+	  <li class="file_sublens">
+	    <span ex:content=".title"/>
+	    <span class="admin_controls_ensemble">
+		<a    class="adminview_col n0" target="_blank"  ex:href-subcontent="/?t=p20&amp;view=newauth_admin&amp;id_ensemble={{.ensemble.ID}}&amp;id_source={{.ID}}" ex:content="!stat_id_file.unseen"/> 
+		<span class="adminview_col n1">new /</span> 
+		<a    class="adminview_col n2" target="_blank"  ex:href-subcontent="/?t=p20&amp;view=auth_admin&amp;id_ensemble={{.ensemble.ID}}&amp;id_source={{.ID}}" ex:content="!stat_id_file.total" /> 
+		<a    class="adminview_col n3" target="_blank"  ex:href-subcontent="/?t=p20&amp;view=newauth_grader&amp;id_ensemble={{.ensemble.ID}}&amp;id_source={{.ID}}" ex:content="!stat_id_file.unseen_g" /> 
+		<span class="adminview_col n4">new /</span> 
+		<a    class="adminview_col n5" target="_blank"  ex:href-subcontent="/?t=p20&amp;view=auth_grader&amp;id_ensemble={{.ensemble.ID}}&amp;id_source={{.ID}}" ex:content="!stat_id_file.total_g"/>
+	    </span>
+
+	</li></ul>
+      </div>
+
+      <div id="grader_menu"> 
+	<span>TOTAL</span>
+	    <span class="admin_controls_ensemble">
+	      
+	<a class="adminview_col n3" label="New (i.e. unseen) notes from students" id="mystats_newauth_grader" href="javascript:NB.pers.myNotes('newauth_grader')">0</a>		
+	<span class="adminview_col n4">new /</span> 
+	<a class="adminview_col n5" label="Notes from students" id="mystats_auth_grader" href="javascript:NB.pers.myNotes('auth_grader')">0</a>
+	</span>
+      </div>
+    </div>
+  </body>
+</html>
+

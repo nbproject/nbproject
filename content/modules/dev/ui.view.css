@@ -1,0 +1,43 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+div.view > .panel{
+min-height: 32px;
+border: thin solid #D0D0D0;
+margin: 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+background-color: #E6E6E6;
+}
+
+div.outerview{
+position: relative;
+}
+
+div.view{
+width: 100%;
+height: 100%;
+border: thin solid #ffffff;
+}
+
+div.active-view{
+border: thin solid #ffc0a0 !important;
+}
+
+div.ui-view-popup{
+-moz-user-select:none;
+-webkit-user-select:none;
+background-color:#AACCFF;
+border:thin solid #7799AA;
+bottom:30px;
+font-size:large;
+min-height:40px;
+min-width:320px;
+opacity:0;
+padding:10px;
+position:fixed;
+right:30px;
+z-index:100;
+}

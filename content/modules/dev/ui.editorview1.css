@@ -1,0 +1,85 @@
+/*
+Author: Sacha Zyto (sacha@csail.mit.edu) 
+License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+
+div.editor{
+overflow-y: auto;
+background-color: #F0F0F0;
+padding: 5px;
+}
+
+
+div.editor-header{
+color: #a0a0a0;
+}
+
+
+td.tablecontrols{
+border: thin solid #C0C0C0;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+
+}
+
+div.editor div.button{
+border: thin solid #C0C0C0;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+
+padding: 3px 0px 3px 35px;
+min-height: 32px;
+opacity: 0.8;
+background-repeat:no-repeat;
+}
+
+div.editor div.button:hover{
+opacity: 1.0;
+background-color: #FFFFC0;
+}
+
+div.editor div.button[action=save]{
+background-image:url(/content/data/icons/png/ok_32.png);
+font-weight: bold;
+font-size: large;
+}
+
+div.editor div.button[action=discard]{
+background-image:url(/content/data/icons/png/discard_24.png);
+min-height: 32px;
+padding-left: 27px;
+margin-right: 20px;
+}
+
+div.editor table.editorcontrols{
+width: 100%;
+margin: 5px 0px 5px 0px;
+}
+
+
+div.editor span.editor-answerplease{
+background-image:url(/content/data/icons/png/question_16.png);
+background-repeat: no-repeat;
+padding-left: 18px;
+}
+
+div.editor select{
+margin-right: 10px;
+}
+
+div.editor span.replyrequested{
+float: right;
+margin-right: 35px;
+}
+
+div.editor button[action=save]{
+width: 90%;
+min-height: 50px;
+margin-left: 15px;
+}
+
+#signoption{
+padding: 5px 5px 10px 10px;
+}

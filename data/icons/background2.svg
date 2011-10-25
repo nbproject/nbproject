@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   width="480"
+   height="800"
+   viewBox="0 0 1 1.67"
+   id="svg2">
+  <defs
+     id="defs7">
+    <linearGradient
+       id="linearGradient3154">
+      <stop
+         id="stop3156"
+         style="stop-color:#141459;stop-opacity:0.90196079"
+         offset="0" />
+      <stop
+         id="stop3164"
+         style="stop-color:#727295;stop-opacity:0.78431374"
+         offset="0.37493199" />
+      <stop
+         id="stop3158"
+         style="stop-color:#aaeef0;stop-opacity:0.58823532"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="0.65259576"
+       cy="1.2768621"
+       r="0.5"
+       fx="0.65259576"
+       fy="1.2768621"
+       id="radialGradient3162"
+       xlink:href="#linearGradient3154"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.5634176,0.9109069,-2.4320319,4.1741712,1.8177012,-4.176542)"
+       spreadMethod="pad" />
+  </defs>
+  <rect
+     width="1"
+     height="1.67"
+     rx="0.12"
+     ry="0.2"
+     x="0"
+     y="0"
+     id="rect4"
+     style="fill:url(#radialGradient3162);fill-opacity:1" />
+</svg>

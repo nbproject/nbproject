@@ -1,0 +1,57 @@
+{% extends "web/base.html" %}
+{% block title %}About NB{% endblock %}
+{% block style %}
+span.n {
+    background-color: #A0A0DD;
+    color: #F9F650;
+    font-family: Trebuchet MS;
+    padding-left: 0.2em;
+}
+span.b {
+    background-color: #F9F650;
+    color: #A0A0DD;
+    font-family: Trebuchet MS;
+    padding-right: 0.2em;
+}
+{% endblock %}
+{% block content %}
+
+<h1>About  <span class="n">n</span><span class="b">b</span></h1>
+<p>
+  <a href="/"> <span class="n">n</span><span class="b">b</span></a> is an annotation taking tool developed by the 
+  <a href="http://groups.csail.mit.edu/haystack">Haystack</a> Group  at <a href="http://csail.mit.edu">CSAIL</a>. Students and Faculty can use  
+  <a href="/"><span class="n">n</span><span class="b">b</span></a> to annotate arbitrary PDF files online, in a collaborative fashion.
+
+</p>
+
+<p>A demo being worth a thousand words, you can try <span class="n">n</span><span class="b">b</span> right now, 
+	using our <a href="/f/338?ckey=9M1PUyu9HxBLYXSCwMWmr6mn7pMhnmpjGrjfmLQtmlzukQpcDN">Sandbox</a></p>
+
+<p>  <span class="n">n</span><span class="b">b</span></a>  has been used in real classes at MIT since February 2009, and has undergone three major development cycles.
+	<!-- Hence, the current version is quite usable and stable.--> Still, active research and development are being carried out by the <span class="n">n</span><span class="b">b</span></a> team.
+</p>
+
+<p>If you're a faculty member and that you'd like to incorporate <span class="n">n</span><span class="b">b</span> in your teaching, please give it a try by <a href="/newsite"> creating a sample site </a>.  
+	
+	</p>
+
+<p>
+if you have questions or if you've found a bug, or have a feature request: Please <a href="http://spreadsheets.google.com/viewform?hl=en&formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">contact us</a> 
+
+</p>
+
+
+<p>
+  The following video shows how <a href="/"> <span class="n">n</span><span class="b">b</span></a> can be used in a typical class environment. [Fall 2011: This video depicts a past version of <span class="n">n</span><span class="b">b</span>... We will update a more recent video as soon as possible] 
+</p>
+
+<object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object>
+
+<p>
+  <a href="http://vimeo.com/7370219">A Guided Tour of NB</a> 
+
+</p>
+
+
+
+{% endblock %}
