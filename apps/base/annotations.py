@@ -191,7 +191,7 @@ def get_ensembles(uid, payload):
         "allow_guest": "ensemble.allow_guest", 
         "allow_download": "ensemble.allow_download", 
          }
-    my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid)
+    my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid, deleted=False)
     if id is not None: 
         my_memberships = my_memberships.filter(ensemble__id=id)
     return UR.qs2dict(my_memberships, names, "ID")
@@ -203,7 +203,7 @@ def get_folders(uid, payload):
         "id_parent": "parent_id",
         "id_ensemble": "ensemble_id",
         "name": None}
-    my_memberships = M.Membership.objects.filter(user__id=uid)
+    my_memberships = M.Membership.objects.filter(user__id=uid, deleted=False)
     my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
     my_folders = M.Folder.objects.filter(ensemble__in=my_ensembles)
     if id is not None: 
@@ -281,7 +281,7 @@ def get_guestfileinfo(id_source):
 def get_files(uid, payload):
     id = payload["id"] if "id" in payload else None
     names = __NAMES["files2"]
-    my_memberships = M.Membership.objects.filter(user__id=uid)
+    my_memberships = M.Membership.objects.filter(user__id=uid,  deleted=False)
     my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
     my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False) 
     if id is not None:

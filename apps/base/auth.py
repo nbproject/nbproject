@@ -39,7 +39,7 @@ def canReadFile(uid, id_source):
         id_source = int(id_source)
     except ValueError:
         return False
-    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid)
+    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False)
     return len(o)>0 or canGuestReadFile(id_source)
 
 def canDownloadPDF(uid, id_source):
