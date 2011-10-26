@@ -1,5 +1,3 @@
-#use the following to configure the 'regular' server: 
-#SRCDIR		= servers
 #use the following to configure the 'nb3' server: 
 SRCDIR		= apps
 
@@ -46,12 +44,13 @@ HOME_PROD	= $(ROOT_PROD)/var/local/home/sacha
 CONFDIR_PROD	= $(HOME_PROD)/$(NB)/conf
 DEFAULT_FILE	= defaults.json
 DEFAULT_PROD	= defaults.json.prod
+COMPILED_DIR = content/compiled
 API_ROOT	= content/modules
-API_DEST	= content/compiled/api.js
+API_DEST	= $(COMPILED_DIR)/api.js
 #API_FILES	= Module.js NB.js auth.js dom.js rpc.js observer.js mvc.js dev/models.js 
 API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
 APIDEV_ROOT	= content/modules
-APIDEV_DEST	= content/compiled/apidev.js
+APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
 APIDEV_FILES	= Module.js NB.js auth.js dom.js mvc.js dev/models2.js 
 
 compat: api
@@ -125,11 +124,14 @@ prod: 	tgz
 	echo "You can kill the current daemon and run a new one now: sudo nohup ./runserver "
 
 
-api: 	
+api:
+	mkdir -p $(COMPILED_DIR)  	
 	echo '' > $(API_DEST)
 	for i in $(API_FILES); do cat $(API_ROOT)/$$i >> $(API_DEST) ; done
 
 apidev: 
+	mkdir -p $(COMPILED_DIR)
+	touch content/ui/admin/conf_local.js
 	echo '' > $(APIDEV_DEST)
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
 
