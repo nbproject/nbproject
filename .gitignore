@@ -1,0 +1,7 @@
+*.pyc
+.project
+.pydevproject
+apps/apache/django.wsgi
+apps/settings_credentials.py
+conf/nb_apache
+conf/nb_crontab
