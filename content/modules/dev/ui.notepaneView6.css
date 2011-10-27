@@ -23,6 +23,30 @@ div.notepaneView div.lens-odd{
 background-color: #f0f0f0;
 }
 
+div.notepaneView span.gradecontainer{
+padding-left: 20px;
+}
+
+
+div.notepaneView span.gradeitem{
+padding: 5px;
+font-size: medium; 
+background-color: #e0e0e0;
+border: thin solid #f0f0f0;
+color: #707070;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+cursor: pointer;
+}
+
+
+div.notepaneView span.gradeitem.selected{
+font-weight: bold; 
+background-color: #707070;
+color: #ffe0d0;
+}
+
+
 
 
 div.location-shortbody{

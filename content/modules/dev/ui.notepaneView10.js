@@ -223,7 +223,18 @@
 		    var meta = this._collection.meta;
 		    var user = m.o.user[meta.id_user];
 		    var file = m.o.file[meta.id_source];
-		    $("div.notepaneView-header", this.element).html("<div class='collectioninfo'><span class='standout'>"+$.E(user.firstname + " " + user.lastname)+"</span>'s notes on <span class='standout'>" +$.E(file.title)+"</span></div>");
+		    var header = $("div.notepaneView-header", this.element).html("<div class='collectioninfo'> <span class='standout'>"+$.E(user.firstname + " " + user.lastname)+"</span> on <span class='standout'>" +$.E(file.title)+"</span> <span class='gradecontainer'><span class='gradeitem' id_item='4'>A</span> <span class='gradeitem' id_item='3'>B</span> <span class='gradeitem' id_item='2'>C</span> <span class='gradeitem' id_item='1'>D</span> <span class='gradeitem' id_item='0'>F</span>   </span> </div>");
+		    var grade = m.get("grade", {id_user: meta.id_user, id_source:meta.id_source}).first();
+		    var f_grade_click = function(event){
+			$.concierge.get_component("set_grade_assignment")({grade: event.currentTarget.getAttribute("id_item"), id_user: meta.id_user, id_source: meta.id_source}, function(P){			    
+				m.add("grade", P.grades);
+				$.I("grade added");
+			    });
+		    };
+			if (grade != null){
+			    $("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
+			}
+			$("span.gradeitem", header).click(f_grade_click);
 		    var items = this._collection.items;
 		    
 		    var p = this._page;
@@ -272,7 +283,7 @@
 		    self._id_collection =  id_collection; 
 		    //		var id_source = $.concierge.get_state("file");
 		    //		self._id_source =  id_source ; 
-		    //model.register($.ui.view.prototype.get_adapter.call(this),  {location: null, seen: null});
+		    model.register($.ui.view.prototype.get_adapter.call(this),  {grade: null});
 		    //make placeholders for each page: 
 		    self._collection = $.concierge.get_component("get_collection")();
 		    var items = self._collection.items;
@@ -312,59 +323,9 @@
 		    }
 		}, 
 		update: function(action, payload, items_fieldname){
-		    if (action == "add" && items_fieldname=="location"){
-			var id_collection	= this._id_collection; 
-			var page		= this._page;
-			if (page == null || id_collection == null ){
-			    //initial rendering: Let's render the first page. We don't check the id_collection here since other documents will most likely have their page variable already set. 
-			    this._page =  1;
-			    this._pages = {};
-			    this._maxpage = 0;
-			    this._render();
-			    //TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
-			}
-			else{
-			    //send signal to redraw pages that needs to be redrawn: 
-			    var D		= payload.diff;
-			    var pages	= this._pages;
-			    var do_render_now = false;
-			    for (var i in D){
-				delete pages[D[i].page];
-				if (page == D[i].page){ 
-				    do_render_now = true;
-				}
-			    }
-			    if (do_render_now){
-				this._maxpage = 0;
-				this._render();//re-render now if al least one note on active page
-			    }
-			}
-		    }
-		    else if (action=="add" && items_fieldname=="seen" && this._rendered){
-			var D		= payload.diff;
-			var m		= this._model;
-			var i, loc;
-			var locs_done = {};
-			for (i in D){
-			    loc = m.get("location", {ID: D[i].id_location}).first();
-			    if (loc != null  && (!(loc.ID in locs_done))){
-				locs_done[loc.ID] = null;
-				$("div.location-lens[id_item="+loc.ID+"]",this.element).html(this._lens(loc));
-			    }
-			}		   
-		    }
-		    else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
-			var D		= payload.diff;
-			var pages_done	= {};
-			var i, page;
-			for (i in D){
-			    page = D[i].page;
-			    if (! (page in pages_done)){
-				pages_done[page] = null;
-				delete this._pages[page];
-				this._render_one(page);
-			    }
-			}
+		    if (action == "add" && items_fieldname == "grade" && this._rendered){
+			$.D("TODO: grade on notepane");
+			this._render();
 		    }
 		}	
 	    });

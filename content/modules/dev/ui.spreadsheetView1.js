@@ -21,6 +21,7 @@
 		self._selection = [1,1]; //[row, column]
 		self._files = null;
 		self._users = null;
+		self._rendered = false;
 	    },
 	    _recenterMaybe: function(sel){
 		var self = this;
@@ -73,13 +74,14 @@
 		}
 	    },
 	    update: function(action, payload, items_fieldname){
-		if (action == "add" && items_fieldname=="grade"){
+		if (action == "add" && items_fieldname=="grade" && this._rendered){
 		    $.D("TODO re_render");
+		    this._render()
 		}
 	    },
 	    set_model: function(model, init_event){
 		var self=this;
-		model.register($.ui.view.prototype.get_adapter.call(this),  {});
+		model.register($.ui.view.prototype.get_adapter.call(this),  {grade: null});
 		//build view: 
 		self._model =  model;
 		self._generate_contents();
@@ -125,7 +127,7 @@
 		    $.concierge.get_component("set_grade_assignment")({grade: grade_codes[event.charCode], id_user: id_user, id_source: id_source}, function(P){			    
 			    self._model.add("grade", P.grades)
 			    $.I("grade added");
-			    self._render()
+			    //			    self._render()
 			});
 		}
 		else{
@@ -201,6 +203,7 @@
 		}
 		$("td", contents).click(f_cell_click);
 		$("tr:eq("+self._selection[0]+")",contents).children("td:eq("+self._selection[1]+")").addClass("selected");
+		self._rendered = true;
 	    }
 	});
     
