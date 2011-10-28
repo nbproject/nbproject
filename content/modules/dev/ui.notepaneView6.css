@@ -29,7 +29,8 @@ padding-left: 20px;
 
 
 div.notepaneView span.gradeitem{
-padding: 5px;
+padding: 3px;
+margin: 2px;
 font-size: medium; 
 background-color: #e0e0e0;
 border: thin solid #f0f0f0;
@@ -149,8 +150,8 @@ color: #e0f0ff;
 div.notepaneView div.collectioninfo{
     background-color: #B0B0B0;
     color: #D0D0D0;
-    font-size: x-large;
-    padding: 5px;
+    font-size: medium;
+    padding: 9px;
     text-align: center;
 }
 
