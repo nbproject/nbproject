@@ -8,6 +8,17 @@ div.docView{
 	background-color: #E6E6E6 !important;
 }
 
+div.docView >  div.util{
+opacity: 0.5;
+background-color: #707070;
+color: #e0f0ff;
+position: fixed;
+z-index: 1;
+font-family: Helvetica, sans-serif;
+font-weight: bold;
+padding: 1px 5px 1px 5px;
+}
+
 div.docView div.material.selected{
 border: 2px  solid #5090f0;
 //opacity: 1.0;

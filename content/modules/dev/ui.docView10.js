@@ -17,7 +17,7 @@
 	    _create: function() {
 		$.ui.view.prototype._create.call(this);
 		var self = this;
-		self.element.append("<div class='util'/><div class='contents'/>");
+		self.element.append("<div class='util'>Preview</div><div class='splash'/><div class='contents'/>");
 		self._last_clicked_selection =  0;
 		//TODO self._h =  100;//sample init
 		self._in_page_transition =  false;
@@ -36,6 +36,7 @@
 		 */
 		self._collection = null;
 		self._pageinfo = []; 
+		$("div.splash", self.element).html($.concierge.get_component("splash_docview")());
 	    },
 	    _defaultHandler: function(evt){
 		var self	= this;
@@ -188,38 +189,13 @@
 		}
 	    },
 	    _keydown: function(event){
-		var thread_codes = {37: {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."}}; 
-		var scroll_codes = {38: "-=", 40: "+="};
-		var new_sel, id_item, id_new, new_page;
-		if (event.keyCode in thread_codes){
-		    var sel = $("div.selection.selected", this.element);
-		    if (sel.length){
-			new_page =  this._collection.index[this._location.ID]+1 + thread_codes[event.keyCode].dir;
-			if (new_page == 0 || new_page>this._collection.items.length){
-			    $.I( thread_codes[event.keyCode].msg);
-			}
-			else{
-			    $.concierge.trigger({type:"select_thread", value: this._collection.items[new_page-1] });
-			}
-		    }		    
-		    else{ // no selection on the page
-			new_sel = thread_codes[event.keyCode].no_sel == "first" ? 0 :  this._collection.items.length-1;
-			$.concierge.trigger({type:"select_thread", value:  this._collection.items[new_sel]});
-			/*
-
-			new_sel = $("div.selection")[thread_codes[event.keyCode].no_sel](); 
-			if (new_sel.length){
-			    new_sel.click();
-			    //			    $.D("moving selection");
-			}
-			*/
-		    }
-		    return false;
+		var kc_proxy = { 37: "move_left", 39: "move_right", 38: "move_up", 40: "move_down"};
+		var cc_proxy = {44: "prev", 46: "next", 60: "prev", 62: "next", 65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F"};
+		if (event.keyCode in kc_proxy){
+		    $.concierge.trigger({type: "proxy_keydown", value: kc_proxy[event.keyCode]});
 		}
-		else if (event.keyCode in scroll_codes){
-		    //$.concierge.trigger({type:scroll_codes[event.keyCode], value: 0});
-		    var H = this.element.height();
-		    this.element.stop(true).animate({scrollTop: scroll_codes[event.keyCode]  + H/3  + 'px'}, 200); 	
+		else if (event.charCode in cc_proxy){
+		    $.concierge.trigger({type: "proxy_keydown", value: cc_proxy[event.charCode]});
 		}
 		else{
 		    return true; // let the event be captured for other stuff
@@ -372,6 +348,7 @@
 		    contents+="<div class='material'  page='"+(i+1)+"' style='"+style+"' ><div class='pagenumber pagenumbertop'>"+link+"</div><div class='innermaterial' style='top: "+inner_top+"px'><div class='selections'/><div class='links'/><img class='material' page='"+(i+1)+"'/></div></div>";
 		    
 		}
+		
 		$("div.contents", self.element).html(contents);
 		var $material = $("div.material", self.element).click(function(evt){
 			var numpage = evt.currentTarget.getAttribute("page");
@@ -394,7 +371,11 @@
 		 * this is where we implement the caching strategy we want...
 		 */
 		if (this._collection.items.length==0){
+		    $("div.splash", self.element).show();
 		    return;
+		}
+		else{
+		    $("div.splash", self.element).hide();
 		}
 
 		var p = this._page;
@@ -489,8 +470,6 @@
 	    page:null, 
 	    page_peek: null, 
 	    zoom: null, 
-	    note_hover: null, 
-	    note_out: null, 
 	    visibility: null, 
 	    global_editor: null, 
 	    select_thread: null, 

@@ -17,10 +17,10 @@
 	    _f_location_seen: function(id_location){
 		var self = this;
 		return function(){
-		    var m = self._model;
-		    var o = m.get("comment", {ID_location: id_location});
+		    var m		= self._model;
+		    var o		= m.get("comment", {ID_location: id_location});
 		    var i;
-		    var new_seen = {};
+		    var new_seen	= {};
 		    for (i in o){
 			if (o.hasOwnProperty(i) && (!(i in m.o.seen))){
 			    new_seen[i] = {id: i, id_location: id_location};
@@ -32,20 +32,21 @@
 	    },
 	    _create: function() {
 		$.ui.view.prototype._create.call(this);
-		var self = this;
-		self._pages =  {}; //pages that have been rendered
-		self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
-		self._page =  null; //current page  
+		var self		= this;
+		self._pages		=  {}; //pages that have been rendered. By definition, in this particular view, we render one thread per page. 
+		self._maxpage		=  0; //last page that has been rendered
+		self._page		=  null; //current page  
 		self._scrollTimerID	=  null;
 		self._seenTimerID	= null;
 		self._id_location	= null;
 		self._rendered		= false;
-		self._id_collection =  null;
-		self._collection = null;
-		self._location = null; //selected location (might not be on current page)
-		self._me = null;
+		self._id_collection	=  null;
+		self._collection	= null;
+		self._location		= null; //selected location (might not be on current page)
+		self._me		= null;
 
-		self.element.addClass("notepaneView").addClass("threadview").append("<div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
+		self.element.addClass("notepaneView").addClass("threadview").append("<div class='splash'/><div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
+		$("div.splash", self.element).html($.concierge.get_component("splash_notepaneview")());
        		$.mods.declare({
 			notepaneView1: {js: [], css: ["/content/modules/dev/ui.notepaneView6.css"]}, 
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
@@ -55,17 +56,6 @@
 	    _defaultHandler: function(evt){
 		var self	= this;
 		switch (evt.type){
-		case "page":
-		    if (self._page != evt.value){
-			self._page =  evt.value;			
-			self._render();
-			var scrollby;
-			var container = $("div.notepaneView-pages", self.element);
-			var sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
-			var delta_top = sel.offset().top - container.offset().top;
-			container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
-		    }
-		    break;
 		case "note_hover": 
 		    $("div.location-lens[id_item="+evt.value+"]", self.element).addClass("hovered");
 		    break;
@@ -131,6 +121,12 @@
 		    self._rendered = false;
 		    self.set_model(self._model);
 		    break;
+		case "proxy_keydown":
+		    var codes = {"prev": -37, "next": -39};
+		    if (evt.value in codes){
+			self._keydown({keyCode: codes[evt.value], charCode: 0});
+		    }
+		    break;
 		}	
 	    },
 	    _commentlens: function(o){
@@ -155,7 +151,7 @@
 		}
 		else{
 		    return "<div class='note-abridgedlens' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><span class='abridged'>"+$.E($.ellipsis(o.body, 50))+"</span></div>"; //"
-											 }
+														}
 		},
 		_comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
 		_fill_tree: function(c){
@@ -175,25 +171,43 @@
 		    return loc_lens;
 		}, 
 		_keydown: function(event){
-		    var codes = {37: {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."}}; 
+		    var e_kc = event.keyCode; 
+		    var e_cc = event.charCode;
+		    var codes = {"-37": {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."} , "-39": {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."} };
+		    var translate_codes = { 44: -37, 46: -39, 60: -37, 62: -39};
 		    var new_sel, id_item, id_new, new_page;
-		    if (event.keyCode in codes){
+		    var proxy_moving = { 37: "move_left",
+					 39: "move_right", 
+					 38: "move_up", 
+					 40: "move_down"};
+		    var proxy_grading = {65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F"};
+		    if (e_cc in translate_codes){
+			e_kc = translate_codes[e_cc];
+			e_cc = 0;
+		    }
+		    if (e_kc in codes){
 			var sel = $("div.location-lens.selected", this.element);
 			if (sel.length){
-			    new_page =  this._collection.index[this._location.ID]+1 + codes[event.keyCode].dir;
+			    new_page =  this._collection.index[this._location.ID]+1 + codes[e_kc].dir;
 			    if (new_page == 0 || new_page>this._collection.items.length){
-				$.I( codes[event.keyCode].msg);
+				$.I( codes[e_kc].msg);
 			    }
 			    else{
 				$.concierge.trigger({type:"select_thread", value: this._collection.items[new_page-1] });
 			    }
 			}
 			else{ // no selection on the page
-			    new_sel = codes[event.keyCode].no_sel == "first" ? 0 :  this._collection.items.length-1;
+			    new_sel = codes[e_kc].no_sel == "first" ? 0 :  this._collection.items.length-1;
 			    $.concierge.trigger({type:"select_thread", value: this._collection.items[new_sel]});
 			    //	    new_sel.click();
 			}
 			return false;
+		    }
+		    else if (e_kc in proxy_moving){
+			$.concierge.trigger({type: "proxy_keydown", value: proxy_moving[e_kc]});
+		    }
+		    else if (e_kc == 0 && e_cc in proxy_grading){
+			$.concierge.trigger({type: "proxy_keydown", value: proxy_grading[e_cc]});
 		    }
 		    else{
 			return true; // let the event be captured for other stuff
@@ -231,10 +245,10 @@
 				$.I("grade added");
 			    });
 		    };
-			if (grade != null){
-			    $("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
-			}
-			$("span.gradeitem", header).click(f_grade_click);
+		    if (grade != null){
+			$("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
+		    }
+		    $("span.gradeitem", header).click(f_grade_click);
 		    var items = this._collection.items;
 		    
 		    var p = this._page;
@@ -266,11 +280,10 @@
 			var self	= this;
 			var model	= self._model; 
 			var $pane	= $("div.notepaneView-comments[page="+page+"]", self.element).empty();
-			//		    var locs	= model.get("location", {id_source:  this._id_source, page: page }).sort(self.options.loc_sort_fct);
 			var id_location = self._collection.items[page-1];
 			var o = model.o.location[id_location];
 			$pane.append(self._lens(o));
-			$("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
+			var loc_lens = $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).addClass(page % 2 ? "lens-even": "lens-odd");
 			self._pages[page] = true;		   
 			this._rendered = true;
 		    }
@@ -281,14 +294,12 @@
 		    self._model =  model;
 		    var id_collection = $.concierge.get_state("collection");
 		    self._id_collection =  id_collection; 
-		    //		var id_source = $.concierge.get_state("file");
-		    //		self._id_source =  id_source ; 
 		    model.register($.ui.view.prototype.get_adapter.call(this),  {grade: null});
+		    $("div.splash", self.element).hide();
 		    //make placeholders for each page: 
 		    self._collection = $.concierge.get_component("get_collection")();
 		    var items = self._collection.items;
 		    self._me =  $.concierge.get_component("get_userinfo")();
-		    //var f = model.o.file[id_source];
 		    var $pane = $("div.notepaneView-pages", self.element).empty();
 		    $pane.scroll(function(evt){
 			    var timerID = self._scrollTimerID;
@@ -334,13 +345,11 @@
 	    loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
 	    expand: "div.notepaneView-pages", 
 	    listens: {
-		page: null, 
-		note_hover: null, 
-		note_out: null, 
 		select_thread: null, 
 		keydown: null,
 		collection: null, 
-		selection: null
+		selection: null, 
+		proxy_keydown: null,
 	    }		    
 	};
 	})(jQuery);

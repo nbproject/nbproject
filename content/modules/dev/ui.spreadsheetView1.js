@@ -71,6 +71,19 @@
 		    self._recenterMaybe(sel);
 
 		    break;
+		case "proxy_keydown": 
+		    var moving_codes = {  "move_left": 37, 
+					  "move_right": 39, 
+					  "move_up": 38, 
+					  "move_down": 40};
+		    var grading_codes = {"grade_A": 65, "grade_B": 66, "grade_C": 67, "grade_D": 68, "grade_F": 70, "grade_A" : 97, "grade_B": 98, "grade_C": 99, "grade_D": 100, "grade_F": 102};
+		    if (evt.value in moving_codes){
+			self._keydown({keyCode: moving_codes[evt.value], charCode: 0});
+		    }
+		    else if (evt.value in grading_codes){
+			self._keydown({keyCode: 0, charCode:  grading_codes[evt.value]});
+		    }
+		    break;
 		}
 	    },
 	    update: function(action, payload, items_fieldname){
@@ -106,7 +119,8 @@
 		    39: {dir: 1,  idx: 1, extremum:self._files.length , msg:"At end of list..."},  
 		    38: {dir: -1, idx: 0, extremum: 1, msg: "Already at the top..."}, 
 		    40: {dir: 1, idx: 0, extremum: self._users.length, msg: "Already at the bottom..."}}; 
-		var grade_codes = {97: 4, 98:3, 99:2, 100:1, 102:0}; //US GPA system. 
+		var grade_codes = {65:4, 66:3, 67:2, 68:1, 70:0, 97: 4, 98:3, 99:2, 100:1, 102:0}; //US GPA system. 
+		var proxy_names = {44: "prev", 46: "next", 60: "prev", 62: "next"}
 		var new_sel, v;
 		if (event.keyCode in sel_codes){		    
 		    v = sel_codes[ event.keyCode];
@@ -129,6 +143,9 @@
 			    $.I("grade added");
 			    //			    self._render()
 			});
+		}
+		else if (event.keyCode == 0 && event.charCode in proxy_names){
+		    $.concierge.trigger({type: "proxy_keydown", value: proxy_names[event.charCode]});
 		}
 		else{
 		    return true; // let the event be captured for other stuff
@@ -211,7 +228,8 @@
     $.ui.spreadsheetview.prototype.options = {
 	provides: ["spreadsheet"], 
 	listens: {
-	    selection: null
+	    selection: null, 
+	    proxy_keydown: null
 	}		    
     };
 })(jQuery);

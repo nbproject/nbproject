@@ -99,9 +99,11 @@ NB.pers.init = function(){
 				for (var i in items){		 
 				    id_location = items[i].ID;
 				    ids_location.push(id_location);
-				    ids_location_idx[id_location]=ids_location.length-1;
 				}
 				ids_location.sort(f_sort);
+				for (var i in ids_location){
+				    ids_location_idx[ids_location[i]]=Number(i);
+				}
 				L[id_source][_id_author] = {items: ids_location, index: ids_location_idx};				
 			    };
 			    if (!(id_source in L)){
@@ -165,6 +167,13 @@ NB.pers.init = function(){
 		NB.pers.call("set_grade_assignment", P, cb);
 	    },
 		grade2litt: function(P,cb){return NB.pers.grade2litt[P]}, 
+		splash_notepaneview: function(P,cb){
+		return "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> <div id='splash-welcome'>Welcome... </div><br/><i>Using the keyboard shortcuts below will likely speed up your grading task by a lot...</i><br/> <ul id='splash-list-instructions'> <li>Use the <b>arrow keys</b> to navigate between cells and display the comments for the selected assignment</li><li>Use the <b>&#60;</b> and <b>&#62;</b> keys to move between threads within the selected assignment</li><li>Use the <b>A,B,C,D,F</b> keys to let to assign the corresponding grade to the selected assignment </li></ul> </div>";
+	    }, 
+		splash_docview: function(P,cb){
+		return  "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> Select an assignment to see a preview of the material here</div>";
+	    }
+
 		});
     
     //get data: 
