@@ -22,7 +22,7 @@
 		self._admin	= self.options.admin;
 		var header	= self._admin ? "<button action='new_class'>New Class</button>":" <a href='/admin'>Staff Login</a>";
 		header += " <a target='_blank' href='/settings'>Your Settings</a> "
-		self.element.html("<div class='treeView-header'>"+header+"</div><div class='tree'/>");
+		self.element.css("overflow-y", "auto").html("<div class='treeView-header'>"+header+"</div><div class='tree'/>");
 		$("button[action=new_class]", self.element).click(function(){
 			$.concierge.get_component("add_ensemble_menu")();
 		    });
