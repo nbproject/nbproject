@@ -93,7 +93,7 @@ div.location-lens.hovered{
 
 
 div.location-lens.selected{
-	background-color: #aaffff !important;
+	background-color: #70a0f0 !important;
 }
 
 
@@ -202,6 +202,14 @@ div.threadview span.created{
 color: #a0a0a0;
 }
 
+div.location-lens.selected span.created{
+color: #404040;
+}
+div.location-lens.selected span.author{
+color: #404040;
+}
+
+
 div.threadview div.lensmenu{
 float: right;
 padding: 5px;
@@ -229,8 +237,13 @@ div.note-abridgedlens:hover {
 
 }
 
+div.location-lens.selected div.note-abridgedlens{
+color: #404040;
+}
 
-
+div.location-lens.selected span.note-body{
+color: #ffffff;
+}
 
 
 
