@@ -98,7 +98,7 @@
 		case "keydown": 
 		    self._keydown(evt.value);
 		    break;
-		case "selection": //just display a "loading in progress"
+		case "selection": 
 		    var msg;
 		    var v = evt.value;
 		    var sel = v.sel;
@@ -109,10 +109,25 @@
 			msg  = $.concierge.get_component("in_progress")();
 		    }
 		    else{
-			msg = "<div class='no-notes'>No comments from this user</div>";
+			msg = "<div class='no-notes'>No comments have been made.</div>";
 		    }
 		    $pane = $("div.notepaneView-pages", self.element).html(msg);
-		    $("div.notepaneView-header").empty(self.element);
+		    /*
+		      $("div.notepaneView-header",self.element).empty();
+		    */
+		    var user = m.o.user[id_author];
+		    var file = m.o.file[id_source];
+		    var header = $("div.notepaneView-header", self.element).html("<div class='collectioninfo'> <span class='standout'>"+$.E(user.firstname + " " + user.lastname)+"</span> on <span class='standout'>" +$.E(file.title)+"</span> <span class='gradecontainer'><span class='gradeitem' id_item='4'>A</span> <span class='gradeitem' id_item='3'>B</span> <span class='gradeitem' id_item='2'>C</span> <span class='gradeitem' id_item='1'>D</span> <span class='gradeitem' id_item='0'>F</span>   </span> </div>");
+		    var grade = m.get("grade", {id_user: id_author, id_source:id_source}).first();
+		    var f_grade_click = function(event){
+			$.concierge.get_component("set_grade_assignment")({grade: event.currentTarget.getAttribute("id_item"), id_user: id_author, id_source: id_source}, function(P){			      			m.add("grade", P.grades);
+				$.I("grade added");
+			    });
+		    };
+		    if (grade != null){
+			$("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
+		    }
+		    $("span.gradeitem", header).click(f_grade_click);
 		    break;
 		case "collection": 
 		    self._pages = {};
@@ -147,7 +162,8 @@
 		    var creation_info = " <span class='created'> - "+o.created+"</span> ";
 		    var replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
 		    var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
-		    return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",$.E(o.body).replace(/\n/g, "<br/>"),"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
+		    var body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+		    return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
 		}
 		else{
 		    return "<div class='note-abridgedlens' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><span class='abridged'>"+$.E($.ellipsis(o.body, 50))+"</span></div>"; //"
@@ -237,6 +253,7 @@
 		    var meta = this._collection.meta;
 		    var user = m.o.user[meta.id_user];
 		    var file = m.o.file[meta.id_source];
+		    /*
 		    var header = $("div.notepaneView-header", this.element).html("<div class='collectioninfo'> <span class='standout'>"+$.E(user.firstname + " " + user.lastname)+"</span> on <span class='standout'>" +$.E(file.title)+"</span> <span class='gradecontainer'><span class='gradeitem' id_item='4'>A</span> <span class='gradeitem' id_item='3'>B</span> <span class='gradeitem' id_item='2'>C</span> <span class='gradeitem' id_item='1'>D</span> <span class='gradeitem' id_item='0'>F</span>   </span> </div>");
 		    var grade = m.get("grade", {id_user: meta.id_user, id_source:meta.id_source}).first();
 		    var f_grade_click = function(event){
@@ -249,6 +266,13 @@
 			$("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
 		    }
 		    $("span.gradeitem", header).click(f_grade_click);
+		    */
+		    var grade = m.get("grade", {id_user: meta.id_user, id_source:meta.id_source}).first();
+		    if (grade != null){
+			var header = $("div.notepaneView-header", this.element);
+			$("span.gradeitem", header).removeClass("selected");
+			$("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
+		    }
 		    var items = this._collection.items;
 		    
 		    var p = this._page;

@@ -71,7 +71,8 @@
 		var replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
 		var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
 		//return ["<div class='note-lens' id_item='",o.ID,"'><span class='note-body ",bold_cl,"'>",$.E(o.body).replace(/\n/g, "<br/>"),"</span>", author_info,admin_info,creation_info,replymenu, optionmenu,"</div>"].join("");
-		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",$.E(o.body).replace(/\n/g, "<br/>"),"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
+		var body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
 
 	    },
 	    _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},

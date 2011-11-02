@@ -27,6 +27,7 @@ catch (e){
 NB.pers.init = function(){
     NB.pers._selectTimerID =  null;
     NB.pers.grade2litt = {4: "A", 3: "B", 2: "C", 1: "D", 0: "F"};
+    NB.pers.id_author_readahead = null;
     NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
 	    $.concierge.addConstants(p.value);
 	});
@@ -45,7 +46,7 @@ NB.pers.init = function(){
 	    var pers_id		= "pers_"+id;
 	    var $vp		= $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
 	    var $pers		= $("<div id='"+pers_id+"'/>").appendTo($vp);
-	    var spreadsheetview = {priority: 1, min_width: 600, desired_width: 60, 
+	    var spreadsheetview = {priority: 1, min_width: 1000, desired_width: 60, 
 				   content: function($div){
 		    $.mods.ready("spreadsheetview", function(){
 			    $div.spreadsheetview();
@@ -53,7 +54,7 @@ NB.pers.init = function(){
 			});
 		}
 	    };
-	    var notesview	=  {priority: 1, min_width: 500, desired_width:50 , min_height: 800, desired_height: 70, 
+	    var notesview	=  {priority: 1, min_width: 800, desired_width:50 , min_height: 800, desired_height: 70, 
 				    content: function($div){
 		    $.mods.ready("notepaneview", function(){
 			    $div.notepaneView();
@@ -61,7 +62,7 @@ NB.pers.init = function(){
 			});
 		}
 	    }; 
-	    var docview	= {priority: 1, min_width: 500, desired_width: 50,  min_height: 300, desired_height: 30, 
+	    var docview	= {priority: 1, min_width: 800, desired_width: 50,  min_height: 300, desired_height: 30, 
 			   content: function($div){
 		    $.mods.ready("docview", function(){
 			    $div.docView({img_server: NB.conf.servers.img});
@@ -124,9 +125,11 @@ NB.pers.init = function(){
 				    NB.pers.collection.index= L[id_source][id_author].index;
 				    NB.pers.collection.meta = {id_user: id_author, id_source: id_source};
 				    $.concierge.trigger({type:"collection", value: 1});	
-				    if (id_next_author != null){
+				    if (id_next_author != null && NB.id_author_readahead==null){
+					NB.id_author_readahead = id_next_author;
 					NB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
-						//load data silently
+						//mark readahead available again and load data silently	
+						NB.id_author_readahead = null;
 						f_on_data(P3, id_next_author);
 					    });
 				    }
@@ -143,9 +146,10 @@ NB.pers.init = function(){
 					    NB.pers.collection.index= 	L[id_source][id_author].index;
 					    NB.pers.collection.meta = {id_user: id_author, id_source: id_source};
 					    $.concierge.trigger({type:"collection", value: 1});	
-					    if (id_next_author != null){
+					    if (id_next_author != null && NB.id_author_readahead==null){
 						NB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
-							//load data silently
+							//mark readahead available again and load data silently
+							NB.id_author_readahead = null;
 							f_on_data(P3, id_next_author);
 						    });
 					    }

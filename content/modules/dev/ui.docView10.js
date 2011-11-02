@@ -133,6 +133,9 @@
 		self._page =  1;
 		self.set_model(self._model);
 		break;
+		case "selection": //just erase
+		    $("div.contents", self.element).empty();
+		break;
 		}
 	    },
 	    set_model: function(model, init_event){
@@ -344,7 +347,8 @@
 		    pageinfo.h_collage  = h_collage;
 		    style = "width: "+w+"px;height: "+h_collage+"px;";
 		    var inner_top = Math.min(0, 50-location.top*s);
-		    var link = "<a target='_blank' href='/f/"+file.id+"?p="+location.page+"'>"+ model.o.ensemble[location.id_ensemble].name+" - "+file.title +" (p.  "+location.page+")</a>";
+		    var root = model.get("comment", {ID_location: location.ID, id_parent: null}).first();
+		    var link = "<a target='_blank' href='/f/"+file.id+"?c="+root.ID+"'>"+ model.o.ensemble[location.id_ensemble].name+" - "+file.title +" (p.  "+location.page+")</a>";
 		    contents+="<div class='material'  page='"+(i+1)+"' style='"+style+"' ><div class='pagenumber pagenumbertop'>"+link+"</div><div class='innermaterial' style='top: "+inner_top+"px'><div class='selections'/><div class='links'/><img class='material' page='"+(i+1)+"'/></div></div>";
 		    
 		}
@@ -473,7 +477,8 @@
 	    visibility: null, 
 	    global_editor: null, 
 	    select_thread: null, 
-	    collection: null
+	    collection: null, 
+	    selection: null
 	}		    
     };
 })(jQuery);

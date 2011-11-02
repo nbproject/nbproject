@@ -56,7 +56,7 @@ __NAMES = {
         "ID": "id_location",
         "w": None,
         "h": None,
-        "body": "subanonymous(body, 0, 95) || replace(substring(body, 95, 5), '&', '') as body",
+        "body": "substring(body, 0, 95) || replace(substring(body, 95, 5), '&', '') as body",
         "big": "cast(length(body)>100 as integer) as big"
 },
         "location_v_comment2":{

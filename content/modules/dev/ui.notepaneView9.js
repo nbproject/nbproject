@@ -119,7 +119,9 @@
 		var lf_admin	= m.get("comment", {ID_location: l.ID, admin:1}).is_empty() ? "" : "<ins class='locationflag'><div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/></ins>";
 		var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
 		var bold_cl	= numnew > 0 ? "location-bold" : "";
-		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+$.E(l.body)+"</div></div>";
+		var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
+		var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,90));
+		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
 	    }, 
 	    _keydown: function(event){
 		var codes = {37: {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."}}; 

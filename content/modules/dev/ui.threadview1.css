@@ -74,6 +74,14 @@ div.note-lens-unabridged{
 color: #a0a0a0;
 }
 
-
+div.threadview span.empty_comment{
+    -moz-border-radius: 10px;
+    background-color: #F0F0F0;
+    border: thin solid #A0A0A0;
+    color: #A0A0A0;
+    font-variant: small-caps;
+    font-weight: bold;
+    padding: 3px;
+}
 
 
