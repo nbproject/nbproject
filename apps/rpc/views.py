@@ -104,6 +104,9 @@ def sendInvites(payload, req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")      
     #extract emails in a somewhat robust fashion (i.e. using several possible delimiters)
     emails = parseEntities(payload["to"], [",", "\n", " "])
+    #remove spurious stuff: strings that don't have an "@" and trailings "<" and ">" characters, 
+    #because some emails the following format: John Doe <john.doe@example.com>     
+    emails = [o.replace("<", "").replace(">", "") for o in emails if "@" in o]          
     logging.info("to: %s, extracted: %s" %  (payload["to"], emails))
     #add new users to DB w/ pending status
     for email in emails:       
