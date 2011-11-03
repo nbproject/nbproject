@@ -193,12 +193,13 @@
 	    },
 	    _keydown: function(event){
 		var kc_proxy = { 37: "move_left", 39: "move_right", 38: "move_up", 40: "move_down"};
-		var cc_proxy = {44: "prev", 46: "next", 60: "prev", 62: "next", 65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F"};
-		if (event.keyCode in kc_proxy){
-		    $.concierge.trigger({type: "proxy_keydown", value: kc_proxy[event.keyCode]});
+		var cc_proxy = {44: "prev", 46: "next", 60: "prev", 62: "next", 65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F", 188: "prev", 190: "next" };
+		var code = event.keyCode || event.charCode; // since not every browser uses charCode or keyCode uniformly. 
+		if (code in kc_proxy){
+		    $.concierge.trigger({type: "proxy_keydown", value: kc_proxy[code]});
 		}
-		else if (event.charCode in cc_proxy){
-		    $.concierge.trigger({type: "proxy_keydown", value: cc_proxy[event.charCode]});
+		else if (code in cc_proxy){
+		    $.concierge.trigger({type: "proxy_keydown", value: cc_proxy[code]});
 		}
 		else{
 		    return true; // let the event be captured for other stuff

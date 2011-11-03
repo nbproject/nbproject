@@ -120,10 +120,11 @@
 		    38: {dir: -1, idx: 0, extremum: 1, msg: "Already at the top..."}, 
 		    40: {dir: 1, idx: 0, extremum: self._users.length, msg: "Already at the bottom..."}}; 
 		var grade_codes = {65:4, 66:3, 67:2, 68:1, 70:0, 97: 4, 98:3, 99:2, 100:1, 102:0}; //US GPA system. 
-		var proxy_names = {44: "prev", 46: "next", 60: "prev", 62: "next"}
+		var proxy_names = {44: "prev", 46: "next", 60: "prev", 62: "next", 188: "prev", 190: "next"}; //with and w/o shift  and 188,190 for webkit-based browsers...
 		var new_sel, v;
-		if (event.keyCode in sel_codes){		    
-		    v = sel_codes[ event.keyCode];
+		var code = event.keyCode || event.charCode; //HACK: Argh, different browsers use different conventions ! 
+		if (code in sel_codes){		    
+		    v = sel_codes[ code];
 		    new_sel =  self._selection[v.idx] + v.dir;		    
 		    if (v.dir*(new_sel-v.extremum) > 0){
 			$.I( v.msg);
@@ -135,17 +136,17 @@
 		    }  
 		    return false;
 		}
-		else if (event.keyCode == 0 && event.charCode in grade_codes){
+		else if (code in grade_codes){
 		    var id_user = self._users[self._selection[0]-1].id;
 		    var id_source =  self._files[self._selection[1]-1].id;
-		    $.concierge.get_component("set_grade_assignment")({grade: grade_codes[event.charCode], id_user: id_user, id_source: id_source}, function(P){			    
+		    $.concierge.get_component("set_grade_assignment")({grade: grade_codes[code], id_user: id_user, id_source: id_source}, function(P){			    
 			    self._model.add("grade", P.grades)
 			    $.I("grade added");
 			    //			    self._render()
 			});
 		}
-		else if (event.keyCode == 0 && event.charCode in proxy_names){
-		    $.concierge.trigger({type: "proxy_keydown", value: proxy_names[event.charCode]});
+		else if (code in proxy_names){
+		    $.concierge.trigger({type: "proxy_keydown", value: proxy_names[code]});
 		}
 		else{
 		    return true; // let the event be captured for other stuff

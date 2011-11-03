@@ -196,43 +196,41 @@
 		    return loc_lens;
 		}, 
 		_keydown: function(event){
-		    var e_kc = event.keyCode; 
-		    var e_cc = event.charCode;
+		    var code =  event.charCode || event.keyCode;  // since not every browser uses charCode or keyCode uniformly. 
 		    var codes = {"-37": {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."} , "-39": {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."} };
-		    var translate_codes = { 44: -37, 46: -39, 60: -37, 62: -39};
+		    var translate_codes = { 44: -37, 46: -39, 60: -37, 62: -39, 188: -37, 190: -39};
 		    var new_sel, id_item, id_new, new_page;
 		    var proxy_moving = { 37: "move_left",
 					 39: "move_right", 
 					 38: "move_up", 
 					 40: "move_down"};
 		    var proxy_grading = {65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F"};
-		    if (e_cc in translate_codes){
-			e_kc = translate_codes[e_cc];
-			e_cc = 0;
+		    if (code in translate_codes){
+			code = translate_codes[code];
 		    }
-		    if (e_kc in codes){
+		    if (code in codes){
 			var sel = $("div.location-lens.selected", this.element);
 			if (sel.length){
-			    new_page =  this._collection.index[this._location.ID]+1 + codes[e_kc].dir;
+			    new_page =  this._collection.index[this._location.ID]+1 + codes[code].dir;
 			    if (new_page == 0 || new_page>this._collection.items.length){
-				$.I( codes[e_kc].msg);
+				$.I( codes[code].msg);
 			    }
 			    else{
 				$.concierge.trigger({type:"select_thread", value: this._collection.items[new_page-1] });
 			    }
 			}
 			else{ // no selection on the page
-			    new_sel = codes[e_kc].no_sel == "first" ? 0 :  this._collection.items.length-1;
+			    new_sel = codes[code].no_sel == "first" ? 0 :  this._collection.items.length-1;
 			    $.concierge.trigger({type:"select_thread", value: this._collection.items[new_sel]});
 			    //	    new_sel.click();
 			}
 			return false;
 		    }
-		    else if (e_kc in proxy_moving){
-			$.concierge.trigger({type: "proxy_keydown", value: proxy_moving[e_kc]});
+		    else if (code in proxy_moving){
+			$.concierge.trigger({type: "proxy_keydown", value: proxy_moving[code]});
 		    }
-		    else if (e_kc == 0 && e_cc in proxy_grading){
-			$.concierge.trigger({type: "proxy_keydown", value: proxy_grading[e_cc]});
+		    else if (code in proxy_grading){
+			$.concierge.trigger({type: "proxy_keydown", value: proxy_grading[code]});
 		    }
 		    else{
 			return true; // let the event be captured for other stuff
