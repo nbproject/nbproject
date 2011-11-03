@@ -218,7 +218,7 @@
 		var p_after = p; 
 		var p_before = p
 		this._render_one(p);		
-		//estimate how much space taken by annotations, and render a whole screen of them if not enough on current page
+		//estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
 		var container = 	$("div.notepaneView-pages", this.element);		
 		while ( container.children().last().offset().top - container.offset().top < container.height() ){
 		    p_after++;

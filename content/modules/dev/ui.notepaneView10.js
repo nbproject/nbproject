@@ -147,6 +147,7 @@
 	    _commentlens: function(o){
 		var m = this._model;
 		var meta = this._collection.meta;
+		var replymenu, body;
 		if (o.id_author == meta.id_user){
 		    var bold_cl = m.get("seen", {id: o.ID}).is_empty() ? "" : "note-bold";
 		    var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
@@ -160,13 +161,16 @@
 		    }			
 		    var author_info =  " <span class='author'>"+o.fullname+"</span> ";
 		    var creation_info = " <span class='created'> - "+o.created+"</span> ";
-		    var replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
-		    var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
-		    var body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+		    replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
+		    //		    var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
+		    var optionmenu ="";
+		    body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
 		    return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
 		}
 		else{
-		    return "<div class='note-abridgedlens' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><span class='abridged'>"+$.E($.ellipsis(o.body, 50))+"</span></div>"; //"
+		    replymenu =  " <a class = 'replymenu-mini' href='javascript:void(0)'>Reply</a> ";
+		    body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" :$.E($.ellipsis(o.body, 50));
+		    return "<div class='note-abridgedlens'  id_item='"+o.ID+"' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><div class='lensmenu'>"+ replymenu+"</div><span class='abridged'>"+body+"</span></div>"; //"
 														}
 		},
 		_comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
@@ -179,11 +183,16 @@
 		    }
 		    return $div;
 		},
-		_lens: function(l){
+		_lens: function(l){		    
 		    var m = this._model;
+		    var f_reply = function(event){
+			var id_item = $(event.target).closest("div.note-lens, div.note-abridgedlens").attr("id_item");
+			$.concierge.trigger({type: "reply_thread", value: id_item});
+		    };
 		    var root = m.get("comment", {ID_location: l.ID, id_parent: null}).first();
 		    var loc_lens = $("<div class='location-lens' id_item='"+l.ID+"'/>");
 		    loc_lens.append(this._fill_tree(root))
+		    $("a.replymenu, a.replymenu-mini", loc_lens).click(f_reply);
 		    return loc_lens;
 		}, 
 		_keydown: function(event){
@@ -279,9 +288,9 @@
 		    var p_after = p; 
 		    var p_before = p
 		    this._render_one(p);		
-		    //estimate how much space taken by annotations, and render a whole screen of them if not enough on current page
+		    //estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
 		    var container = 	$("div.notepaneView-pages", this.element);		
-		    while ( container.children().last().offset().top - container.offset().top < container.height() ){
+		    while ( container.children().last().offset().top - container.offset().top < 1.2*container.height() ){
 			p_after++;
 			if (p_after<=items.length){
 			    this._render_one(p_after);
@@ -318,7 +327,7 @@
 		    self._model =  model;
 		    var id_collection = $.concierge.get_state("collection");
 		    self._id_collection =  id_collection; 
-		    model.register($.ui.view.prototype.get_adapter.call(this),  {grade: null});
+		    model.register($.ui.view.prototype.get_adapter.call(this),  {grade: null, comment: null});
 		    $("div.splash", self.element).hide();
 		    //make placeholders for each page: 
 		    self._collection = $.concierge.get_component("get_collection")();
@@ -358,11 +367,16 @@
 		    }
 		}, 
 		update: function(action, payload, items_fieldname){
-		    if (action == "add" && items_fieldname == "grade" && this._rendered){
-			$.D("TODO: grade on notepane");
-			this._render();
-		    }
-		}	
+		     if (action == "add" && this._rendered){
+			 if (items_fieldname == "grade"){
+			     this._render();
+			 }
+			 else if (items_fieldname == "comment"){
+			     this._pages = {};
+			     this._render();
+			 }
+		     }
+		}
 	    });
 	$.widget("ui.notepaneView",V_OBJ );
 	$.ui.notepaneView.prototype.options = {

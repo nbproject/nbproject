@@ -220,7 +220,19 @@ margin-left: 8px;
 margin-top: -5px;
 }
 
+
 div.threadview div.note-lens:hover div.lensmenu{
+opacity: 1.0;
+}
+
+div.threadview  div.note-abridgedlens div.lensmenu{
+padding: 0;
+margin: 0px;
+border: none;
+}
+
+div.threadview div.note-abridgedlens:hover div.lensmenu{
+border: none;
 opacity: 1.0;
 }
 
@@ -233,7 +245,7 @@ border: thin solid transparent;
 
 div.note-abridgedlens:hover {
 
-    border: thin solid #A0A0A0;
+    border: thin solid #d0d0A0;
 
 }
 

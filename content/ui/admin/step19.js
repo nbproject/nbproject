@@ -37,6 +37,7 @@ NB.pers.init = function(){
 		    css: [ "/content/modules/dev/ui.spreadsheetView1.css" ]
 		    }, 
 		notepaneview: {js: ["/content/modules/dev/ui.notepaneView10.js"],css: [] }, 
+		editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
 		docview: {js: ["/content/modules/dev/ui.docView10.js", "/content/modules/dev/ui.drawable4.js"],
 		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ] },
 		});
@@ -67,6 +68,14 @@ NB.pers.init = function(){
 		    $.mods.ready("docview", function(){
 			    $div.docView({img_server: NB.conf.servers.img});
 			    $div.docView("set_model",NB.pers.store );			    
+			});
+		}
+	    };
+	    var editorview	=  {priority: 1, min_width: 950, desired_width: 50,  min_height: 1000, desired_height: 50, transcient: true,  
+				    content: function($div){
+		    $.mods.ready("editorview", function(){
+			    $div.editorview({allowStaffOnly: false, allowAnonymous: false});
+			    $div.editorview("set_model",NB.pers.store );			    
 			});
 		}
 	    };
@@ -162,7 +171,7 @@ NB.pers.init = function(){
 			views: {
 			v1:{ data: spreadsheetview }, 
 			    v2:{children: {
-				v1:{ data:notesview}, v2:{ data: docview}, orientation: "horizontal"}}, orientation: "vertical"}
+				v1:{children: {v1:{ data:notesview}, v2: {data: editorview}, orientation: "horizontal"}}, v2:{ data: docview}, orientation: "horizontal"}}, orientation: "vertical"}
 		});
 	});
     $.concierge.addComponents({	
@@ -176,7 +185,9 @@ NB.pers.init = function(){
 	    }, 
 		splash_docview: function(P,cb){
 		return  "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> Select an assignment to see a preview of the material here</div>";
-	    }
+	    }, 
+	note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
+		note_editor:	function(P, cb){NB.pers.call("editNote", P, cb);},
 
 		});
     
@@ -204,7 +215,9 @@ NB.pers.createStore = function(payload){
 		grade: {pFieldName: "grades"}, 
 		comment:{references: {id_location: "location"}},
 		location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
-		seen:{references: {id_location: "location"}}	    
+		seen:{references: {id_location: "location"}}, 
+	    	mark: {}, 
+		draft: {},
 	});
     //    NB.pers.sequence = payload.sequence;
     $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
