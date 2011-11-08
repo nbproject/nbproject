@@ -42,7 +42,7 @@
 		self._id_location	= null;
 		self._is_first_stroke	= true;
 		self._rendered		= false;
-		self.element.addClass("notepaneView").append("<div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
+		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><span class='filter-msg'>15 threads</span><div class='filter' action='me'><span>me</span><div class='filter-count'>3</div></div></div><div class='notepaneView-pages'/>");
 		/*
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><button action='prev'>Prev</button> <button action='next'>Next</button> <a style='color:#777777;' href='javascript:NB.pers.expandGlobalComments()'><span class='global_comments_cnt'>0</span> global comments</a> <a style='color:#777777; margin-left: 10px;' href='javascript:$.concierge.trigger({type: \"global_editor\", value: true})'>New ...</a> </div><div class='notepaneView-pages'/>");
 		
