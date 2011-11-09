@@ -29,7 +29,8 @@
 		self._page =  null; 
 		self._id_source =  null;
 		self._scrollTimerID =  null;
-		
+		self._id_location       = null; //location_id of selected thread
+
 	    },
 	    _defaultHandler: function(evt){
 		var self	= this;
@@ -78,6 +79,7 @@
 		break;
 		case "select_thread": 
 		var o = model.o.location[evt.value];
+		self._id_location = evt.value;
 		if (o.page !=  this._page){
 		    this._page =  o.page;
 		    this._render();
@@ -536,6 +538,10 @@
 			}).click(function(evt){
 				$.concierge.trigger({type:"select_thread", value: evt.currentTarget.getAttribute("id_item")});
 			    });
+		var sel = model.o.location[self._id_location];
+		if (sel && sel.page==page){//highlight selection
+		    $("div.selection[id_item="+self._id_location+"]",self.element).addClass("selected");
+		}
 	    }
 	});
     
