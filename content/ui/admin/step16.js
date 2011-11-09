@@ -155,6 +155,7 @@ NB.pers.init = function(){
     
 NB.pers.createStore = function(payload){
     NB.pers.store = new NB.models.Store();
+    /*
     NB.pers.store.create(payload, {
 	    ensemble:	{pFieldName: "ensembles"}, 
 		file:	{pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
@@ -166,6 +167,19 @@ NB.pers.createStore = function(payload){
 		draft: {},
 	    seen:{references: {id_location: "location"}}
 	});
+    */
+    NB.pers.store.create(payload, {
+	    ensemble:	{pFieldName: "ensembles"}, 
+		file:	{pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
+		folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
+		comment:{references: {id_location: "location"}},
+		location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
+		link: {pFieldName: "links"}, 
+		mark: {}, 
+		draft: {},
+	    seen:{references: {id_location: "location"}}
+	});
+
     $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
     
     var matches = document.location.pathname.match(/\/(\d*)$/);
@@ -184,13 +198,22 @@ NB.pers.createStore = function(payload){
 	    m.add("link", P["links"]);
 	    //now check if need to move to a given annotation: 
 	    if ("c" in NB.pers.params){
-		var id =  NB.pers.params.c;
-		var c = m.get("comment", {ID: NB.pers.params.c})[id];
-		$.concierge.trigger({type: "select_thread", value: c.ID_location});
+		window.setTimeout(function(){
+			var id =  NB.pers.params.c;
+			var c = m.get("comment", {ID: NB.pers.params.c})[id];
+			$.concierge.trigger({type: "select_thread", value: c.ID_location});
+		    }, 100);
 	    }
 	    else if ("p" in NB.pers.params){
-		var page = NB.pers.params.p;
-		$.concierge.trigger({type: "page", value: page});
+		window.setTimeout(function(){
+			var page = NB.pers.params.p;
+			$.concierge.trigger({type: "page", value: page});
+		    }, 100);
+	    }
+	    else{
+		window.setTimeout(function(){
+			$.concierge.trigger({type: "page", value: 1});
+		    }, 500);
 	    }
 	});
 };
