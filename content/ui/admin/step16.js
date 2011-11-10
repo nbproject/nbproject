@@ -182,7 +182,6 @@ NB.pers.createStore = function(payload){
     //here we override the callback so that we can get new notes.
     var cb2 = function(P2){	
 	var m = NB.pers.store;
-	console.debug(P2);
 	m.add("comment", P2["comments"]);
 	m.add("location", P2["locations"]);
 	var msg="";
