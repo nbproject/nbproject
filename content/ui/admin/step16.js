@@ -179,9 +179,29 @@ NB.pers.createStore = function(payload){
 		draft: {},
 	    seen:{references: {id_location: "location"}}
 	});
-
-    $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
-    
+    //here we override the callback so that we can get new notes.
+    var cb2 = function(P2){	
+	var m = NB.pers.store;
+	console.debug(P2);
+	m.add("comment", P2["comments"]);
+	m.add("location", P2["locations"]);
+	var msg="";
+	var l,c;
+	for (var i in P2["comments"]){
+	    c = m.o.comment[i];
+	    l = m.o.location[c.ID_location];
+	    if (c.id_author !=  $.concierge.get_component("get_userinfo")().id){    //do nothing if I'm the author: 		
+		msg+="<a href='javascript:$.concierge.trigger({type: \"select_thread\", value:\""+l.ID+"\"})'>New comment on page "+l.page+"</a><br/>";
+	    }
+	}
+	if (msg != ""){
+	    $.I(msg, true);
+	}
+    };
+    $.concierge.setHistoryHelper(function(_payload, cb){
+	    _payload["__return"] = {type:"newNotesOnFile", a:{id_source: NB.pers.id_source}};
+	    NB.pers.call("log_history", _payload, cb);
+	}, 120000, cb2);    
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches==null || matches.length != 2){
 	alert("Can't open file b/c URL pathname doesn't with an integer: "+document.location.pathname);

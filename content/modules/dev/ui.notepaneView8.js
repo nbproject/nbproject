@@ -316,18 +316,15 @@
 			//send signal to redraw pages that needs to be redrawn: 
 			var D		= payload.diff;
 			var pages	= this._pages;
-			var do_render_now = false;
+			pages_to_render = {};
 			for (var i in D){
 			    if (D[i].id_source == id_source){
 				delete pages[D[i].page];
-				if (page == D[i].page){ 
-				    do_render_now = true;
-				}
+				pages_to_render[[D[i].page]] = null;
 			    }
 			}
-			if (do_render_now){
-			    this._maxpage = 0;
-			    this._render();//re-render now if al least one note on active page
+			for (var i in pages_to_render){
+			    this._render_one(i);
 			}
 		    }
 		}

@@ -171,17 +171,17 @@ def login_user(P,req):
         auth.log_guest_login(u_in["ckey"], user.id)
     return UR.prepare_response({"ckey": user.confkey}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
 
-def on_register_session(payload): 
-    req = payload["req"]
-    #print req.META
-    uid =  UR.getUserId(req)
-    p={}
-    p["ctime"] = payload["cid"]
-    p["client"] = req.META["REMOTE_HOST"] if "REMOTE_HOST" in req.META else None
-    p["ip"]     = req.META["REMOTE_ADDR"] if "REMOTE_ADDR" in req.META else None
-    p["referer"]= req.META["referer"]     if "referer"     in req.META else None
-    #TODO HISTORY
-    #annotations.registerSession(uid, p)
+#def on_register_session(payload): 
+#    req = payload["req"]
+#    #print req.META
+#    uid =  UR.getUserId(req)
+#    p={}
+#    p["ctime"] = payload["cid"]
+#    p["client"] = req.META["REMOTE_HOST"] if "REMOTE_HOST" in req.META else None
+#    p["ip"]     = req.META["REMOTE_ADDR"] if "REMOTE_ADDR" in req.META else None
+#    p["referer"]= req.META["referer"]     if "referer"     in req.META else None
+#    #TODO HISTORY
+#    #annotations.registerSession(uid, p)
 
 def on_delete_session(payload, s): 
     req = s["request"]
@@ -287,11 +287,12 @@ def getNotes(payload, req):
     uid = UR.getUserId(req)
     output = {}
     if "file" in payload: #access by file
+        after = payload.get("after", None)
         id_source = payload["file"]
         if auth.canReadFile(uid, id_source):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid)
+            output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -485,17 +486,24 @@ def log_history(payload, req):
     cid = UR.CID
     if cid == 0:        
         return  UR.prepare_response({}, 1, "CID MOST BE NONZERO")
-    session = annotations.markActivity(cid)
+    session, previous_activity = annotations.markActivity(cid)
     if session is None: 
         return  UR.prepare_response({}, 1, "SESSION NOT FOUND")
     id_session = session.id
+    output={}
     if "seen" in payload and cid != 0: 
         annotations.markCommentSeen(uid, id_session, payload["seen"])
     if "page" in payload and cid != 0: 
         annotations.markPageSeen(uid, id_session,  payload["page"])
     if "idle" in payload and cid != 0: 
-        annotations.markIdle(uid,  id_session, payload["idle"])    
-    return UR.prepare_response({})
+        annotations.markIdle(uid,  id_session, payload["idle"])        
+    if "__return" in payload and cid != 0:
+        R = payload["__return"]
+        if R["type"] == "newNotesOnFile": 
+            id_source = R["a"]["id_source"]
+            if auth.canReadFile(uid, id_source):
+                output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, previous_activity)             
+    return UR.prepare_response(output)
 
 def get_location_info(payload, req): 
     id = payload["id"]

@@ -329,13 +329,14 @@ def getComment(id, uid):
     comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)       
     return UR.model2dict(comment, names, "ID")
     
-def getCommentsByFile(id_source, uid):
+def getCommentsByFile(id_source, uid, after):
     names_location = __NAMES["location_v_comment2"]
     names_comment = __NAMES["comment2"]
     ensembles_im_admin = M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True))
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
-   
+    if after is not None: 
+        comments = comments.filter(ctime__gt=after)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     #Anonymous comments
@@ -697,9 +698,10 @@ def page_served(uid, p):
 def markActivity(cid):
     session = M.Session.objects.filter(ctime=cid)
     if len(session) == 0: 
-        return None
+        return None, None
     session = session[0]
-    session.lastActivity = datetime.datetime.now()
+    previous_activity = session.lastactivity
+    session.lastactivity = datetime.datetime.now()
     session.save()    
-    return session
+    return session, previous_activity
     
