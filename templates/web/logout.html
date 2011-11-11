@@ -3,6 +3,22 @@
 {% block css %}
 
 {% endblock %}
+
+{% block js %}   
+<script type="text/javascript" src="/content/modules/head.js/head_chrome.js"></script> 
+<script>
+      head.js(
+      "/content/modules/dev/mods2.js",
+      "/content/modules/dev/ui.concierge1.js", 
+      "/content/compiled/apidev.js", 
+      "/content/ui/admin/conf.js", 
+      "/content/modules/dev/pers2.js", 
+      "/content/ui/admin/logout.js", 
+      function(){$(function(){NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
+      );
+    </script>
+{% endblock %}
+
 {% block content %}
 <h1>Thanks for visiting the NB site, you are now logged out </h1>
 {% endblock %}

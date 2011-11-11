@@ -39,7 +39,7 @@
 		self._page =  null; 
 		self._scrollTimerID	=  null;
 		self._seenTimerID	= null;
-		self._id_location	= null;
+		self._id_location	= null; //location_id of selected thread
 		self._is_first_stroke	= true;
 		self._rendered		= false;
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><span class='filter-msg'>15 threads</span><div class='filter' action='me'><span>me</span><div class='filter-count'>3</div></div></div><div class='notepaneView-pages'/>");
@@ -132,9 +132,11 @@
 	    },
 	    _lens: function(l){
 		var m = this._model;
+		var me = $.concierge.get_component("get_userinfo")();
 		var numnotes = m.get("comment", {ID_location: l.ID}).length();
 		var numseen = m.get("seen", {id_location: l.ID}).length();
-		var numnew	= numnotes - numseen;
+		var unseen_me = m.get("comment", {ID_location: l.ID, id_author: me.id}).length() -  m.get("seen", {ID_location: l.ID, id_author: me.id}).length(); 
+		var numnew	= numnotes - numseen - unseen_me; //so that notes that I've authored but that I haven't seen don't count. 
 		/*
 		var lf_numnotes =  "<ins class='locationflag'/>";
 		if (numnew > 0){
@@ -144,7 +146,6 @@
 		    lf_numnotes = "<ins class='locationflag lf-numnotes'>"+numnotes+"</ins>";
 		}
 		*/
-		var me = $.concierge.get_component("get_userinfo")();
 		var lf_numnotes =  "<ins class='locationflag "+(numnew>0?"lf-numnewnotes":"lf-numnotes")+"'>"+numnotes+"</ins>";
 		var lf_admin	= m.get("comment", {ID_location: l.ID, admin:1}).is_empty() ? "" : "<ins class='locationflag'><div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/></ins>";
 		var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
@@ -236,14 +237,14 @@
 		}
 	    }, 
 	    _render_one: function(page){
-		if (page > this._maxpage){
-		    this._maxpage =  page;
+		var self	= this;		
+		if (page > self._maxpage){
+		    self._maxpage =  page;
 		}
-		if (!(page in this._pages)){
-		    var self	= this;
+		if (!(page in self._pages)){
 		    var model	= self._model; 
 		    var $pane	= $("div.notepaneView-comments[page="+page+"]", self.element).empty();
-		    var locs	= model.get("location", {id_source:  this._id_source, page: page }).sort(self.options.loc_sort_fct);
+		    var locs	= model.get("location", {id_source:  self._id_source, page: page }).sort(self.options.loc_sort_fct);
 		    var o;
 		    if (locs.length){
 			$pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs.length+" thread"+$.pluralize(locs.length)+" on page "+page+"</div>");
@@ -253,11 +254,15 @@
 			$pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
 		    }
 		    $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
+		    var sel = model.o.location[self._id_location];
+		    if (sel && sel.page==page){//highlight selection
+			$("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
+		    }
 		    self._pages[page] = true;		   
-		    this._rendered = true;
+		    self._rendered = true;
 		    return locs;
 		}
-		this._rendered = true;
+		self._rendered = true;
 		return null;
 	    }, 
 	    set_model: function(model){
@@ -311,18 +316,15 @@
 			//send signal to redraw pages that needs to be redrawn: 
 			var D		= payload.diff;
 			var pages	= this._pages;
-			var do_render_now = false;
+			pages_to_render = {};
 			for (var i in D){
 			    if (D[i].id_source == id_source){
 				delete pages[D[i].page];
-				if (page == D[i].page){ 
-				    do_render_now = true;
-				}
+				pages_to_render[[D[i].page]] = null;
 			    }
 			}
-			if (do_render_now){
-			    this._maxpage = 0;
-			    this._render();//re-render now if al least one note on active page
+			for (var i in pages_to_render){
+			    this._render_one(i);
 			}
 		    }
 		}

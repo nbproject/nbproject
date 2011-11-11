@@ -102,14 +102,15 @@
 	}
 	this.historyHelper.latesteventtime = now;
     };
-    Concierge.prototype.setHistoryHelper = function(fct, T){
+    Concierge.prototype.setHistoryHelper = function(fct, T, cb){
+	//cb is optional
 	var self=this;
 	self.historyHelper.T = T;
 	var f = function(){
 	    var now = (new Date()).getTime();
 	    if (self.historyHelper.latestentrytime && now-self.historyHelper.latestentrytime<T){
-		//there have been some events
-		fct(self.historyHelper.log, function(){});
+		//there have been some events		
+		fct(self.historyHelper.log, cb || function(){});
 		self.historyHelper.log={};
 	    }
 	};

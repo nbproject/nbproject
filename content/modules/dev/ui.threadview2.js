@@ -54,7 +54,7 @@
 		}	
 	    },
 	    _lens: function(o){
-		var bold_cl = this._model.get("seen", {id: o.ID}).is_empty() ? "" : "note-bold";
+		var bold_cl = (this._model.get("seen", {id: o.ID}).is_empty() || o.id_author == this._me.id) ? "" : "note-bold";
 		var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
 		var me_info = (o.id_author == this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
 		var type_info = "";
