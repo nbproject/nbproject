@@ -42,7 +42,12 @@
 		self._id_location	= null; //location_id of selected thread
 		self._is_first_stroke	= true;
 		self._rendered		= false;
-		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><span class='filter-msg'>15 threads</span><div class='filter' action='me'><span>me</span><div class='filter-count'>3</div></div></div><div class='notepaneView-pages'/>");
+		self._filters		= {me: false, star: false, question: false};
+		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><span class='filter-msg'>15 threads</span>\
+<a title='toggle filter: threads in which I participated' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>3</div></a>\
+<a title='toggle filter: starred threads' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span>star</span><div class='filter-count'>2</div></a>\
+<a title='toggle filter: threads with standing questions' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>question</span><div class='filter-count'>10</div></a>\
+</div><div class='notepaneView-pages'/>");
 		/*
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><button action='prev'>Prev</button> <button action='next'>Next</button> <a style='color:#777777;' href='javascript:NB.pers.expandGlobalComments()'><span class='global_comments_cnt'>0</span> global comments</a> <a style='color:#777777; margin-left: 10px;' href='javascript:$.concierge.trigger({type: \"global_editor\", value: true})'>New ...</a> </div><div class='notepaneView-pages'/>");
 		
@@ -60,52 +65,62 @@
 		$.mods.ready("contextmenu", function(){});
 		$("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");	       	    },
 	    _defaultHandler: function(evt){
-		if (this._id_source ==  $.concierge.get_state("file")){
+		var self=this;
+		if (self._id_source ==  $.concierge.get_state("file")){
 		    switch (evt.type){
 		    case "page":
-		    if (this._page != evt.value){
-			this._page =  evt.value;			
-			this._render();
+		    if (self._page != evt.value){
+			self._page =  evt.value;			
+			self._render();
 			var scrollby;
-			var container = $("div.notepaneView-pages", this.element);
-			var sel = $("div.notepaneView-comments[page="+evt.value+"]",this.element);
+			var container = $("div.notepaneView-pages", self.element);
+			var sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
 			var delta_top = sel.offset().top - container.offset().top;
 			container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
 		    }
 		    break;
+		    case "filter_toggle": 
+			if (evt.value in self._filters){
+			    self._filters[evt.value] = (!(self._filters[evt.value]));
+			    self._page =  1;
+			    self._pages = {};
+			    self._maxpage = 0;
+			    self._render();
+			}
+		    break;
 		    case "note_hover": 
-		    $("div.location-lens[id_item="+evt.value+"]", this.element).addClass("hovered");
+		    $("div.location-lens[id_item="+evt.value+"]", self.element).addClass("hovered");
 		    break;
 		    case "note_out": 
-		    $("div.location-lens[id_item="+evt.value+"]", this.element).removeClass("hovered");		
+		    $("div.location-lens[id_item="+evt.value+"]", self.element).removeClass("hovered");		
 		    break;
 		    case "warn_page_change": 
-		    var o = this._model.o.location[evt.value];
+		    var o = self._model.o.location[evt.value];
 		    var page_summary;
-		    if (o.page > this._page){
-			this._render_one(o.page);
+		    if (o.page > self._page){
+			self._render_one(o.page);
 			page_summary = o.page;
 		    }
 		    else{
-			page_summary = this._page
+			page_summary = self._page
 		    }
-		    $("div.location-pagesummary[page="+page_summary+"]", this.element).addClass("selected");
+		    $("div.location-pagesummary[page="+page_summary+"]", self.element).addClass("selected");
 		    break;
 		    case "select_thread": 
-		    $("div.location-pagesummary.selected", this.element).removeClass("selected");
-		    this._id_location = evt.value;
-		    if (this._seenTimerID != null){
-			window.clearTimeout(this._seenTimerID);
+		    $("div.location-pagesummary.selected", self.element).removeClass("selected");
+		    self._id_location = evt.value;
+		    if (self._seenTimerID != null){
+			window.clearTimeout(self._seenTimerID);
 		    }
-		    this._seenTimerID = window.setTimeout(this._f_location_seen(this._id_location), 1000);
-		    var o = this._model.o.location[evt.value];
-		    if (o.page !=  this._page){
-			this._page =  o.page;
-			this._render();
+		    self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
+		    var o = self._model.o.location[evt.value];
+		    if (o.page !=  self._page){
+			self._page =  o.page;
+			self._render();
 		    }
-		    $("div.location-lens", this.element).removeClass("selected");
-		    var sel = $("div.location-lens[id_item="+evt.value+"]",this.element).addClass("selected");
-		    var container = $("div.notepaneView-pages", this.element);
+		    $("div.location-lens", self.element).removeClass("selected");
+		    var sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
+		    var container = $("div.notepaneView-pages", self.element);
 		    if (sel.length>0){
 			var scrollby;
 			var h = sel.height() ;
@@ -125,7 +140,7 @@
 		    }
 		    break;
 		    case "keydown": 
-		    this._keydown(evt.value);
+		    self._keydown(evt.value);
 		    break;
 		    }	
 		}	
@@ -300,6 +315,7 @@
 		}
 		this._update();	
 	    }, 
+
 	    update: function(action, payload, items_fieldname){
 		if (action == "add" && items_fieldname=="location"){
 		    var id_source	= this._id_source; 
@@ -367,6 +383,7 @@
 	    select_thread: null, 
 	    warn_page_change: null, 
 	    keydown: null,
+	    filter_toggle: null
 	}		    
     };
 })(jQuery);

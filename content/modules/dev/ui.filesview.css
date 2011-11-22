@@ -7,20 +7,6 @@ height: 100%;
 .contextMenu {
         font-family: Verdana,Arial,Helvetica,sans-serif;
 }
-.contextMenu li.reply a { background-image: url(../data/icons/png/comment_16.png); }
-.contextMenu li.subscribe a { background-image: url(../data/icons/png/cloudy_16.png); }
-.contextMenu li.unsubscribe a { background-image: url(../data/icons/png/clear_16.png); }
-.contextMenu li.answerplease a { background-image: url(../data/icons/png/question_16.png); }
-.contextMenu li.answered a { background-image: url(../data/icons/png/happy_16.png); }
-.contextMenu li.highlight a { background-image: url(../data/icons/png/star_16.png); }
-.contextMenu li.hide a { background-image: url(../data/icons/png/close_16.png); }
-.contextMenu li.approve a { background-image: url(../data/icons/png/approve_16.png); }
-//.contextMenu li.approve.selected a { background-image: url(../data/icons/png/approve_selected_16.png); }
-.contextMenu li.reject a { background-image: url(../data/icons/png/reject_16.png); }
-//.contextMenu li.reject.selected a { background-image: url(../data/icons/png/reject_selected_16.png); }
-.contextMenu li.favorite a { background-image: url(../data/icons/png/star_16.png); }
-.contextMenu li.hide a { background-image: url(../data/icons/png/remove_16.png); }
-
 
 td.filesview_ftitle:hover{
 background-color: #ffffa0;
@@ -33,14 +19,7 @@ cursor: context-menu;
 position: absolute;
 width: 100%;
 height: 100%;
-//color: #a0a0a0;
 background-color: #f0f0f0;
-//font-size: x-large;
-//font-family: Helvetica;
-//    padding-top: 20%;
-//    text-align: center;
-//padding: 30px 100px 30px 30px
-
 }
 
 button[action=add_file]>ins{
