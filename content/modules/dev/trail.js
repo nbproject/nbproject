@@ -53,23 +53,23 @@
     };
 
 	
-	var _fill_tree = function(c){
-	    var m = NB.pers.store;
-	    var $div = $("<div class='threadview-branch'>"+_commentlens(c)+"</div>");
-	    var children = m.get("comment", {ID_location: c.ID_location, id_parent: c.ID}).sort(_comment_sort_fct);		
-	    for (var i = 0; i<children.length;i++){
-		$div.append(_fill_tree(children[i]));
-	    }
-	    return $div;
-	};
+    var _fill_tree = function(c){
+	var m = NB.pers.store;
+	var $div = $("<div class='threadview-branch'>"+_commentlens(c)+"</div>");
+	var children = m.get("comment", {ID_location: c.ID_location, id_parent: c.ID}).sort(_comment_sort_fct);		
+	for (var i = 0; i<children.length;i++){
+	    $div.append(_fill_tree(children[i]));
+	}
+	return $div;
+    };
 	
-	var loc_lens = function(l){
-	    var m = NB.pers.store;
-	    /*
-	var f_reply = function(event){
-	    var id_item = $(event.target).closest("div.note-lens, div.note-abridgedlens").attr("id_item");
-	    $.concierge.trigger({type: "reply_thread", value: id_item});
-	};
+    var loc_lens = function(l){
+	var m = NB.pers.store;
+	/*
+	  var f_reply = function(event){
+	  var id_item = $(event.target).closest("div.note-lens, div.note-abridgedlens").attr("id_item");
+	  $.concierge.trigger({type: "reply_thread", value: id_item});
+	  };
 	*/
 	var root = m.get("comment", {ID_location: l.ID, id_parent: null}).first();
 	var loc_lens = $("<div class='location-lens' id_item='"+l.ID+"'/>");
@@ -104,6 +104,7 @@
     setTimeout(function(){
 	    if (__nb_userinfo){
 		NB.conf.userinfo=__nb_userinfo;
+	    }
 	    NB.pers.connection_id = 1;
 	    NB.conf.servers.rpc=server_url;
 	    NB.pers._comments = [];
