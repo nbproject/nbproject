@@ -348,6 +348,30 @@ def getCommentsByFile(id_source, uid, after):
     return locations_dict, comments_dict
     #return __post_process_comments(o, uid)
 
+def get_comments_collection(uid, P):
+    output = {}
+    comments_refs = M.Comment.objects.filter(id__in=P["comments"], deleted=False, moderated=False)
+    locations= M.Location.objects.filter(comment__in=comments_refs)
+    locations_im_admin = locations.filter(ensemble__in= M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True)))                                        
+    comments =  M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership,  base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id = base_comment.location_id'}).select_related("location", "author").filter(deleted=False, moderated=False, location__in=locations).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
+    ensembles = M.Ensemble.objects.filter(location__in=locations)
+    files = M.Source.objects.filter(location__in=locations)
+    ownerships = M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__in=files, ensemble__in=ensembles)
+    seen = M.CommentSeen.objects.select_related("comment").filter(comment__in=comments).filter(user__id=uid)
+    output["ensembles"]=UR.qs2dict(ownerships, __NAMES["ensembles2"] , "ID") 
+    output["files"]=UR.qs2dict(ownerships, __NAMES["files2"] , "ID") 
+    output["folders"]=UR.qs2dict(ownerships, __NAMES["folders2"] , "ID") 
+    output["locations"] = UR.qs2dict( comments, __NAMES["location_v_comment2"], "ID")
+    comments_dict =  UR.qs2dict( comments, __NAMES["comment2"] , "ID")
+    #Anonymous comments
+    for k,c in comments_dict.iteritems(): 
+        if c["type"] < 3: 
+            c["fullname"]="Anonymous"
+            c["id_author"]=0
+    output["comments"] = comments_dict
+    output["seen"] = UR.qs2dict(seen, {"id": None, "id_location": "comment.location_id"}, "id")    
+    return output   
+
 def get_comments_auth(uid, P):
     output = {}
     id_ensemble = False
