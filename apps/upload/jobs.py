@@ -277,6 +277,7 @@ def process_next(args=[]):
                 print "Error happened with pdf: deleting %d from records " %(id_source,)
                 V = {"reply_to": settings.SMTP_REPLY_TO,
                      "email": task.source.submittedby.email,
+                     "source_id": task.source.id,
                      "title": task.source.title, 
                      "submitted": task.submitted, 
                      "support":  settings.SUPPORT_LINK,
