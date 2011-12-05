@@ -11,6 +11,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * python-pypdf
    * context (for rich, i.e. annotated pdf generation)
 
+
 To make sure you have these installed, you can run the following command: 
 sudo make prereqs_common
 
@@ -23,7 +24,7 @@ Then, you have 2 choices for how to deploy NB: As a standalone app (based on a t
 
 - For the apache django version: 
     * apache (>= 2)
-    * python-psycopg2 not yet
+    * python-psycopg2 
     * django (>=1.2). 
       Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the 1.2 version so it can be installed from the svn as:
       export DJANGO_DIR=/opt/django/django1.2.1
