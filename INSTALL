@@ -15,13 +15,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
 To make sure you have these installed, you can run the following command: 
 sudo make prereqs_common
 
-Then, you have 2 choices for how to deploy NB: As a standalone app (based on a twisted server), or as a django app (requires apache and django)
-
-- For the twisted version: 
-   * python-twisted
-   To make sure you have these installed, you can run the following command: 
-    sudo make prereqs_twisted
-
+Then, NB can be deplyed as a django app, which requires the following: 
 - For the apache django version: 
     * apache (>= 2)
     * python-psycopg2 
