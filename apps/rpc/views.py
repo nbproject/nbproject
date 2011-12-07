@@ -59,7 +59,7 @@ __EXPORTS = [
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
-__AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search" ]
+__AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search", "collection" ]
 
 
 def on_register_session(sender, **payload): 

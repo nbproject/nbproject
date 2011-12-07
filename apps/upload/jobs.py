@@ -276,11 +276,12 @@ def process_next(args=[]):
             if not process_file(id_source, res, resolutions[res],rep_dir, cache_dir, fmt): 
                 print "Error happened with pdf: deleting %d from records " %(id_source,)
                 V = {"reply_to": settings.SMTP_REPLY_TO,
-                     "email": task.submittedby.email,
+                     "email": task.source.submittedby.email,
+                     "source_id": task.source.id,
                      "title": task.source.title, 
                      "submitted": task.submitted, 
                      "support":  settings.SUPPORT_LINK,
-                     "firstname": task.submittedby.firstname
+                     "firstname": task.source.submittedby.firstname
                      }
                 task.delete()
                 M.Ownership.objects.get(source__id=id_source).delete()
