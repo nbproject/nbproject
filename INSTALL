@@ -19,16 +19,7 @@ Then, NB can be deplyed as a django app, which requires the following:
 - For the apache django version: 
     * apache (>= 2)
     * python-psycopg2 
-    * django (>=1.2). 
-      Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the 1.2 version so it can be installed from the svn as:
-      export DJANGO_DIR=/opt/django/django1.2.1
-      sudo mkdir -p $DJANGO_DIR
-      cd $DJANGO_DIR
-      svn co http://code.djangoproject.com/svn/django/tags/releases/1.2.1 . 
-      sudo chown -R www-data:www-data $DJANGO_DIR
-      cd /usr/lib/python2.6/dist-packages
-      sudo ln -s $DJANGO_DIR/django/ .
-
+    * django (>=1.2).  
     * libapache2-mod-wsgi
     To make sure you have these installed, you can run the following command: 
     sudo make prereqs_django
@@ -65,42 +56,23 @@ Then, NB can be deplyed as a django app, which requires the following:
    - for rich pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
 
 4- Crontab setup
-   # m h  dom mon dow   command
-   * * * * * (cd /var/local/home/sacha/nb;   ./utils_notify immediate >> log_immediate)
-   1 0 * * * (cd /var/local/home/sacha/nb;   ./utils_notify digest >> log_digest)
-   # Also, make sure MAILTO is set, so it doesn't start to send mail anywhere if the scripts above crash
+   A sample crontab as part of the 'make django'. You just need to add it to your crontab for it to take effect
 
-5- Add the first user in the database: 
-  At this point the database is empty, so unless you have your own NB database backup file, you probably want to add a first user in the DB. This can be done as follows: 
-  * psql -h localhost -U nbadmin notabene
-  * insert into users(email, password, valid) values('yourname@yourserver.com', 'secret', 1);
-  * After that, you can use the the usename / password that you just created to login onto nb. 
-  
-6- Use the Legacy UI to create new groups: 
-  * if that's not done already, start the nb server, using the following procedure, for instance: 
-       cd path/of/your/nb/server
-       sudo nohup ./runserver
-       [Ctrl-Z]
-       bg
-
-       Note: nohup isn't necessary for debugging purposes, only if you intend to be able to log out from the shell from which you started the nb server. If you use nohup, the messages from the standard output and error will be logged in the nohup.log file). 
-
-  * The Legacy admin UI can be used to create groups for your users (don't use it for any other purpose). It's located at 
-    	http://your_server_name/?t=legacy_admin (or http://your_server_name:port_number/?t=legacy_admin if you didn't started the nb server with admin rights). Port
-  * You can then use the regular UI: 	http://your_server_name/  to add files and invite participants...
-
-
-7- Special notes for apache / django install: 
-   - http://docs.djangoproject.com/en/1.2/howto/deployment/modwsgi/
-     - Add to httpd.conf: 
-       	   WSGIScriptAlias / /var/local/home/sacha/nb/servers/apache/django.wsgi
-
-
-8- Backup 
+5- Backup 
    - Database:  use the pg_dump command, for instance, if NB was installed on host nb.csail.mit.edu, that the DB belonged to postgres used nbadmin, and that the DB was called notabene, you'd use the following: 
      -pg_dump -U nbadmin -h nb.csail.mit.edu -Fc notabene > nb.backup.YYYYMMDD
    - uploaded PDF files: Use your favorite file backup technique (tar, rdiff-backup, unison etc...) to backup the directory: 
      "%s%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) (cf your settings.py files for actual values). 
+
+6- Notes: 
+    Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the 1.2 version so it can be installed from the svn as:
+      export DJANGO_DIR=/opt/django/django1.2.1
+      sudo mkdir -p $DJANGO_DIR
+      cd $DJANGO_DIR
+      svn co http://code.djangoproject.com/svn/django/tags/releases/1.2.1 . 
+      sudo chown -R www-data:www-data $DJANGO_DIR
+      cd /usr/lib/python2.6/dist-packages
+      sudo ln -s $DJANGO_DIR/django/ .
 
 
 Questions: sacha@csail.mit.edu
