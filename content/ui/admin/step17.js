@@ -31,7 +31,7 @@ NB.pers.init = function(){
 		js: ["/content/modules/dev/ui.docView8.js",  "/content/modules/dev/ui.drawable4.js"],
 		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
 		    }, 
-		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: [] }, 
+		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
 		threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
 		editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
 		treeview: {js: ["/content/modules/dev/ui.treeview6.js"],css: [] },

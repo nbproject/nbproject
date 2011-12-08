@@ -43,10 +43,11 @@
 		self._is_first_stroke	= true;
 		self._rendered		= false;
 		self._filters		= {me: false, star: false, question: false};
-		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><span class='filter-msg'>15 threads</span>\
-<a title='toggle filter: threads in which I participated' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>3</div></a>\
-<a title='toggle filter: starred threads' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span>star</span><div class='filter-count'>2</div></a>\
-<a title='toggle filter: threads with standing questions' class='filter' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>question</span><div class='filter-count'>10</div></a>\
+		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>\
+<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>3</div></a>\
+<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span>star</span><div class='filter-count'>2</div></a>\
+<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>question</span><div class='filter-count'>10</div></a></div>\
+<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>\
 </div><div class='notepaneView-pages'/>");
 		/*
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><button action='prev'>Prev</button> <button action='next'>Next</button> <a style='color:#777777;' href='javascript:NB.pers.expandGlobalComments()'><span class='global_comments_cnt'>0</span> global comments</a> <a style='color:#777777; margin-left: 10px;' href='javascript:$.concierge.trigger({type: \"global_editor\", value: true})'>New ...</a> </div><div class='notepaneView-pages'/>");
@@ -59,9 +60,8 @@
 		    });
 		*/
 		$.mods.declare({
-			notepaneView1: {js: [], css: ["/content/modules/dev/ui.notepaneView6.css"]}, 
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-		$.mods.ready("notepaneView1", function(){});
+		//		$.mods.ready("notepaneView1", function(){});
 		$.mods.ready("contextmenu", function(){});
 		$("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");	       	    },
 	    _defaultHandler: function(evt){
@@ -145,22 +145,41 @@
 		    }	
 		}	
 	    },
+	    _update_filters: function(){
+		var self = this;
+		var m = self._model;
+		var locs = m.get("location", {id_source:  self._id_source});
+		var me = $.concierge.get_component("get_userinfo")();
+		var n_unfiltered = locs.length();
+		var filters_on = false;
+		var $filters = $("a.filter", self.element).removeClass("active");
+		var $filter_me = $filters.filter("[action=me]");
+		if (self._filters.me){
+		    locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    $filter_me.addClass("active");
+		    filters_on = true;
+		}
+		var n_me =  self._filters.me ? locs.length() : locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location")).length();
+		$("div.filter-count", $filter_me).text(n_me);
+		if (filters_on){
+		    $("span.filter-msg-unfiltered", self.element).hide();
+		    $("span.filter-msg-filtered", self.element).show();
+		    $("span.n_total", self.element).text(n_unfiltered);
+		    $("span.n_filtered", self.element).text(locs.length());
+		} 
+		else{
+		    $("span.filter-msg-unfiltered", self.element).show();
+		    $("span.filter-msg-filtered", self.element).hide();	
+		    $("span.n_unfiltered", self.element).text(locs.length());
+		}
+	    },
 	    _lens: function(l){
 		var m = this._model;
 		var me = $.concierge.get_component("get_userinfo")();
 		var numnotes = m.get("comment", {ID_location: l.ID}).length();
 		var numseen = m.get("seen", {id_location: l.ID}).length();
 		var unseen_me = m.get("comment", {ID_location: l.ID, id_author: me.id}).length() -  m.get("seen", {ID_location: l.ID, id_author: me.id}).length(); 
-		var numnew	= numnotes - numseen - unseen_me; //so that notes that I've authored but that I haven't seen don't count. 
-		/*
-		var lf_numnotes =  "<ins class='locationflag'/>";
-		if (numnew > 0){
-		    lf_numnotes = "<ins class='locationflag lf-numnewnotes'>"+numnotes+"</ins>";
-		}
-		else if (numnotes > 1){
-		    lf_numnotes = "<ins class='locationflag lf-numnotes'>"+numnotes+"</ins>";
-		}
-		*/
+		var numnew	= numnotes - numseen - unseen_me; //so that notes that I've authored but that I haven't seen don't count. 	
 		var lf_numnotes =  "<ins class='locationflag "+(numnew>0?"lf-numnewnotes":"lf-numnotes")+"'>"+numnotes+"</ins>";
 		var lf_admin	= m.get("comment", {ID_location: l.ID, admin:1}).is_empty() ? "" : "<ins class='locationflag'><div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/></ins>";
 		var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
@@ -234,6 +253,7 @@
 		var p_after = p; 
 		var p_before = p
 		this._render_one(p);		
+		this._update_filters();
 		//estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
 		var container = 	$("div.notepaneView-pages", this.element);		
 		while ( container.children().last().offset().top - container.offset().top < container.height() ){
@@ -259,7 +279,12 @@
 		if (!(page in self._pages)){
 		    var model	= self._model; 
 		    var $pane	= $("div.notepaneView-comments[page="+page+"]", self.element).empty();
-		    var locs	= model.get("location", {id_source:  self._id_source, page: page }).sort(self.options.loc_sort_fct);
+		    var locs	= model.get("location", {id_source:  self._id_source, page: page });
+		    var me = $.concierge.get_component("get_userinfo")();
+		    if (self._filters.me){
+			locs = locs.intersect(model.get("comment", {id_author: me.id}).values("ID_location"));
+		    }
+		    locs = locs.sort(self.options.loc_sort_fct);
 		    var o;
 		    if (locs.length){
 			$pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs.length+" thread"+$.pluralize(locs.length)+" on page "+page+"</div>");

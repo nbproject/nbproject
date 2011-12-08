@@ -347,7 +347,26 @@ NB.models.Dict.prototype.as_object = function(){
     }
     return output;
 };
+ 
+NB.models.Dict.prototype.values = function(fieldname){
+    var output = {};
+    for (var i in this){
+	if (this.hasOwnProperty(i)){
+	    output[this[i][fieldname]] = null;
+	}
+    } 
+    return output;
+};
 
+NB.models.Dict.prototype.intersect = function(ids){
+    var output = new NB.models.Dict();
+    for (var i in this){
+	if (this.hasOwnProperty(i) && (i in ids)){
+	    output[i] =this[i];
+	}
+    } 
+    return output;
+};
 
 NB.models.__intersect = function(o1, o2){
     if (o1==null) 

@@ -123,7 +123,8 @@
 	    var $expand	= $(this.options.expand);
 	    if ($expand.length){
 		var s0		= $expand.offset().top+parseInt($expand.css("margin-top")) - this.element.offset().top;
-		$expand.height(this.element.height() - s0);
+		var new_height = this.element.height() - s0;
+		$expand.height(new_height);
 	    }
 	}
     };

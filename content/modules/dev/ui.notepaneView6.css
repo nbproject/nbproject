@@ -120,6 +120,8 @@ div.notepaneView-pages{
 overflow-y: auto;
 }
 
+
+
 div.location-flags{
 float: left;
 width: 60px;
@@ -280,12 +282,21 @@ margin: 10px;
 
 
 /*filters*/
+div.filter-controls{
+float: right;
+padding-top: 4px;
+}
 a.filter{
 margin-right: 10px;
 padding: 0px;
-border: thin solid #c0c0c0;
+border: thin solid #808080;
 -moz-border-radius: 3px;
 -webkit-border-radius: 3px;
+}
+
+a.filter.active{
+border-bottom-width: 5px;
+border-bottom-color: #ffff00;
 }
 
 a.filter span{
@@ -305,3 +316,28 @@ padding-left: 5px;
 margin-right: 1px;
 text-decoration: underline;
 }
+
+
+div.notepaneView-header{
+background-color: #c0c0c0;
+padding: 3px 5px 5px 5px;
+border-bottom: thin solid #a0a0a0;
+}
+
+span.filter-msg-unfiltered, span.filter-msg-filtered{
+padding-right: 10px;
+color: #808080;
+}
+
+span.n_filtered{
+color: #ffff00;
+font-size: large;
+font-weight: bold;
+}
+
+span.n_unfiltered{
+font-size: large;
+font-weight: bold;
+}
+
+
