@@ -195,7 +195,16 @@ def canEdit(uid, id_ann):
 def canDelete(uid, id_ann):    
     return canEdit(uid, id_ann)
 
-
+def canMarkThread(uid, id_location):
+    #user needs to be able to read root comment in that location
+    location = M.Location.objects.get(pk=id_location)
+    root_comment = M.Comment.objects.get(parent=None, location=location)
+    if root_comment.author_id == uid: 
+        return True
+    m = M.Membership.objects.filter(ensemble = location.ensemble, user__id=uid)
+    return m.count()>0 and (root_comment.type>2 or (m[0].admin and root_comment.type>1)) 
+    
+ 
 def log_guest_login(ckey, id_user):
     guest = M.User.objects.get(confkey=ckey)
     glh = M.GuestLoginHistory(user_id=id_user, guest=guest)

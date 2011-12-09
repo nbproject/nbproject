@@ -272,6 +272,7 @@ NB.pers.__components = {
 	return widget;
     },
     note_deleter: function(P, cb){NB.pers.call("deleteNote", P, cb);},
+    mark_thread: function(P,cb){NB.pers.call("markThread", P, cb);},
     get_login_window: function(P,cb){
 	return $("#login-window");
     }, 

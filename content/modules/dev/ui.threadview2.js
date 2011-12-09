@@ -32,8 +32,14 @@
 		  alert("todo");
 		  });
 		*/
-		self.element.addClass("threadview").append("<div class='threadview-header'></div><div class='threadview-pane'/>");
-		
+		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><span class='mark-toggle' action='star'>Star (2)</span><span class='mark-toggle' action='question'>Question (3)</span></div></div><div class='threadview-pane'/>");
+		var star_button = $("span.mark-toggle[action=star]", self.element).click(function(event){
+			//var $elt = $(event.currentTarget);
+			//$elt.toggleClass("active");
+			$.D("pnup"); 
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: 2}, function(){$.D("Marked");});
+		    }); 
+
 		//splash screen: 
 		$("div.threadview-pane", self.element).append($.concierge.get_component("mini_splashscreen")());		
 		$.mods.declare({

@@ -144,6 +144,22 @@ class Mark(models.Model):                                                       
     comment             = ForeignKey(Comment)                                   # old: id_ann integer NOT NULL
     user                = ForeignKey(User)                                      # old: id_user integer NOT NULL
 
+class ThreadMark(models.Model):
+    TYPES               = ((1, "question"), (2, "star"))
+    type                = IntegerField(choices=TYPES)
+    active              = BooleanField(default=True)
+    ctime               = DateTimeField(default=datetime.now)                    
+    location            = ForeignKey(Location)
+    user                = ForeignKey(User)
+    
+class ThreadMarkHistory(models.Model):
+    TYPES               = ((1, "question"), (2, "star"))
+    type                = IntegerField(choices=TYPES)
+    active              = BooleanField(default=True)
+    ctime               = DateTimeField(default=datetime.now)                    
+    location            = ForeignKey(Location)
+    user                = ForeignKey(User)
+    
 class Processqueue(models.Model):                                               # old: nb2_processqueue
     source              = ForeignKey(Source, null=True)                                    # old: id_source integer,
     submitted           = DateTimeField(default=datetime.now)                   # old: submitted timestamp without time zone DEFAULT now(),

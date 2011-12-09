@@ -55,7 +55,8 @@ __EXPORTS = [
     "move_file", 
     "register_user", 
     "login_user", 
-    "set_grade_assignment"
+    "set_grade_assignment", 
+    "markThread"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -371,6 +372,19 @@ def getMembers(payload, req):
         if auth.canGetMembers(uid, payload["id_ensemble"]): 
             return UR.prepare_response(annotations.get_members(payload["id_ensemble"]))
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
+
+
+def markThread(payload, req):
+    uid = UR.getUserId(req)
+    id_location =  payload["id_location"]
+    if not auth.canMarkThread(uid,id_location ):
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    else: 
+        mark = annotations.markThread(uid, payload);
+        tms = {}
+        tms[mark["id"]] = mark                
+        p = {"threadmarks": tms}
+        return UR.prepare_response(p)
 
 def markNote(payload, req):
     uid = UR.getUserId(req)

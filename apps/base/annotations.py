@@ -486,6 +486,30 @@ def getSeenByFile(id_source, uid):
     seen = M.CommentSeen.objects.select_related("comment").filter(comment__in=comments).filter(user__id=uid)
     return UR.qs2dict(seen, names, "id")
 
+def markThread(uid, payload):
+    mtype = payload["type"]
+    lid  = payload["id_location"]
+    mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid)
+    if mark.count()>0: 
+        mark = mark[0]
+        mh = M.ThreadMarkHistory()
+        mh.active = mark.active
+        mh.ctime = mark.ctime
+        mh.location_id = mark.location_id
+        mh.user_id = mark.user_id    
+        mh.type = mark.type
+        mh.save()  
+        mark.ctime = datetime.datetime.now()          
+        mark.active =  payload["active"] if "active" in payload else (not mark.active) # if no arg given, toggle 
+    else: 
+        mark = M.ThreadMark()
+        mark.user_id = uid
+        mark.location_id = lid
+        mark.type = mtype
+        mark.active = payload["active"] if "active" in payload else True 
+    mark.save()
+    return UR.model2dict(mark)
+
 def getMark(uid, payload):
     names = {
         "ID": "id",
