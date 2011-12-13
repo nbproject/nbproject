@@ -43,25 +43,16 @@
 		self._is_first_stroke	= true;
 		self._rendered		= false;
 		self._filters		= {me: false, star: false, question: false};
+		self.QUESTION		= null;
+		self.STAR		= null;
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>\
-<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>3</div></a>\
-<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span>star</span><div class='filter-count'>2</div></a>\
-<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>question</span><div class='filter-count'>10</div></a></div>\
+<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a>\
+<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a>\
+<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' style='margin-top: -3px'/>      </span><div class='filter-count'>...</div></a></div>\
 <span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>\
 </div><div class='notepaneView-pages'/>");
-		/*
-		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><button action='prev'>Prev</button> <button action='next'>Next</button> <a style='color:#777777;' href='javascript:NB.pers.expandGlobalComments()'><span class='global_comments_cnt'>0</span> global comments</a> <a style='color:#777777; margin-left: 10px;' href='javascript:$.concierge.trigger({type: \"global_editor\", value: true})'>New ...</a> </div><div class='notepaneView-pages'/>");
-		
-		$("button[action=prev]", self.element).click(function(){
-			alert("todo");
-		    });
-		$("button[action=next]", self.element).click(function(){
-			alert("todo");
-		    });
-		*/
 		$.mods.declare({
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-		//		$.mods.ready("notepaneView1", function(){});
 		$.mods.ready("contextmenu", function(){});
 		$("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");	       	    },
 	    _defaultHandler: function(evt){
@@ -154,18 +145,30 @@
 		var filters_on = false;
 		var $filters = $("a.filter", self.element).removeClass("active");
 		var $filter_me = $filters.filter("[action=me]");
+		var $filter_star = $filters.filter("[action=star]");
+		var locs_me		= locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		var locs_star		= m.get("threadmark", {active: true, type: self._STAR });//.values("location_id");
+		var locs_filtered = locs;
 		if (self._filters.me){
-		    locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    //   locs_me = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
 		    $filter_me.addClass("active");
 		    filters_on = true;
+		    locs_filtered = locs_filtered.intersect(locs_me);
 		}
-		var n_me =  self._filters.me ? locs.length() : locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location")).length();
-		$("div.filter-count", $filter_me).text(n_me);
+		if (self._filters.star){
+		    $filter_star.addClass("active");
+		    filters_on = true;
+		    locs_filtered = locs_filtered.intersect(locs_star.values("location_id"));
+		}
+		var n_me =  locs_me;
+		var n_star = locs_star;
+		$("div.filter-count", $filter_me).text(n_me.length());
+		$("div.filter-count", $filter_star).text(n_star.length());						       
 		if (filters_on){
 		    $("span.filter-msg-unfiltered", self.element).hide();
 		    $("span.filter-msg-filtered", self.element).show();
 		    $("span.n_total", self.element).text(n_unfiltered);
-		    $("span.n_filtered", self.element).text(locs.length());
+		    $("span.n_filtered", self.element).text(locs_filtered.length());
 		} 
 		else{
 		    $("span.filter-msg-unfiltered", self.element).show();
@@ -307,10 +310,12 @@
 	    }, 
 	    set_model: function(model){
 		var self=this;
+		self._QUESTION =  $.concierge.get_constant("QUESTION");
+		self._STAR = $.concierge.get_constant("STAR");
 		self._model =  model;
 		var id_source = $.concierge.get_state("file");
 		self._id_source =  id_source ; 
-		model.register($.ui.view.prototype.get_adapter.call(this),  {location: null, seen: null});
+		model.register($.ui.view.prototype.get_adapter.call(this),  {location: null, seen: null, threadmark: null});
 		//make placeholders for each page: 
 		var f = model.o.file[id_source];
 		var $pane = $("div.notepaneView-pages", self.element);
@@ -394,6 +399,9 @@
 			    this._render_one(page);
 			}
 		    }
+		}
+		else if (action=="add" && items_fieldname=="threadmark" && this._rendered){
+		    this._update_filters();
 		}
 	    }	
 	});

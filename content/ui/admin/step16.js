@@ -113,7 +113,7 @@ NB.pers.init = function(){
 	payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
     }
     NB.pers.call("getGuestFileInfo", {id_source: NB.pers.id_source}, NB.pers.createStore, NB.pers.on_fileinfo_error );
-    $.concierge.addConstants({res: 288, scale: 25});
+    $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2, });
     $.concierge.addComponents({
 	    notes_loader:	function(P, cb){NB.pers.call("getNotes", P, cb);}, 
 		note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
@@ -131,6 +131,7 @@ NB.pers.createStore = function(payload){
 		location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
 		link: {pFieldName: "links"}, 
 		mark: {}, 
+		threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
 		draft: {},
 	    seen:{references: {id_location: "location"}}
 	});
@@ -170,6 +171,7 @@ NB.pers.createStore = function(payload){
 	    m.add("comment", P["comments"]);
 	    m.add("location", P["locations"]);
 	    m.add("link", P["links"]);
+	    m.add("threadmark", P["threadmarks"]);
 	    //now check if need to move to a given annotation: 
 	    if ("c" in NB.pers.params){
 		window.setTimeout(function(){

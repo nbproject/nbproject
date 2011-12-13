@@ -122,6 +122,23 @@ div.stafficon{
     background-position: -140px 0px;
 }
 
+div.staricon{
+    background-position: -160px 0px;
+}
+
+div.questionicon{
+    background-position: -180px 0px;
+}
+
+div.staricon-hicontrast{
+    background-position: -200px 0px;
+}
+
+div.questionicon-hicontrast{
+    background-position: -220px 0px;
+}
+
+
 
 
 

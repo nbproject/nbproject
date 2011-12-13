@@ -293,7 +293,7 @@ def getNotes(payload, req):
         if auth.canReadFile(uid, id_source):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, after)
+            output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -516,7 +516,7 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, previous_activity)             
+                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)             
     return UR.prepare_response(output)
 
 def get_location_info(payload, req): 

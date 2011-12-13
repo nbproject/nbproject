@@ -21,6 +21,8 @@
 		//SACHA: FIXME (HACK) the 2 vars below are needed in order to defer rendering if code hasn't been loaded yet. For instance, when we have ?c=id_comment in the URL
 		self._ready = false;
 		self._doDelayedRender = false;
+		self._QUESTION = null;
+		self._STAR = null;
 
 		/*
 		  self.element.addClass("threadview").append("<div class='threadview-header'><button action='prev'>Prev</button> <button action='next'>Next</button> </div><div class='threadview-pane'/>");
@@ -32,16 +34,21 @@
 		  alert("todo");
 		  });
 		*/
-		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><span class='mark-toggle' action='star'>Star (2)</span><span class='mark-toggle' action='question'>Question (3)</span></div></div><div class='threadview-pane'/>");
-		var star_button = $("span.mark-toggle[action=star]", self.element).click(function(event){
-			//var $elt = $(event.currentTarget);
-			//$elt.toggleClass("active");
-			$.D("pnup"); 
-			$.concierge.get_component("mark_thread")({id_location: self._location, type: 2}, function(){$.D("Marked");});
+		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span></button><button class='mark-toggle' action='question'><div class='nbicon questionicon-hicontrast' style='margin-top: -3px'/><span class='n_question'>...</span></button></div>Mark</div><div class='threadview-pane'/>");
+		var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._STAR}, function(p){				
+				self._model.add("threadmark", p.threadmarks);
+				var i, tm;
+				for ( i in p.threadmarks){
+				    tm = p.threadmarks[i];
+				    $.I("Thread #"+tm.location_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
+				}
+			    });
 		    }); 
 
 		//splash screen: 
 		$("div.threadview-pane", self.element).append($.concierge.get_component("mini_splashscreen")());		
+		$("div.threadview-header", self.element).hide();
 		$.mods.declare({
 			threadview1: {js: [], css: ["/content/modules/dev/ui.threadview1.css"]}, 
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
@@ -90,19 +97,35 @@
 		}
 		return $div;
 	    },
+	    _render_header: function(){
+		var self = this;
+		var header = $("div.threadview-header", self.element);
+		var m = self._model;
+		var tm_star = m.get("threadmark", {location_id: self._location, active:true, type: self._STAR});
+		var tm_star_me = m.get("threadmark", {location_id: self._location, active:true, type: self._STAR, user_id: self._me.id});
+		var tm_question = m.get("threadmark", {location_id: self._location, active:true, type: self._QUESTION});
+		var tm_question_me = m.get("threadmark", {location_id: self._location, active:true, type: self._QUESTION, user_id: self._me.id});
+		var buttons = $("button.mark-toggle", header).removeClass("active");
+		if (tm_star_me.length()>0){
+		    buttons.filter("[action=star]", header).addClass("active");
+		}
+		$("span.n_star", header).text(tm_star.length());
+	    }, 
 	    _render: function(){	
 		var self	= this;
+		self._me =  $.concierge.get_component("get_userinfo")();
 		if (self._ready == false){
 		    self._doDelayedRender = true;
 		    return;
 		}
-		var model	= self._model; 			      
+		var model	= self._model; 	
+		$("div.threadview-header", self.element).show();
+		self._render_header();
 		var $pane	= $("div.threadview-pane", self.element).empty();
 		var root	= model.get("comment", {ID_location: self._location, id_parent: null}).sort(this._comment_sort_fct)[0];
 		if (root == undefined){ //happens after deleting a thread that only contains 1 annotation
 		    return;
 		}
-		self._me =  $.concierge.get_component("get_userinfo")();
 		var guest_msg	= "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
 		$pane.append(this._fill_tree(model, root));
 		var f_on_delete = function(p){
@@ -170,7 +193,9 @@
 		self._me = null;
 		var id_source = $.concierge.get_state("file");
 		self._file =  id_source ; 
-		model.register($.ui.view.prototype.get_adapter.call(this),  {comment: null});
+		self._QUESTION = $.concierge.get_constant("QUESTION");
+		self._STAR = $.concierge.get_constant("STAR");
+		model.register($.ui.view.prototype.get_adapter.call(this),  {comment: null, threadmark: null});
 	    },
 	    _keydown: function(event){ // same as ui.noteview8.js
 		//just proxy to other view if any interested. 
@@ -178,7 +203,7 @@
 		return true;
 	    }, 
 	    update: function(action, payload, items_fieldname){
-		if ((action == "add"|| action == "remove") && items_fieldname=="comment" && this._location){
+		if ((action == "add"|| action == "remove") && (items_fieldname=="comment" || items_fieldname=="threadmark") && this._location){
 		    this._render();
 		}
 	    }

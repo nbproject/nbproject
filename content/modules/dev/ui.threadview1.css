@@ -84,4 +84,34 @@ div.threadview span.empty_comment{
     padding: 3px;
 }
 
+span.n_star ,span.n_question{
+color: #808080;
+padding-left: 10px;
+}
 
+div.threadview-filter-controls{
+float: right;
+//opacity: 0.3;
+}
+
+/*
+div.threadview-filter-controls:hover{
+opacity: 1.0;
+}
+*/
+
+button.mark-toggle{
+margin-right: 10px;
+}
+
+div.threadview-header{
+background-color: #c0c0c0;
+height: 24px;
+border-bottom: thin solid #A0A0A0;
+padding: 3px 5px 5px 3px;
+}
+
+
+button.mark-toggle.active{
+border-bottom: 5px solid #ffff00;
+}
