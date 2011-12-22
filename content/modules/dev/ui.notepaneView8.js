@@ -76,7 +76,7 @@
 			    self._page =  1;
 			    self._pages = {};
 			    self._maxpage = 0;
-			    self._render();
+			    self._render(true);
 			}
 		    break;
 		    case "note_hover": 
@@ -95,21 +95,39 @@
 		    else{
 			page_summary = self._page
 		    }
-		    $("div.location-pagesummary[page="+page_summary+"]", self.element).addClass("selected");
+		    var sel = $("div.location-pagesummary[page="+page_summary+"]", self.element).addClass("selected");
+		    var container = $("div.notepaneView-pages", self.element);
+		    if (sel.length>0){
+			var scrollby;
+			var h = sel.height() ;
+			var H = container.height();
+			var delta_top = sel.offset().top - container.offset().top;
+			var delta_bottom = delta_top + h - H;
+			if (delta_top > 0){ //selected note is not too high
+			    if (delta_bottom > 0) {//but it's too low... scroll down
+				scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
+				container.stop(true).animate({scrollTop: '+=' + scrollby  + 'px'}, 300); 	
+			    }
+			}
+			else{ //too high: recenter: 
+			    scrollby = delta_top + (h-H)/2;
+			    container.stop(true).animate({scrollTop: '+=' + scrollby + 'px'}, 300); 	
+			}
+		    }
 		    break;
 		    case "select_thread": 
 		    $("div.location-pagesummary.selected", self.element).removeClass("selected");
-		    self._id_location = evt.value;
 		    if (self._seenTimerID != null){
 			window.clearTimeout(self._seenTimerID);
 		    }
-		    self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
+		    self._seenTimerID = window.setTimeout(self._f_location_seen(evt.value), 1000);
 		    var o = self._model.o.location[evt.value];
 		    if (o.page !=  self._page){
 			self._page =  o.page;
 			self._render();
 		    }
-		    $("div.location-lens", self.element).removeClass("selected");
+		    $("div.location-lens[id_item="+self._id_location+"]", self.element).removeClass("selected");
+		    self._id_location = evt.value;
 		    var sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
 		    var container = $("div.notepaneView-pages", self.element);
 		    if (sel.length>0){
@@ -146,8 +164,12 @@
 		var $filters = $("a.filter", self.element).removeClass("active");
 		var $filter_me = $filters.filter("[action=me]");
 		var $filter_star = $filters.filter("[action=star]");
+		var $filter_question = $filters.filter("[action=question]");
+
 		var locs_me		= locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
-		var locs_star		= m.get("threadmark", {active: true, type: self._STAR });//.values("location_id");
+		var locs_star		= m.get("threadmark", {active: true, type: self._STAR });
+		var locs_question	= m.get("threadmark", {active: true, type: self._QUESTION });
+
 		var locs_filtered = locs;
 		if (self._filters.me){
 		    //   locs_me = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
@@ -160,10 +182,18 @@
 		    filters_on = true;
 		    locs_filtered = locs_filtered.intersect(locs_star.values("location_id"));
 		}
+		if (self._filters.question){
+		    $filter_question.addClass("active");
+		    filters_on = true;
+		    locs_filtered = locs_filtered.intersect(locs_question.values("location_id"));
+		}
 		var n_me =  locs_me;
 		var n_star = locs_star;
+		var n_question = locs_question;
+
 		$("div.filter-count", $filter_me).text(n_me.length());
 		$("div.filter-count", $filter_star).text(n_star.length());						       
+		$("div.filter-count", $filter_question).text(n_question.length());						       
 		if (filters_on){
 		    $("span.filter-msg-unfiltered", self.element).hide();
 		    $("span.filter-msg-filtered", self.element).show();
@@ -177,41 +207,48 @@
 		}
 	    },
 	    _lens: function(l){
-		var m = this._model;
+		var self = this;
+		var m = self._model;
 		var me = $.concierge.get_component("get_userinfo")();
 		var numnotes = m.get("comment", {ID_location: l.ID}).length();
 		var numseen = m.get("seen", {id_location: l.ID}).length();
+		var numstar = m.get("threadmark",  {active: true, type: self._STAR, location_id: l.ID }).length();
+		var numquestion = m.get("threadmark",  {active: true, type: self._QUESTION, location_id: l.ID }).length();
+
 		var unseen_me = m.get("comment", {ID_location: l.ID, id_author: me.id}).length() -  m.get("seen", {ID_location: l.ID, id_author: me.id}).length(); 
 		var numnew	= numnotes - numseen - unseen_me; //so that notes that I've authored but that I haven't seen don't count. 	
 		var lf_numnotes =  "<ins class='locationflag "+(numnew>0?"lf-numnewnotes":"lf-numnotes")+"'>"+numnotes+"</ins>";
 		var lf_admin	= m.get("comment", {ID_location: l.ID, admin:1}).is_empty() ? "" : "<ins class='locationflag'><div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/></ins>";
 		var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
 		var bold_cl	= numnew > 0 ? "location-bold" : "";
+		var lf_star	= numstar > 0 ? "<ins class='locationflag'><div class='nbicon staricon-hicontrast' title='This thread has been starred'/></ins>" : "";
+		var lf_question	= numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
 		var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
 		var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 90));
-		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
+		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
 	    }, 
 	    _keydown: function(event){
+		var self=this;
 		var codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
 		var new_sel, id_item, id_new;
 		if (event.keyCode in codes){
-		    var sel = $("div.location-lens.selected", this.element);
+		    var sel = $("div.location-lens.selected", self.element);
 		    if (sel.length){
 			new_sel = sel[codes[event.keyCode].sel]("div.location-lens");
 			if (new_sel.length){
-			    this._is_first_stroke = true;
+			    self._is_first_stroke = true;
 			    new_sel.click();
 			}		
 			else { // we need to find a following location on subsequent pages
 			    id_item = sel.attr("id_item");
-			    id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: this._model, direction: codes[event.keyCode].dir}); 
+			    id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: self._model, direction: codes[event.keyCode].dir, filters: self._filters}); 
 			    if (id_new != null){
-				if (this._is_first_stroke){//add an extra keystroke between changing pages
-				    this._is_first_stroke = false;			    
+				if (self._is_first_stroke){//add an extra keystroke between changing pages
+				    self._is_first_stroke = false;			    
 				    $.concierge.trigger({type:"warn_page_change", value: id_new});
 				}
 				else{
-				    this._is_first_stroke = true;				    
+				    self._is_first_stroke = true;				    
 				    $.concierge.trigger({type:"select_thread", value: id_new});
 				}
 			    }
@@ -246,10 +283,14 @@
 		var id_item = event.currentTarget.getAttribute("id_item");
 		$.concierge.trigger({type:"note_out", value: id_item});
 	    },
-	    _render: function(){
+	    _render: function(do_erase){
 		/*
 		 * this is where we implement the caching strategy we want...
 		 */
+		var self = this;
+		if (do_erase){
+		    self.element.children("div.notepaneView-pages").children("div.notepaneView-comments").empty();
+		}
 		//first, render the current page...
 		var f = this._model.o.file[ this._id_source];
 		var p = this._page;
@@ -280,25 +321,30 @@
 		    self._maxpage =  page;
 		}
 		if (!(page in self._pages)){
-		    var model	= self._model; 
+		    var m	= self._model; 
 		    var $pane	= $("div.notepaneView-comments[page="+page+"]", self.element).empty();
-		    var locs	= model.get("location", {id_source:  self._id_source, page: page });
+		    var locs	= m.get("location", {id_source:  self._id_source, page: page });
 		    var me = $.concierge.get_component("get_userinfo")();
 		    if (self._filters.me){
-			locs = locs.intersect(model.get("comment", {id_author: me.id}).values("ID_location"));
+			locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
 		    }
-		    locs = locs.sort(self.options.loc_sort_fct);
+		    if (self._filters.star){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: self._STAR }).values("location_id"));
+		    }
+		    if (self._filters.question){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: self._QUESTION }).values("location_id"));
+		    }
+		    var locs_array = locs.sort(self.options.loc_sort_fct);
 		    var o;
-		    if (locs.length){
-			$pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs.length+" thread"+$.pluralize(locs.length)+" on page "+page+"</div>");
+		    if (locs_array.length){
+			$pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+" on page "+page+"</div>");
 		    }
-		    for (var i=0;i<locs.length;i++){
-			o = locs[i];
+		    for (var i=0;i<locs_array.length;i++){
+			o = locs_array[i];
 			$pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
 		    }
 		    $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
-		    var sel = model.o.location[self._id_location];
-		    if (sel && sel.page==page){//highlight selection
+		    if (self._id_location in locs && locs[self._id_location].page==page){//highlight selection
 			$("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
 		    }
 		    self._pages[page] = true;		   
@@ -310,8 +356,8 @@
 	    }, 
 	    set_model: function(model){
 		var self=this;
-		self._QUESTION =  $.concierge.get_constant("QUESTION");
 		self._STAR = $.concierge.get_constant("STAR");
+		self._QUESTION =  $.concierge.get_constant("QUESTION");
 		self._model =  model;
 		var id_source = $.concierge.get_state("file");
 		self._id_source =  id_source ; 
@@ -343,25 +389,26 @@
 		for (var i = 1;i<=f.numpages;i++){
 		    $pane.append("<div class='notepaneView-comments' page='"+i+"'/>");
 		}
-		this._update();	
+		self._update();	
 	    }, 
-
 	    update: function(action, payload, items_fieldname){
+		var self = this;
+		var m = self._model;
 		if (action == "add" && items_fieldname=="location"){
-		    var id_source	= this._id_source; 
-		    var page		= this._page;
+		    var id_source	= self._id_source; 
+		    var page		= self._page;
 		    if (page == null || id_source == null ){
 			//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
-			this._page =  1;
-			this._pages = {};
-			this._maxpage = 0;
-			this._render();
+			self._page =  1;
+			self._pages = {};
+			self._maxpage = 0;
+			self._render();
 			//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
 		    }
 		    else{
 			//send signal to redraw pages that needs to be redrawn: 
 			var D		= payload.diff;
-			var pages	= this._pages;
+			var pages	= self._pages;
 			pages_to_render = {};
 			for (var i in D){
 			    if (D[i].id_source == id_source){
@@ -370,20 +417,19 @@
 			    }
 			}
 			for (var i in pages_to_render){
-			    this._render_one(i);
+			    self._render_one(i);
 			}
 		    }
 		}
-		else if (action=="add" && items_fieldname=="seen" && this._rendered){
+		else if (action=="add" && items_fieldname=="seen" && self._rendered){
 		    var D		= payload.diff;
-		    var m		= this._model;
 		    var i, loc;
 		    var locs_done = {};
 		    for (i in D){
 			loc = m.get("location", {ID: D[i].id_location}).first();
-			if (loc != null && loc.id_source == this._id_source && (!(loc.ID in locs_done))){
+			if (loc != null && loc.id_source == self._id_source && (!(loc.ID in locs_done))){
 			    locs_done[loc.ID] = null;
-			    $("div.location-lens[id_item="+loc.ID+"]",this.element).html(this._lens(loc));
+			    $("div.location-lens[id_item="+loc.ID+"]",self.element).html(self._lens(loc));
 			}
 		    }		   
 		}
@@ -395,13 +441,26 @@
 			page = D[i].page;
 			if (! (page in pages_done)){
 			    pages_done[page] = null;
-			    delete this._pages[page];
-			    this._render_one(page);
+			    delete self._pages[page];
+			    self._render_one(page);
 			}
 		    }
 		}
-		else if (action=="add" && items_fieldname=="threadmark" && this._rendered){
-		    this._update_filters();
+		else if (action=="add" && items_fieldname=="threadmark" && self._rendered){
+		    var D = payload.diff;
+		    var i, loc, page;
+		    var pages_done	= {};
+		    for (i in D){
+			loc = m.get("location", {ID: D[i].location_id}).first();
+			if (loc!= null){
+			    page = loc.page;
+			    if (! (page in pages_done)){
+				delete self._pages[page];
+				self._render_one(page);
+			    }
+			}
+		    }
+		    self._update_filters();
 		}
 	    }	
 	});

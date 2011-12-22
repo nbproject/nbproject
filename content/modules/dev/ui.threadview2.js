@@ -21,8 +21,8 @@
 		//SACHA: FIXME (HACK) the 2 vars below are needed in order to defer rendering if code hasn't been loaded yet. For instance, when we have ?c=id_comment in the URL
 		self._ready = false;
 		self._doDelayedRender = false;
-		self._QUESTION = null;
 		self._STAR = null;
+		self._QUESTION = null;
 
 		/*
 		  self.element.addClass("threadview").append("<div class='threadview-header'><button action='prev'>Prev</button> <button action='next'>Next</button> </div><div class='threadview-pane'/>");
@@ -34,9 +34,19 @@
 		  alert("todo");
 		  });
 		*/
-		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span></button><button class='mark-toggle' action='question'><div class='nbicon questionicon-hicontrast' style='margin-top: -3px'/><span class='n_question'>...</span></button></div>Mark</div><div class='threadview-pane'/>");
+		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span></button><button class='mark-toggle' action='question'><div class='nbicon questionicon-hicontrast' style='margin-top: -3px'/><span class='n_question'>...</span></button></div><div class='mark-instructions'>Mark this thread</div></div><div class='threadview-pane'/>");
 		var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
 			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._STAR}, function(p){				
+				self._model.add("threadmark", p.threadmarks);
+				var i, tm;
+				for ( i in p.threadmarks){
+				    tm = p.threadmarks[i];
+				    $.I("Thread #"+tm.location_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
+				}
+			    });
+		    }); 
+		var question_button = $("button.mark-toggle[action=question]", self.element).click(function(event){
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
 				for ( i in p.threadmarks){
@@ -110,6 +120,11 @@
 		    buttons.filter("[action=star]", header).addClass("active");
 		}
 		$("span.n_star", header).text(tm_star.length());
+		if (tm_question_me.length()>0){
+		    buttons.filter("[action=question]", header).addClass("active");
+		}
+		$("span.n_question", header).text(tm_question.length());
+
 	    }, 
 	    _render: function(){	
 		var self	= this;

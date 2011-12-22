@@ -125,17 +125,32 @@ NB.pers.__components = {
 	   - if "direction" is "down": "closest" is the location at the top-most position of the next page which has a location
 	   - if "direction" is "up": "closest" is the location at the bottom-most position of the previous page which has a location
 	*/
-	var loc = p.model.o.location[p.id];
-	var file = p.model.o.file[loc.id_source];
+	var m = p.model;
+	var loc = m.o.location[p.id];
+	var me = $.concierge.get_component("get_userinfo")();
+	var file = m.o.file[loc.id_source];
 	var page = loc.page;
 	var f_sort_down = function(o1, o2){return o1.top-o2.top};	
+	var TYPE_STAR = $.concierge.get_constant("STAR");
+ 	var TYPE_QUESTION = $.concierge.get_constant("QUESTION");
 	var new_id = null;    
 	var i, ids;
 	var locs;
 	if (p.direction == "down"){
 	    i = page+1;
 	    while (i<=file.numpages){
-		locs = p.model.get("location", {id_source: loc.id_source, page: i});
+		locs = m.get("location", {id_source: loc.id_source, page: i});
+		if (p.filters){
+		    if (p.filters.me){
+			locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    }
+		    if (p.filters.star){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+		    }
+		    if (p.filters.question){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+		    }
+		}
 		if (locs.length()){
 		    new_id = locs.min("top");
 		    break;
@@ -146,7 +161,18 @@ NB.pers.__components = {
 	else{
 	    i = page-1;
 	    while (i>0){
-		locs = p.model.get("location", {id_source: loc.id_source, page: i});
+		locs = m.get("location", {id_source: loc.id_source, page: i});
+		if (p.filters){
+		    if (p.filters.me){
+			locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    }
+		    if (p.filters.star){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+		    }
+		    if (p.filters.question){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+		    }
+		}
 		if (locs.length()){
 		    new_id = locs.max("top");
 		    break;

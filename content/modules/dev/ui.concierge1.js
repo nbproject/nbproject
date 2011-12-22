@@ -39,8 +39,8 @@
 	*/
 	//keypress is better in mozilla, since we get repeated strokes, but doesn't work in other browsers
 	var f_key_cb = function(event){
-	    if (document.activeElement != document.body){
-		return true; //a focusable element has the focus: let's not interfere
+	    if (document.activeElement != document.body && document.activeElement.tagName != "a"){
+		return true; //a "non-anchor" focusable element has the focus: let's not interfere
 	    }
 	    if ("activeView" in self && self.activeView != null){
 		return self.activeView._keydown(event);

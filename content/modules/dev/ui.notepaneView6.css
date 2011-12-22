@@ -124,7 +124,7 @@ overflow-y: auto;
 
 div.location-flags{
 float: left;
-width: 60px;
+min-width: 60px;
 }
 
 ins.locationflag{
