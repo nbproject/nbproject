@@ -4,6 +4,7 @@ from os.path import abspath, dirname, basename
 from django.conf.urls.defaults import *
 from django.contrib import admin
 import rpc.urls
+import polls.urls
 from django.conf import settings
 
 admin.autodiscover()
@@ -51,7 +52,7 @@ urlpatterns = patterns("",
                         (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
                          (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
                         (r'^spreadsheet$', 'pages.views.spreadsheet'),
-
+                        (r'^polls', include(polls.urls)),  
 
                        )
 

@@ -60,7 +60,10 @@ class Ensemble(models.Model):                                                   
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
-
+    def __unicode__(self):
+        return "(%s) %s" %(self.id, self.name)
+    class Meta: 
+        ordering = ["id"]
 
 class Folder(models.Model):                                                     # old: folder
     parent              = ForeignKey("self", null=True)                         # old: id_parent integer
