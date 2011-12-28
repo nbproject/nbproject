@@ -110,7 +110,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    "base"
+    "base",
+    "polls"
 )
 
 HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/nb")
