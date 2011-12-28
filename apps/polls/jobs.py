@@ -16,7 +16,7 @@ if "DJANGO_SETTINGS_MODULE" not in os.environ:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.conf import settings
 import base.utils as utils, base.models as M
-from models import Message
+from polls.models import Message
 from django.template import Template, Context
 from django.core.mail import EmailMessage
 from django.db.models import Max
