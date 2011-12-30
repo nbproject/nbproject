@@ -68,7 +68,11 @@ def getGuest(ckey=None):
 def getCkeyInfo(ckey): 
     if ckey is None: 
         return None
-    o = M.User.objects.get(confkey=ckey)
+    o = None
+    try: 
+        o = M.User.objects.get(confkey=ckey)
+    except M.User.DoesNotExist: 
+        pass
     if o is not None and o.valid is False and o.guest is False:
         #first login as a non-guest: mark that user as valid  
         o.valid = True
