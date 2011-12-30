@@ -1,5 +1,5 @@
 /*
- * step17.js: 
+ * step21.js: 
  * Requires the following modules:
  *		Module
  *		NB
@@ -27,10 +27,12 @@ catch (e){
 NB.pers.init = function(){
     //NB.pers.admin=true;
     $.mods.declare({
-		treeview: {js: ["/content/modules/dev/ui.treeview6.js"],css: [] },
-		filesview:  {js: ["/content/modules/dev/ui.filesview3.js","/content/modules/calendrical/jquery.calendrical.js" ],css: ["/content/modules/calendrical/calendrical.css"] },
-	    homeview:  {js: ["/content/modules/dev/ui.homeview1.js" ],css: ["/content/modules/dev/ui.homeview1.css"] },
-		stackview: {js:  ["/content/modules/dev/ui.stackview1.js" ],css: ["/content/modules/dev/ui.stackview1.css"] },
+	    docview: {
+		js: ["/content/modules/dev/ui.docView8.js",  "/content/modules/dev/ui.drawable4.js"],
+		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
+		    }, 
+		treeview: {js: ["/content/modules/dev/ui.treeview7.js"],css: [] },
+		filesview:  {js: ["/content/modules/dev/ui.filesview4.js","/content/modules/calendrical/jquery.calendrical.js" ],css: ["/content/modules/calendrical/calendrical.css"] },
 	});
     
     //Factories: methods called if an event calls for a function that's not yet present
@@ -46,7 +48,7 @@ NB.pers.init = function(){
 				});
 			}
 		    };
-		    var filesview	=  {priority: 1, min_width: 700, desired_width: 80,  
+		    var filesview	=  {priority: 1, min_width: 700, desired_width: 80, 
 					    content: function($div){
 			    $.mods.ready("filesview", function(){
 				    $div.filesView({img_server: NB.conf.servers.img,  admin: NB.pers.admin});
@@ -54,24 +56,6 @@ NB.pers.init = function(){
 				});
 			}
 		    }; 
-		    var homeview	=  {priority: 1, min_width: 700, desired_width: 80,  
-			content: function($div){
-			    $.mods.ready("homeview", function(){
-				    $div.homeView({img_server: NB.conf.servers.img,  admin: NB.pers.admin});
-				    $div.homeView("set_model",NB.pers.store );
-				});
-			}
-		    }; 
-		    var stackview =  {priority: 1, min_width: 700, desired_width: 80,  
-			content: function($div){
-			    $.mods.ready("stackview", function(){
-				    $div.stackView({views: [filesview,homeview ]});
-				  
-				});
-			}
-		    }; 
-
-
 		    $pers.perspective({
 			    height: function(){return $vp.height() - $pers.offset().top;}, 
 				listens: {
@@ -90,12 +74,9 @@ NB.pers.init = function(){
 				}
 			    }, 
 				views: {
-				v1:{ data: treeview }, 
-				    v2: {data: stackview},
-				orientation: "vertical"
-			    }});
-		    //				    v2:{children: {v1: {data: filesview}, v2:{data: homeview}, orientation:"vertical" }, orientation: "vertical"}
-
+					v1:{ data: treeview }, 
+				    v2:{ data: filesview }, orientation: "vertical"}
+			});
 	});
     
     //get data: 
