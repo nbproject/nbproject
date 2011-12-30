@@ -7,7 +7,7 @@ update base_user set valid=false where valid is null;
 update base_user set guest=false where guest is null;
 --
 drop table if exists base_ensemble cascade;
-create table base_ensemble as select id, name, substring(description, 0, 256) as description,  public=1 as allow_guest, true as allow_staffonly, true as allow_anonymous, ''::text as invitekey, false as use_invitekey from ensemble order by id; 
+create table base_ensemble as select id, name, substring(description, 0, 256) as description,  public=1 as allow_guest, true as allow_staffonly, true as allow_anonymous, ''::text as invitekey, false as use_invitekey, true as allow_download from ensemble order by id; 
 update base_ensemble set allow_guest = false where allow_guest is null;
 update base_ensemble set allow_staffonly = not allow_guest;
 update base_ensemble set allow_anonymous = not allow_guest;
@@ -60,7 +60,7 @@ create table base_session as select id, id_user as user_id, ctime, lastactivity,
 drop table if exists base_commentseen cascade;
 drop sequence if exists base_commentseen_seq;
 create sequence base_commentseen_seq;
-create table base_commentseen as select nextval('base_commentseen_seq') as id, id_comment as comment_id, null as session_id, id_user as user_id, ctime from nb2_seen where id_comment in (select id from base_comment);
+create table base_commentseen as select nextval('base_commentseen_seq') as id, id_comment as comment_id, null::integer as session_id, id_user as user_id, ctime from nb2_seen where id_comment in (select id from base_comment);
 --
 drop table if exists base_pageseen cascade;
 drop sequence if exists base_pageseen_seq;
