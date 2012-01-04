@@ -184,17 +184,15 @@
 		    }
 		    //first files: 
 		    var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
-		    for (var i in elts){
-			if (elts.hasOwnProperty(i)){
-			    $tbody.append(self._filelens(elts[i]));
-			}
+		    var items = elts.items;
+		    for (var i in items){
+			$tbody.append(self._filelens(items[i]));
 		    }
 		    //now folders: 
 		    elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
-		    for (var i in elts){
-			if (elts.hasOwnProperty(i)){
-			    $tbody.append(self._folderlens(elts[i]));
-			}
+		    items = elts.items;
+		    for (var i in items){
+			$tbody.append(self._folderlens(items[i]));
 		    }
 		    if ($tbody.children().length==0){
 			$tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");

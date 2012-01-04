@@ -176,7 +176,7 @@ NB.pers.createStore = function(payload){
 	    if ("c" in NB.pers.params){
 		window.setTimeout(function(){
 			var id =  NB.pers.params.c;
-			var c = m.get("comment", {ID: id})[id];
+			var c = m.get("comment", {ID: id}).items[id];
 			if ("reply" in NB.pers.params){
 			    $.concierge.trigger({type: "reply_thread", value: c.ID});
 			}			

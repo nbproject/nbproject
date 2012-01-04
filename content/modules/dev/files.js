@@ -312,11 +312,9 @@ NB.files.__generate_folders = function(id_ensemble, id_sel){
     var subfolders  = NB.files.model.get("folder", {id_ensemble:id_ensemble }); 
     var sel_str = (id_sel==null) ? " selected='selected' ": " ";
     var s="<option "+sel_str+" id_item='0'>"+NB.files.model.o.ensemble[id_ensemble].name+"</option>";
-    for (var i in subfolders){ 
-	if (subfolders.hasOwnProperty(i)){
-	    sel_str = (i==id_sel ) ? " selected='selected' ": " ";
-	    s+="<option "+sel_str+" id_item='"+i+"'>"+NB.files.__abspath(i)+"</option>";
-	}
+    for (var i in subfolders.items){ 
+	sel_str = (i==id_sel ) ? " selected='selected' ": " ";
+	s+="<option "+sel_str+" id_item='"+i+"'>"+NB.files.__abspath(i)+"</option>";
     }
     return s;
 };

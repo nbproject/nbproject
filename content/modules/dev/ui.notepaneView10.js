@@ -18,11 +18,11 @@
 		var self = this;
 		return function(){
 		    var m		= self._model;
-		    var o		= m.get("comment", {ID_location: id_location});
+		    var o		= m.get("comment", {ID_location: id_location}).items;
 		    var i;
 		    var new_seen	= {};
 		    for (i in o){
-			if (o.hasOwnProperty(i) && (!(i in m.o.seen))){
+			if (!(i in m.o.seen)){
 			    new_seen[i] = {id: i, id_location: id_location};
 			    $.concierge.logHistory("seen", i);
 			}

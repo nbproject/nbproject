@@ -61,27 +61,25 @@
 		var self=this;
 		var model = self._model;
 		//build view: 
-		var ensemble = self._admin ?  model.get("ensemble", {admin: true}): model.o.ensemble;
-		var folder = model.o.folder;
+		var params =  self.options.admin ? {admin: true} : {};
+		var ensemble = model.get("ensemble", params).items;
 		data = [];
 		var subfolders = null;
 		var children = null;
 		var s_numfiles = null;
 		var qry = null;
 		for (var i in ensemble){
-		    if (ensemble.hasOwnProperty(i)){
-			children = [];
-			subfolders  = model.get("folder", {id_ensemble: i}); 
-			for (var j in subfolders){
-			    if (subfolders.hasOwnProperty(j) && (subfolders[j].id_parent==null)){
-				s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_folder: j}).length() +"</span>" : "";
-				children.push({data: $.E(subfolders[j].name) + s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
-			    }
+		    children = [];
+		    subfolders  = model.get("folder", {id_ensemble: i}).items; 
+		    for (var j in subfolders){
+			if (subfolders[j].id_parent==null){
+			    s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_folder: j}).length() +"</span>" : "";
+			    children.push({data: $.E(subfolders[j].name) + s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
 			}
-			children.sort(self._f_sort_tree);
-			s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
-			data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
 		    }
+		    children.sort(self._f_sort_tree);
+		    s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
+		    data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
 		}
 		data.sort(self._f_sort_tree);
 		tree_data = {
@@ -97,10 +95,10 @@
 				var id_item = o.attr("id_item");
 				var rel = o.attr("rel");
 				//	if (rel != self._selection.rel || id_item != self._selection.id_item){
-				    self._selection =  {rel: rel, id_item: id_item};
-				    $.concierge.trigger({type:rel, value:id_item});
-				    $.jstree._reference(o).toggle_node(o);
-				    //				}
+				self._selection =  {rel: rel, id_item: id_item};
+				$.concierge.trigger({type:rel, value:id_item});
+				$.jstree._reference(o).toggle_node(o);
+				//				}
 			    }); 
 			//restore selection of there was any: 
 			var sel = self._selection; 
@@ -112,14 +110,12 @@
 		    });
 	    },
 	    _build_children:  function(model, id_folder){
-		var subfolders =  model.get("folder", {id_parent: id_folder}); 
+		var subfolders =  model.get("folder", {id_parent: id_folder}).items; 
 		var children = [];
 		var s_numfiles = null;
 		for (var j in subfolders){
-		    if (subfolders.hasOwnProperty(j)){
-			s_numfiles = (this.options.filestats) ? " <span class='numfiles'>"+ model.get("file", {id_folder: j}).length()+"</span>" : "";
-			children.push({data: $.E(subfolders[j].name)+s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
-		    }
+		    s_numfiles = (this.options.filestats) ? " <span class='numfiles'>"+ model.get("file", {id_folder: j}).length()+"</span>" : "";
+		    children.push({data: $.E(subfolders[j].name)+s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
 		}
 		return children;		
 	    }, 

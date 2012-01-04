@@ -18,11 +18,11 @@
 		var self = this;
 		return function(){
 		    var m = self._model;
-		    var o = m.get("comment", {ID_location: id_location});
+		    var o = m.get("comment", {ID_location: id_location}).items;
 		    var i;
 		    var new_seen = {};
 		    for (i in o){
-			if (o.hasOwnProperty(i) && (!(i in m.o.seen))){
+			if (!(i in m.o.seen)){
 			    new_seen[i] = {id: i, id_location: id_location};
 			    $.concierge.logHistory("seen", i);
 			}
@@ -172,7 +172,6 @@
 
 		var locs_filtered = locs;
 		if (self._filters.me){
-		    //   locs_me = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
 		    $filter_me.addClass("active");
 		    filters_on = true;
 		    locs_filtered = locs_filtered.intersect(locs_me);
@@ -344,7 +343,7 @@
 			$pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
 		    }
 		    $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
-		    if (self._id_location in locs && locs[self._id_location].page==page){//highlight selection
+		    if (self._id_location in locs.items && locs.items[self._id_location].page==page){//highlight selection
 			$("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
 		    }
 		    self._pages[page] = true;		   

@@ -172,7 +172,7 @@ NB.models.Store.prototype.remove = function(type_name, pkeys){
        pkeys can either be 
        - in integer (i.e. the primary key of a single object to remove)
        - dictionary of integer keys (values are disregarded): in this case, we only issue 1 notification to the observers (for performance), once all the objects have been removed. 
-     */
+    */
     var self = this;
     var ids = {};
     if (typeof(pkeys) == "object"){
@@ -261,50 +261,49 @@ NB.models.Store.prototype.addIndex = function(table, o, fieldname){
 };
 
 
-NB.models.Dict = function(){
+NB.models.QuerySet = function(model){
+    this.model = model;
+    this.items = {};
+};
 
-}
 
 
-
-NB.models.Dict.prototype.is_empty = function(){
-    for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    return false;
-	}
+NB.models.QuerySet.prototype.is_empty = function(){
+    var items = this.items;
+    for (var i in items){
+	return false;
     }
     return true;
 };
 
-NB.models.Dict.prototype.length = function(){
+NB.models.QuerySet.prototype.length = function(){
     var l=0; 
-    for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    l++;
-	}
+    var items = this.items;
+    for (var i in items){
+	l++;
     }
     return l;
 };
 
-NB.models.Dict.prototype.sort = function(sortfct){
+NB.models.QuerySet.prototype.sort = function(sortfct){
     //returns an array of sorted objects. 
     var output = [];
-     for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    output.push(this[i]);
-	}
+    var items = this.items;
+    for (var i in items){
+	output.push(items[i]);
     }
     output.sort(sortfct);
     return output;
 };
 
-NB.models.Dict.prototype.min = function(attr){
+NB.models.QuerySet.prototype.min = function(attr){
     // returns pk of record which has the min value for attr
     var x = Number.POSITIVE_INFINITY;
+    var items = this.items;
     var output = null;
-    for (var i in this){
-	if (this.hasOwnProperty(i) && this[i][attr]<x){
-	    x = this[i][attr];
+    for (var i in items){
+	if (items[i][attr]<x){
+	    x = items[i][attr];
 	    output = i;
 	}
     }
@@ -312,13 +311,14 @@ NB.models.Dict.prototype.min = function(attr){
 };
 
 
-NB.models.Dict.prototype.max = function(attr){
+NB.models.QuerySet.prototype.max = function(attr){
     // returns pk of record which has the max value for attr
     var x = Number.NEGATIVE_INFINITY;
     var output = null;
-    for (var i in this){
-	if (this.hasOwnProperty(i) && this[i][attr]>x){
-	    x = this[i][attr];
+    var items = this.items;
+    for (var i in items){
+	if (items[i][attr]>x){
+	    x = items[i][attr];
 	    output = i;
 	}
     }
@@ -326,46 +326,46 @@ NB.models.Dict.prototype.max = function(attr){
 };
 
 
-NB.models.Dict.prototype.first = function(){
+NB.models.QuerySet.prototype.first = function(){
     /*caution: this doesn't imply any order: it just picks the 1st record it finds*/
     var output = null;
-    for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    return this[i];
-	}
+    var items = this.items;
+    for (var i in items){
+	return items[i];
     }
     return null;
 };
 
 
-NB.models.Dict.prototype.as_object = function(){
-    var output = {};
-    for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    output[i] = this[i];
-	}
-    }
-    return output;
+NB.models.QuerySet.prototype.items = function(){
+    return this.items;
 };
  
-NB.models.Dict.prototype.values = function(fieldname){
+NB.models.QuerySet.prototype.values = function(fieldname){
     var output = {};
-    for (var i in this){
-	if (this.hasOwnProperty(i)){
-	    output[this[i][fieldname]] = null;
+    var items = this.items;
+    for (var i in items){
+	output[items[i][fieldname]] = null;
+    } 
+    return output;
+};
+
+NB.models.QuerySet.prototype.intersect = function(ids){
+    var output = new NB.models.QuerySet(this.model);
+    var items = this.items;
+    for (var i in items){
+	if (i in ids){
+	    output[i] =items[i];
 	}
     } 
     return output;
 };
 
-NB.models.Dict.prototype.intersect = function(ids){
-    var output = new NB.models.Dict();
-    for (var i in this){
-	if (this.hasOwnProperty(i) && (i in ids)){
-	    output[i] =this[i];
-	}
-    } 
-    return output;
+NB.models.QuerySet.prototype.except = function(key, value){
+    /* notice: this changes the object */
+    
+
+    return this;
 };
 
 NB.models.__intersect = function(o1, o2){
@@ -385,7 +385,7 @@ NB.models.Store.prototype.get = function(from, where){
     var self = this;
     var o_old = null;
     var o = {};
-    var output = new NB.models.Dict();
+    var output = new NB.models.QuerySet();
     var f = this;
     var ref; 
     var references = self.schema[from].references || {};

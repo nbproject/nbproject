@@ -194,7 +194,7 @@ NB.pers.createStore = function(payload){
     //now check if need to move to a given annotation: 
     if ("c" in NB.pers.params){
 	var id =  NB.pers.params.c;
-	var c = m.get("comment", {ID: NB.pers.params.c})[id];
+	var c = m.get("comment", {ID: NB.pers.params.c}).items[id];
 	$.concierge.trigger({type: "select_thread", value: c.ID_location});
     }
 };
