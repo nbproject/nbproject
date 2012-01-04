@@ -129,7 +129,7 @@
 		    viewall_url+="&amp;id_ensemble="+id_ensemble; 
 		}
 		$("#filesView-allquestions-link").attr("href", viewall_url);
-		var locs = m.get("location", query_params).intersect(m.get("question").values("location_id")).sort(f_location_sort);
+		var locs = m.get("location", query_params).intersect(m.get("question").exclude({user_id: self._me.id}).values("location_id")).sort(f_location_sort);
 		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when;
 		for (i in locs){
 		    l = locs[i];

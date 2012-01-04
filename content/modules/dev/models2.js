@@ -261,8 +261,9 @@ NB.models.Store.prototype.addIndex = function(table, o, fieldname){
 };
 
 
-NB.models.QuerySet = function(model){
+NB.models.QuerySet = function(model, type){
     this.model = model;
+    this.type = type;
     this.items = {};
 };
 
@@ -351,7 +352,7 @@ NB.models.QuerySet.prototype.values = function(fieldname){
 };
 
 NB.models.QuerySet.prototype.intersect = function(ids){
-    var output = new NB.models.QuerySet(this.model);
+    var output = new NB.models.QuerySet(this.model, this.type);
     var items = this.items;
     for (var i in items){
 	if (i in ids){
@@ -361,10 +362,41 @@ NB.models.QuerySet.prototype.intersect = function(ids){
     return output;
 };
 
-NB.models.QuerySet.prototype.except = function(key, value){
-    /* notice: this changes the object */
-    
-
+NB.models.QuerySet.prototype.exclude = function(where){
+    /** Exclude records from a QuerySet
+     * - This method alters the QuerySet 
+     * - The where clauses are ANDed. For instance o.exclude({page:20, author_id:1} will 
+     *	 ONLY remove the records for which (page=20 AND author_id=1). To remove all the 
+     *	 records for which page=2 and the ones for which id_author=1, use the following: 
+     *	 o.exclude({page:20}).exclude({id_author: 1};
+     * - Arguments: 
+     *		- where: a key, value mapping, where key is the name of a field 
+     *		  and value is the value to exclude. 
+     */
+    var model = this.model;
+    var i=null;
+    var ref; 
+    var references = model.schema[this.type].references || {};
+    var from = this.type;
+    var o = {};
+    var o_old = null;
+    for (i in where){
+    	ref = i in references ?  references[i] : "__"+i;
+	if ( (!(ref in model.indexes)) || (!(from in model.indexes[ref])) ){
+	    model.addIndex(ref, from, i);
+	}
+	o = model.indexes[ref][from][where[i]] || {};
+	o = NB.models.__intersect(o_old, o);
+	o_old = o;
+    }
+    if (i==null){ //there was no where clause: return all objects
+	o = self.o[from];
+    }
+    //Now remove objects that have an id in o: 
+    var items = this.items;
+    for (i in o){
+	delete items[i];
+    }
     return this;
 };
 
@@ -385,7 +417,7 @@ NB.models.Store.prototype.get = function(from, where){
     var self = this;
     var o_old = null;
     var o = {};
-    var output = new NB.models.QuerySet();
+    var output = new NB.models.QuerySet(self, from);
     var f = this;
     var ref; 
     var references = self.schema[from].references || {};
@@ -404,9 +436,9 @@ NB.models.Store.prototype.get = function(from, where){
     }
 
     //we now have a list of IDs in o. Just need to attach the objects: 
-    
+    var items = output.items;
     for (i in o){
-	output[i] = self.o[from][i];
+	items[i] = self.o[from][i];
     }
     return output;
 };
