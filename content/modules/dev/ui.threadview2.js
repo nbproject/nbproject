@@ -51,7 +51,7 @@
 				var i, tm;
 				for ( i in p.threadmarks){
 				    tm = p.threadmarks[i];
-				    $.I("Thread #"+tm.location_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
+				    $.I("Thread #"+tm.location_id+ " has been "+(tm.active ? "":"un")+"marked as 'Reply Requested'.");
 				}
 			    });
 		    }); 
@@ -141,7 +141,6 @@
 		if (root == undefined){ //happens after deleting a thread that only contains 1 annotation
 		    return;
 		}
-		var guest_msg	= "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
 		$pane.append(this._fill_tree(model, root));
 		var f_on_delete = function(p){
 		    $.I("Note #"+p.id_comment+" has been deleted");
@@ -163,12 +162,7 @@
 		    var id_item =  $note.attr("id_item");
 		    switch (action){
 		    case "reply": 			
-			if (self._me.guest == 1){
-			    $.I(guest_msg, true, 10000);
-			}
-			else{
-			    $.concierge.trigger({type: "reply_thread", value: id_item});
-			}
+			$.concierge.trigger({type: "reply_thread", value: id_item});
 			break;
 		    case "edit": 
 			$.concierge.trigger({type: "edit_thread", value: id_item});
@@ -182,12 +176,7 @@
 		};
 		var f_reply = function(event){
 		    var id_item = $(event.target).closest("div.note-lens").attr("id_item");
-		    if (self._me.guest == 1){
-			$.I(guest_msg, true, 10000);
-		    }
-		    else{
-			$.concierge.trigger({type: "reply_thread", value: id_item});
-			}
+		    $.concierge.trigger({type: "reply_thread", value: id_item});
 		};
 		$("div.note-lens", $pane).contextMenu({menu: "contextmenu_threadview"}, f_context);
 		$("a.replymenu", $pane).click(f_reply);

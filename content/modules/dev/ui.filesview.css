@@ -39,8 +39,11 @@ margin-bottom: 5px;
 }
 
 
-div.filesView div.filesView-files {
-padding-left: 5px;
+div.filesView-panel {
+padding-left: 10px;
+padding-bottom: 20px;
+padding-right: 10px;
+border-top: thin solid #c0c0c0;
 }
 
 div.filesView a {
@@ -92,3 +95,41 @@ padding-left: 5px;
 margin-right: 1px;
 text-decoration: underline;
 }
+
+
+span.filesView-question-numpage{
+color: #a0a0a0;
+padding-left: 10px;
+}
+
+span.filesView-question-numvotes{
+color: #a0a0a0;
+font-size: large;
+}
+
+span.filesView-question-ensembleinfo{
+color: #a0a0a0;
+padding-left: 10px;
+font-family: serif;
+}
+
+span.filesView-question-when{
+color: #a0a0a0;
+float: right;
+}
+
+#filesView-question-list td{
+padding: 10px;
+}
+
+
+span.filesView-question-body{
+    font-family: cursive;
+    font-style: italic;
+}
+
+tr.filesView-question-odd{
+    background-color: #f0f0f0;
+}
+
+

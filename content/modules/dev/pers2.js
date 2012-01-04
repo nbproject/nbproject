@@ -26,7 +26,7 @@ catch (e){
 }
 
 /* trick for browsers that don't support document.activeElement 
-adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
+   adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
 */
 if (!("activeElement" in document)){
     document.activeElement = document.body;
@@ -227,7 +227,7 @@ NB.pers.__components = {
 			    $.concierge.get_component("register_user")(payload, function(p){
 				    $.I("Thanks for registering... You should receive a confirmation code by email in less than a minute...");
 				    $dlg.dialog("destroy");
-					}, function(status, p){
+				}, function(status, p){
 				    err(status.msg);});
 			}
 		}
@@ -315,5 +315,21 @@ NB.pers.__components = {
 	    msg = P.msg;
 	}
 	return "<div align='center' class='loadingpane'><img src='content/data/icons/gif/loader1.gif'/><div class='loadingpane-msg'>"+msg+"</div></div>";
+    }, 
+    pretty_print_timedelta: function(P,cb){
+	var d = new Date(P.t);
+	var now = new Date();
+	var delta_s = parseInt((now-d)/1000);	
+	var s = "";
+	if (delta_s<3600){	   
+	    s += (parseInt(delta_s/60) + " minutes ago");
+	}
+	else if (delta_s < 3600*24){
+	    s += (parseInt(delta_s/3600) + " hours ago");
+	}
+	else{
+	    s += (parseInt(delta_s/(3600*24)) + " days ago");
+	}
+	return s;
     }
 };

@@ -56,7 +56,8 @@ __EXPORTS = [
     "register_user", 
     "login_user", 
     "set_grade_assignment", 
-    "markThread"
+    "markThread", 
+    "getPending"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -251,16 +252,6 @@ def getObjects(payload, req):
         output[t] = getattr(annotations, "get_"+t)(uid, p2)
     return UR.prepare_response(output)
 
-
-    # now is a good time to register the connection, if this hasn't been done: 
-#    if cid not in __SESSIONS:
-#        __SESSIONS = 
-#    event = {}
-#    event["type"] = "SAYHELLO"
-#    event["msg"] = "upload and processing completed, you can use your file now"
-#    responder.notify( cid,event)
-
-
 def save_settings(payload, req): 
     uid = UR.getUserId(req);
     if uid is None:
@@ -338,6 +329,13 @@ def deleteNote(payload, req):
     else:
         annotations.deleteNote(payload)
         return UR.prepare_response({"id_comment": payload["id_comment"] })
+
+def getPending(payload, req):
+    uid = UR.getUserId(req)
+    output = annotations.getPending(uid, payload)
+    return UR.prepare_response(output)
+  
+
 
 def getMyNotes(payload, req): 
     uid = UR.getUserId(req)

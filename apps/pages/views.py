@@ -188,7 +188,8 @@ def comment(req, id_comment):
     #id_source = annotations.getSourceForComment(id_comment)
     #[id_comment]
     org=("&org="+req.GET["org"]) if "org" in req.GET else ""
-    return HttpResponseRedirect("/f/%s?c=%s%s" % (c.location.source.id, id_comment, org))
+    do_reply = "&reply=1" if req.path.split("/")[1]=="r" else ""
+    return HttpResponseRedirect("/f/%s?c=%s%s%s" % (c.location.source.id, id_comment, org, do_reply))
     
 def invite(req): 
     pass #SACHA TODO

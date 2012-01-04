@@ -127,11 +127,19 @@ NB.pers.createStore = function(payload){
 		file_stats:{references: {id: "file"}},
 		mark: {}, 
 		draft: {},
+		question: {references: {location_id: "location"}},
 	    seen:{references: {id_location: "location"}}
 	});
     $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
     NB.files.set_model(NB.pers.store);
     $.concierge.trigger({type:"admin_init", value: 0});
+  //get more stats (pending stuff)
+    NB.pers.call("getPending", {}, function(P){
+	    NB.pers.store.add("question", P["questions"]);
+	    NB.pers.store.add("location", P["locations"]);
+	    NB.pers.store.add("comment", P["comments"]);        
+	});
+
 };
 
 

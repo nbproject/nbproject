@@ -20,7 +20,8 @@
 		self._model	= null;
 		self._selection = {};
 		self._admin	= self.options.admin;
-		var header	= self._admin ? "<button action='new_class'>New Class</button>":" <a href='/admin'>Staff Login</a>";
+		//		var header	= self._admin ? "<button action='new_class'>New Class</button>":" <a href='/admin'>Staff Login</a>";
+		var header =  "<a href='javascript:$.concierge.trigger({type: \"ensemble\", value: null})'>Home</a>";
 		header += " <a target='_blank' href='/settings'>Your Settings</a> "
 		self.element.css("overflow-y", "auto").html("<div class='treeView-header'>"+header+"</div><div class='tree'/>");
 		$("button[action=new_class]", self.element).click(function(){

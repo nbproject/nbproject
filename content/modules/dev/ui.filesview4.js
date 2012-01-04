@@ -81,15 +81,81 @@
 	    _folderlens: function(f){
 		return $("<tr class='filesview_row' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:$.concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td></tr>");
 	    }, 
+	    _draw_pending: function(){
+		var self = this;
+		var m = self._model;
+		var $list = $("#filesView-pending-list", self.element).empty();
+		var f_location_sort = function(o1,o2){
+		    return m.get("pending",{location_id: o2.id}).length() - m.get("pending",{location_id: o1.id}).length();
+		}
+		var id_ensemble = self._id_ensemble;
+		var  query_params = {};
+		var viewall_url = "/collage?q=pending";
+		if (id_ensemble != null){
+		    query_params["ensemble_id"] = id_ensemble;
+		    viewall_url+="&amp;id_ensemble="+id_ensemble; 
+		}
+		$("#filesView-allpending-link").attr("href", viewall_url);
+		var locs = m.get("location", query_params).intersect(m.get("pending").values("location_id")).sort(f_location_sort);
+		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when;
+		for (i in locs){
+		    l = locs[i];
+		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
+		    q = m.get("pending", {location_id: l.id});
+		    s = m.o.file[l.source_id];
+		    body = $.E(c.body).replace(/\n/g, " ");
+		    comment_link = "/c/"+c.id;
+		    reply_link = "/r/"+c.id;   
+		    ensemble_info = id_ensemble == null ? ("<span class='filesView-pending-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+		    parity = (!(i % 2)) ? " class='filesView-pending-odd' ":"";
+		    when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
+		    lens = "<tr "+parity+"><td>"+when+"<a href='"+comment_link+"'>"+$.E(s.title)+"</a><span class='filesView-pending-numpage'>p."+l.page+"</span>"+ensemble_info+"<br/><span class='filesView-pending-body'>"+body+"</span></td><td> <div class='nbicon pendingicon-hicontrast'/> <span class='filesView-pending-numvotes'>"+q.length()+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
+		    
+		    $list.append(lens);
+		}
+	    }, 
+	    _draw_questions: function(){
+		var self = this;
+		var m = self._model;
+		var $list = $("#filesView-question-list", self.element).empty();
+		var f_location_sort = function(o1,o2){
+		    return m.get("question",{location_id: o2.id}).length() - m.get("question",{location_id: o1.id}).length();
+		}
+		var id_ensemble = self._id_ensemble;
+		var  query_params = {};
+		var viewall_url = "/collage?q=questions";
+		if (id_ensemble != null){
+		    query_params["ensemble_id"] = id_ensemble;
+		    viewall_url+="&amp;id_ensemble="+id_ensemble; 
+		}
+		$("#filesView-allquestions-link").attr("href", viewall_url);
+		var locs = m.get("location", query_params).intersect(m.get("question").values("location_id")).sort(f_location_sort);
+		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when;
+		for (i in locs){
+		    l = locs[i];
+		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
+		    q = m.get("question", {location_id: l.id});
+		    s = m.o.file[l.source_id];
+		    body = $.E(c.body).replace(/\n/g, " ");
+		    comment_link = "/c/"+c.id;
+		    reply_link = "/r/"+c.id;   
+		    ensemble_info = id_ensemble == null ? ("<span class='filesView-question-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+		    parity = (!(i % 2)) ? " class='filesView-question-odd' ":"";
+		    when = "<span class='filesView-question-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
+		    lens = "<tr "+parity+"><td>"+when+"<a href='"+comment_link+"'>"+$.E(s.title)+"</a><span class='filesView-question-numpage'>p."+l.page+"</span>"+ensemble_info+"<br/><span class='filesView-question-body'>"+body+"</span></td><td> <div class='nbicon questionicon-hicontrast'/> <span class='filesView-question-numvotes'>"+q.length()+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
+		    
+		    $list.append(lens);
+		}
+	    },
 	    _draw_frame: function(){
 		var self = this;
 		var header	= self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
-		var filesView_notif = "<div class='filesView-panel filesView-notif'>4 action requested...</div>";
-		var filesView_question = "<div class='filesView-panel filesView-question'>5 replies requested ... Can you help ?</div>";
+		var filesView_notif = "<div class='filesView-panel filesView-notif'><span style='font-weight: bold; color: #2050d0;'>3</span> actions requested...</div>";
+		var filesView_question = "<div class='filesView-panel filesView-question'><div id='filesView-question-header'>Your classmates have <span style='font-weight: bold; color: #2050d0;'>5</span> pending questions... Can you help them ? <a id='filesView-allquestions-link'>View all questions</a></div><table id='filesView-question-list'/></div>";
 
-		var filesView_files = self._id_ensemble ? "<div class='filesView-panel filesView-files'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody/></table></div>" : "";
+		var filesView_files = (self._id_ensemble == null) ?  "<div class='filesView-panel filesView-recentfiles'>Recent Files...</div>" : "<div class='filesView-panel filesView-files'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 		self.element.html(header+ filesView_notif + filesView_question + filesView_files);
 
 
@@ -103,59 +169,65 @@
 		var id_ensemble = self._id_ensemble;		
 		var id_folder = self._id_folder;
 		var model = self._model; 
-		self._admin = model.o.ensemble[id_ensemble].admin;
+		self._admin = id_ensemble == null ? false : model.o.ensemble[id_ensemble].admin;
 		self._draw_frame();
-		
-		var $tbody = $("tbody", self.element);
-		//remove download header for users is not in admin mode and download isn't allowed. 
-		if (self._admin==false && model.o.ensemble[id_ensemble].allow_download==false){
-		    $("#th_download").remove();
+		//		self._draw_pending();
+		self._draw_questions();
+		if (id_ensemble == null){
+		    // TODO: put drawing code here.
 		}
-		//first files: 
-		var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
-		for (var i in elts){
-		    if (elts.hasOwnProperty(i)){
-			$tbody.append(self._filelens(elts[i]));
+		else{
+		    var $tbody = $("#filesView-file-list", self.element);
+		    //remove download header for users is not in admin mode and download isn't allowed. 
+		    if (self._admin==false && model.o.ensemble[id_ensemble].allow_download==false){
+			$("#th_download").remove();
 		    }
-		}
-		//now folders: 
-		elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
-		for (var i in elts){
-		    if (elts.hasOwnProperty(i)){
-			$tbody.append(self._folderlens(elts[i]));
+		    //first files: 
+		    var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
+		    for (var i in elts){
+			if (elts.hasOwnProperty(i)){
+			    $tbody.append(self._filelens(elts[i]));
+			}
 		    }
-		}
-		if ($tbody.children().length==0){
-		    $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
-		}
-		$("table.tablesorter", self.element).trigger("update"); 
-		//.trigger("sorton", this.options.sort_list);
-		var f_context = function(action, el, pos){		    
-		    switch (action){
-		    case "open": 
-		    $.concierge.get_component("file_open")({id: el.attr("id_item")});
-		    //console.debug("open", el);
-		    break;
-		    default: 
-		    $.concierge.get_component(action+"_file_menu")({id: el.attr("id_item")});
-		    break;
+		    //now folders: 
+		    elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
+		    for (var i in elts){
+			if (elts.hasOwnProperty(i)){
+			    $tbody.append(self._folderlens(elts[i]));
+			}
 		    }
-		};
-		var f_leftcontext = function(action, el, pos){
-		    f_context(action, el.parent().parent(), pos);
+		    if ($tbody.children().length==0){
+			$tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
+		    }
+		    $("table.tablesorter", self.element).trigger("update"); 
+		    //.trigger("sorton", this.options.sort_list);
+		    var f_context = function(action, el, pos){		    
+			switch (action){
+			case "open": 
+			$.concierge.get_component("file_open")({id: el.attr("id_item")});
+			//console.debug("open", el);
+			break;
+			default: 
+			$.concierge.get_component(action+"_file_menu")({id: el.attr("id_item")});
+			break;
+		    }
+		    };
+		    var f_leftcontext = function(action, el, pos){
+			f_context(action, el.parent().parent(), pos);
+		    }
+		    $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
+		    $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
+		    /*
+		      $e_info = $("div.filesView-ensemble").empty();
+		      if (id_folder==null && self._admin){ 
+		      var e = model.o.ensemble[id_ensemble];
+		      $e_info.append("Allow staffonly ? ") //SACHA CONTINUE HERE
+		      }
+		    */
+		    $("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
+		    $("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
+		    $("#spreadsheet").attr("href", "/spreadsheet?id_ensemble="+self._id_ensemble);
 		}
-		$("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
-		$("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
-		/*
-		$e_info = $("div.filesView-ensemble").empty();
-		if (id_folder==null && self._admin){ 
-		    var e = model.o.ensemble[id_ensemble];
-		    $e_info.append("Allow staffonly ? ") //SACHA CONTINUE HERE
-		}
-		*/
-		$("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
-		$("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
-		$("#spreadsheet").attr("href", "/spreadsheet?id_ensemble="+self._id_ensemble);
 	    }, 
 	    set_model: function(model){
 		var self=this;

@@ -762,3 +762,21 @@ def markActivity(cid):
     session.save()    
     return session, previous_activity
     
+
+def getPending(uid, payload):
+    #pending threadmarks:    
+    questions = M.ThreadMark.objects.filter(location__ensemble__membership__user__id=uid, type=1, active=True).exclude(user__id=uid)
+    comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
+    locations = M.Location.objects.filter(comment__in=comments)
+    #now items where action required: 
+    my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)
+    recent_replies = M.Comment.objects.filter(location__threadmark__in=my_questions).extra(where=["base_threadmark.ctime<base_comment.ctime"])
+    recent_locations = M.Location.objects.filter(comment__in=recent_replies)
+    replied_replied_questions = my_questions.filter(location__in=recent_locations)    
+    output = {}
+    output["questions"] = UR.qs2dict(questions|replied_replied_questions)
+    output["comments"] = UR.qs2dict(comments|recent_replies)
+    output["locations"] = UR.qs2dict(locations|recent_locations)
+    return output
+
+

@@ -26,71 +26,79 @@
 		$.mods.ready("editorview1", function(){});
 	    },
 	    _defaultHandler: function(evt){
-		if (this._file ==  $.concierge.get_state("file")){
-		    var self		= this;
-		    var model		= self._model;
-		    switch (evt.type){
-		    case "new_thread":
-			//TMP FIX: only allow one current editor
-			if (self.element.children().length){
-			    $.I("Only one editor at a time is allowed for now...");
-			    return;
-			}			
-			//TODO: delete previous draft if empty
-			//TODO: if existting draft, sync its content w/ its model
-			//now create new draft: 
-			var id_item		= (new Date()).getTime();
-			var draft		= {};
-			draft[id_item]		= id_item;
-			var drafts	        = {};
-			drafts[id_item]		= draft;
-			self._doEdit		= false;
-			self._inReplyTo		= 0 ;
-			self._selection		= evt.value.selection;
-			self._sel		= null;
-			self._note		= null;
-			model.add("draft", drafts);
-			self._render(id_item);	
-			break;
-		    case "reply_thread": 
-			//TMP FIX: only allow one current editor
-			if (self.element.children().length){
-			    $.I("Only one editor at a time is allowed for now...");
-			    return;
-			}
-			var id_item		= (new Date()).getTime();
-			var draft		= {};
-			draft[id_item]		= id_item;
-			var drafts	        = {};
-			drafts[id_item]		= draft;
-			self._doEdit		= false;
-			self._inReplyTo		= evt.value;
-			self._selection		= null;
-			self._sel		= null;
-			self._note		= model.o.comment[evt.value];
-			model.add("draft", drafts);
-			self._render(id_item);	
-			break;
-		    case "edit_thread": 
-			//TMP FIX: only allow one current editor
-			if (self.element.children().length){
-			    $.I("Only one editor at a time is allowed for now...");
-			    return;
-			}
-			var id_item		= (new Date()).getTime();
-			var draft		= {};
-			draft[id_item]		= id_item;
-			var drafts	        = {};
-			drafts[id_item]		= draft;
-			self._doEdit		= true;
-			self._inReplyTo		= 0 ;
-			self._selection		= null;
-			self._sel		= null;
-			self._note		= model.o.comment[evt.value];
-			model.add("draft", drafts);
-			self._render(id_item);	
-			break;
-		    }	
+		var self		= this;
+		var model		= self._model;
+		var me			= $.concierge.get_component("get_userinfo")();
+		var guest_msg	= "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
+		switch (evt.type){
+		case "new_thread":
+		    if (me.guest == 1){
+			$.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
+			return;
+		    }
+		    //TMP FIX: only allow one current editor
+		    if (self.element.children().length){
+			$.I("Only one editor at a time is allowed for now...");
+			return;
+		    }			
+		    //TODO: delete previous draft if empty
+		    //TODO: if existting draft, sync its content w/ its model
+		    //now create new draft: 
+		    var id_item		= (new Date()).getTime();
+		    var draft		= {};
+		    draft[id_item]		= id_item;
+		    var drafts	        = {};
+		    drafts[id_item]		= draft;
+		    self._doEdit		= false;
+		    self._inReplyTo		= 0 ;
+		    self._selection		= evt.value.selection;
+		    self._sel		= null;
+		    self._note		= null;
+		    model.add("draft", drafts);
+		    self._render(id_item);	
+		    break;
+		case "reply_thread": 
+		    if (me.guest == 1){
+			$.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
+			return;
+		    }
+		    //TMP FIX: only allow one current editor
+		    if (self.element.children().length){
+			$.I("Only one editor at a time is allowed for now...");
+			return;
+		    }
+		    var id_item		= (new Date()).getTime();
+		    var draft		= {};
+		    draft[id_item]		= id_item;
+		    var drafts	        = {};
+		    drafts[id_item]		= draft;
+		    self._doEdit		= false;
+		    self._inReplyTo		= evt.value;
+		    self._selection		= null;
+		    self._sel		= null;
+		    self._note		= model.o.comment[evt.value];
+		    model.add("draft", drafts);
+		    self._render(id_item);	
+		    break;
+		case "edit_thread": 
+		    //TMP FIX: only allow one current editor
+		    if (self.element.children().length){
+			$.I("Only one editor at a time is allowed for now...");
+			return;
+		    }
+		    var id_item		= (new Date()).getTime();
+		    var draft		= {};
+		    draft[id_item]		= id_item;
+		    var drafts	        = {};
+		    drafts[id_item]		= draft;
+		    self._doEdit		= true;
+		    self._inReplyTo		= 0 ;
+		    self._selection		= null;
+		    self._sel		= null;
+		    self._note		= model.o.comment[evt.value];
+		    model.add("draft", drafts);
+		    self._render(id_item);	
+		    break;
 		}	
 	    },
 	    _render: function(id_item){
@@ -145,7 +153,7 @@
 			}
 		    }).width(self.element.width()-15);	 
 		$textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height()-30);
- 		var f_sel = function(evt, ui){
+		var f_sel = function(evt, ui){
 		    $.D("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
 		}
 		

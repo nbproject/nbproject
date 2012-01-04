@@ -176,20 +176,25 @@ NB.pers.createStore = function(payload){
 	    if ("c" in NB.pers.params){
 		window.setTimeout(function(){
 			var id =  NB.pers.params.c;
-			var c = m.get("comment", {ID: NB.pers.params.c})[id];
+			var c = m.get("comment", {ID: id})[id];
+			if ("reply" in NB.pers.params){
+			    $.concierge.trigger({type: "reply_thread", value: c.ID});
+			}			
 			$.concierge.trigger({type: "select_thread", value: c.ID_location});
-		    }, 100);
+
+
+		    }, 300);
 	    }
 	    else if ("p" in NB.pers.params){
 		window.setTimeout(function(){
 			var page = NB.pers.params.p;
 			$.concierge.trigger({type: "page", value: page});
-		    }, 100);
+		    }, 300);
 	    }
 	    else{
 		window.setTimeout(function(){
 			$.concierge.trigger({type: "page", value: 1});
-		    }, 500);
+		    }, 300);
 	    }
 	});
 };
