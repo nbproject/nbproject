@@ -352,11 +352,16 @@ NB.models.QuerySet.prototype.values = function(fieldname){
 };
 
 NB.models.QuerySet.prototype.intersect = function(ids){
+    /**
+     *  ids: a dictionary (only keys matter, not values)
+     */
+
     var output = new NB.models.QuerySet(this.model, this.type);
     var items = this.items;
+    var new_items = output.items;
     for (var i in items){
 	if (i in ids){
-	    output[i] =items[i];
+	    new_items[i] =items[i];
 	}
     } 
     return output;

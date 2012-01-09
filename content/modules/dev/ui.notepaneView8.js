@@ -174,7 +174,7 @@
 		if (self._filters.me){
 		    $filter_me.addClass("active");
 		    filters_on = true;
-		    locs_filtered = locs_filtered.intersect(locs_me);
+		    locs_filtered = locs_filtered.intersect(locs_me.items);
 		}
 		if (self._filters.star){
 		    $filter_star.addClass("active");
