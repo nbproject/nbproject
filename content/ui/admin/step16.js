@@ -30,7 +30,7 @@ NB.pers.init = function(){
 	alert("Can't open file b/c URL pathname doesn't have an integer: "+document.location.pathname);
     }
     NB.pers.id_source =  matches[1];
-    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
+    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
 	    $.concierge.addConstants(p.value);
 	});
     $.mods.declare({

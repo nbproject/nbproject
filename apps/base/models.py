@@ -176,6 +176,7 @@ class Session(models.Model):
     ctime               = DateTimeField(default=datetime.now)
     lastactivity        = DateTimeField(default=datetime.now, null=True)                                           
     ip                  = CharField(max_length=63, blank=True, null=True)
+    clienttime          = DateTimeField(blank=True, null=True)
                               
 class CommentSeen(models.Model):
     comment             = ForeignKey(Comment)

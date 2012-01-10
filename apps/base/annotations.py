@@ -753,15 +753,15 @@ def page_served(uid, p):
     o.save()
     
 def markActivity(cid):
-    session = M.Session.objects.filter(ctime=cid)
-    if len(session) == 0: 
-        return None, None
-    session = session[0]
-    previous_activity = session.lastactivity
-    session.lastactivity = datetime.datetime.now()
-    session.save()    
-    return session, previous_activity
-    
+    try: 
+        session = M.Session.objects.get(ctime=cid)
+        previous_activity = session.lastactivity
+        session.lastactivity = datetime.datetime.now()
+        session.save()
+        return session, previous_activity    
+    except M.Session.DoesNotExist: 
+        pass     
+    return None, None    
 
 def getPending(uid, payload):
     #pending threadmarks:    
@@ -770,13 +770,17 @@ def getPending(uid, payload):
     locations = M.Location.objects.filter(comment__in=comments)
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)
-    recent_replies = M.Comment.objects.filter(location__threadmark__in=my_questions).extra(where=["base_threadmark.ctime<base_comment.ctime"])
-    recent_locations = M.Location.objects.filter(comment__in=recent_replies)
-    replied_replied_questions = my_questions.filter(location__in=recent_locations)    
-    output = {}
-    output["questions"] = UR.qs2dict(questions|replied_replied_questions)
-    output["comments"] = UR.qs2dict(comments|recent_replies)
+    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions)     
+    #list() makes sure this gets evaluated. 
+    #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
+    recent_replies_ids = list(recent_replies.values_list("id", flat=True))
+    recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
+    replied_questions = my_questions.filter(location__in=recent_locations)    
+    output = {}    
+    output["questions"] = UR.qs2dict(questions|replied_questions)    
     output["locations"] = UR.qs2dict(locations|recent_locations)
+    output["comments"]  = UR.qs2dict(comments)
+    output["comments"].update(UR.qs2dict(recent_replies)) #same reason as the list() above: we don't want a query to produce an error if reevaluated in a different context
     return output
 
 

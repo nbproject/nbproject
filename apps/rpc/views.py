@@ -213,7 +213,14 @@ def getParams(payload, req):
     o={}
     for p in payload["name"]:
         if p in __AVAILABLE_PARAMS:
-            o[p] = constants.__dict__[p]            
+            o[p] = constants.__dict__[p]
+    if UR.CID != 0 and "clienttime" in payload:
+        try: 
+            s = M.Session.objects.get(ctime=UR.CID)
+            s.clienttime = datetime.datetime.fromtimestamp((payload["clienttime"]+0.0)/1000)
+            s.save()
+        except M.Session.DoesNotExist:
+            pass    
     return UR.prepare_response({"value": o})
 
 
