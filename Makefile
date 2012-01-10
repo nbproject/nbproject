@@ -16,6 +16,7 @@ MIGRATEDBSKEL	= conf/migratedb.sh.skel
 OLD_DB		= notabene
 NEW_DB		= nb3
 SETTINGSFILE	= $(SRCDIR)/settings.py
+SETTINGS_STATUS	= $(shell python -c 'import $(SRCDIR).settings'; echo $$? )
 DBNAME		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["NAME"]')
 DBUSER		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["USER"]')
 DBPASS		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["PASSWORD"]')
@@ -56,12 +57,16 @@ compat: api
 	(rm content/compat/*; cd src; python compat.py dir ../ ../templates/web ../content/compat/)
 
 check_settings: 
-	echo ''
-	echo '********************************************************************************************'
-	echo '* Please edit your DB connections parameters in $(SRCDIR)/settings_credentials.py, if needed *'
-	echo '********************************************************************************************'
-	echo ''	
-	$(shell python -c 'import $(SRCDIR).settings')
+ifneq ($(SETTINGS_STATUS),0)
+	$(info )
+	$(info ********************************************************************************************)
+	$(info * !! Unable to read settings !!)
+	$(info * Create and modify $(SRCDIR)/settings.py and $(SRCDIR)/settings_credentials)
+	$(info * based on $(SRCDIR)/settings.py.skel and $(SRCDIR)/settings_credentials.py.skel)
+	$(info ********************************************************************************************)
+	$(info )
+	$(error Unable to load NB settings)
+endif
 
 .SILENT:
 
