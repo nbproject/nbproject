@@ -57,7 +57,8 @@ __EXPORTS = [
     "login_user", 
     "set_grade_assignment", 
     "markThread", 
-    "getPending"
+    "getPending", 
+    "rate_reply"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -97,6 +98,23 @@ def parseEntities(x, d):
             return __parseEntities_list(x,delimiter)
         return __parseEntities_str(x,delimiter)
 
+def rate_reply(P,req):
+    uid = UR.getUserId(req);
+    resolved = P["resolved"]
+    tm = M.ThreadMark.objects.get(pk=P["threadmark_id"])
+    if tm.user_id == uid:
+        rr = M.ReplyRating()
+        rr.resolved = resolved
+        rr.threadmark = tm
+        rr.comment_id = P["comment_id"]
+        rr.save()
+        if resolved: 
+            tm.active = False
+            tm.save()
+        return UR.prepare_response({"replyrating": {rr.id: UR.model2dict(rr)}})
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")      
+
+    
 def sendInvites(payload, req): 
     from django.core.mail import EmailMessage
     uid = UR.getUserId(req);

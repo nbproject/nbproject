@@ -770,10 +770,12 @@ def getPending(uid, payload):
     locations = M.Location.objects.filter(comment__in=comments)
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)
-    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions)     
+    my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, resolved = False)
+    my_comments_unresolved =M.Comment.objects.filter(replyrating__in=my_unresolved) 
+    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)     
     #list() makes sure this gets evaluated. 
     #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
-    recent_replies_ids = list(recent_replies.values_list("id", flat=True))
+    recent_replies_ids = list(recent_replies.values_list("id", flat=True))    
     recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
     replied_questions = my_questions.filter(location__in=recent_locations)    
     output = {}    

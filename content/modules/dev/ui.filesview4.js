@@ -96,20 +96,27 @@
 		    viewall_url+="&amp;id_ensemble="+id_ensemble; 
 		}
 		$("#filesView-allpending-link").attr("href", viewall_url);
-		var locs = m.get("location", query_params).intersect(m.get("pending").values("location_id")).sort(f_location_sort);
-		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when;
-		for (i in locs){
-		    l = locs[i];
-		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
-		    q = m.get("pending", {location_id: l.id});
+
+		var questions	= m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id").items;
+		var i,l,cs, c,q,s, body, reply_link, comment_link, ensemble_info, parity, when, lens, lens_comment, comments;
+		for (i in questions){
+		    q = questions[i];
+		    l = m.o.location[q.location_id];
+		    cs = m.get("comment", {location_id: l.id}).items;
+		    comments = "";
 		    s = m.o.file[l.source_id];
-		    body = $.E(c.body).replace(/\n/g, " ");
-		    comment_link = "/c/"+c.id;
-		    reply_link = "/r/"+c.id;   
 		    ensemble_info = id_ensemble == null ? ("<span class='filesView-pending-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
 		    parity = (!(i % 2)) ? " class='filesView-pending-odd' ":"";
-		    when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-		    lens = "<tr "+parity+"><td>"+when+"<a href='"+comment_link+"'>"+$.E(s.title)+"</a><span class='filesView-pending-numpage'>p."+l.page+"</span>"+ensemble_info+"<br/><span class='filesView-pending-body'>"+body+"</span></td><td> <div class='nbicon pendingicon-hicontrast'/> <span class='filesView-pending-numvotes'>"+q.length()+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
+		    for (var cid in cs){
+			c = cs[cid];
+			body = $.E(c.body).replace(/\n/g, " ");
+			comment_link = "/c/"+c.id;
+			reply_link = "/r/"+c.id;   
+			when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
+			lens_comment = "<div>"+when+": " +body+"<a href='"+comment_link+"'>link</a> <a href='"+reply_link+"'>Reply</a> <br/> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{resolved: true, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks ! This answers my question.</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{resolved: false, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply.</a></div>";
+			comments+=lens_comment;
+		    }
+		    lens = "<tr "+parity+"><td>"+comments+"<span class='filesView-pending-numpage'>p."+l.page+"</span>"+ensemble_info+"</td><td> <div class='nbicon pendingicon-hicontrast'/> <span class='filesView-pending-numvotes'>"+"3"+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
 		    
 		    $list.append(lens);
 		}
@@ -130,7 +137,7 @@
 		}
 		$("#filesView-allquestions-link").attr("href", viewall_url);
 		var locs = m.get("location", query_params).intersect(m.get("question").exclude({user_id: self._me.id}).values("location_id")).sort(f_location_sort);
-		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when;
+		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when, lens;
 		for (i in locs){
 		    l = locs[i];
 		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
@@ -152,11 +159,11 @@
 		var header	= self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
-		var filesView_notif = "<div class='filesView-panel filesView-notif'><span style='font-weight: bold; color: #2050d0;'>3</span> actions requested...</div>";
-		var filesView_question = "<div class='filesView-panel filesView-question'><div id='filesView-question-header'>Your classmates have <span style='font-weight: bold; color: #2050d0;'>5</span> pending questions... Can you help them ? <a id='filesView-allquestions-link'>View all questions</a></div><table id='filesView-question-list'/></div>";
+		var filesView_pending = "<div class='filesView-panel filesView-pending'><div id='filesView-pending-header'><span style='font-weight: bold; color: #2050d0;'>3</span> actions requested...</div><table id='filesView-pending-list'/></div>";
+		var filesView_question = "<div class='filesView-panel filesView-question'><div id='filesView-question-header'>Your classmates have <span style='font-weight: bold; color: #2050d0;'>5</span> pending questions... Can you help them ? <a id='filesView-allquestions-link'>View all</a></div><table id='filesView-question-list'/></div>";
 
 		var filesView_files = (self._id_ensemble == null) ?  "<div class='filesView-panel filesView-recentfiles'>Recent Files...</div>" : "<div class='filesView-panel filesView-files'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
-		self.element.html(header+ filesView_notif + filesView_question + filesView_files);
+		self.element.html(header+ filesView_pending + filesView_question + filesView_files);
 
 
 		var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>" : "";
@@ -171,7 +178,7 @@
 		var model = self._model; 
 		self._admin = id_ensemble == null ? false : model.o.ensemble[id_ensemble].admin;
 		self._draw_frame();
-		//		self._draw_pending();
+		self._draw_pending();
 		self._draw_questions();
 		if (id_ensemble == null){
 		    // TODO: put drawing code here.

@@ -59,6 +59,9 @@ NB.pers.init = function(){
 		    $pers.perspective({
 			    height: function(){return $vp.height() - $pers.offset().top;}, 
 				listens: {
+				rate_reply: function(evt){
+				    $.concierge.get_component("rate_reply")(evt.value, function(P){$.I("Thanks for your feedback !")});
+				}, 
 				close_view: function(evt){
 				    if (evt.value == this.l.element[0].id){
 					delete($.concierge.features.doc_viewer[id]);

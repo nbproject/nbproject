@@ -351,19 +351,39 @@ NB.models.QuerySet.prototype.values = function(fieldname){
     return output;
 };
 
-NB.models.QuerySet.prototype.intersect = function(ids){
+NB.models.QuerySet.prototype.intersect = function(ids, field){
     /**
      *  ids: a dictionary (only keys matter, not values)
      */
-
+    var model = this.model;
     var output = new NB.models.QuerySet(this.model, this.type);
     var items = this.items;
     var new_items = output.items;
-    for (var i in items){
-	if (i in ids){
-	    new_items[i] =items[i];
+
+    if (field != undefined){ 
+	/*
+	//do an index lookup
+	var references = model.schema[this.type].references || {};
+	var from = this.type;
+	var ref = field in references ?  references[field] : "__"+field;
+	if ( (!(ref in model.indexes)) || (!(from in model.indexes[ref])) ){
+	    model.addIndex(ref, from, field);
 	}
-    } 
+	var index = model.indexes[ref][from];
+	*/
+	for (var i in items){
+	    if (items[i][field] in ids){
+		new_items[i] =items[i];
+	    }
+	}
+    }
+    else{
+	for (var i in items){
+	    if (i in ids){
+		new_items[i] =items[i];
+	    }
+	} 
+    }
     return output;
 };
 

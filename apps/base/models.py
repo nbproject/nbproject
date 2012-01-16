@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateField, DateTimeField, EmailField
 from django.db.models.fields.related import ForeignKey
 from datetime import datetime
+from compiler.ast import For
 
 ### TODO continue porting with schema in main_dir/schema
 
@@ -148,15 +149,21 @@ class Mark(models.Model):                                                       
     user                = ForeignKey(User)                                      # old: id_user integer NOT NULL
 
 class ThreadMark(models.Model):
-    TYPES               = ((1, "question"), (2, "star"))
+    TYPES               = ((1, "question"), (2, "star"), (3, "summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
     ctime               = DateTimeField(default=datetime.now)                    
     location            = ForeignKey(Location)
     user                = ForeignKey(User)
+
+class ReplyRating(models.Model):
+    threadmark          = ForeignKey(ThreadMark)
+    comment             = ForeignKey(Comment)
+    ctime               = DateTimeField(default=datetime.now)                    
+    resolved            = BooleanField(default=True)   
     
 class ThreadMarkHistory(models.Model):
-    TYPES               = ((1, "question"), (2, "star"))
+    TYPES               = ((1, "question"), (2, "star"), (3,"summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
     ctime               = DateTimeField(default=datetime.now)                    
