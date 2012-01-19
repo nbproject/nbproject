@@ -320,17 +320,22 @@ def getNotes(payload, req):
 def saveNote(payload, req): 
     uid = UR.getUserId(req)
     if not auth.canAnnotate(uid,  payload["id_ensemble"]):
-        return UR.prepare_response({}, 1,  "NOT ALLOWED")
- 
+        return UR.prepare_response({}, 1,  "NOT ALLOWED") 
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
-    #for mark in payload["marks"]:
-    #    annotations.markNote(uid, {"action": payload["marks"][mark], "id_comment": a["id_comment"]})
-    if "id_location" in a:
-        retval["locations"] = annotations.getLocation(a["id_location"])
-    retval["comments"] = annotations.getComment(a["id_comment"], uid)
-    retval["marks"] =  annotations.getMark(uid,{"id_comment":  a["id_comment"]})
+    tms = {}
+    for mark in payload["marks"]:
+        tm = M.ThreadMark()
+        tm.type = [c[0] for c in tm.TYPES if c[1]==mark][0]
+        tm.user_id = uid         
+        tm.comment=a
+        tm.location_id=a.location_id
+        tm.save()
+        tms[tm.id] = UR.model2dict(tm)  
+    retval["locations"] = annotations.getLocation(a.location_id)
+    retval["comments"] = annotations.getComment(a.id, uid)
+    retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
 
@@ -340,11 +345,8 @@ def editNote(payload, req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         annotations.editNote(payload)
-        #for mark in payload["marks"]:
-        #    annotations.markNote(uid, {"action": payload["marks"][mark], "id_comment": payload["id_comment"]})
-        return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid), 
-                   "marks": annotations.getMark(uid,{"id_comment":  payload["id_comment"]}) 
-                   })
+    #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
+    return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid)})
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)

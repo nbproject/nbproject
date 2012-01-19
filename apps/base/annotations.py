@@ -182,7 +182,8 @@ __NAMES = {
                          "location_id": None,
                          "user_id": None,
                          "active": None,
-                         "type": None                      
+                         "type": None, 
+                         "comment_id": None                      
                          }           
 }         
         
@@ -554,7 +555,9 @@ def addNote(payload):
     comment.type = payload["type"]
     comment.signed = payload["signed"] == 1
     comment.save()
-    return {"id_location": location.id, "id_comment": comment.id}
+    return comment
+    #return {"id_location": location.id, "id_comment": comment.id}
+
 
 def editNote(payload):
     id_type = payload["type"]

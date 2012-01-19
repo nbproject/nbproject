@@ -64,7 +64,14 @@
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
 		$.mods.ready("threadview1", function(){});
 		$.mods.ready("contextmenu", function(){self._ready = true;if (self._doDelayedRender){self._render();}});
-		$("body").append("<ul id='contextmenu_threadview' class='contextMenu'> <li class='context-edit'><a href='#edit'>Edit...</a></li> <li class='context-reply'><a href='#reply'>Reply</a></li>  <li class='context-delete separator'><a href='#delete'>Delete...</a></li></ul>");	       	    
+		$("body").append("<ul id='contextmenu_threadview' class='contextMenu'> \
+<li class='context-thanks'><a href='#thanks'>That helped. Thanks !</a></li> \
+<li class='context-edit'><a href='#edit'>Edit</a></li> <li class='context-reply'><a href='#reply'>Reply</a></li> \
+ <li class='context-question separator'><a href='#question'>Request a reply</a></li> \
+ <li class='context-noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> \
+ <li class='context-star'><a href='#star'>Mark as favorite</a></li> \
+ <li class='context-nostar'><a href='#nostar'>Remove from favorites</a></li> \
+  <li class='context-delete separator'><a href='#delete'>Delete</a></li></ul>");	       	    
 	    },
 	    _defaultHandler: function(evt){
 		if (this._file ==  $.concierge.get_state("file")){
@@ -182,13 +189,28 @@
 		$("a.replymenu", $pane).click(f_reply);
 		$("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
 		$("#contextmenu_threadview").bind("beforeShow", function(event, el){
-			var elts_disabled = $("li.context-edit, li.context-delete", this).addClass("disabled");
 			var id_item = el.closest("div.note-lens").attr("id_item");
-			var model	= self._model; 			      
-			var note = model.o.comment[id_item];
-			if (note.id_author == self._me.id && model.get("comment", {id_parent: id_item}).is_empty()){
+			var m	= self._model; 			      
+			var c = m.o.comment[id_item];
+
+			//edit and delete: 
+			var elts_disabled = $("li.context-edit, li.context-delete", this).addClass("disabled");	
+			if (c.id_author == self._me.id && m.get("comment", {id_parent: id_item}).is_empty()){
 			    elts_disabled.removeClass("disabled");
 			}		
+			//star and question: 
+			var tm;
+			var tms = m.get("threadmark", {comment_id: c.ID, user_id: self._me.ID }).items;
+			$("li", this).show();
+			//is this one of my active questions: if so, hide context-question
+			var to_hide = [];
+			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._QUESTION }).length(); ? "li.context-question" : "li.context-noquestion");
+			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).length() ? "li.context-star" : "li.context-nostar");
+			// for now, allow thanks for all posts that aren't mine and whose thread has a active "replyrequested" from me
+			if ( (!(m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type:self._QUESTION }).length())) || c.id_author == self._me.id){
+			    to_hide.push("li.context-thanks");
+			}
+			$(to_hide.join(","), this).hide();			
 		    });
 	    }, 
 	    set_model: function(model){

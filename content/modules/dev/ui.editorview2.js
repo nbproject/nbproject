@@ -133,7 +133,10 @@
 		    }		    
 		}
 		var staffoption	= self._allowStaffOnly ? "<tr><td><input type='radio' name='vis_"+id_item+"' value='2'/></td><td>Instructors and TAs</td></tr>" : " ";
-		var signoption	= self._allowAnonymous ? "<div id='signoption' title=\"check to keep this comment anonymous towards other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous</label></div>": " ";
+
+		var signoption	= self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous towards other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous</label></span>": " ";
+		var questionoption = self._doEdit ? " " : "<span><input type='checkbox' value='question'/><label for='checkbox_question'>Reply Requested</label></span> ";
+		var checkbox_options = "<div class='editor_checkbox_options'>"+questionoption+signoption+"</div>";
 		var header	= self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 20)) : "New note...";
 		//		var body	= self._doEdit ? self._note.body : "";
 		var contents = $([
@@ -144,7 +147,7 @@
 				  "</div><textarea/><br/></div> <div class='editor-footer'><table class='editorcontrols'><tr><td class='tablecontrols'><table><tr> <td><input type='radio' checked='checked' name='vis_", 
 				  id_item, 
 				  "' value='3' /></td><td>The entire class</td></tr>", staffoption, 
-				  "<tr><td><input type='radio' name='vis_"+id_item+"' value='1'/></td><td>Myself only</td></tr></table></td><td>"+signoption+"<button action='save' >Save</button></td></tr> </table></div></div>"].join(""));
+				  "<tr><td><input type='radio' name='vis_"+id_item+"' value='1'/></td><td>Myself only</td></tr></table></td><td>"+checkbox_options+"<button action='save' >Save</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
 		self.element.append(contents);
 		$("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
 		var $textarea = $("textarea", self.element).keypress(function(e){
@@ -162,7 +165,7 @@
 		};
 		var f_on_save = function(payload){
 		    model.add("comment", payload["comments"]);
-		    model.add("mark", payload["marks"]);
+		    model.add("threadmark", payload["threadmarks"]);
 		    //important to add location even when edit or reply since it can change styling (if adding private comment etc...)
 		    if ("locations" in payload){
 			model.add("location", payload["locations"]);
@@ -183,10 +186,11 @@
 			type: $("input[name=vis_"+id_item+"]:checked", self.element)[0].value,
 			body:  $("textarea", self.element)[0].value,			
 			signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-			marks: {
-			    answerplease: $("input[value=answerplease]:checked", self.element).length ? "answerplease": ""
-			}
+			marks: {}
 		    };
+		    if ($("input[value=question]:checked", self.element).length){
+			msg.marks.question =true;
+		    }
 		    var component_name;
 		    if (!(self._note)){ //new note, local or global
 			var s_inv = 	   100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);

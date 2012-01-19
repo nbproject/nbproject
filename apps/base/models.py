@@ -140,7 +140,7 @@ class Comment(models.Model):                                                    
         #today: 
         return  self.ctime.strftime("%I:%M%p")
 
-### TODO Port mark history feature (nb2_mark history)
+### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
     TYPES               = ((1, "answerplease"), (3, "approve"), (5, "reject"), (7, "favorite"), (9, "hide"))     
     type                = IntegerField(choices=TYPES)                           # old: id_type integer NOT NULL
@@ -154,6 +154,7 @@ class ThreadMark(models.Model):
     active              = BooleanField(default=True)
     ctime               = DateTimeField(default=datetime.now)                    
     location            = ForeignKey(Location)
+    comment             = ForeignKey(Comment, null=True)                        #this is optional
     user                = ForeignKey(User)
 
 class ReplyRating(models.Model):
@@ -169,6 +170,8 @@ class ThreadMarkHistory(models.Model):
     ctime               = DateTimeField(default=datetime.now)                    
     location            = ForeignKey(Location)
     user                = ForeignKey(User)
+    comment             = ForeignKey(Comment, null=True)                        #this is optional
+
     
 class Processqueue(models.Model):                                               # old: nb2_processqueue
     source              = ForeignKey(Source, null=True)                                    # old: id_source integer,
