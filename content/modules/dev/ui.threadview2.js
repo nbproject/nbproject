@@ -192,22 +192,20 @@
 			var id_item = el.closest("div.note-lens").attr("id_item");
 			var m	= self._model; 			      
 			var c = m.o.comment[id_item];
+			$("li", this).show();
 
 			//edit and delete: 
-			var elts_disabled = $("li.context-edit, li.context-delete", this).addClass("disabled");	
 			if (c.id_author == self._me.id && m.get("comment", {id_parent: id_item}).is_empty()){
-			    elts_disabled.removeClass("disabled");
+			    $("li.context-edit, li.context-delete", this).show();
 			}		
 			//star and question: 
-			var tm;
-			var tms = m.get("threadmark", {comment_id: c.ID, user_id: self._me.ID }).items;
-			$("li", this).show();
+			var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.ID, active: true, type: self._QUESTION });	
 			//is this one of my active questions: if so, hide context-question
 			var to_hide = [];
-			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._QUESTION }).length(); ? "li.context-question" : "li.context-noquestion");
-			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).length() ? "li.context-star" : "li.context-nostar");
+			to_hide.push(tms_location.intersect(c.ID, "comment_id").is_empty() ?  "li.context-noquestion": "li.context-question");
+			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context-nostar": "li.context-star" );
 			// for now, allow thanks for all posts that aren't mine and whose thread has a active "replyrequested" from me
-			if ( (!(m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type:self._QUESTION }).length())) || c.id_author == self._me.id){
+			if ( tms_location.is_empty() || c.id_author == self._me.id){
 			    to_hide.push("li.context-thanks");
 			}
 			$(to_hide.join(","), this).hide();			

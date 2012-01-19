@@ -264,6 +264,7 @@ NB.models.Store.prototype.addIndex = function(table, o, fieldname){
 NB.models.QuerySet = function(model, type){
     this.model = model;
     this.type = type;
+    this.__length = null;
     this.items = {};
 };
 
@@ -278,11 +279,15 @@ NB.models.QuerySet.prototype.is_empty = function(){
 };
 
 NB.models.QuerySet.prototype.length = function(){
+    if (this.__length != null){ //speedup if gets called multiple times
+	return this.__length;
+    }
     var l=0; 
     var items = this.items;
     for (var i in items){
 	l++;
     }
+    this.__length = l;
     return l;
 };
 
@@ -353,13 +358,17 @@ NB.models.QuerySet.prototype.values = function(fieldname){
 
 NB.models.QuerySet.prototype.intersect = function(ids, field){
     /**
-     *  ids: a dictionary (only keys matter, not values)
-     */
+     *  ids: a dictionary (only keys matter, not values), or just a single value
+     */    
     var model = this.model;
     var output = new NB.models.QuerySet(this.model, this.type);
     var items = this.items;
     var new_items = output.items;
-
+    if (!(ids instanceof Object)){
+	var new_ids = {};
+	new_ids[ids] = null;
+	ids = new_ids;
+    }
     if (field != undefined){ 
 	/*
 	//do an index lookup
@@ -418,9 +427,14 @@ NB.models.QuerySet.prototype.exclude = function(where){
 	o = self.o[from];
     }
     //Now remove objects that have an id in o: 
-    var items = this.items;
+    var items = this.items;   
+    var n_removed = 0;
     for (i in o){
 	delete items[i];
+	n_removed++;
+    }
+    if (this.__length != null){ //update length if already computed
+	this.__length-=n_removed;
     }
     return this;
 };
