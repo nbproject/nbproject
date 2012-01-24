@@ -36,7 +36,9 @@
 		*/
 		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span></button><button class='mark-toggle' action='question'><div class='nbicon questionicon-hicontrast' style='margin-top: -3px'/><span class='n_question'>...</span></button></div><div class='mark-instructions'>Mark this thread</div></div><div class='threadview-pane'/>");
 		var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
-			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._STAR}, function(p){				
+			var comments = self._model.get("comment", {ID_location: self._location});
+			var comment_id = (comments.length()==1) ? comments.first().ID : null;
+			$.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._STAR}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
 				for ( i in p.threadmarks){
@@ -46,7 +48,9 @@
 			    });
 		    }); 
 		var question_button = $("button.mark-toggle[action=question]", self.element).click(function(event){
-			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION}, function(p){				
+			var comments = self._model.get("comment", {ID_location: self._location});
+			var comment_id = (comments.length()==1) ? comments.first().ID : null;
+			$.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._QUESTION}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
 				for ( i in p.threadmarks){
@@ -84,9 +88,12 @@
 		}	
 	    },
 	    _lens: function(o){
-		var bold_cl = (this._model.get("seen", {id: o.ID}).is_empty() || o.id_author == this._me.id) ? "" : "note-bold";
+		var self = this;
+		var m = self._model;
+		var bold_cl = (m.get("seen", {id: o.ID}).is_empty() || o.id_author == self._me.id) ? "" : "note-bold";
 		var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-		var me_info = (o.id_author == this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+		var me_info = (o.id_author == self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+		var question_info = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
 		var type_info = "";
 		if (o.type == 1) {
 		    type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
@@ -102,7 +109,7 @@
 		var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
 		//return ["<div class='note-lens' id_item='",o.ID,"'><span class='note-body ",bold_cl,"'>",$.E(o.body).replace(/\n/g, "<br/>"),"</span>", author_info,admin_info,creation_info,replymenu, optionmenu,"</div>"].join("");
 		var body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
-		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
+		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,question_info, me_info, type_info, creation_info,"</div>"].join("");
 
 	    },
 	    _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
@@ -174,6 +181,32 @@
 		    case "edit": 
 			$.concierge.trigger({type: "edit_thread", value: id_item});
 			break;
+		    case "question": 
+		    case "noquestion": 
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION, comment_id: id_item}, function(p){				
+				self._model.add("threadmark", p.threadmarks);
+				var i, tm;
+				for ( i in p.threadmarks){
+				    tm = p.threadmarks[i];
+				    $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as 'Reply Requested'.");
+				}
+			    });
+		    break;
+		    
+		    case "star": 
+		    case "nostar": 
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION, comment_id: id_item}, function(p){				
+				self._model.add("threadmark", p.threadmarks);
+				var i, tm;
+				for ( i in p.threadmarks){
+				    tm = p.threadmarks[i];
+				    $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
+				}
+			    });
+			break;
+		    case "thanks": 
+			$.D("TODO: " + action);
+			break;
 		    case "delete":
 			if (confirm("Are you sure you want to delete this note ?")){
 			    $.concierge.get_component("note_deleter")({id_comment: id_item}, f_on_delete);
@@ -195,11 +228,11 @@
 			$("li", this).show();
 
 			//edit and delete: 
-			if (c.id_author == self._me.id && m.get("comment", {id_parent: id_item}).is_empty()){
-			    $("li.context-edit, li.context-delete", this).show();
+			if ((!(c.id_author == self._me.id)) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
+			    $("li.context-edit, li.context-delete", this).hide();
 			}		
 			//star and question: 
-			var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.ID, active: true, type: self._QUESTION });	
+			var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type: self._QUESTION });	
 			//is this one of my active questions: if so, hide context-question
 			var to_hide = [];
 			to_hide.push(tms_location.intersect(c.ID, "comment_id").is_empty() ?  "li.context-noquestion": "li.context-question");

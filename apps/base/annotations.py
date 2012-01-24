@@ -499,11 +499,13 @@ def getSeenByFile(id_source, uid):
 def markThread(uid, payload):
     mtype = payload["type"]
     lid  = payload["id_location"]
+    comment_id = None if "comment_id" not in payload else payload["comment_id"]
     mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid)
     if mark.count()>0: 
         mark = mark[0]
         mh = M.ThreadMarkHistory()
         mh.active = mark.active
+        mh.comment_id = mark.comment_id
         mh.ctime = mark.ctime
         mh.location_id = mark.location_id
         mh.user_id = mark.user_id    
@@ -515,6 +517,7 @@ def markThread(uid, payload):
         mark = M.ThreadMark()
         mark.user_id = uid
         mark.location_id = lid
+        mark.comment_id = comment_id
         mark.type = mtype
         mark.active = payload["active"] if "active" in payload else True 
     mark.save()
