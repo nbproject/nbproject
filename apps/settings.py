@@ -1,12 +1,8 @@
 # Django settings for apps project.
-#
-# For NB setup, skip down to GENERAL SETTINGS section.
-#
 import sys
 from os.path import abspath, dirname, basename 
 
 FN_CREDENTIALS =  "settings_credentials.py"
-
 def msg_credentials(): 
     msg = "*** Please edit the %s file with the required settings for authentication. ***" %(FN_CREDENTIALS, )
     stars = "*" * len(msg)
@@ -22,14 +18,18 @@ except ImportError:
     sys.strderr.write(msg_credentials())
     sys.exit(1)
 
+DEBUG = settings_credentials.__dict__.get("DEBUG", False)
+TEMPLATE_DEBUG = DEBUG
+ADMINS         = settings_credentials.__dict__.get("ADMINS", ()) 
+MANAGERS = ADMINS
+NB_SERVERNAME   = settings_credentials.__dict__.get("NB_SERVERNAME", "localhost")
+NB_HTTP_PORT    = settings_credentials.__dict__.get("NB_HTTP_PORT", "80")
+CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cron@gmail.com")
 DATABASES = settings_credentials.DATABASES 
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     sys.stderr.write(msg_credentials())
     sys.exit(1)
 
-
-
-### BEGIN GENERAL SETTINGS ###
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -60,7 +60,7 @@ MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "HTTP://EXAMPLE.COM/MEDIa/"
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
@@ -189,7 +189,7 @@ PERSONA_PASSWORD        = settings_credentials.__dict__.get("PERSONA_PASSWORD", 
 #ENABLE_REMOTE_DEBUGGING = True
 ENABLE_REMOTE_DEBUGGING = False
 
-# REMOTE_DEBUGGING_PATH = "/var/local/home/sacha/bin/aptana3/plugins/org.python.pydev.debug_1.6.3.2010100422/pysrc"
+REMOTE_DEBUGGING_PATH = "/var/local/home/sacha/bin/aptana3/plugins/org.python.pydev.debug_1.6.3.2010100422/pysrc"
 if ENABLE_REMOTE_DEBUGGING: 
     import sys
     sys.path.append(REMOTE_DEBUGGING_PATH)
