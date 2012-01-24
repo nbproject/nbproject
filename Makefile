@@ -23,10 +23,11 @@ DBHOST		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;a=DATABAS
 CRON_EMAIL	= $(shell python -c 'from  $(SRCDIR).settings import CRON_EMAIL;print CRON_EMAIL')
 CONTENTDIR	= $(PWD)/content
 HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SRCDIR).settings import HTTPD_MEDIA;print HTTPD_MEDIA')
-HTTPD_REP_DIR	= $(HTTPD_MEDIA_DIR)/$(shell python -c 'from  $(SRCDIR).settings import REPOSITORY_DIR;print REPOSITORY_DIR')
-HTTPD_ANNOTATED_DIR	= $(HTTPD_MEDIA_DIR)/$(shell python -c 'from  $(SRCDIR).settings import ANNOTATED_DIR;print ANNOTATED_DIR')
-HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_MEDIA_DIR)/$(shell python -c 'from  $(SRCDIR).settings import RESTRICTED_REPOSITORY_DIR;print RESTRICTED_REPOSITORY_DIR')
-HTTPD_CACHE_DIR = $(HTTPD_MEDIA_DIR)/$(shell python -c 'from  $(SRCDIR).settings import CACHE_DIR; print CACHE_DIR')
+HTTPD_PDF_DIR	= $(HTTPD_MEDIA_DIR)/pdf
+HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
+HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
+HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
+HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
 
 
 
