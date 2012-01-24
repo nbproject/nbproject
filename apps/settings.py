@@ -1,5 +1,4 @@
 # Django settings for apps project.
-import sys
 from os.path import abspath, dirname, basename 
 
 FN_CREDENTIALS =  "settings_credentials.py"
@@ -15,8 +14,8 @@ except ImportError:
     import shutil
     thisdir = dirname(abspath(__file__))
     shutil.copy2("%s/%s.skel" % (thisdir, FN_CREDENTIALS), "%s/%s" % (thisdir, FN_CREDENTIALS))
-    sys.strderr.write(msg_credentials())
-    sys.exit(1)
+    print msg_credentials()
+    exit(1)
 
 DEBUG = settings_credentials.__dict__.get("DEBUG", False)
 TEMPLATE_DEBUG = DEBUG
@@ -27,8 +26,8 @@ NB_HTTP_PORT    = settings_credentials.__dict__.get("NB_HTTP_PORT", "80")
 CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cron@gmail.com")
 DATABASES = settings_credentials.DATABASES 
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
-    sys.stderr.write(msg_credentials())
-    sys.exit(1)
+    print msg_credentials()
+    exit(1)
 
 
 # Local time zone for this installation. Choices can be found here:
