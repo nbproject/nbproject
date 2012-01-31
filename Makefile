@@ -67,11 +67,17 @@ check_settings:
 .SILENT:
 
 create_dirs: 
+	echo 'attempting to create Media dir: ' $(HTTPD_MEDIA_DIR)
 #	if test -d $(HTTPD_MEDIA_DIR) ; then echo 'HTTP DIR OK'; else mkdir -p $(HTTPD_MEDIA_DIR);  fi
+	echo 'attempting to create Repository dir: ' $(HTTPD_REP_DIR)
 	- mkdir -p $(HTTPD_REP_DIR)
+	echo 'attempting to create Annotated dir: ' $(HTTPD_ANNOTATED_DIR)
 	- mkdir -p $(HTTPD_ANNOTATED_DIR)
+	echo 'attempting to create Restricted Repository dir: ' $(HTTPD_RESTRICTED_REP_DIR)
 	- mkdir -p $(HTTPD_RESTRICTED_REP_DIR)
+	echo 'attempting to create Cache dir: ' $(HTTPD_CACHE_DIR)
 	- mkdir -p $(HTTPD_CACHE_DIR)
+	echo 'attempting to chown Media dir: ' $(HTTPD_MEDIA_DIR)
 	- chown -R $(SERVER_USERNAME):$(SERVER_USERNAME) $(HTTPD_MEDIA_DIR)
 
 create_db:
