@@ -76,7 +76,9 @@ margin-top: -4px;
 
 
 div.location-shortbody-text{
-width: 3000px;
+white-space: nowrap;
+overflow-x: hidden;
+text-overflow: ellipsis;
 font-size: medium; 
 font-family: arial;
 color: #222266;
