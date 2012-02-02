@@ -100,15 +100,15 @@ def parseEntities(x, d):
 
 def rate_reply(P,req):
     uid = UR.getUserId(req);
-    resolved = P["resolved"]
+    status = P["status"]
     tm = M.ThreadMark.objects.get(pk=P["threadmark_id"])
     if tm.user_id == uid:
         rr = M.ReplyRating()
-        rr.resolved = resolved
+        rr.status = status
         rr.threadmark = tm
         rr.comment_id = P["comment_id"]
         rr.save()
-        if resolved: 
+        if status: 
             tm.active = False
             tm.save()
         return UR.prepare_response({"replyrating": {rr.id: UR.model2dict(rr)}})

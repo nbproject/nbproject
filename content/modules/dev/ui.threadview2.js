@@ -69,13 +69,13 @@
 		$.mods.ready("threadview1", function(){});
 		$.mods.ready("contextmenu", function(){self._ready = true;if (self._doDelayedRender){self._render();}});
 		$("body").append("<ul id='contextmenu_threadview' class='contextMenu'> \
-<li class='context-thanks'><a href='#thanks'>That helped. Thanks !</a></li> \
-<li class='context-edit'><a href='#edit'>Edit</a></li> <li class='context-reply'><a href='#reply'>Reply</a></li> \
- <li class='context-question separator'><a href='#question'>Request a reply</a></li> \
- <li class='context-noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> \
- <li class='context-star'><a href='#star'>Mark as favorite</a></li> \
- <li class='context-nostar'><a href='#nostar'>Remove from favorites</a></li> \
-  <li class='context-delete separator'><a href='#delete'>Delete</a></li></ul>");	       	    
+<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li> \
+<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li> \
+ <li class='context question separator'><a href='#question'>Request a reply</a></li> \
+ <li class='context noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> \
+ <li class='context star'><a href='#star'>Mark as favorite</a></li> \
+ <li class='context nostar'><a href='#nostar'>Remove from favorites</a></li> \
+  <li class='context delete separator'><a href='#delete'>Delete</a></li></ul>");	       	    
 	    },
 	    _defaultHandler: function(evt){
 		if (this._file ==  $.concierge.get_state("file")){
@@ -88,29 +88,32 @@
 		}	
 	    },
 	    _lens: function(o){
-		var self = this;
-		var m = self._model;
-		var bold_cl = (m.get("seen", {id: o.ID}).is_empty() || o.id_author == self._me.id) ? "" : "note-bold";
-		var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-		var me_info = (o.id_author == self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
-		var question_info = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
-		var type_info = "";
+		var self		= this;
+		var m			= self._model;
+		var bold_cl		= (m.get("seen", {id: o.ID}).is_empty() || o.id_author == self._me.id) ? "" : "note-bold";
+		var admin_info		= o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
+		var me_info		= (o.id_author == self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+		var question_info_me	= (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
+
+		var tms			= m.get("threadmark", {comment_id: o.ID,  active: true, type: self._QUESTION });		
+		var tms_me		= tms.intersect( self._me.id, "user_id");
+		var tms_me_label	= tms_me.is_empty() ? "" : " including mine"; 
+		var tms_me_class	= tms_me.is_empty() ? "" : "active";
+		var question_info	= tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='This comment has "+tms.length()+" pending question"+$.pluralize(tms.length())+tms_me_label+" '><div class='nbicon questionicon' style='margin-top: -3px;'/> "+tms.length()+" </div>";
+
+		var type_info		= "";
 		if (o.type == 1) {
-		    type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
+		    type_info		= " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
 		}
-		else if (o.type ==2){
-		    type_info = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
+		else if (o.type == 2){
+		    type_info		= " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
 		}			
-		//var author_info = o.signed ? " <span class='author'>"+o.fullname+"</span> ":" ";
-		var author_info =  " <span class='author'>"+o.fullname+"</span> ";
-
-		var creation_info = " <span class='created'> - "+o.created+"</span> ";
-		var replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
-		var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
-		//return ["<div class='note-lens' id_item='",o.ID,"'><span class='note-body ",bold_cl,"'>",$.E(o.body).replace(/\n/g, "<br/>"),"</span>", author_info,admin_info,creation_info,replymenu, optionmenu,"</div>"].join("");
-		var body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+		var author_info		= " <span class='author'>"+o.fullname+"</span> ";
+		var creation_info	= " <span class='created'> - "+o.created+"</span> ";
+		var replymenu		= " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
+		var optionmenu		= " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
+		var body		= o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
 		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,question_info, me_info, type_info, creation_info,"</div>"].join("");
-
 	    },
 	    _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
 	    _fill_tree: function(m, c){
@@ -195,7 +198,7 @@
 		    
 		    case "star": 
 		    case "nostar": 
-			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION, comment_id: id_item}, function(p){				
+			$.concierge.get_component("mark_thread")({id_location: self._location, type: self._STAR, comment_id: id_item}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
 				for ( i in p.threadmarks){
@@ -229,17 +232,18 @@
 
 			//edit and delete: 
 			if ((!(c.id_author == self._me.id)) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
-			    $("li.context-edit, li.context-delete", this).hide();
+			    $("li.context.edit, li.context.delete", this).hide();
 			}		
 			//star and question: 
 			var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type: self._QUESTION });	
-			//is this one of my active questions: if so, hide context-question
+			var tms_comment = tms_location.intersect(c.ID, "comment_id");
+			//is this one of my active questions: if so, hide context.question
 			var to_hide = [];
-			to_hide.push(tms_location.intersect(c.ID, "comment_id").is_empty() ?  "li.context-noquestion": "li.context-question");
-			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context-nostar": "li.context-star" );
-			// for now, allow thanks for all posts that aren't mine and whose thread has a active "replyrequested" from me
-			if ( tms_location.is_empty() || c.id_author == self._me.id){
-			    to_hide.push("li.context-thanks");
+			to_hide.push(tms_comment.is_empty() ?  "li.context.noquestion": "li.context.question");
+			to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context.nostar": "li.context.star" );
+			// can't thank a comment for which I'm the author or where I haven't any replyrequested or which was authored before the comment I marked as "reply requested".
+			if ( tms_location.is_empty() || c.id_author == self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
+			    to_hide.push("li.context.thanks");
 			}
 			$(to_hide.join(","), this).hide();			
 		    });

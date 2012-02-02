@@ -113,7 +113,7 @@
 			comment_link = "/c/"+c.id;
 			reply_link = "/r/"+c.id;   
 			when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-			lens_comment = "<div>"+when+": " +body+"<a href='"+comment_link+"'>link</a> <a href='"+reply_link+"'>Reply</a> <br/> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{resolved: true, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks ! This answers my question.</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{resolved: false, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply.</a></div>";
+			lens_comment = "<div>"+when+": " +body+"<a href='"+comment_link+"'>link</a> <a href='"+reply_link+"'>Reply</a> <br/> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a></div>";
 			comments+=lens_comment;
 		    }
 		    lens = "<tr "+parity+"><td>"+comments+"<span class='filesView-pending-numpage'>p."+l.page+"</span>"+ensemble_info+"</td><td> <div class='nbicon pendingicon-hicontrast'/> <span class='filesView-pending-numvotes'>"+"3"+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";

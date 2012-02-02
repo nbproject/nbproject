@@ -497,11 +497,11 @@ def getSeenByFile(id_source, uid):
     return UR.qs2dict(seen, names, "id")
 
 def markThread(uid, payload):
-    mtype = payload["type"]
-    lid  = payload["id_location"]
-    comment_id = None if "comment_id" not in payload else payload["comment_id"]
-    mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid)
-    if mark.count()>0: 
+    mtype = int(payload["type"])
+    lid  = int(payload["id_location"])
+    comment_id = None if "comment_id" not in payload or payload["comment_id"] is None else int(payload["comment_id"])
+    mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid, active=True)
+    if mark.count()>0: # only allow one active threadmark of a given type per thread
         mark = mark[0]
         mh = M.ThreadMarkHistory()
         mh.active = mark.active
@@ -511,8 +511,16 @@ def markThread(uid, payload):
         mh.user_id = mark.user_id    
         mh.type = mark.type
         mh.save()  
-        mark.ctime = datetime.datetime.now()          
-        mark.active =  payload["active"] if "active" in payload else (not mark.active) # if no arg given, toggle 
+        mark.ctime = datetime.datetime.now()
+        active_default = True
+        if comment_id is not None and comment_id != mark.comment_id: 
+            #there was a real change of comment_id: don't update active default value
+            active_default = mark.active
+        else: #then probably just a toggle
+            active_default = not mark.active
+        if comment_id is not None:                   
+            mark.comment_id = comment_id            
+        mark.active =  payload["active"] if "active" in payload else active_default # if no arg given, toggle 
     else: 
         mark = M.ThreadMark()
         mark.user_id = uid
@@ -776,7 +784,7 @@ def getPending(uid, payload):
     locations = M.Location.objects.filter(comment__in=comments)
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)
-    my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, resolved = False)
+    my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, status = M.ReplyRating.TYPE_UNRESOLVED)
     my_comments_unresolved =M.Comment.objects.filter(replyrating__in=my_unresolved) 
     recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)     
     #list() makes sure this gets evaluated. 

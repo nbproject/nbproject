@@ -55,6 +55,20 @@ div.threadview span.created{
 color: #a0a0a0;
 }
 
+div.threadview div.stat-count{
+    -moz-border-radius: 3px 3px 3px 3px;
+    -webkit-border-radius: 3px 3px 3px 3px;
+    background-color: #909090;
+    color: #F0F0F0;
+    display: inline-block;
+    font-size: medium;
+    padding: 3px;
+}
+
+div.threadview div.stat-count.active{
+border-bottom: 5px solid #ffff00;
+}
+
 div.threadview div.lensmenu{
 float: right;
 padding: 5px;
@@ -76,6 +90,7 @@ color: #a0a0a0;
 
 div.threadview span.empty_comment{
     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     background-color: #F0F0F0;
     border: thin solid #A0A0A0;
     color: #A0A0A0;
@@ -122,3 +137,43 @@ padding-right: 10px;
 color: #808080;
 font-size: large;
 }
+
+.contextMenu li.context{
+background-image: url("/content/data/icons/png/default_theme.png");
+background-repeat: no-repeat;
+}
+
+
+.contextMenu li.context.reply{
+    background-position: -300px 0px;
+}
+
+.contextMenu li.context.thanks{
+    background-position: -280px 0px;
+}
+
+.contextMenu li.context.edit{
+    background-position: -320px 0px;
+}
+
+.contextMenu li.context.question{
+    background-position: -180px 0px;
+}
+
+.contextMenu li.context.noquestion{
+    background-position: -260px 0px;
+}
+
+
+.contextMenu li.context.star{
+    background-position: -160px 0px;
+}
+
+.contextMenu li.context.nostar{
+    background-position: -240px 0px;
+}
+
+.contextMenu li.context.delete{
+    background-position: -340px 0px;
+}
+

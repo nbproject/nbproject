@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateField, DateTimeField, EmailField
-from django.db.models.fields.related import ForeignKey
+from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateTimeField, EmailField
+from django.db.models.fields.related import ForeignKey, OneToOneField
 from datetime import datetime
-from compiler.ast import For
 
 ### TODO continue porting with schema in main_dir/schema
 
@@ -156,14 +155,22 @@ class ThreadMark(models.Model):
     location            = ForeignKey(Location)
     comment             = ForeignKey(Comment, null=True)                        #this is optional
     user                = ForeignKey(User)
+    def resolved(self):
+        return self.replyrating_set.filter(status__gt=ReplyRating.TYPE_UNRESOLVED).exists()
 
 class ReplyRating(models.Model):
+    #Rep invarient: TYPE_UNRESOLVED < TYPE_RESOLVED < TYPE_THANKS
+    TYPE_UNRESOLVED     = 1
+    TYPE_RESOLVED       = 2
+    TYPE_THANKS         = 3    
+    TYPES               = ((TYPE_UNRESOLVED, "unresolved"), (TYPE_RESOLVED, "resolved"), (TYPE_THANKS, "thanks"))
     threadmark          = ForeignKey(ThreadMark)
     comment             = ForeignKey(Comment)
     ctime               = DateTimeField(default=datetime.now)                    
-    resolved            = BooleanField(default=True)   
+    status              = IntegerField(choices=TYPES)   
     
 class ThreadMarkHistory(models.Model):
+    
     TYPES               = ((1, "question"), (2, "star"), (3,"summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
