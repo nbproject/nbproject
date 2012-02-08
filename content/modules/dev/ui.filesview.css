@@ -1,5 +1,5 @@
 div.filesView{
-overflow-y: auto;
+overflow-y: hidden;
 height: 100%;
 }
 
@@ -34,16 +34,15 @@ div.filesView div.filesView-header {
 background-color: #f5f5f5;
 border-bottom: thin solid #f0f0f0;
 padding: 5px;
-margin-bottom: 5px;
+//margin-bottom: 5px;
 
 }
 
 
 div.filesView-panel {
-padding-left: 10px;
-padding-bottom: 20px;
-padding-right: 10px;
-border-top: thin solid #c0c0c0;
+//padding-bottom: 20px;
+overflow-y: auto;
+border-top: thin solid #a0a0a0;
 }
 
 div.filesView a {
@@ -97,7 +96,7 @@ text-decoration: underline;
 }
 
 
-span.filesView-question-numpage{
+span.filesView-item-numpage{
 color: #a0a0a0;
 padding-left: 10px;
 }
@@ -107,29 +106,94 @@ color: #a0a0a0;
 font-size: large;
 }
 
-span.filesView-question-ensembleinfo{
+span.filesView-item-ensembleinfo{
 color: #a0a0a0;
 padding-left: 10px;
-font-family: serif;
+//font-family: serif;
 }
 
 span.filesView-question-when{
 color: #a0a0a0;
+}
+
+div.filesView-floatright{
 float: right;
 }
 
-#filesView-question-list td{
+#filesView-question-list > div{
 padding: 10px;
 }
 
-
-span.filesView-question-body{
-    font-family: cursive;
-    font-style: italic;
+#filesView-pending-list > div{
+padding: 10px;
 }
 
-tr.filesView-question-odd{
-    background-color: #f0f0f0;
+div.filesView-question-body{
+    font-family: Trebuchet MS, sans-serif;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+div.filesView-item-odd{
+    background-color: #f2f2f2;
+}
+
+div.filesView-item-even{
+    background-color: #e0e0e0;
 }
 
 
+
+#filesView-question-header-total{
+    font-weight: bold; 
+}
+
+#filesView-question-header, #filesView-pending-header{
+    background-color: #C0C0C0;
+    color: #FFFFFF;
+    font-family: trebuchet MS;
+    font-size: large;
+    padding: 10px;
+}
+
+a.button{
+    background-color: #C0C0C0;
+    border: thin solid #707070;
+    border-radius: 5px 5px 5px 5px;
+    color: #303030;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin: 0 5px;
+    padding: 1px 4px;
+}
+
+/* snippets  */
+
+div.snippet-selection{
+background-color: #A5B5E5;
+    border-color: #333377;
+    opacity: 0.4;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: thin solid #777777;
+    position: absolute;
+    z-index: 2;
+}
+
+div.snippet-innermaterial{
+    cursor: move;
+    position: absolute;
+}
+
+img.snippet-material {
+ -moz-user-select: none;
+ -webkit-border-radius: 5px;
+}
+
+div.snippet-material {
+    margin: 0 0 20px;
+    overflow: hidden;
+    position: relative;
+    height: 100px;
+}

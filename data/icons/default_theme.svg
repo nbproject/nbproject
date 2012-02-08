@@ -15,12 +15,23 @@
    id="svg5826"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="default_them.2012_02_01_23_32_43.0.svg"
+   sodipodi:docname="default_theme.svg"
    inkscape:export-filename="/var/local/home/sacha/oeit/nb.git/data/icons/png/default_theme.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
      id="defs5828">
+    <linearGradient
+       id="linearGradient6934">
+      <stop
+         style="stop-color:#a0a0a0;stop-opacity:1;"
+         offset="0"
+         id="stop6936" />
+      <stop
+         style="stop-color:#e0e0e0;stop-opacity:1;"
+         offset="1"
+         id="stop6938" />
+    </linearGradient>
     <linearGradient
        id="linearGradient6566">
       <stop
@@ -2874,52 +2885,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <radialGradient
-       r="17.142857"
-       fy="40"
-       fx="23.857143"
-       cy="40"
-       cx="23.857143"
-       gradientTransform="matrix(1,0,0,0.5,0,20)"
-       gradientUnits="userSpaceOnUse"
-       id="radialGradient7449-2-6"
-       xlink:href="#linearGradient4126-9-1"
-       inkscape:collect="always" />
-    <linearGradient
-       id="linearGradient4126-9-1"
-       inkscape:collect="always">
-      <stop
-         id="stop4128-2-8"
-         offset="0"
-         style="stop-color: rgb(0, 0, 0); stop-opacity: 1;" />
-      <stop
-         id="stop4130-9-0"
-         offset="1"
-         style="stop-color: rgb(0, 0, 0); stop-opacity: 0;" />
-    </linearGradient>
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient2251-7-6"
-       id="radialGradient2257-5-9"
-       cx="20.935379"
-       cy="12.592707"
-       fx="20.935379"
-       fy="12.592707"
-       r="19.967958"
-       gradientTransform="matrix(-1.26287,0.0279655,-0.0360672,-1.62966,47.3666,36.4979)"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient2251-7-6">
-      <stop
-         style="stop-color: rgb(239, 41, 41);"
-         offset="0"
-         id="stop2253-9-6" />
-      <stop
-         style="stop-color: rgb(204, 0, 0);"
-         offset="1"
-         id="stop2255-6-8" />
-    </linearGradient>
     <inkscape:perspective
        id="perspective6580"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -2986,6 +2951,16 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6934"
+       id="linearGradient6940"
+       x1="370.14285"
+       y1="868.78003"
+       x2="370.14285"
+       y2="897.80676"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-2.2975152e-6,-1.3884344e-5)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -2995,7 +2970,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="331.37299"
+     inkscape:cx="340.40725"
      inkscape:cy="15.166908"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -4198,5 +4173,31 @@
        width="13.57143"
        id="rect2258"
        style="opacity:0.4;color:#000000;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible" />
+    <rect
+       style="opacity:0.68036535;fill:none;stroke:none"
+       id="rect6916"
+       width="12.321428"
+       height="22.589285"
+       x="365.625"
+       y="0.76785713"
+       transform="translate(3,872.61934)"
+       rx="2.2097087"
+       ry="2.2097087" />
+    <rect
+       style="fill:url(#linearGradient6940);fill-opacity:1;stroke:none"
+       id="rect6918"
+       width="2"
+       height="18"
+       x="363"
+       y="872.61938"
+       rx="0"
+       ry="0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0.2745098;stroke:none"
+       id="rect6944"
+       width="2"
+       height="9"
+       x="363"
+       y="872.61932" />
   </g>
 </svg>

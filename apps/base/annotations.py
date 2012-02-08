@@ -783,20 +783,24 @@ def getPending(uid, payload):
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     #now items where action required: 
-    my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)
+    my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)#extra(select={"pending": "false"})
     my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, status = M.ReplyRating.TYPE_UNRESOLVED)
     my_comments_unresolved =M.Comment.objects.filter(replyrating__in=my_unresolved) 
-    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)     
+    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)
+    recent_replies_base = M.Comment.objects.extra(where=["base_threadmark.comment_id=base_comment.id or (base_threadmark.comment_id is null and base_comment.parent_id is null)"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)     
     #list() makes sure this gets evaluated. 
     #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
     recent_replies_ids = list(recent_replies.values_list("id", flat=True))    
     recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
-    replied_questions = my_questions.filter(location__in=recent_locations)    
+    replied_questions = my_questions.filter(location__in=recent_locations)
+    replied_questions = replied_questions.extra(select={"pending": "true"})    
     output = {}    
-    output["questions"] = UR.qs2dict(questions|replied_questions)    
+    output["questions"] = UR.qs2dict(questions|replied_questions)#, {"id":None, "type": None, "active":None, "location_id":None, "comment_id":None, "ctime":None, "pending":None, "user_id":None})    
     output["locations"] = UR.qs2dict(locations|recent_locations)
     output["comments"]  = UR.qs2dict(comments)
     output["comments"].update(UR.qs2dict(recent_replies)) #same reason as the list() above: we don't want a query to produce an error if reevaluated in a different context
+    output["basecomments"] = UR.qs2dict(recent_replies_base)
+    
     return output
 
 

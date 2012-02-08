@@ -96,8 +96,16 @@
 		    viewall_url+="&amp;id_ensemble="+id_ensemble; 
 		}
 		$("#filesView-allpending-link").attr("href", viewall_url);
-
-		var questions	= m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id").items;
+		
+		var questions	= m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id")
+		if (questions.length()){
+		    $("#filesView-pending-header-total").text(questions.length());
+		    $("#filesView-pending-header-plural").text($.pluralize(questions.length()));
+		}
+		else{
+		    $("#filesView-panel-pending").hide();
+		}
+		questions = questions.items;
 		var i,l,cs, c,q,s, body, reply_link, comment_link, ensemble_info, parity, when, lens, lens_comment, comments;
 		for (i in questions){
 		    q = questions[i];
@@ -105,19 +113,26 @@
 		    cs = m.get("comment", {location_id: l.id}).items;
 		    comments = "";
 		    s = m.o.file[l.source_id];
-		    ensemble_info = id_ensemble == null ? ("<span class='filesView-pending-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-		    parity = (!(i % 2)) ? " class='filesView-pending-odd' ":"";
+		    ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+		    parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
+		    var c_orig = null;
 		    for (var cid in cs){
 			c = cs[cid];
-			body = $.E(c.body).replace(/\n/g, " ");
-			comment_link = "/c/"+c.id;
-			reply_link = "/r/"+c.id;   
-			when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-			lens_comment = "<div>"+when+": " +body+"<a href='"+comment_link+"'>link</a> <a href='"+reply_link+"'>Reply</a> <br/> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a></div>";
-			comments+=lens_comment;
+			if ((q.comment_id == null && c.parent_id == null) || q.comment_id == c.id){
+			    c_orig = c;
+			}
+			else{
+			    //only display real answers, not the original comment
+			    body = $.E(c.body).replace(/\n/g, " ");
+			    comment_link = "/c/"+c.id;
+			    reply_link = "/r/"+c.id;   
+			    when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
+			    lens_comment = "<div><div class='filesView-floatright'><a class='button' href='"+comment_link+"'>link</a> <a class='button' href='"+reply_link+"'>Reply</a> <br/> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a></div>"+when+": " +body+"</div>";
+			    comments+=lens_comment;
+			}
 		    }
-		    lens = "<tr "+parity+"><td>"+comments+"<span class='filesView-pending-numpage'>p."+l.page+"</span>"+ensemble_info+"</td><td> <div class='nbicon pendingicon-hicontrast'/> <span class='filesView-pending-numvotes'>"+"3"+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
-		    
+		    c_orig = m.get("basecomment", {location_id: q.location_id}).first();
+		    lens = "<div "+parity+">"+"<div class='filesView-question-body'>"+c_orig.body+"</div>"+comments+"<span class='filesView-item-numpage'>p."+l.page+"</span>"+ensemble_info+"</div>";	    
 		    $list.append(lens);
 		}
 	    }, 
@@ -137,7 +152,14 @@
 		}
 		$("#filesView-allquestions-link").attr("href", viewall_url);
 		var locs = m.get("location", query_params).intersect(m.get("question").exclude({user_id: self._me.id}).values("location_id")).sort(f_location_sort);
-		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, when, lens;
+		if (locs.length){
+		    $("#filesView-question-header-total").text(locs.length);
+		    $("#filesView-question-header-plural").text($.pluralize(locs.length));
+		}
+		else{
+		    $("#filesView-panel-question").hide();
+		}
+		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, lens;
 		for (i in locs){
 		    l = locs[i];
 		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
@@ -146,12 +168,23 @@
 		    body = $.E(c.body).replace(/\n/g, " ");
 		    comment_link = "/c/"+c.id;
 		    reply_link = "/r/"+c.id;   
-		    ensemble_info = id_ensemble == null ? ("<span class='filesView-question-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-		    parity = (!(i % 2)) ? " class='filesView-question-odd' ":"";
-		    when = "<span class='filesView-question-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-		    lens = "<tr "+parity+"><td>"+when+"<a href='"+comment_link+"'>"+$.E(s.title)+"</a><span class='filesView-question-numpage'>p."+l.page+"</span>"+ensemble_info+"<br/><span class='filesView-question-body'>"+body+"</span></td><td> <div class='nbicon questionicon-hicontrast'/> <span class='filesView-question-numvotes'>"+q.length()+"</span><br/><a target='_blank' href='"+reply_link+"' style='font-size: large'>Reply</a></td></tr>";
+		    ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+		    parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
+
+		    // inserting image:
+		    var scalefactor, doc, inner, style, inner_top, sel, link;
+		    scalefactor = 0.6334;
+		    inner_top = Math.min(0, 50-l.y*scalefactor);	    
+		    sel = "<div class='snippet-selection' id_item='"+l.id+"' style='top: "+l.y*scalefactor+"px; left: "+l.x*scalefactor+"px; width: "+l.w*scalefactor+"px; height: "+l.h*scalefactor+"px'/>";
+		    
+		    inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(i+1)+"' src='http://nb.mit.edu/pdf/cache2/288/33/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
+		    link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>"
+		    doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='pagenumber pagenumbertop'>"+link+" <div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span> <a class='button' target='_blank' href='"+reply_link+"'>Reply</a></div>"+inner+"</div>";
+
+		    lens = "<div "+parity+">"+doc+"<div class='filesView-question-body'>"+body+"</div> </div>";
 		    
 		    $list.append(lens);
+		    $("div.snippet-innermaterial", $list).draggable();
 		}
 	    },
 	    _draw_frame: function(){
@@ -159,10 +192,10 @@
 		var header	= self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
-		var filesView_pending = "<div class='filesView-panel filesView-pending'><div id='filesView-pending-header'><span style='font-weight: bold; color: #2050d0;'>3</span> actions requested...</div><table id='filesView-pending-list'/></div>";
-		var filesView_question = "<div class='filesView-panel filesView-question'><div id='filesView-question-header'>Your classmates have <span style='font-weight: bold; color: #2050d0;'>5</span> pending questions... Can you help them ? <a id='filesView-allquestions-link'>View all</a></div><table id='filesView-question-list'/></div>";
+		var filesView_pending = "<div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-header'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</div><div id='filesView-pending-list'/></div>";
+		var filesView_question = "<div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-header'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. Can you help them ? <!--<a id='filesView-allquestions-link'>View all</a>--></div><div id='filesView-question-list'/></div>";
 
-		var filesView_files = (self._id_ensemble == null) ?  "<div class='filesView-panel filesView-recentfiles'>Recent Files...</div>" : "<div class='filesView-panel filesView-files'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
+		var filesView_files = (self._id_ensemble == null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 		self.element.html(header+ filesView_pending + filesView_question + filesView_files);
 
 
@@ -171,15 +204,13 @@
 		self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
 		$("body").append(self._menu_items);
 	    },
-	    _render: function(){		
+	    _draw_files : function(){
 		var self=this;
 		var id_ensemble = self._id_ensemble;		
 		var id_folder = self._id_folder;
 		var model = self._model; 
 		self._admin = id_ensemble == null ? false : model.o.ensemble[id_ensemble].admin;
-		self._draw_frame();
-		self._draw_pending();
-		self._draw_questions();
+		
 		if (id_ensemble == null){
 		    // TODO: put drawing code here.
 		}
@@ -215,7 +246,7 @@
 			default: 
 			$.concierge.get_component(action+"_file_menu")({id: el.attr("id_item")});
 			break;
-		    }
+			}
 		    };
 		    var f_leftcontext = function(action, el, pos){
 			f_context(action, el.parent().parent(), pos);
@@ -229,10 +260,20 @@
 		      $e_info.append("Allow staffonly ? ") //SACHA CONTINUE HERE
 		      }
 		    */
+		
 		    $("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
 		    $("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
 		    $("#spreadsheet").attr("href", "/spreadsheet?id_ensemble="+self._id_ensemble);
 		}
+	    }, 
+	    _render: function(){		
+		var self=this;
+		self._draw_frame();
+		self._draw_pending();
+		self._draw_questions();
+		self._draw_files();
+		//var containers = $("div.filesView-panel");
+		self._expand();
 	    }, 
 	    set_model: function(model){
 		var self=this;
@@ -273,6 +314,7 @@
 	    ensemble: null, 
 	    home: null,
 	}, 
-	admin: false
+	admin: false, 
+	expand: "div.filesView-panel",
     };
 })(jQuery);
