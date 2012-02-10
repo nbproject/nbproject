@@ -138,7 +138,7 @@
 		self._model =  model;
 		self.element.addClass("docView").scroll(function(evt){
 			//we use a timer to coalesce scroll events happening in quick succession. 
-			var timerID = self._scrollTimerID
+			var timerID = self._scrollTimerID;
 			if (timerID != null){
 			    window.clearTimeout(timerID);
 			    self._scrollTimerID =  null;

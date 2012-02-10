@@ -132,6 +132,7 @@ div.filesView-question-body{
     font-family: Trebuchet MS, sans-serif;
     white-space: nowrap;
     overflow-x: hidden;
+    font-size: medium;
     text-overflow: ellipsis;
 }
 
@@ -145,7 +146,7 @@ div.filesView-item-even{
 
 span.filesView-reply-body{
     font-size: medium;
-    font-family: trebuchet MS;
+    font-family: Trebuchet MS;
     padding-right: 10px;
 
 }
@@ -214,8 +215,9 @@ img.snippet-material {
 }
 
 div.snippet-material {
-    margin: 0 0 20px;
+    margin: 0px auto 5px auto;
     overflow: hidden;
     position: relative;
     height: 100px;
+    max-width: 800px;
 }

@@ -25,6 +25,7 @@
 		self._menu_items	= $();
 		self._menu_items_reg	= $("<ul id='contextmenu_filesview' class='contextMenu'/>");
 		self._menu_items_admin	= $("<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>");
+		self._scrollTimerID =  null;
 
 		
 		self.element.addClass("filesView");
@@ -129,9 +130,6 @@
 		    var c_orig = m.get("basecomment", {location_id: q.location_id}).first();
 		    lens = self.img_snippet(i,l,c_orig);
 		    lens.prepend(comments);
-		    /*
-"<div "+parity+">"+"<div class='filesView-question-body'>"+c_orig.body+"</div>"+comments+"<span class='filesView-item-numpage'>p."+l.page+"</span>"+ensemble_info+"</div>";	    
-		    */
 		    $list.append(lens);
 		}
 	    }, 
@@ -179,16 +177,16 @@
 		ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
 		parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
-		//scalefactor = 0.6334;
-		scalefactor = 0.4798
+		scalefactor = 0.6334;
+		//scalefactor = 0.4798
 		inner_top = Math.min(0, 50-l.y*scalefactor);	    
 		sel = "<div class='snippet-selection' id_item='"+l.id+"' style='top: "+l.y*scalefactor+"px; left: "+l.x*scalefactor+"px; width: "+l.w*scalefactor+"px; height: "+l.h*scalefactor+"px'/>";
 		    
-		inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(i+1)+"' src='"+self.options.img_server+"/pdf/cache2/72/100/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
+		inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(Number(i)+1)+"' src2='"+self.options.img_server+"/pdf/cache2/288/33/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
 		link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>";
 		numvotes = q==undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
 		doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='snippet-pagenumber pagenumbertop'>"+link+numvotes+reply_link+"  </div>"+inner+"</div>";
-		lens = $("<div "+parity+">"+doc+"<div class='filesView-question-body'>"+body+"</div> </div>");
+		lens = $("<div "+parity+">"+doc+"<div class='filesView-question-body'><ul><li>"+body+"</li></ul></div> </div>");
 		$("div.snippet-innermaterial", lens).draggable();
 		return lens;
 	    },
@@ -279,6 +277,36 @@
 		self._draw_files();
 		//var containers = $("div.filesView-panel");
 		self._expand();
+		// there might be quite a few questions: don't get all images at once
+		var scroll_timeout = 300;
+		var scroll_handler = function(evt){
+		    var $this = $(this);
+		    var timerID = self._scrollTimerID;
+		    if (timerID != null){
+			window.clearTimeout(timerID);
+			self._scrollTimerID =  null;
+		    }
+		    timerID = window.setTimeout(function(){
+			    var panel_top = $this.offset().top;
+			    var H = $this.height();
+			    $("img[src2]", $this).each(function(i){
+				    var $elt = $(this);
+				    var $div = $elt.closest("div.snippet-material");
+				    var delta_top = $div.offset().top - panel_top;
+				    if ((delta_top+$div.height() > 0) && (delta_top < H)){
+					$elt.attr("src", $elt.attr("src2"));
+					this.removeAttribute("src2");
+				    }
+				});
+			}, scroll_timeout);
+		    self._scrollTimerID =  timerID;   
+		};
+		$("#filesView-panel-question").scroll(scroll_handler).scroll();	       
+		window.setTimeout(function(){ //so that both can be initialized. 
+			$("#filesView-panel-pending").scroll(scroll_handler).scroll();	     
+		    }, scroll_timeout+200);
+	       
+
 	    }, 
 	    set_model: function(model){
 		var self=this;
@@ -296,12 +324,6 @@
 				}  });});
 
 	    },
-	    _update: function(){
-		/*
-		  var self = this;
-		  self.element.append("<p>_update request</p>");
-		*/
-	    }, 
 	    update: function(action, payload, items_fieldname){
 		if (action == "add" || action == "remove"){
 		    this._render();
