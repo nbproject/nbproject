@@ -40,7 +40,7 @@ NB.pers.init = function(){
 		    var pers_id		= "pers_"+id;
 		    var $vp		= $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
 		    var $pers		= $("<div id='"+pers_id+"'/>").appendTo($vp);
-		    var treeview	=  {priority: 1, min_width: 100, desired_width: 20, 
+		    var treeview	=  {priority: 1, min_width: 200, desired_width: 25, 
 					    content: function($div){
 			    $.mods.ready("treeview", function(){
 			    $div.treeView({admin:NB.pers.admin});
@@ -48,7 +48,7 @@ NB.pers.init = function(){
 				});
 			}
 		    };
-		    var filesview	=  {priority: 1, min_width: 700, desired_width: 80, 
+		    var filesview	=  {priority: 1, min_width: 1000, desired_width: 85, 
 					    content: function($div){
 			    $.mods.ready("filesview", function(){
 				    $div.filesView({img_server: NB.conf.servers.img,  admin: NB.pers.admin});

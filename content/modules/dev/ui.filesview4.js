@@ -106,7 +106,7 @@
 		    $("#filesView-panel-pending").hide();
 		}
 		questions = questions.items;
-		var i,l,cs, c,q,s, body, reply_link, comment_link, ensemble_info, parity, when, lens, lens_comment, comments;
+		var i,l,cs, c,q,s, body, reply_link,  ensemble_info, parity, when, lens, lens_comment, comments;
 		for (i in questions){
 		    q = questions[i];
 		    l = m.o.location[q.location_id];
@@ -115,24 +115,23 @@
 		    s = m.o.file[l.source_id];
 		    ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
 		    parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
-		    var c_orig = null;
 		    for (var cid in cs){
 			c = cs[cid];
-			if ((q.comment_id == null && c.parent_id == null) || q.comment_id == c.id){
-			    c_orig = c;
-			}
-			else{
+			if (!((q.comment_id == null && c.parent_id == null) || q.comment_id == c.id)){
 			    //only display real answers, not the original comment
 			    body = $.E(c.body).replace(/\n/g, " ");
-			    comment_link = "/c/"+c.id;
 			    reply_link = "/r/"+c.id;   
-			    when = "<span class='filesView-pending-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-			    lens_comment = "<div><div class='filesView-floatright'><a class='button' href='"+comment_link+"'>link</a> <a class='button' href='"+reply_link+"'>Reply</a> <br/> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a></div>"+when+": " +body+"</div>";
-			    comments+=lens_comment;
+			    when = "<span class='filesView-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
+			    lens_comment = "<li><div class='filesView-floatright'> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a> <a class='button' style='margin-left: 20px' href='"+reply_link+"'>Reply</a> </div><span class='filesView-reply-body'>"+body+"</span>"+when+"</li>";
+			    comments+="<ul>"+lens_comment+"</ul>";
 			}
 		    }
-		    c_orig = m.get("basecomment", {location_id: q.location_id}).first();
-		    lens = "<div "+parity+">"+"<div class='filesView-question-body'>"+c_orig.body+"</div>"+comments+"<span class='filesView-item-numpage'>p."+l.page+"</span>"+ensemble_info+"</div>";	    
+		    var c_orig = m.get("basecomment", {location_id: q.location_id}).first();
+		    lens = self.img_snippet(i,l,c_orig);
+		    lens.prepend(comments);
+		    /*
+"<div "+parity+">"+"<div class='filesView-question-body'>"+c_orig.body+"</div>"+comments+"<span class='filesView-item-numpage'>p."+l.page+"</span>"+ensemble_info+"</div>";	    
+		    */
 		    $list.append(lens);
 		}
 	    }, 
@@ -159,33 +158,39 @@
 		else{
 		    $("#filesView-panel-question").hide();
 		}
-		var i,l,c,q,s, body, reply_link, comment_link, ensemble_info, parity, lens;
+		var i,l,c,q;
 		for (i in locs){
 		    l = locs[i];
 		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
 		    q = m.get("question", {location_id: l.id});
-		    s = m.o.file[l.source_id];
-		    body = $.E(c.body).replace(/\n/g, " ");
-		    comment_link = "/c/"+c.id;
-		    reply_link = "/r/"+c.id;   
-		    ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-		    parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
+		    $list.append(self.img_snippet(i,l,c,q));	    
+		}		
+	    },
+	    img_snippet: function(i, l, c, q){	    	
+		var self = this;
+		var id_ensemble = self._id_ensemble;
+		var m = self._model;
+		var s =  m.o.file[l.source_id];
+		var scalefactor, doc, inner,  inner_top, sel, link, numvotes;
+		var body, comment_link, reply_link, ensemble_info, parity, lens;
+		body = $.E(c.body).replace(/\n/g, " ");
+		comment_link = "/c/"+c.id;
+		reply_link = q==undefined ? "" : "<a class='button' target='_blank' href='/r/"+c.id+"'>Reply</a>";
+		ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+		parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
-		    // inserting image:
-		    var scalefactor, doc, inner, style, inner_top, sel, link;
-		    scalefactor = 0.6334;
-		    inner_top = Math.min(0, 50-l.y*scalefactor);	    
-		    sel = "<div class='snippet-selection' id_item='"+l.id+"' style='top: "+l.y*scalefactor+"px; left: "+l.x*scalefactor+"px; width: "+l.w*scalefactor+"px; height: "+l.h*scalefactor+"px'/>";
+		//scalefactor = 0.6334;
+		scalefactor = 0.4798
+		inner_top = Math.min(0, 50-l.y*scalefactor);	    
+		sel = "<div class='snippet-selection' id_item='"+l.id+"' style='top: "+l.y*scalefactor+"px; left: "+l.x*scalefactor+"px; width: "+l.w*scalefactor+"px; height: "+l.h*scalefactor+"px'/>";
 		    
-		    inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(i+1)+"' src='http://nb.mit.edu/pdf/cache2/288/33/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
-		    link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>"
-		    doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='pagenumber pagenumbertop'>"+link+" <div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span> <a class='button' target='_blank' href='"+reply_link+"'>Reply</a></div>"+inner+"</div>";
-
-		    lens = "<div "+parity+">"+doc+"<div class='filesView-question-body'>"+body+"</div> </div>";
-		    
-		    $list.append(lens);
-		    $("div.snippet-innermaterial", $list).draggable();
-		}
+		inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(i+1)+"' src='"+self.options.img_server+"/pdf/cache2/72/100/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
+		link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>";
+		numvotes = q==undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
+		doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='snippet-pagenumber pagenumbertop'>"+link+numvotes+reply_link+"  </div>"+inner+"</div>";
+		lens = $("<div "+parity+">"+doc+"<div class='filesView-question-body'>"+body+"</div> </div>");
+		$("div.snippet-innermaterial", lens).draggable();
+		return lens;
 	    },
 	    _draw_frame: function(){
 		var self = this;
