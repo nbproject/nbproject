@@ -60,7 +60,9 @@ NB.pers.init = function(){
 			    height: function(){return $vp.height() - $pers.offset().top;}, 
 				listens: {
 				rate_reply: function(evt){
-				    $.concierge.get_component("rate_reply")(evt.value, function(P){$.I("Thanks for your feedback !")});
+				    $.concierge.get_component("rate_reply")(evt.value, function(P){
+					    NB.pers.store.add("replyrating", P["replyrating"]);
+					    $.I("Thanks for your feedback !")});
 				}, 
 				close_view: function(evt){
 				    if (evt.value == this.l.element[0].id){
@@ -133,6 +135,7 @@ NB.pers.createStore = function(payload){
 		question: {references: {location_id: "location"}},
 		seen:{references: {id_location: "location"}}, 
 		basecomment:{references: {id_location: "location"}},
+		replyrating:{references: {comment_id: "comment"}},
 	});
     $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
     NB.files.set_model(NB.pers.store);

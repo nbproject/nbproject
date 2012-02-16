@@ -61,6 +61,11 @@
 		this._id_ensemble	= null;
 		this._id_folder		= null;
 		break;
+		/*
+		case "rate_reply": 
+		$("#filesView-pending-list li[comment_id="+evt.value.comment_id+"] button").attr("disabled", "disabled");
+		break;
+		*/
 		}		
 		this._render();
 	    },
@@ -106,7 +111,7 @@
 		else{
 		    //  $("#filesView-panel-pending").hide();
 		}
-		var i,l,cs, c,q,s, body, reply_link,  ensemble_info, when, lens, lens_comment, comments;
+		var i,l,cs, c,q,s, body, reply_link,  ensemble_info, when, lens, lens_comment, comments, buttons, rating;
 		for (i in questions){
 		    q = questions[i];
 		    l = m.o.location[q.location_id];
@@ -121,7 +126,9 @@
 			    body = $.E(c.body).replace(/\n/g, " ");
 			    reply_link = "/r/"+c.id;   
 			    when = "<span class='filesView-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
-			    lens_comment = "<li><div class='filesView-floatright'> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>Thanks, that <i>really</i> helped !</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Accept this reply</a> <a class='button' href='javascript:$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >Request another reply</a> <a class='button' style='margin-left: 20px' href='"+reply_link+"'>Reply</a> </div><span class='filesView-reply-body'>"+body+"</span>"+when+"</li>";
+			    rating = m.get("replyrating", {comment_id: c.id});
+			    buttons =  rating.length() ? "<span class='reply-rated-as'>Reply rated as <button disabled='disabled'>"+self._RATING_LABELS[rating.first().status]+"</button></span>" : "<button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>"+self._RATING_LABELS[3]+"</button> <button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[2]+"</button> <button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[1]+"</button>";
+			    lens_comment = "<li comment_id='"+c.id+"'><div class='filesView-floatright'>"+buttons+"<a class='button' style='margin-left: 20px' href='"+reply_link+"'>Reply</a> </div><span class='filesView-reply-body'>"+body+"</span>"+when+"</li>";
 			    comments+="<ul>"+lens_comment+"</ul>";
 			}
 		    }
@@ -330,7 +337,7 @@
 	    set_model: function(model){
 		var self=this;
 		self._model = model;
-		model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null}); //TODO: put stg here so that we update
+		model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null}); //TODO: put stg here so that we update
 		$.mods.declare({tablesorter: {js: ["/content/modules/tablesorter/jquery.tablesorter.min.js"], css: ["/content/modules/tablesorter/style.css"]}});
 		$.mods.ready("tablesorter", function(){$("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
 				    var $n = $(node);
@@ -346,8 +353,20 @@
 	    update: function(action, payload, items_fieldname){
 		if (action == "add" || action == "remove"){
 		    this._render();
+		    /*
+		    if ("replyrating" in payload){
+			this._draw_pending();
+		    }
+		    else{
+			this._render();
+		    }
+		    */
 		}
 		//		console.debug("model update !", action, payload, items_fieldname);
+	    }, 
+	    _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Request another reply", 
+			     2: "<div class='nbicon checkicon'/>Accept this reply", 
+			     3: "<div class='nbicon thankscheckicon'/> Thanks, that <i>really</i> helped !"
 	    }
 	});
 			 

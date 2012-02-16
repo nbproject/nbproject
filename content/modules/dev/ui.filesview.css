@@ -45,10 +45,6 @@ overflow-y: auto;
 padding: 0px !important;
 }
 
-div.filesView a {
-text-decoration: none;
-}
-
 div.filesView div.nofiles{
 font-size: large; 
 color: #c0c0c0;
@@ -241,4 +237,8 @@ h3.ui-state-active >  a{
 background: -webkit-gradient(linear, left top, left bottom, from(#e0e0e0), to(#fafafa)); /* for webkit browsers */
 background: -moz-linear-gradient(top, #e0e0e0, #fafafa); /* for firefox 3.6+ */ 
 
+}
+
+span.reply-rated-as{
+color: #a0a0a0;
 }
