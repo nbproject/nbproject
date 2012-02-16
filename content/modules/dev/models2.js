@@ -342,11 +342,6 @@ NB.models.QuerySet.prototype.first = function(){
     return null;
 };
 
-
-NB.models.QuerySet.prototype.items = function(){
-    return this.items;
-};
- 
 NB.models.QuerySet.prototype.values = function(fieldname){
     var output = {};
     var items = this.items;

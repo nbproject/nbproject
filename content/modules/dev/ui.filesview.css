@@ -1,5 +1,5 @@
 div.filesView{
-overflow-y: hidden;
+overflow-y: auto;
 height: 100%;
 }
 
@@ -34,15 +34,15 @@ div.filesView div.filesView-header {
 background-color: #f5f5f5;
 border-bottom: thin solid #f0f0f0;
 padding: 5px;
-//margin-bottom: 5px;
+/*margin-bottom: 5px;*/
 
 }
 
 
 div.filesView-panel {
-//padding-bottom: 20px;
+background-color: #f5f5f5;
 overflow-y: auto;
-border-top: thin solid #a0a0a0;
+padding: 0px !important;
 }
 
 div.filesView a {
@@ -136,6 +136,7 @@ div.filesView-question-body{
     text-overflow: ellipsis;
 }
 
+/*
 div.filesView-item-odd{
     background-color: #f2f2f2;
 }
@@ -143,6 +144,18 @@ div.filesView-item-odd{
 div.filesView-item-even{
     background-color: #e0e0e0;
 }
+*/
+ 
+div.filesView-item-odd{
+    background-color: #fafafa;
+    border-bottom: thin solid #e0e0e0;
+}
+
+div.filesView-item-even{
+    background-color: #f2f2f2;
+    border-bottom: thin solid #e0e0e0;
+}
+
 
 span.filesView-reply-body{
     font-size: medium;
@@ -156,12 +169,9 @@ span.filesView-reply-body{
     font-weight: bold; 
 }
 
-#filesView-question-header, #filesView-pending-header{
-    background-color: #C0C0C0;
-    color: #FFFFFF;
+#filesView-question-header, #filesView-pending-header, #filesView-files-header{
     font-family: trebuchet MS;
     font-size: x-large;
-    padding: 10px;
 }
 
 a.button{
@@ -211,7 +221,8 @@ div.snippet-innermaterial{
 
 img.snippet-material {
  -moz-user-select: none;
- -webkit-border-radius: 5px;
+ border: thin solid #e0e0e0;
+ 
 }
 
 div.snippet-material {
@@ -220,4 +231,14 @@ div.snippet-material {
     position: relative;
     height: 100px;
     max-width: 800px;
+    background-color: #fafafa;
+    border: thin solid #e0e0e0;
+
+}
+
+h3.ui-state-active >  a{
+/*background-color: #beebff;*/
+background: -webkit-gradient(linear, left top, left bottom, from(#e0e0e0), to(#fafafa)); /* for webkit browsers */
+background: -moz-linear-gradient(top, #e0e0e0, #fafafa); /* for firefox 3.6+ */ 
+
 }

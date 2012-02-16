@@ -24,6 +24,11 @@ try{
 catch (e){
     alert("[inbox] Init Error: "+e);
 }
+$.mods.declare({
+	__pers2: {js: [], css: ["/content/modules/superfish-1.4.8/css/superfish.css"]}
+    });
+$.mods.ready("__pers2", function(){});
+
 
 /* trick for browsers that don't support document.activeElement 
    adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
@@ -77,9 +82,9 @@ NB.pers.call = function(fctname, dict, callback, errback){
 NB.pers.__authenticate = function(init_ui){
     NB.conf.userinfo = JSON.parse(unescape(NB.auth.get_cookie("userinfo"))) || {guest: 1};    
     var uinfo = NB.conf.userinfo; //shortcut ! 
-    var login_contents =  "";
+    var $login_contents;
     if (uinfo.guest != 0){
-	login_contents = "<span id='login-name'>Guest</span> <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a> <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a>";
+	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
 	var $util_window = $.concierge.get_component("get_util_window")();
 	$("#register_user_dialog, #login_user_dialog").remove();
 	$util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr></table>   <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>   <div class=\"form_errors\"></div> </div>").append("<div id='login_user_dialog' > <table> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td></td><td><a href='/password_reminder'>Lost password ?</a></td></tr></table><div class='form_errors'/></div>");
@@ -91,11 +96,16 @@ NB.pers.__authenticate = function(init_ui){
     }
     else{
 	var screenname = uinfo.firstname == null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
-	login_contents = "<span id='login-name'>"+screenname+"</span> <a href='javascript:NB.pers.logout()'>Log out</a>"
+	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li><a target='_blank' href='/settings'>Settings</a></li><li><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
 	$("#login-window").remove();
-	$("body").append("<div id='login-window'><a href='/help' style='margin-right: 50px' target='_blank'>Help</a>"+login_contents+"</div>");
+	var $login_window = $("<div id='login-window'/>");
+	$login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
+	$login_window.append($login_contents);
+	$("body").append($login_window);
+
+	//	$("ul.sf-menu").superfish();
     }
     NB.pers.params = NB.dom.getParams();
 }

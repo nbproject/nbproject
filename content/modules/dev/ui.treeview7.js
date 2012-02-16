@@ -55,6 +55,12 @@
 		self._render();
 	    }, 
 	    _f_sort_tree: function(a,b){
+		if (a.attr.rel=="ensemble" && a.attr.id_item==0){
+		    return -1;
+		}
+		if (b.attr.rel=="ensemble" && b.attr.id_item==0){
+		    return 1;
+		}
 		return a.data>b.data ? 1 : -1;
 	    },
 	    _render: function(){
@@ -81,6 +87,7 @@
 		    s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
 		    data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
 		}
+		data.push({data: "<b>Home</b>", children: [], attr: {title: "Home", rel: "ensemble", id_item: 0}});
 		data.sort(self._f_sort_tree);
 		tree_data = {
 		    plugins : [ "themes", "json_data", "ui" ],

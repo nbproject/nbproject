@@ -54,7 +54,7 @@
 		this._id_folder		= evt.value;
 		break;
 		case "ensemble": 
-		this._id_ensemble	= evt.value;
+		this._id_ensemble	= evt.value==0 ? null : evt.value;
 		this._id_folder		= null;
 		break;
 		case "home": 
@@ -86,8 +86,8 @@
 		var self = this;
 		var m = self._model;
 		var $list = $("#filesView-pending-list", self.element).empty();
-		var f_location_sort = function(o1,o2){
-		    return m.get("pending",{location_id: o2.id}).length() - m.get("pending",{location_id: o1.id}).length();
+		var f_question_sort = function(o1,o2){
+		    return o2.id-o1.id;
 		}
 		var id_ensemble = self._id_ensemble;
 		var  query_params = {};
@@ -98,16 +98,15 @@
 		}
 		$("#filesView-allpending-link").attr("href", viewall_url);
 		
-		var questions	= m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id")
-		if (questions.length()){
-		    $("#filesView-pending-header-total").text(questions.length());
-		    $("#filesView-pending-header-plural").text($.pluralize(questions.length()));
+		var questions	= m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id").sort(f_question_sort);
+		if (questions.length){
+		    $("#filesView-pending-header-total").text(questions.length);
+		    $("#filesView-pending-header-plural").text($.pluralize(questions.length));
 		}
 		else{
-		    $("#filesView-panel-pending").hide();
+		    //  $("#filesView-panel-pending").hide();
 		}
-		questions = questions.items;
-		var i,l,cs, c,q,s, body, reply_link,  ensemble_info, parity, when, lens, lens_comment, comments;
+		var i,l,cs, c,q,s, body, reply_link,  ensemble_info, when, lens, lens_comment, comments;
 		for (i in questions){
 		    q = questions[i];
 		    l = m.o.location[q.location_id];
@@ -115,7 +114,6 @@
 		    comments = "";
 		    s = m.o.file[l.source_id];
 		    ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-		    parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 		    for (var cid in cs){
 			c = cs[cid];
 			if (!((q.comment_id == null && c.parent_id == null) || q.comment_id == c.id)){
@@ -132,6 +130,7 @@
 		    lens.prepend(comments);
 		    $list.append(lens);
 		}
+		return questions.length;
 	    }, 
 	    _draw_questions: function(){
 		var self = this;
@@ -162,7 +161,8 @@
 		    c = m.get("comment", {location_id: l.id, parent_id: null}).first();
 		    q = m.get("question", {location_id: l.id});
 		    $list.append(self.img_snippet(i,l,c,q));	    
-		}		
+		}
+		return locs.length;
 	    },
 	    img_snippet: function(i, l, c, q){	    	
 		var self = this;
@@ -195,11 +195,11 @@
 		var header	= self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
-		var filesView_pending = "<div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-header'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</div><div id='filesView-pending-list'/></div>";
-		var filesView_question = "<div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-header'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. Can you help them ? <!--<a id='filesView-allquestions-link'>View all</a>--></div><div id='filesView-question-list'/></div>";
+		var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
+		var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. Can you help them ? <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
-		var filesView_files = (self._id_ensemble == null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
-		self.element.html(header+ filesView_pending + filesView_question + filesView_files);
+		var filesView_files = (self._id_ensemble == null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
+		self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
 
 		var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>" : "";
@@ -224,7 +224,10 @@
 			$("#th_download").remove();
 		    }
 		    //first files: 
-		    var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
+		    //		    var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
+		    var elts = model.get("file", {id_ensemble: id_ensemble, id_folder: id_folder});
+		    var name = (id_folder==null) ?  model.o.ensemble[id_ensemble].name : model.o.folder[id_folder].name;
+		    $("#filesView-files-header-name").text($.E(name));
 		    var items = elts.items;
 		    for (var i in items){
 			$tbody.append(self._filelens(items[i]));
@@ -272,11 +275,24 @@
 	    _render: function(){		
 		var self=this;
 		self._draw_frame();
-		self._draw_pending();
-		self._draw_questions();
+		self._defaultopen = "#filesView-files-header";
+		if (self._draw_questions()){
+		    self._defaultopen = "#filesView-question-header"; 
+		}		
+		if (self._draw_pending()){
+		    self._defaultopen = "#filesView-pending-header";
+		}
 		self._draw_files();
-		//var containers = $("div.filesView-panel");
-		self._expand();
+		$("#filesView-accordion").accordion({
+			autoHeight: false, 
+			    collapsible: true,
+			    change: function(event, ui){
+			    //simulate scroll event to display img if not there already. 
+			    self.element.scroll();
+			}, 
+			    active: self._defaultopen
+			    });
+
 		// there might be quite a few questions: don't get all images at once
 		var scroll_timeout = 300;
 		var scroll_handler = function(evt){
@@ -289,7 +305,7 @@
 		    timerID = window.setTimeout(function(){
 			    var panel_top = $this.offset().top;
 			    var H = $this.height();
-			    $("img[src2]", $this).each(function(i){
+			    $("img[src2]:visible", $this).each(function(i){
 				    var $elt = $(this);
 				    var $div = $elt.closest("div.snippet-material");
 				    var delta_top = $div.offset().top - panel_top;
@@ -301,11 +317,14 @@
 			}, scroll_timeout);
 		    self._scrollTimerID =  timerID;   
 		};
+		self.element.scroll(scroll_handler).scroll();	
+		/*
 		$("#filesView-panel-question").scroll(scroll_handler).scroll();	       
+
 		window.setTimeout(function(){ //so that both can be initialized. 
 			$("#filesView-panel-pending").scroll(scroll_handler).scroll();	     
 		    }, scroll_timeout+200);
-	       
+		*/
 
 	    }, 
 	    set_model: function(model){
@@ -342,6 +361,5 @@
 	    home: null,
 	}, 
 	admin: false, 
-	expand: "div.filesView-panel",
     };
 })(jQuery);
