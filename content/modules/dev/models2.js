@@ -100,31 +100,55 @@ NB.models.Store.prototype.create = function(payload, schema){
     }
 };
 
+
+NB.models.Store.prototype.__get_indexes = function(type_name){
+    //PRE: Schema already defined. 
+    var self = this;
+    var indexes = {};
+    var tabledef = self.schema[type_name];
+    var ref;
+    if ("references" in tabledef){
+	for (var i in tabledef.references){
+	    ref =  tabledef.references[i];
+	    if (ref in self.indexes && type_name in self.indexes[ref]){
+		indexes[i] =  self.indexes[ref][type_name];
+	    }
+	}
+    }
+    if ("__ref" in tabledef){
+	for (var i in tabledef.__ref){
+	    ref =  tabledef.__ref[i];
+	    if (ref in self.indexes && type_name in self.indexes[ref]){
+		indexes[i] =  self.indexes[ref][type_name];
+	    }
+	} 
+    }
+    return indexes;
+};
+
+NB.models.Store.prototype.set = function(type_name, objs){
+    //PRE: Schema already defined. 
+    var self=this;
+    if (type_name in self.schema){
+	self.__dropIndexes(type_name);
+	self.o[type_name] = {};
+	self.add(type_name, objs);
+    }
+    else{
+	console.error(type_name, " not found in schema: ", self.schema);
+    }
+
+};
+
+
+
 NB.models.Store.prototype.add = function(type_name, objs){
     //PRE: Schema already defined. 
     var self=this;
     var is_update;
     if (type_name in self.schema){
-	//list of existing indexes: 
-	var current_indexes = {};
-	var tabledef = self.schema[type_name];
-	var ref, index, v_new, v_old ;
-	if ("references" in tabledef){
-	    for (var i in tabledef.references){
-		ref =  tabledef.references[i];
-		if (ref in self.indexes && type_name in self.indexes[ref]){
-		    current_indexes[i] =  self.indexes[ref][type_name];
-		}
-	    }
-	}
-	if ("__ref" in tabledef){
-	    for (var i in tabledef.__ref){
-		ref =  tabledef.__ref[i];
-		if (ref in self.indexes && type_name in self.indexes[ref]){
-		    current_indexes[i] =  self.indexes[ref][type_name];
-		}
-	    } 
-	}
+	var current_indexes = self.__get_indexes(type_name);
+	var index, v_new, v_old;
 	for (var pk in objs){
 	    is_update = pk in this.o[type_name];    
 	    //now, update existing indexes if any
@@ -167,6 +191,7 @@ NB.models.Store.prototype.add = function(type_name, objs){
     }
 };
 
+
 NB.models.Store.prototype.remove = function(type_name, pkeys){
     /* 
        pkeys can either be 
@@ -186,26 +211,7 @@ NB.models.Store.prototype.remove = function(type_name, pkeys){
     for (id in ids){
 	if ((type_name in this.o) && (id in this.o[type_name])){
 	    objs_deleted[id]=this.o[type_name][id];
-	    var current_indexes = {};
-	    var tabledef = self.schema[type_name];
-	    var ref;
-	    if ("references" in tabledef){
-		for (var i in tabledef.references){
-		    ref =  tabledef.references[i];
-		    if (ref in self.indexes && type_name in self.indexes[ref]){
-			current_indexes[i] =  self.indexes[ref][type_name];
-		    }
-		}
-	    }
-	    if ("__ref" in tabledef){
-		for (var i in tabledef.__ref){
-		    ref =  tabledef.__ref[i];
-		    if (ref in self.indexes && type_name in self.indexes[ref]){
-			current_indexes[i] =  self.indexes[ref][type_name];
-		    }
-		} 
-	    }
-	    
+	    var current_indexes = self.__get_indexes(type_name);
 	    for (var fieldname in  current_indexes){
 		delete(current_indexes[fieldname][this.o[type_name][id][fieldname]][id]);
 	    }
@@ -228,7 +234,29 @@ NB.models.Store.prototype.remove = function(type_name, pkeys){
     }
 };
 
-NB.models.Store.prototype.addIndex = function(table, o, fieldname){
+NB.models.Store.prototype.__dropIndexes = function(type_name){
+    var self = this;
+    var tabledef = self.schema[type_name];
+    var ref;
+    if ("references" in tabledef){
+	for (var i in tabledef.references){
+	    ref =  tabledef.references[i];
+	    if (ref in self.indexes && type_name in self.indexes[ref]){
+		delete self.indexes[ref][type_name];
+	    }
+	}
+    }
+    if ("__ref" in tabledef){
+	for (var i in tabledef.__ref){
+	    ref =  tabledef.__ref[i];
+	    if (ref in self.indexes && type_name in self.indexes[ref]){
+		delete self.indexes[ref][type_name];
+	    }
+	} 
+    }
+};
+
+NB.models.Store.prototype.__addIndex = function(table, o, fieldname){
     var self = this;
     // '__..." is a reserved family of tablenames so we can add indexes on fields that aren't references. 
     
@@ -365,16 +393,6 @@ NB.models.QuerySet.prototype.intersect = function(ids, field){
 	ids = new_ids;
     }
     if (field != undefined){ 
-	/*
-	//do an index lookup
-	var references = model.schema[this.type].references || {};
-	var from = this.type;
-	var ref = field in references ?  references[field] : "__"+field;
-	if ( (!(ref in model.indexes)) || (!(from in model.indexes[ref])) ){
-	    model.addIndex(ref, from, field);
-	}
-	var index = model.indexes[ref][from];
-	*/
 	for (var i in items){
 	    if (items[i][field] in ids){
 		new_items[i] =items[i];
@@ -412,7 +430,7 @@ NB.models.QuerySet.prototype.exclude = function(where){
     for (i in where){
     	ref = i in references ?  references[i] : "__"+i;
 	if ( (!(ref in model.indexes)) || (!(from in model.indexes[ref])) ){
-	    model.addIndex(ref, from, i);
+	    model.__addIndex(ref, from, i);
 	}
 	o = model.indexes[ref][from][where[i]] || {};
 	o = NB.models.__intersect(o_old, o);
@@ -459,7 +477,7 @@ NB.models.Store.prototype.get = function(from, where){
     for (i in where){
 	ref = i in references ?  references[i] : "__"+i;
 	if ( (!(ref in self.indexes)) || (!(from in self.indexes[ref])) ){
-	    self.addIndex(ref, from, i);
+	    self.__addIndex(ref, from, i);
 	}
 	o = self.indexes[ref][from][where[i]] || {};
 	o = NB.models.__intersect(o_old, o);
