@@ -137,16 +137,25 @@ NB.pers.createStore = function(payload){
 		basecomment:{references: {id_location: "location"}},
 		replyrating:{references: {comment_id: "comment"}},
 	});
-    $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
+    var cb2 = function(P2){
+	var m = NB.pers.store;
+	m.set("location", P2["locations"]);
+	m.set("comment", P2["comments"]); 
+	m.set("basecomment", P2["basecomments"]);
+	m.set("question", P2["questions"]);
+    }
+    $.concierge.setHistoryHelper(function(_payload, cb){
+	    _payload["__return"] = {type:"newPending", a:{}};
+	    NB.pers.call("log_history", _payload, cb);
+	}, 120000, cb2, 60000);
     NB.files.set_model(NB.pers.store);
     $.concierge.trigger({type:"admin_init", value: 0});
   //get more stats (pending stuff)
     NB.pers.call("getPending", {}, function(P){
-	    NB.pers.store.add("question", P["questions"]);
 	    NB.pers.store.add("location", P["locations"]);
 	    NB.pers.store.add("comment", P["comments"]); 
        	    NB.pers.store.add("basecomment", P["basecomments"]); 
-
+	    NB.pers.store.add("question", P["questions"]);
 	});
 
 };

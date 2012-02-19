@@ -102,6 +102,7 @@ def rate_reply(P,req):
     uid = UR.getUserId(req);
     status = P["status"]
     tm = M.ThreadMark.objects.get(pk=P["threadmark_id"])
+    previous_accepted_ratings = M.ReplyRating.objects.filter(threadmark=tm, status__gt=M.ReplyRating.TYPE_UNRESOLVED)
     if tm.user_id == uid:
         rr = M.ReplyRating()
         rr.status = status
@@ -109,7 +110,7 @@ def rate_reply(P,req):
         rr.comment_id = P["comment_id"]
         rr.save()
         if status: 
-            tm.active = False
+            tm.active = status==M.ReplyRating.TYPE_UNRESOLVED and previous_accepted_ratings.count()==0 
             tm.save()
         return UR.prepare_response({"replyrating": {rr.id: UR.model2dict(rr)}})
     return UR.prepare_response({}, 1,  "NOT ALLOWED")      
@@ -541,9 +542,12 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)             
+                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
+        elif R["type"] == "newPending":
+            #for now, we retrieve all the pending stuff. 
+            output = annotations.getPending(uid, payload)
     return UR.prepare_response(output)
-
+  
 def get_location_info(payload, req): 
     id = payload["id"]
     uid = UR.getUserId(req);

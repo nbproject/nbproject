@@ -26,6 +26,8 @@
 		self._menu_items_reg	= $("<ul id='contextmenu_filesview' class='contextMenu'/>");
 		self._menu_items_admin	= $("<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>");
 		self._scrollTimerID =  null;
+		//self._firstrender = true;
+		self._defaultopen = null;
 
 		
 		self.element.addClass("filesView");
@@ -128,7 +130,7 @@
 			    when = "<span class='filesView-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
 			    rating = m.get("replyrating", {comment_id: c.id});
 			    buttons =  rating.length() ? "<span class='reply-rated-as'>Reply rated as <button disabled='disabled'>"+self._RATING_LABELS[rating.first().status]+"</button></span>" : "<button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>"+self._RATING_LABELS[3]+"</button> <button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[2]+"</button> <button onclick='$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[1]+"</button>";
-			    lens_comment = "<li comment_id='"+c.id+"'><div class='filesView-floatright'>"+buttons+"<a class='button' style='margin-left: 20px' href='"+reply_link+"'>Reply</a> </div><span class='filesView-reply-body'>"+body+"</span>"+when+"</li>";
+			    lens_comment = "<li comment_id='"+c.id+"'><div class='filesView-floatright'>"+buttons+"<a style='margin-left: 20px' href='"+reply_link+"'><button>Reply</button></a> </div><span class='filesView-reply-body'>"+body+"</span>"+when+"</li>";
 			    comments+="<ul>"+lens_comment+"</ul>";
 			}
 		    }
@@ -180,7 +182,7 @@
 		var body, comment_link, reply_link, ensemble_info, parity, lens;
 		body = $.E(c.body).replace(/\n/g, " ");
 		comment_link = "/c/"+c.id;
-		reply_link = q==undefined ? "" : "<a class='button' target='_blank' href='/r/"+c.id+"'>Reply</a>";
+		reply_link = q==undefined ? "" : "<a target='_blank' href='/r/"+c.id+"'><button>Reply</button></a>";
 		ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
 		parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
@@ -282,12 +284,16 @@
 	    _render: function(){		
 		var self=this;
 		self._draw_frame();
-		self._defaultopen = "#filesView-files-header";
+		var open_candidate =  "#filesView-files-header";
+		open_candidate = "#filesView-files-header";
 		if (self._draw_questions()){
-		    self._defaultopen = "#filesView-question-header"; 
+		    open_candidate = "#filesView-question-header"; 
 		}		
 		if (self._draw_pending()){
-		    self._defaultopen = "#filesView-pending-header";
+		    open_candidate = "#filesView-pending-header";
+		}
+		if (self._defaultopen == null){
+		    self._defaultopen = open_candidate;
 		}
 		self._draw_files();
 		$("#filesView-accordion").accordion({
@@ -296,6 +302,7 @@
 			    change: function(event, ui){
 			    //simulate scroll event to display img if not there already. 
 			    self.element.scroll();
+			    self._defaultopen = "#" + ui.newHeader.attr("id");
 			}, 
 			    active: self._defaultopen
 			    });
@@ -337,7 +344,7 @@
 	    set_model: function(model){
 		var self=this;
 		self._model = model;
-		model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null}); //TODO: put stg here so that we update
+		model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
 		$.mods.declare({tablesorter: {js: ["/content/modules/tablesorter/jquery.tablesorter.min.js"], css: ["/content/modules/tablesorter/style.css"]}});
 		$.mods.ready("tablesorter", function(){$("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
 				    var $n = $(node);
@@ -364,9 +371,9 @@
 		}
 		//		console.debug("model update !", action, payload, items_fieldname);
 	    }, 
-	    _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Request another reply", 
-			     2: "<div class='nbicon checkicon'/>Accept this reply", 
-			     3: "<div class='nbicon thankscheckicon'/> Thanks, that <i>really</i> helped !"
+	    _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Dismiss", 
+			     2: "<div class='nbicon checkicon'/>Accept", 
+			     3: "<div class='nbicon thankscheckicon'/> Thanks, this <i>really</i> helped !"
 	    }
 	});
 			 

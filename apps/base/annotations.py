@@ -346,6 +346,9 @@ def getCommentsByFile(id_source, uid, after):
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
+        threadmarks = threadmarks.filter(ctime__gt=after)
+    if after is not None: 
+        comments = comments.filter(ctime__gt=after)    
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
@@ -778,10 +781,18 @@ def markActivity(cid):
     return None, None    
 
 def getPending(uid, payload):
-    #pending threadmarks:    
+    #reply requested threadmarks:    
     questions = M.ThreadMark.objects.filter(location__ensemble__membership__user__id=uid, type=1, active=True).exclude(user__id=uid)
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
+    all_comments = M.Comment.objects.filter(location__in=locations)
+    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
+    
+    unrated_replies_ids = list(unrated_replies.values_list("id", flat=True))    
+    questions = questions.exclude(location__comment__in=unrated_replies_ids)
+    comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
+    locations = M.Location.objects.filter(comment__in=comments)
+    
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)#extra(select={"pending": "false"})
     my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, status = M.ReplyRating.TYPE_UNRESOLVED)

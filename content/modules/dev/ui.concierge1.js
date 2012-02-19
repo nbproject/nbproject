@@ -25,9 +25,10 @@
 	    log: {}, 
 	    fct: null, 
 	    T: null, 
-	    latestentrytime:false, 
+	    latestentrytime:(new Date()).getTime(), 
 	    T_idle: 120000,
-	    latesteventtime: false 
+	    latesteventtime: false, 
+	    timeout: 0
 	};
 	this.activeView = null;
 	/*
@@ -102,14 +103,19 @@
 	}
 	this.historyHelper.latesteventtime = now;
     };
-    Concierge.prototype.setHistoryHelper = function(fct, T, cb){
-	//cb is optional
+    Concierge.prototype.setHistoryHelper = function(fct, T, cb, timeout){
+	//cb and timeout are optional
 	var self=this;
 	self.historyHelper.T = T;
+	if (timeout){
+	    self.historyHelper.timeout = timeout;
+	}
 	var f = function(){
 	    var now = (new Date()).getTime();
-	    if (self.historyHelper.latestentrytime && now-self.historyHelper.latestentrytime<T){
-		//there have been some events		
+	    var delta = now-self.historyHelper.latestentrytime;
+	    if ((self.historyHelper.latestentrytime && delta<T) || 
+		(self.historyHelper.timeout && delta > self.historyHelper.timeout)){
+		//there have been some events or a timeout		
 		fct(self.historyHelper.log, cb || function(){});
 		self.historyHelper.log={};
 	    }
