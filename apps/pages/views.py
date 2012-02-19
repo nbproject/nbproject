@@ -105,7 +105,8 @@ def collage(req):
     return __serve_page(req, settings.COLLAGE_TEMPLATE)
 
 def admin(req): 
-    return __serve_page(req, settings.ADMIN_TEMPLATE)
+    return HttpResponseRedirect("/")    #no more admin
+#    return __serve_page(req, settings.ADMIN_TEMPLATE)
 
 def alpha(req): 
     return __serve_page(req, settings.ALPHA_TEMPLATE)
