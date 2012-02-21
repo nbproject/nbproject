@@ -20,14 +20,7 @@
 		self._model	= null;
 		self._selection = {};
 		self._admin	= self.options.admin;
-		//		var header	= self._admin ? "<button action='new_class'>New Class</button>":" <a href='/admin'>Staff Login</a>";
-		var header =  "<a href='javascript:$.concierge.trigger({type: \"ensemble\", value: null})'>Home</a>";
-		header += " <a target='_blank' href='/settings'>Your Settings</a> "
-		self.element.css("overflow-y", "auto").html("<div class='treeView-header'>"+header+"</div><div class='tree'/>");
-		$("button[action=new_class]", self.element).click(function(){
-			$.concierge.get_component("add_ensemble_menu")();
-		    });
-	
+		self.element.css("overflow-y", "auto").html("<div class='tree'/>");
 		$.mods.declare({treeview5: {js: [], css: ["/content/modules/dev/ui.treeview4.css"]}});
 		$.mods.ready("treeview5", function(){});
 		$.mods.declare({jstree: {js: ["/content/modules/jstree/jquery.jstree.js"], css: ["/content/modules/jstree/themes/default/style.css"]}});
@@ -85,9 +78,9 @@
 		    }
 		    children.sort(self._f_sort_tree);
 		    s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
-		    data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
+		    data.push({data:  {title: $.E(ensemble[i].name)+s_numfiles, icon: "jstree_icon "+(ensemble[i].admin ? "admin":"reg")}, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
 		}
-		data.push({data: "<b>Home</b>", children: [], attr: {title: "Home", rel: "ensemble", id_item: 0}});
+		data.push({data: {title: "<b>Home</b>",  icon:"jstree_icon home"}, children: [], attr: {title: "Home",  rel: "ensemble", id_item: 0}});
 		data.sort(self._f_sort_tree);
 		tree_data = {
 		    plugins : [ "themes", "json_data", "ui" ],

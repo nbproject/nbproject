@@ -201,7 +201,7 @@
 	    },
 	    _draw_frame: function(){
 		var self = this;
-		var header	= self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
+		var header	= self._admin ? "<div class='filesView-header'><div class='nbicon blueadminicon'/><span id='adminconsole-label'>Admin Console</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
 		var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";

@@ -35,6 +35,11 @@ NB.pers.init = function(){
 		filesview:  {js: ["/content/modules/dev/ui.filesview4.js","/content/modules/calendrical/jquery.calendrical.js" ],css: ["/content/modules/calendrical/calendrical.css"] },
 	});
     
+    //Extra menus: 
+    if (!(NB.conf.userinfo.guest)){
+	$("#menu_settings").after("<li><a href='javascript:$.concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+    }
+
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("admin_init", "admin_viewer", function(id){
 		    var pers_id		= "pers_"+id;
@@ -147,7 +152,7 @@ NB.pers.createStore = function(payload){
     $.concierge.setHistoryHelper(function(_payload, cb){
 	    _payload["__return"] = {type:"newPending", a:{}};
 	    NB.pers.call("log_history", _payload, cb);
-	}, 120000, cb2, 60000);
+	}, 120000, cb2, 600000);
     NB.files.set_model(NB.pers.store);
     $.concierge.trigger({type:"admin_init", value: 0});
   //get more stats (pending stuff)

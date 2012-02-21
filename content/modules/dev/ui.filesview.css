@@ -31,9 +31,11 @@ height: 16px;
 
 
 div.filesView div.filesView-header {
-background-color: #f5f5f5;
+background: -webkit-gradient(linear, left top, left bottom, from(#e0e0e0), to(#fafafa)); 
+background: -moz-linear-gradient(top, #e0e0e0, #fafafa);
 border-bottom: thin solid #f0f0f0;
-padding: 5px;
+padding: 5px 5px 5px 15px;
+
 /*margin-bottom: 5px;*/
 
 }
@@ -234,11 +236,19 @@ div.snippet-material {
 
 h3.ui-state-active >  a{
 /*background-color: #beebff;*/
-background: -webkit-gradient(linear, left top, left bottom, from(#e0e0e0), to(#fafafa)); /* for webkit browsers */
-background: -moz-linear-gradient(top, #e0e0e0, #fafafa); /* for firefox 3.6+ */ 
-
+background: -webkit-gradient(linear, left top, left bottom, from(#e0e0e0), to(#fafafa));
+background: -moz-linear-gradient(top, #e0e0e0, #fafafa);
 }
 
 span.reply-rated-as{
 color: #a0a0a0;
 }
+
+
+#adminconsole-label{
+    font-family: trebuchet MS;
+    font-size: large;
+    padding-left: 22px;
+    padding-right: 20px;
+}
+

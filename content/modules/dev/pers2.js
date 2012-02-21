@@ -96,7 +96,7 @@ NB.pers.__authenticate = function(init_ui){
     }
     else{
 	var screenname = uinfo.firstname == null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
-	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li><a target='_blank' href='/settings'>Settings</a></li><li><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
+	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
 	$("#login-window").remove();
