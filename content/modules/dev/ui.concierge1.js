@@ -231,11 +231,11 @@
 	var l = s.length;
 	return (l>n) ? s.substring(0,n) + "...": s;
     };
-    $.pluralize = function(n, alt){
-	if (n>1){
-	    return alt || "s";
+    $.pluralize = function(n, plural, singular){
+	if (n == 1){
+	    return singular || "";
 	}
-	return "";
+	return plural || "s";
     }
       
 })(jQuery);
