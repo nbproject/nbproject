@@ -502,7 +502,8 @@ def getSeenByFile(id_source, uid):
 def markThread(uid, payload):
     mtype = int(payload["type"])
     lid  = int(payload["id_location"])
-    comment_id = None if "comment_id" not in payload or payload["comment_id"] is None else int(payload["comment_id"])
+    #comment_id = None if "comment_id" not in payload or payload["comment_id"] is None else int(payload["comment_id"])
+    comment_id = int(payload["comment_id"])
     mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid, active=True)
     if mark.count()>0: # only allow one active threadmark of a given type per thread
         mark = mark[0]
@@ -516,13 +517,12 @@ def markThread(uid, payload):
         mh.save()  
         mark.ctime = datetime.datetime.now()
         active_default = True
-        if comment_id is not None and comment_id != mark.comment_id: 
+        if comment_id != mark.comment_id: 
             #there was a real change of comment_id: don't update active default value
             active_default = mark.active
         else: #then probably just a toggle
-            active_default = not mark.active
-        if comment_id is not None:                   
-            mark.comment_id = comment_id            
+            active_default = not mark.active                        
+        mark.comment_id = comment_id            
         mark.active =  payload["active"] if "active" in payload else active_default # if no arg given, toggle 
     else: 
         mark = M.ThreadMark()

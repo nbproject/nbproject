@@ -100,23 +100,20 @@ div.threadview span.empty_comment{
 }
 
 span.n_star ,span.n_question{
-color: #808080;
-padding-left: 10px;
+color: #707070;
+padding: 0px 3px;
+font-size: large;
 }
 
-div.threadview-filter-controls{
-float: right;
-//opacity: 0.3;
+#thread_request_reply{
+color: #707070;
 }
-
-/*
-div.threadview-filter-controls:hover{
-opacity: 1.0;
-}
-*/
 
 button.mark-toggle{
-margin-right: 10px;
+/*margin-right: 10px;*/
+font-size: large; 
+padding: 0px 5px;
+width: 30px;
 }
 
 div.threadview-header{
@@ -131,12 +128,6 @@ button.mark-toggle.active{
 border-bottom: 5px solid #ffff00;
 }
 
-div.threadview-header div.mark-instructions{
-float: right; 
-padding-right: 10px;
-color: #808080;
-font-size: large;
-}
 
 .contextMenu li.context{
 background-image: url("/content/data/icons/png/default_theme.png");

@@ -34,10 +34,9 @@
 		  alert("todo");
 		  });
 		*/
-		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'><button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span></button><button class='mark-toggle' action='question'><div class='nbicon questionicon-hicontrast' style='margin-top: -3px'/><span class='n_question'>...</span></button></div><div class='mark-instructions'>Mark this thread</div></div><div class='threadview-pane'/>");
+		self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'> <div class='nbicon questionicon' style='margin-top: -3px'/><button class='mark-toggle' arg='add' action='question'>+</button><span class='n_question'>...</span><button class='mark-toggle' arg='remove' action='question'>-</button> <span id='thread_request_reply'>replies requested</span>  <!--<button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span><span id='thread_mark_favorite'>Mark as Favorite.</span></button>--></div></div><div class='threadview-pane'/>");
 		var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
-			var comments = self._model.get("comment", {ID_location: self._location});
-			var comment_id = (comments.length()==1) ? comments.first().ID : null;
+			var comment_id = self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
 			$.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._STAR}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
@@ -48,9 +47,10 @@
 			    });
 		    }); 
 		var question_button = $("button.mark-toggle[action=question]", self.element).click(function(event){
-			var comments = self._model.get("comment", {ID_location: self._location});
-			var comment_id = (comments.length()==1) ? comments.first().ID : null;
-			$.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._QUESTION}, function(p){				
+			//var comment_id = event.target.getAttribute("arg")=="remove" ? null : self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
+			var comment_id = self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
+			var active =  event.target.getAttribute("arg")!="remove";
+			$.concierge.get_component("mark_thread")({active: active, comment_id: comment_id, id_location: self._location, type: self._QUESTION}, function(p){				
 				self._model.add("threadmark", p.threadmarks);
 				var i, tm;
 				for ( i in p.threadmarks){
@@ -97,9 +97,9 @@
 
 		var tms			= m.get("threadmark", {comment_id: o.ID,  active: true, type: self._QUESTION });		
 		var tms_me		= tms.intersect( self._me.id, "user_id");
-		var tms_me_label	= tms_me.is_empty() ? "" : " including mine"; 
+		var tms_me_label	= tms_me.is_empty() ? "" : ", including mine"; 
 		var tms_me_class	= tms_me.is_empty() ? "" : "active";
-		var question_info	= tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='This comment has "+tms.length()+" pending question"+$.pluralize(tms.length())+tms_me_label+" '><div class='nbicon questionicon' style='margin-top: -3px;'/> "+tms.length()+" </div>";
+		var question_info	= tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' style='margin-top: -3px;'/> "+tms.length()+" </div>";
 
 		var type_info		= "";
 		if (o.type == 1) {
@@ -113,7 +113,7 @@
 		var replymenu		= " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
 		var optionmenu		= " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
 		var body		= o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
-		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,question_info, me_info, type_info, creation_info,"</div>"].join("");
+		return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info, me_info, question_info, type_info, creation_info,"</div>"].join("");
 	    },
 	    _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
 	    _fill_tree: function(m, c){
@@ -138,9 +138,15 @@
 		}
 		$("span.n_star", header).text(tm_star.length());
 		if (tm_question_me.length()>0){
-		    buttons.filter("[action=question]", header).addClass("active");
+		    buttons.filter("[action=question][arg=add]").attr("disabled", "disabled");
+		    buttons.filter("[action=question][arg=remove]").removeAttr("disabled");		    
+    		}
+		else{		  
+		    buttons.filter("[action=question][arg=remove]").attr("disabled", "disabled");
+		    buttons.filter("[action=question][arg=add]").removeAttr("disabled");
 		}
 		$("span.n_question", header).text(tm_question.length());
+		$("#thread_request_reply").text($.pluralize(tm_question.length(), "replies requested", "reply requested"));
 
 	    }, 
 	    _render: function(){	
