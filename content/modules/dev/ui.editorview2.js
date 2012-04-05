@@ -125,7 +125,7 @@
 		    }		    
 		}
 		var staffoption	= self._allowStaffOnly ? "<tr><td><input type='radio' name='vis_"+id_item+"' value='2'/></td><td>Instructors and TAs</td></tr>" : " ";
-		var signoption	= self._allowAnonymous ? "<div id='signoption' title=\"check to keep this comment anonymous towards other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous</label></div>": " ";
+		var signoption	= self._allowAnonymous ? "<div id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
 		var header	= self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 20)) : "New note...";
 		//		var body	= self._doEdit ? self._note.body : "";
 		var contents = $([
