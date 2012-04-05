@@ -32,7 +32,7 @@
 .sf-menu li:hover ul,
 .sf-menu li.sfHover ul {
 	left:			0;
-	top:			2.5em; /* match top ul list item height */
+	top:			1.5em; /* match top ul list item height */
 	z-index:		99;
 }
 ul.sf-menu li:hover li ul,
@@ -68,7 +68,7 @@ ul.sf-menu li li li.sfHover ul {
 
 /* SACHA diffrent padding for head menu */
 .sf-menu > li > a {
-	padding: 		0px 15px 15px 15px;
+	padding: 		0px 15px 3px 15px;
 /*SACHA since when usinf it w/ pure CSS, we still want an arrow to signal it's a menu*/
     background-image: url("../images/arrows-ffffff.png");
     background-position: -10px -99px;

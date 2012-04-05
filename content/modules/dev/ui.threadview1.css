@@ -28,11 +28,14 @@ div.threadview-pane{
 
 
 div.threadview div.note-lens{
-//color: #404040;
 padding-top: 5px;
 padding-bottom: 5px;
 border: thin solid #fefefe;
+}
 
+
+div.threadview div.note-lens.replyrequested{
+background-color: #ffa070;
 }
 
 div.threadview div.note-lens:hover{
@@ -44,6 +47,8 @@ div.threadview span.note-bold{
 font-weight: bold; 
 color: #000000;
 }
+
+
 
 div.threadview span.author{
 color: #a0a0a0;

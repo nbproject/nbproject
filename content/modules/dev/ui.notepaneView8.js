@@ -224,7 +224,7 @@
 		var lf_question	= numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
 		var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
 		var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
-		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
+		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
 	    }, 
 	    _keydown: function(event){
 		var self=this;

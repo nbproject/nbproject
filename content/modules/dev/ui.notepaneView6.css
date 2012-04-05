@@ -64,6 +64,11 @@ overflow: hidden;
 padding-left: 5px;
 }
 
+div.location-shortbody.replyrequested{
+background-color: #ffa070;
+}
+
+
 div.location-shortbody-ellipsis{
 background-image: url(/content/data/icons/png/fuzzy_border_right_20.png);
 background-repeat: repeat-y;
