@@ -50,6 +50,9 @@ NB.pers.init = function(){
 			    $.mods.ready("treeview", function(){
 			    $div.treeView({admin:NB.pers.admin});
 			    $div.treeView("set_model",NB.pers.store );
+			    //default behavior: select the "home" screen. 
+			    //SACHA FIXME: replace the timer by stg cleaner (a jquery Deferred for instance that makes sure the jstree code is loaded, among other things). 
+			    window.setTimeout(function(){ $.concierge.trigger({type:"ensemble", value:0});}, 500);
 				});
 			}
 		    };

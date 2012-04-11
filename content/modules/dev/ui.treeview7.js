@@ -32,6 +32,13 @@
 		case "hello": 
 		    self.element.append("got a hello event with value:"+evt.value +"<br/>" );
 		    break;
+		case "ensemble":
+		    var tree = $("div.jstree");
+		    if (self._selection.rel!="ensemble" || self._selection.id_item !=evt.value){
+			tree.jstree("deselect_all");
+			tree.jstree("select_node", $("li[rel=ensemble][id_item="+evt.value+"]"));
+		    }		   
+		    break;
 		case "folder": 
 		    var tree = $("div.jstree");
 		    if (self._selection.rel!="folder" || self._selection.id_item !=evt.value){
@@ -135,7 +142,7 @@
     $.widget("ui.treeView",V_OBJ );
     $.ui.treeView.prototype.options = {
 	listens: {
-	    hello:null, folder: null
+	    hello:null, folder: null, ensemble: null
 	},	    
 	admin: true, 
 	"filestats": false
