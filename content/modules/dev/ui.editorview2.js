@@ -133,8 +133,7 @@
 		    }		    
 		}
 		var staffoption	= self._allowStaffOnly ? "<tr><td><input type='radio' name='vis_"+id_item+"' value='2'/></td><td>Instructors and TAs</td></tr>" : " ";
-
-		var signoption	= self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous towards other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous</label></span>": " ";
+		var signoption	= self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></span>": " ";
 		var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span> ";
 		var checkbox_options = "<div class='editor_checkbox_options'>"+questionoption+signoption+"</div>";
 		var header	= self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 20)) : "New note...";
