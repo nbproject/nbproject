@@ -120,7 +120,7 @@ SERVER_USERNAME = "www-data"
 
 LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
 
-DESKTOP_TEMPLATE= "web/desktop10.xhtml"
+DESKTOP_TEMPLATE= "web/desktop14.xhtml"
 
 #COLLAGE_TEMPLATE= "web/collage1_compat.xhtml"
 COLLAGE_TEMPLATE= "web/desktop11.xhtml"
