@@ -13,7 +13,7 @@ font-color: #770000;
 {% endblock %} 
 {% block content %}
 
-  <h1>Confirm your subscription to {{ensemble.name}}</h1>
+  <h1>Confirm your subscription to the NB group <i>{{ensemble.name}}</i></h1>
 
 <p class="important">If you're already an NB user, please use <a href="/login?next=/subscribe?key={{key}}">this link instead</a></p>
 
@@ -33,7 +33,7 @@ font-color: #770000;
       </table>
       {{ form.non_field_errors }}
       
-<p>Click on the "Confirm" button to create your NB user and subscribe to  {{ensemble.name}}
+<p>Click on the "Confirm" button to create your NB user and subscribe to the NB group <i>{{ensemble.name}}</i>
     <p><input style="margin-top: 10px", type="submit" value="Confirm" /></p>
     </form>
 
