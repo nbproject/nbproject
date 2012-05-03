@@ -349,7 +349,7 @@
 		    style = "width: "+w+"px;height: "+h_collage+"px;";
 		    var inner_top = Math.min(0, 50-location.top*s);
 		    var root = model.get("comment", {ID_location: location.ID, id_parent: null}).first();
-		    var link = "<a target='_blank' href='/f/"+file.id+"?c="+root.ID+"'>"+ model.o.ensemble[location.id_ensemble].name+" - "+file.title +" (p.  "+location.page+")</a>";
+		    var link = "<a target='_blank' href='/f/"+file.id+"?c="+root.ID+"'>"+ $.E(model.o.ensemble[location.id_ensemble].name)+" - "+$.E(file.title) +" (p.  "+location.page+")</a>";
 		    contents+="<div class='material'  page='"+(i+1)+"' style='"+style+"' ><div class='pagenumber pagenumbertop'>"+link+"</div><div class='innermaterial' style='top: "+inner_top+"px'><div class='selections'/><div class='links'/><img class='material' page='"+(i+1)+"'/></div></div>";
 		    
 		}

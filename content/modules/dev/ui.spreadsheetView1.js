@@ -181,7 +181,9 @@
 		var f_sort_file = function(o1, o2){
 		    return o1.id - o2.id;
 		}
-		self._users = m.get("user", {admin: false, guest: false}).sort(f_sort_user);
+		//		self._users = m.get("user", {admin: false, guest: false}).sort(f_sort_user);
+		//SACHA: Showing both admin and non-admin users. TODO: Have a switch to show/hide admins. 
+		self._users = m.get("user", {guest: false}).sort(f_sort_user);		
 		self._files = m.get("file", {}).sort(f_sort_file);
 		var i,j,file, user, stat, lens,grade, lens_stat, lens_grade;
 		var s = ["<table class='spreadsheet'><thead><tr><th/>"];
@@ -192,7 +194,11 @@
 		s.push("</tr></thead><tbody>");
 		for (j in self._users){		    
 		    user = self._users[j];	
-		    lens = (user.lastname != null) ? (user.firstname + " "+user.lastname) : ("<i>"+user.email+"</i>")
+		    lens = (user.lastname != null) ? (user.firstname + " "+user.lastname) : ("<i>"+user.email+"</i>");
+		    if (user.admin){
+			//TODO improve styling
+			lens+= " <i style='color: #a0a0a0'>admin</i>";
+		    }
 			s.push("<tr><td>"+lens+"</td>");
 		    for (i in self._files){
 			/*

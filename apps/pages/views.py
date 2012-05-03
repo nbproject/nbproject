@@ -290,8 +290,8 @@ def properties_ensemble_users(req, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
-    pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False))
-    real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True))    
+    pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
+    real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)    
     pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))    
     return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations})
 
