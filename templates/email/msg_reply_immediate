@@ -10,7 +10,7 @@ The following comment:
 
 Please visit {{V.protocol}}://{{V.hostname}}/c/{{rc.id}}?org=mr_i to see the whole discussion, in its context. 
 
-You've received this email because you participated to this discussion, on {{c.location.source.title}}. To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=mr_i
+You've received this email because you participated in this discussion, on {{c.location.source.title}}. To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=mr_i
 
 Dutifully yours,
 
