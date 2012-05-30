@@ -34,7 +34,7 @@ def do_pending(t_args):
 def do_pending_msg():
     msgs = Message.objects.filter(sent=None, draft=False)
     for o in msgs: 
-        recipients = o.ensemble.membership_set.all()
+        recipients = o.ensemble.membership_set.filter(deleted=False)
         if o.students and not o.admins:
             recipients = recipients.filter(admin=False)
         if o.admins and not o.students: 
