@@ -9,10 +9,10 @@ ul.errorlist{
 {% endblock %} 
 {% block content %}
 
-  <h1>Confirm your subscription to {{ensemble.name}}</h1>
+  <h1>Confirm your subscription to the NB group <i>{{ensemble.name}}</i></h1>
   
   <p>Hello {% if user.firstname %} {{user.firstname}}, {% endif %} ({{user.email}})</p>
-  <p>Please confirm that you'd like to become a member of the group {{ensemble.name}}, by clicking on the "Confirm" button. 
+  <p>Please confirm that you'd like to become a member of the NB group <i>{{ensemble.name}}</i>, by clicking on the "Confirm" button. 
 <form action="" method="post">
     <p><input style="margin-top: 10px", type="submit" value="Confirm" /></p>
     </form>
