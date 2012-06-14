@@ -45,6 +45,7 @@
 	    this._p0 =  p0;
 	    this._M0 =  M0;
 	    this._helper.show().css({top: M0.top+"px", left: M0.left+"px"});
+	    $.concierge.trigger({type: "drawable_start", value:0});
 	    return true;
 	},
 

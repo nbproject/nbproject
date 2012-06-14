@@ -132,6 +132,7 @@ FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.xhtml"
+YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
 SPREADSHEET_TEMPLATE = "web/desktop12.xhtml"
 

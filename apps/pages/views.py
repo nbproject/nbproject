@@ -31,7 +31,7 @@ if settings.MONITOR.get("PAGE_SERVED", False):
 
 
 
-def __serve_page(req, tpl, allow_guest=False, nologin_url=None): 
+def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None): 
     """Serve the template 'tpl' if user is DB or allow_guest is True. If not, serve the welcome/login screen"""
     o           = {} #for template
     user       = UR.getUserInfo(req, allow_guest)
@@ -42,7 +42,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None):
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
-    r = render_to_response(tpl, {"o": o}, mimetype='application/xhtml+xml')
+    r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e9)
     return r
 
@@ -121,7 +121,11 @@ def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
 def source(req, n, allow_guest=False):
+    source = M.Source.objects.get(pk=n)
+    if source.type==M.Source.TYPE_YOUTUBE: 
+        return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
     return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest)
+    
 
 def your_settings(req): 
     return __serve_page(req, 'web/your_settings.html')
