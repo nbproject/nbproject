@@ -85,7 +85,11 @@ class Membership(models.Model):                                                 
     admin               = BooleanField(default=False)                           # old: admin integer
     deleted             = BooleanField(default=False)
 
-class Source(models.Model):                                                     # old: source
+class Source(models.Model):        
+    TYPE_PDF            = 1
+    TYPE_YOUTUBE        = 2
+    TYPE_HTML5VIDEO     = 3
+    TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"))     
     title               = CharField(max_length=255, default="untitled")         # old: title text
     submittedby         = ForeignKey(User, blank=True, null=True)               # old: submittedby integer
     numpages            = IntegerField(default=0)
@@ -93,6 +97,11 @@ class Source(models.Model):                                                     
     h                   = IntegerField(default=0)                               # old: nrows integer
     rotation            = IntegerField(default=0)                               # new
     version             = IntegerField(default=0)                               #incremented when adding src
+    type                = IntegerField(choices=TYPES, default=TYPE_PDF)
+
+class YoutubeInfo(models.Model): 
+    source              = OneToOneField(Source)
+    key                 = CharField(max_length=255,blank=True, null=True)
     
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake. 
 class Ownership(models.Model):                                                  # old: ownership
