@@ -33,6 +33,7 @@ NB.models.Store = function(){
     this.superclass();
     this.o = {}; //objects
     this.indexes = {}; //existing indexes
+    this.rangeindex_info = {}; // index name -> {fieldname, width}
     this.schema =null;
 }; 
 NB.models.Store.prototype = new NB.mvc.model();
@@ -105,6 +106,7 @@ NB.models.Store.prototype.__get_indexes = function(type_name){
     //PRE: Schema already defined. 
     var self = this;
     var indexes = {};
+    var rangeindexes = {};
     var tabledef = self.schema[type_name];
     var ref;
     if ("references" in tabledef){
@@ -116,14 +118,20 @@ NB.models.Store.prototype.__get_indexes = function(type_name){
 	}
     }
     if ("__ref" in tabledef){
+	var r=/__in(\d*)$/;
 	for (var i in tabledef.__ref){
 	    ref =  tabledef.__ref[i];
 	    if (ref in self.indexes && type_name in self.indexes[ref]){
-		indexes[i] =  self.indexes[ref][type_name];
+		if (r.exec(ref)==null){
+		    indexes[i]=  self.indexes[ref][type_name];
+		}
+		else{
+		    rangeindexes[i] = {index: self.indexes[ref][type_name], info: self.rangeindex_info[ref]};
+		}
 	    }
 	} 
     }
-    return indexes;
+    return [indexes, rangeindexes];
 };
 
 NB.models.Store.prototype.set = function(type_name, objs){
@@ -147,18 +155,22 @@ NB.models.Store.prototype.add = function(type_name, objs){
     var self=this;
     var is_update;
     if (type_name in self.schema){
-	var current_indexes = self.__get_indexes(type_name);
-	var index, v_new, v_old;
-	for (var pk in objs){
+	var all_indexes = self.__get_indexes(type_name);
+	var regular_indexes = all_indexes[0];
+	var range_indexes = all_indexes[1];
+	var index,index_info, v_new, v_old, newbin, oldbin, pk, fk;		
+	for (pk in objs){
 	    is_update = pk in this.o[type_name];    
 	    //now, update existing indexes if any
 	    if (is_update){
-		for (var fieldname in  current_indexes){
-		    index = current_indexes[fieldname];
+
+		for (var fieldname in  regular_indexes){
+		    index = regular_indexes[fieldname];		    
 		    v_new = objs[pk][fieldname];
 		    v_old = this.o[type_name][pk][fieldname];
 		    //if the foreign key has changed, propagate the change: 
 		    if (v_new != v_old){
+			//regular index
 			delete(index[v_old][pk]);
 			if  (!(v_new in index)){
 			    index[v_new] = {};
@@ -166,14 +178,47 @@ NB.models.Store.prototype.add = function(type_name, objs){
 			index[v_new][pk]=null;
 		    }
 		}
+		for (var fieldname in  range_indexes){
+		    index = range_indexes[fieldname].index;		    
+		    index_info = range_indexes[fieldname].info;
+		    v_new = objs[pk][fieldname];
+		    v_old = this.o[type_name][pk][fieldname];
+		    //if the foreign key has changed, propagate the change: 
+		    if (v_new != v_old){
+			//will the new val end up affecting the bin ? 
+			newbin = Math.floor(v_new/index_info.width);
+			if ((!(newbin in index))||(!(pk in index[newbin]))){
+			    oldbin = Math.floor(v_old/index_info.width);
+			    delete index[oldbin][pk];
+			    if (!(newbin in index)){
+				index[newbin]={};
+			    }
+			    index[newbin][pk]=v_new;
+			}
+			else{ //still, update value;
+			    index[oldbin][pk]=v_new;
+			}
+		    }
+		}
 	    }
 	    else{
-		for (var fieldname in  current_indexes){
-		    var fk = objs[pk][fieldname];
-		    if (!(fk in current_indexes[fieldname])){
-			current_indexes[fieldname][fk]={};
+		for (var fieldname in  regular_indexes){
+		    index = regular_indexes[fieldname];		    
+		    fk = objs[pk][fieldname];
+		    if (!(fk in index)){
+			index[fk]={};
 		    }
-		    current_indexes[fieldname][fk][pk] = null;
+		    index[fk][pk] = null;
+		}
+		for (var fieldname in  range_indexes){
+		    index = range_indexes[fieldname].index;		    
+		    index_info = range_indexes[fieldname].info;
+		    fk = objs[pk][fieldname];
+		    newbin = Math.floor(fk/index_info.width);
+		    if (!(newbin in index)){
+			index[newbin]={};
+		    }
+		    index[newbin][pk]=fk;
 		}
 	    }
 	    this.o[type_name][pk]=objs[pk];
@@ -207,13 +252,25 @@ NB.models.Store.prototype.remove = function(type_name, pkeys){
 	ids[pkeys] = null;
     }
     var id = null;
-    var objs_deleted = {};
+    var objs_deleted = {}, index, val;
+    var bin; //for range index
     for (id in ids){
 	if ((type_name in this.o) && (id in this.o[type_name])){
 	    objs_deleted[id]=this.o[type_name][id];
-	    var current_indexes = self.__get_indexes(type_name);
-	    for (var fieldname in  current_indexes){
-		delete(current_indexes[fieldname][this.o[type_name][id][fieldname]][id]);
+	    var all_indexes = self.__get_indexes(type_name);
+	    var regular_indexes = all_indexes[0];
+	    var range_indexes = all_indexes[1];
+	    for (var fieldname in regular_indexes){
+		index = regular_indexes[fieldname];		    
+		val = this.o[type_name][id][fieldname];
+		delete(index[val][id]);
+	    }
+	    for (var fieldname in range_indexes){
+		index = range_indexes[fieldname].index;		    
+		index_info = range_indexes[fieldname].info;
+		val = this.o[type_name][id][fieldname];
+		bin =  Math.floor(val/index_info.width);
+		delete(index[bin][id]);
 	    }
 	    delete(this.o[type_name][id]);
 	}
@@ -256,6 +313,18 @@ NB.models.Store.prototype.__dropIndexes = function(type_name){
     }
 };
 
+
+/**
+ * Constructs an index 
+ * ex: table:"location", o:"comment", fieldname:"id_location", which assumes that 
+ * this.schema.comment.references.id_location = "location";
+ *
+ * or for just building a lookup table on a field that's not a foreign key: 
+ * table should be of the form "__"+fieldname: 
+ * table: __page, o: "comment", fieldname: "page"
+ *
+ * note: to perform a range search, use a rangeIndex constructed with _addRangeIndex
+ */
 NB.models.Store.prototype.__addIndex = function(table, o, fieldname){
     var self = this;
     // '__..." is a reserved family of tablenames so we can add indexes on fields that aren't references. 
@@ -288,7 +357,36 @@ NB.models.Store.prototype.__addIndex = function(table, o, fieldname){
     }
 };
 
+/**
+ * Same as add index except that this one is used to perform lookups with a range of keys
+ *
+ */
+NB.models.Store.prototype.__addRangeIndex = function(table, o, fieldname, width){  
+    var self = this;
 
+    if (!("__ref" in self.schema[o])){
+	self.schema[o].__ref = {};
+    }	
+    self.schema[o].__ref[fieldname] = table;
+    
+    if (!(table in self.indexes)){
+	self.indexes[table]={};
+    }
+    if (!(o in self.indexes[table])){
+	self.indexes[table][o]={};
+    }
+    var key, i, bin;
+    var objects =  self.o[o];
+    for (i in objects){
+	key = objects[i][fieldname];
+	bin = Math.floor(key/width);
+	if (!(bin in self.indexes[table][o])){
+	    self.indexes[table][o][bin] = {};
+	}
+	self.indexes[table][o][bin][i]=key;
+    }
+    self.rangeindex_info[table] = {fieldname: fieldname, width: width};
+};
 NB.models.QuerySet = function(model, type){
     this.model = model;
     this.type = type;
@@ -474,12 +572,38 @@ NB.models.Store.prototype.get = function(from, where){
     var ref; 
     var references = self.schema[from].references || {};
     var i=null;
+    var r = /(.*)__in$/; //for range querying
+    var matches, v, width, bin, idx;
     for (i in where){
-	ref = i in references ?  references[i] : "__"+i;
-	if ( (!(ref in self.indexes)) || (!(from in self.indexes[ref])) ){
-	    self.__addIndex(ref, from, i);
+	matches = r.exec(i);
+	if (matches !== null){ //range query
+	    v = (where[i][0] + where[i][1])>>1; //half-point. 
+	    width = where[i][1] - where[i][0];
+	    ref = "__"+i+width;
+	    if (!(ref in self.indexes)){
+		self.__addRangeIndex(ref, from ,matches[1], width );
+	    }
+	    o = {};
+	    var bins = [Math.floor(where[i][0]/width), Math.floor(where[i][1]/width)];
+	    for (var b = 0;b<bins.length;b++){
+		bin = bins[b];
+		idx = self.indexes[ref][from][bin];
+		for (var oid in idx){
+		    if (idx[oid] >= where[i][0] && idx[oid] <= where[i][1]){
+			o[oid] = null;
+		    }
+		}
+	    }
+	    
 	}
-	o = self.indexes[ref][from][where[i]] || {};
+	else{
+	    v = where[i];
+	    ref = i in references ?  references[i] : "__"+i;
+	    if ( (!(ref in self.indexes)) || (!(from in self.indexes[ref])) ){
+		self.__addIndex(ref, from, i);
+	    }
+	    o =  self.indexes[ref][from][v] || {}
+	}
 	o = NB.models.__intersect(o_old, o);
 	o_old = o;
     }
