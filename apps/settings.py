@@ -110,8 +110,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    "django_openid_auth",
     "base",
     "polls"
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_openid_auth.auth.OpenIDBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/nb")
@@ -200,3 +206,12 @@ MONITOR = {"PAGE_SERVED": True,
            }            
 REDIRECT = False
 REDIRECT_URL = "http://nb.mit.edu"
+
+
+#OPENID SSO: 
+OPENID_CREATE_USERS             = True
+OPENID_UPDATE_DETAILS_FROM_SREG = True
+OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+LOGIN_URL                       = '/openid/login/'
+LOGIN_REDIRECT_URL              = '/'
+OPENID_USE_AS_ADMIN_LOGIN       = False

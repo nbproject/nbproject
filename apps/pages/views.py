@@ -1,6 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
 from django.views.generic.simple import direct_to_template
 import  urllib, json, base64, logging 
@@ -10,9 +11,12 @@ import string, random, forms
 from random import choice
 from django.core.mail.message import EmailMessage
 from django.template.loader import render_to_string
+from django.utils.html import escape
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 
 def on_serve_page(sender, **payload): 
     req = payload["req"]
@@ -29,12 +33,19 @@ if settings.MONITOR.get("PAGE_SERVED", False):
     signals.page_served.connect(on_serve_page, weak=False)
 
 
-
+def __extra_confkey_getter(req): 
+    if req.user.is_authenticated(): 
+        try: 
+            o = M.User.objects.get(email=req.user.email)
+            return o.confkey
+        except M.User.DoesNotExist: 
+            return None
+    return None
 
 def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None): 
-    """Serve the template 'tpl' if user is DB or allow_guest is True. If not, serve the welcome/login screen"""
+    """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
     o           = {} #for template
-    user       = UR.getUserInfo(req, allow_guest)
+    user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
     if user is None:
         redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
         return HttpResponseRedirect(redirect_url)
@@ -204,6 +215,8 @@ def logout(req):
     r = render_to_response("web/logout.html", {"o": o})
     r.delete_cookie("userinfo")
     r.delete_cookie("ckey")
+    from django.contrib.auth import logout as djangologout
+    djangologout(req)
     return r
 
 def confirm_invite(req):        
@@ -232,7 +245,7 @@ def subscribe(req):
     P = {"ensemble": e, "key": key}   
     if req.method == 'POST':
         if auth_user is None:
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            user = M.User(confkey="".userjoin([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
             user_form = forms.UserForm(req.POST, instance=user)
             if user_form.is_valid(): 
                 user_form.save()  
@@ -314,3 +327,37 @@ def spreadsheet(req):
 #    if not auth.canEditEnsemble(user.id,id_ensemble):
 #        return HttpResponseRedirect("/notallowed")
 #       
+
+def openid_index(request):
+    s = ['<p>']
+    if request.user.is_authenticated():
+        s.append('You are signed in as <strong>%s</strong> (%s)' % (
+                escape(request.user.username),
+                escape(request.user.get_full_name())))
+        s.append(' | <a href="/openid_logout">Sign out</a>')
+    else:
+        s.append('<a href="/openid/login">Sign in with OpenID</a>')
+    s.append('</p>')
+    s.append('<p><a href="/private">This requires authentication</a></p>')
+    return HttpResponse('\n'.join(s))
+
+
+@login_required
+def require_authentication(request):
+    return HttpResponse('This page requires authentication')
+
+
+
+@receiver(post_save, sender=User)
+def user_post_save_handler(sender, **kwargs): 
+    user = kwargs["instance"]
+    u = None
+    if user is not None: 
+        email = user.email
+        try: 
+            u = M.User.objects.get(email=email)
+        except M.User.DoesNotExist: 
+            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,6)])
+            confkey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
+            u = M.User(email=email, firstname=user.first_name, lastname=user.last_name, password=password, confkey=confkey, guest=False, valid=True )
+            u.save()

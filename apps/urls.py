@@ -81,7 +81,10 @@ urlpatterns += patterns('django.views.generic.simple',
                         )
 urlpatterns += patterns('', 
                          (r'djangoadmin/',    include(admin.site.urls)),
-                         
+                        (r'^openid/', include('django_openid_auth.urls')),
+                        (r'^openid_logout/$', 'django.contrib.auth.views.logout'),
+                        (r'^openid_private/$', "pages.views.require_authentication"),
+                        (r'^openid_index$', "pages.views.openid_index"),
 )
 
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
