@@ -52,6 +52,9 @@ class User(models.Model):                                                       
     valid               = BooleanField(default=False)                          # new
 
 class Ensemble(models.Model):                                                   # old: ensemble
+    SECTION_ASSGT_NULL  = 1
+    SECTION_ASSGT_RAND  = 2
+    SECTION_ASSGT_TYPES = ((SECTION_ASSGT_NULL,"NULL"), (SECTION_ASSGT_RAND,"RANDOM") )
     name                = CharField(max_length=255)                             # old: name text
     description         = CharField(max_length=255, default="No description available") 
     allow_staffonly     = BooleanField(default=True, verbose_name="Allow users to write 'staff-only' comments")                           
@@ -60,6 +63,7 @@ class Ensemble(models.Model):                                                   
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
+    section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL)
     def __unicode__(self):
         return "(%s) %s" %(self.id, self.name)
     class Meta: 
@@ -78,12 +82,18 @@ class Invite(models.Model):                                                     
     admin               = BooleanField(default=False)                           # old: admin integer
     ctime               = DateTimeField(null=True, default=datetime.now())
 
+class Section(models.Model):
+    name                = CharField(max_length=255)
+    ensemble            = ForeignKey(Ensemble)
+    
 ### TODO: port id_grader functionality (i.e. class sections)
 class Membership(models.Model):                                                 # old: membership
     user                = ForeignKey(User)                                      # old: id_user
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
+    section             = ForeignKey(Section, null=True)
     admin               = BooleanField(default=False)                           # old: admin integer
     deleted             = BooleanField(default=False)
+    guest               = BooleanField(default=False)                           # Adding guest membership to remember section_id
 
 class Source(models.Model):        
     TYPE_PDF            = 1
@@ -116,7 +126,8 @@ class Ownership(models.Model):                                                  
 class Location(models.Model):                                                   # old: nb2_location
     source              = ForeignKey(Source)                                    # old: id_source integer
     version             = IntegerField(default=1)
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer    
+    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
+    section             = ForeignKey(Section, null=True)    
     x                   = IntegerField()
     y                   = IntegerField()
     w                   = IntegerField()

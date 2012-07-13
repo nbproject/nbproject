@@ -39,8 +39,8 @@ def canReadFile(uid, id_source):
         id_source = int(id_source)
     except ValueError:
         return False
-    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False)
-    return len(o)>0 or canGuestReadFile(id_source)
+    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False, guest=False)
+    return len(o)>0 or canGuestReadFile(uid, id_source)
 
 def canDownloadPDF(uid, id_source):
     try: 
@@ -50,8 +50,21 @@ def canDownloadPDF(uid, id_source):
     o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid)
     return (len(o)>0 and (o[0].admin or o[0].ensemble.allow_download)) or canGuestDownloadPDF(id_source)
 
-def canGuestReadFile(id_source):
+def canGuestReadFile(uid, id_source):
     o = M.Ownership.objects.get(source__id=id_source)
+    e = M.Ensemble.objects.get(pk=o.ensemble__id)
+    if o.ensemble.allow_guest and len(M.Membership.objects.filter(user__id=uid, ensemble=e))==0: 
+        #add membership for guest user: 
+        m = M.Membership()
+        m.user__id = uid
+        m.ensemble__id = e.id
+        m.guest = True
+        if e.section_assignment == M.Ensemble.SECTION_ASSGT_RAND: 
+            #assign guest to a random section if there are sections: 
+            sections =  M.Section.objects.filter(ensemble=e)
+            if sections:
+                m.section = random.choice(sections)
+        m.save()
     return o.ensemble.allow_guest
 
 def canGuestDownloadPDF(id_source):
