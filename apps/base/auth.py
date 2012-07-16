@@ -52,12 +52,12 @@ def canDownloadPDF(uid, id_source):
 
 def canGuestReadFile(uid, id_source):
     o = M.Ownership.objects.get(source__id=id_source)
-    e = M.Ensemble.objects.get(pk=o.ensemble__id)
+    e = M.Ensemble.objects.get(pk=o.ensemble_id)
     if o.ensemble.allow_guest and len(M.Membership.objects.filter(user__id=uid, ensemble=e))==0: 
         #add membership for guest user: 
         m = M.Membership()
-        m.user__id = uid
-        m.ensemble__id = e.id
+        m.user_id = uid
+        m.ensemble_id = e.id
         m.guest = True
         if e.section_assignment == M.Ensemble.SECTION_ASSGT_RAND: 
             #assign guest to a random section if there are sections: 

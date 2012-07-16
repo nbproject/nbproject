@@ -63,7 +63,7 @@ class Ensemble(models.Model):                                                   
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
-    section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL)
+    section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
     def __unicode__(self):
         return "(%s) %s" %(self.id, self.name)
     class Meta: 

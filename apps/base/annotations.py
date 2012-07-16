@@ -343,7 +343,7 @@ def getCommentsByFile(id_source, uid, after):
     ensembles_im_admin = M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True))
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
-    membership = M.Membership.objects.get(user__id=uid, ensemble__owneship__source__id=id_source)
+    membership = M.Membership.objects.get(user__id=uid, ensemble__ownership__source__id=id_source)
     if membership.section is not None:
         comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
@@ -551,24 +551,26 @@ def getMark(uid, payload):
 
 def addNote(payload):
     id_location = None
+    author =  M.User.objects.get(pk=payload["id_author"])
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
     else:
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
-        location.ensemble = M.Ensemble.objects.get(pk=payload["id_ensemble"])
+        location.ensemble = M.Ensemble.objects.get(pk=payload["id_ensemble"])        
         location.y = payload["top"]
         location.x = payload["left"]
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
+        location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
         location.save()        
     comment = M.Comment()
     if "id_parent" in payload:
         comment.parent = M.Comment.objects.get(pk=payload["id_parent"])
     comment.location = location
-    comment.author = M.User.objects.get(pk=payload["id_author"])
+    comment.author = author
     comment.body = payload["body"]
     comment.type = payload["type"]
     comment.signed = payload["signed"] == 1
