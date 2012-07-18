@@ -30,6 +30,7 @@ catch (e){
 
 NB.pers.init = function(){
     $("#auth_fragment").append($("#login_user_dialog"));
+    $("#loginbutton_classic").append($("#auth_submit").css("min-width", "80px" ));
     $("#auth_submit").click(function(){
 	    var err = function(msg){
 		$("div.form_errors").hide().text(msg).show("fast");
