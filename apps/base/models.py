@@ -93,7 +93,8 @@ class Membership(models.Model):                                                 
     section             = ForeignKey(Section, null=True)
     admin               = BooleanField(default=False)                           # old: admin integer
     deleted             = BooleanField(default=False)
-    guest               = BooleanField(default=False)                           # Adding guest membership to remember section_id
+    guest               = BooleanField(default=False)                           # Adding guest membership to remember section_id. 
+    #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=false at the SQL level for the 'guest' field , so that we don't create null records if using the old framework 
 
 class Source(models.Model):        
     TYPE_PDF            = 1
@@ -108,6 +109,7 @@ class Source(models.Model):
     rotation            = IntegerField(default=0)                               # new
     version             = IntegerField(default=0)                               #incremented when adding src
     type                = IntegerField(choices=TYPES, default=TYPE_PDF)
+    #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=1 at the SQL level for the 'type' field , so that we don't create null records if using the old framework 
 
 class YoutubeInfo(models.Model): 
     source              = OneToOneField(Source)

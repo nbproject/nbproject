@@ -213,6 +213,9 @@ def invite(req):
 def logout(req): 
     o = {}
     r = render_to_response("web/logout.html", {"o": o})
+    user = UR.getUserInfo(req, False)
+    if user is not None and user.guest: 
+        r.set_cookie("pgid", user.id, 1e9)
     r.delete_cookie("userinfo")
     r.delete_cookie("ckey")
     from django.contrib.auth import logout as djangologout

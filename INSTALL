@@ -11,7 +11,6 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * python-pypdf
    * context (for rich, i.e. annotated pdf generation)
 
-
 To make sure you have these installed, you can run the following command: 
 sudo make prereqs_common
 
@@ -23,6 +22,13 @@ Then, NB can be deplyed as a django app, which requires the following:
     * libapache2-mod-wsgi
     To make sure you have these installed, you can run the following command: 
     sudo make prereqs_django
+
+    * python-openid
+    * python-django-openid-auth (for OpenId authentication) 
+       Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package
+
+
+
 
 -> then edit vals in servers/settings.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data

@@ -143,7 +143,7 @@ NB.models.Store.prototype.set = function(type_name, objs){
 	self.add(type_name, objs);
     }
     else{
-	console.error(type_name, " not found in schema: ", self.schema);
+	$.D(type_name, " not found in schema: ", self.schema);
     }
 
 };

@@ -307,7 +307,7 @@ def getNotes(payload, req):
     if "file" in payload: #access by file
         after = payload.get("after", None)
         id_source = payload["file"]
-        if auth.canReadFile(uid, id_source):
+        if auth.canReadFile(uid, id_source, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
             output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
