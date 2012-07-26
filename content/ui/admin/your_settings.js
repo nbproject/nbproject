@@ -107,5 +107,7 @@ NB.pers.settings_menu = function(){
     var u = NB.conf.userinfo;
     $("#your_firstname").text(u.firstname);
     $("#your_lastname").text(u.lastname);
+    $("#your_email").text(u.email);
+
 };
 
