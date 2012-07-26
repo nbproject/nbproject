@@ -281,11 +281,17 @@ class Notification(models.Model):
     atime               = DateTimeField(null=True, default=datetime.now())    
 
 class GuestHistory(models.Model):
+    """
+    Records the period during which a user was a guest. t_end gets populated if the user ever converts their guest account into a regular account by registering (not using SSO). 
+    """
     user                = ForeignKey(User)
     t_start             = DateTimeField(null=True, default=datetime.now())
     t_end               = DateTimeField(null=True)
     
 class GuestLoginHistory(models.Model):
+    """
+    Records the transition between a login as guest account and login as a exising  account. This data supplements the one in GuestHistory. i.e. for the cases where we have a transition from a guest to a existing user. Note that SSO (i.e. Google ID) users are always considered "existing" even if they weren't in the DB before (since their guest account id doesn't get recycled), so they appear here. 
+    """
     guest               = ForeignKey(User, related_name="u1")
     user                = ForeignKey(User, related_name="u2")
     ctime               = DateTimeField(null=True, default=datetime.now())    

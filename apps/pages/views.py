@@ -359,6 +359,10 @@ def user_post_save_handler(sender, **kwargs):
         email = user.email
         try: 
             u = M.User.objects.get(email=email)
+            if u.firstname == "" or u.lastname== "":
+                u.firstname = user.first_name
+                u.lastname = user.last_name
+                u.save()
         except M.User.DoesNotExist: 
             password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,6)])
             confkey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])

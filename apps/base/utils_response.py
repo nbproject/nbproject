@@ -62,10 +62,13 @@ def getUserInfo(req, allow_guest=False, extra_confkey_getter=None):
         ckey = auth.getGuestCkey()
         info = auth.getCkeyInfo(ckey)
     if (info is None or info.guest) and extra_confkey_getter is not None:
-        #check again: maybe it's a use logged in w/ external credentials, so we want srg better than guest login ! 
-        ckey = extra_confkey_getter(req)        
-        if ckey is not None: 
-            info = auth.getCkeyInfo(ckey)
+        #check again: maybe it's a use logged in w/ external credentials, so we want srg better than guest login !         
+        ckey2 = extra_confkey_getter(req)        
+        if ckey2 is not None:
+            newinfo = auth.getCkeyInfo(ckey2)
+            if ckey is not None: 
+                auth.log_guest_login(ckey, newinfo.id)            
+            info = newinfo
     return info
 
 
