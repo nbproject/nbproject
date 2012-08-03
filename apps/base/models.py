@@ -50,6 +50,8 @@ class User(models.Model):                                                       
     confkey             = CharField(max_length=63, blank=True, null=True)      
     guest               = BooleanField(default=False)                          # new
     valid               = BooleanField(default=False)                          # new
+    def __unicode__(self):
+        return "%s %s: %s %s <%s>" % (self.__class__.__name__,self.id,  self.firstname, self.lastname, self.email)
 
 class Ensemble(models.Model):                                                   # old: ensemble
     SECTION_ASSGT_NULL  = 1
@@ -65,7 +67,7 @@ class Ensemble(models.Model):                                                   
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
     section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
     def __unicode__(self):
-        return "(%s) %s" %(self.id, self.name)
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
     class Meta: 
         ordering = ["id"]
 
@@ -73,6 +75,8 @@ class Folder(models.Model):                                                     
     parent              = ForeignKey("self", null=True)                         # old: id_parent integer
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
     name                = CharField(max_length=255)                             # old: name text
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
 ### TODO: Would be nice to remember the invite text and when it was sent. 
 class Invite(models.Model):                                                     # old: invite
@@ -81,10 +85,15 @@ class Invite(models.Model):                                                     
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
     admin               = BooleanField(default=False)                           # old: admin integer
     ctime               = DateTimeField(null=True, default=datetime.now())
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
 
 class Section(models.Model):
     name                = CharField(max_length=255)
     ensemble            = ForeignKey(Ensemble)
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
+
     
 ### TODO: port id_grader functionality (i.e. class sections)
 class Membership(models.Model):                                                 # old: membership
@@ -95,7 +104,9 @@ class Membership(models.Model):                                                 
     deleted             = BooleanField(default=False)
     guest               = BooleanField(default=False)                           # Adding guest membership to remember section_id. 
     #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=false at the SQL level for the 'guest' field , so that we don't create null records if using the old framework 
-
+    def __unicode__(self):
+        return "%s %s: (user %s, ensemble %s)" % (self.__class__.__name__,self.id,  self.user_id, self.ensemble_id)
+    
 class Source(models.Model):        
     TYPE_PDF            = 1
     TYPE_YOUTUBE        = 2
@@ -109,11 +120,15 @@ class Source(models.Model):
     rotation            = IntegerField(default=0)                               # new
     version             = IntegerField(default=0)                               #incremented when adding src
     type                = IntegerField(choices=TYPES, default=TYPE_PDF)
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.title)
     #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=1 at the SQL level for the 'type' field , so that we don't create null records if using the old framework 
 
 class YoutubeInfo(models.Model): 
     source              = OneToOneField(Source)
     key                 = CharField(max_length=255,blank=True, null=True)
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
     
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake. 
 class Ownership(models.Model):                                                  # old: ownership
@@ -124,6 +139,8 @@ class Ownership(models.Model):                                                  
     deleted             = BooleanField(default=False)
     assignment          = BooleanField(default=False)
     due                 = DateTimeField(default=datetime.now(), null=True)
+    def __unicode__(self):
+        return "%s %s: source %s in ensemble %s" % (self.__class__.__name__,self.id,  self.source_id, self.ensemble_id)
     
 class Location(models.Model):                                                   # old: nb2_location
     source              = ForeignKey(Source)                                    # old: id_source integer
@@ -135,6 +152,8 @@ class Location(models.Model):                                                   
     w                   = IntegerField()
     h                   = IntegerField()
     page                = IntegerField()
+    def __unicode__(self):
+        return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
@@ -147,7 +166,9 @@ class Comment(models.Model):                                                    
     signed              = BooleanField(default=True)                            # old: signed integer DEFAULT 0,
     deleted             = BooleanField(default=False)                           # old: vis_status integer DEFAULT 0
     moderated           = BooleanField(default=False)
-    
+    def __unicode__(self):
+        return "%s %s: %s " % (self.__class__.__name__,self.id,  self.body[:50])
+   
     @property
     def created(self):      
         t_d = self.ctime.isocalendar()
@@ -191,8 +212,7 @@ class ReplyRating(models.Model):
     ctime               = DateTimeField(default=datetime.now)                    
     status              = IntegerField(choices=TYPES)   
     
-class ThreadMarkHistory(models.Model):
-    
+class ThreadMarkHistory(models.Model):    
     TYPES               = ((1, "question"), (2, "star"), (3,"summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
