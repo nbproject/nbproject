@@ -12,15 +12,83 @@ import sys,os
 import datetime
 if "." not in sys.path: 
     sys.path.append(".")
-if "DJANGO_SETTINGS_MODULE" not in os.environ: 
+if "DJANGO_SETTINGS_MODULE" not in os.environ or __name__=="__main__": 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.conf import settings
 import base.utils as utils, base.models as M
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Max
+from django.db.models.deletion import Collector
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
+extracted = {}
+
+def extract_obj(o, from_class, cut_at):
+    #inspired from from  http://stackoverflow.com/a/2315053/768104
+    print "pulling objects related to %s" % (o,)
+    links = [rel.get_accessor_name() for rel in o._meta.get_all_related_objects()]
+    for link in links:
+        rel_objects = getattr(o, link).all()
+        for ro in rel_objects:
+            classname = ro.__class__.__name__
+            if classname not in extracted: 
+                extracted[classname]={}
+            if ro.id not in extracted[classname]:
+                extracted[classname][ro.id]=1 
+                extract_obj(ro, classname, cut_at)
+from django.db.models.fields.related import ForeignKey
+def duplicate(obj, value=None, field=None, duplicate_order=None):
+    #adapted from http://stackoverflow.com/a/6064096/768104
+    """
+    Duplicate all related objects of obj setting
+    field to value. If one of the duplicate
+    objects has an FK to another duplicate object
+    update that as well. Return the duplicate copy
+    of obj.
+    duplicate_order is a list of models which specify how
+    the duplicate objects are saved. For complex objects
+    this can matter. Check to save if objects are being
+    saved correctly and if not just pass in related objects
+    in the order that they should be saved.
+    """
+    collector = Collector("default")
+    collector.collect([obj])
+    collector.sort()
+    related_models = collector.data.keys()
+    data_snapshot =  {}
+    for key in collector.data.keys():
+        data_snapshot.update({ key: dict(zip([item.pk for item in collector.data[key]], [item for item in collector.data[key]])) })
+    root_obj = None
+
+    # Sometimes it's good enough just to save in reverse deletion order.
+    if duplicate_order is None:
+        duplicate_order = reversed(related_models)
+
+    for model in duplicate_order:
+        # Find all FKs on model that point to a related_model.
+        fks = []
+        for f in model._meta.fields:
+            if isinstance(f, ForeignKey) and f.rel.to not in related_models:
+                fks.append(f)
+        # Replace each `sub_obj` with a duplicate.
+        if model not in collector.data:
+            continue
+        sub_objects = collector.data[model]
+        for obj in sub_objects:
+            for fk in fks:
+                print "fk %s for obj %s " % (fk.name, obj)      
+                #TODO: insert fk object if not done
+            #TODO: insert other objects...       
+    return root_obj
+
+
+
+def do_extract(t_args):
+    m = M.Ensemble.objects.get(pk=237)
+    duplicate(m, 0, 0)
+    #extract_obj(m, None,  ["User", "Membership"])
+    
 
 def do_watchdog(t_args):
     when = datetime.datetime.now()
@@ -253,7 +321,8 @@ if __name__ == "__main__" :
     ACTIONS = {
         "immediate": do_immediate,
         "digest": do_digest, 
-        "watchdog": do_watchdog
+        "watchdog": do_watchdog,
+        "extract": do_extract
         }
     utils.process_cli(__file__, ACTIONS)
 
