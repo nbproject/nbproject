@@ -23,7 +23,7 @@ from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
-extracted = {}
+
 
 def extract_obj(o, from_class, cut_at):
     #inspired from from  http://stackoverflow.com/a/2315053/768104
@@ -39,13 +39,14 @@ def extract_obj(o, from_class, cut_at):
                 extracted[classname][ro.id]=1 
                 extract_obj(ro, classname, cut_at)
 from django.db.models.fields.related import ForeignKey
-def duplicate(obj, cut_at, special_handlers):
+def duplicate(objs, using_src, using_dest, special_handlers):
     #adapted from http://stackoverflow.com/a/6064096/768104    
-    collector = Collector("default")
-    collector.collect([obj])
+    collector = Collector(using_src)
+    collector.collect(objs)
     collector.sort()
     related_models = collector.data.keys()
     duplicate_order = reversed(related_models)
+    extracted = {}
     for model in duplicate_order:
         # Find all FKs on model that point to a related_model.
         fks = []
@@ -64,36 +65,39 @@ def duplicate(obj, cut_at, special_handlers):
                     extracted[rel_cls]={}
                 if rel_obj is not None and rel_obj.id not in extracted[rel_cls]: 
                     extracted[rel_cls][rel_obj.id]=True
-                    rel_obj.save(using="sel")
-                    print "-> saved related object %s" % (rel_obj,)
+                    rel_obj.save(using=using_dest)
+                    #print "-> saved related object %s" % (rel_obj,)
             #now ready to insert obj: 
             if model not in extracted:
                 extracted[model]={}
             if obj is not None and obj.id not in extracted[model]: 
                 extracted[model][obj.id]=True
                 try: 
-                    obj.save(using="sel")
+                    obj.save(using=using_dest)            
                 except IntegrityError as e: 
                     if model in special_handlers: 
-                        special_handlers[model](obj)
-                        obj.save(using="sel")
+                        special_handlers[model](obj, using_dest)
+                        obj.save(using=using_dest)
+                        
                     else: 
                         raise e
-                print "saved obj %s" %(obj,)
-
+                #print "saved obj %s" %(obj,)
+        print "%s done TOTAL objects written: %s " % (model.__name__, sum([len(extracted[i]) for i in extracted]))        
 def do_extract(t_args):
-    m = M.Ensemble.objects.get(pk=237)
-    def insert_parent_comments(o):
+    objs = [(M.Ensemble, 237), ]
+    objs_src = [o[0].objects.using("default").get(pk=o[1]) for o in objs]    
+    def insert_parent_comments(o, using_dest):
         ancestors = []
         c = o.parent
         while c is not None: 
             ancestors.append(c)
             c = c.parent
         for c2 in reversed(ancestors):
-            c2.save(using="sel")        
+            c2.save(using=using_dest)        
         print "Special Comment case: inserted %s parent comments" % (len(ancestors),)
-    duplicate(m, [M.User, M.Membership], {M.Comment: insert_parent_comments})
-    #extract_obj(m, None,  ["User", "Membership"])
+    duplicate(objs_src, "default", "sel", {M.Comment: insert_parent_comments})
+    objs_dest = [o[0].objects.using("sel").get(pk=o[1]) for o in objs]  
+    
     
 
 def do_watchdog(t_args):
