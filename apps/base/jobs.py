@@ -24,9 +24,10 @@ from django.db.utils import IntegrityError
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
 
-
+pending_inserts = []
 def extract_obj(o, from_class, cut_at):
     #inspired from from  http://stackoverflow.com/a/2315053/768104
+    extracted = {}
     print "pulling objects related to %s" % (o,)
     links = [rel.get_accessor_name() for rel in o._meta.get_all_related_objects()]
     for link in links:
@@ -75,14 +76,19 @@ def duplicate(objs, using_src, using_dest, special_handlers):
                 try: 
                     obj.save(using=using_dest)            
                 except IntegrityError as e: 
-                    if model in special_handlers: 
-                        special_handlers[model](obj, using_dest)
-                        obj.save(using=using_dest)
-                        
-                    else: 
-                        raise e
-                #print "saved obj %s" %(obj,)
+                    pending_inserts.append(obj)
         print "%s done TOTAL objects written: %s " % (model.__name__, sum([len(extracted[i]) for i in extracted]))        
+    do_pending_inserts(using_dest)
+
+def do_pending_inserts(using):
+    global pending_inserts
+    new_pending = []
+    for o in pending_inserts: 
+        try: 
+            o.save(using=using)
+        except IntegrityError as e: 
+            new_pending.append(o)
+                            
 def do_extract(t_args):
     objs = [(M.Ensemble, 237), ]
     objs_src = [o[0].objects.using("default").get(pk=o[1]) for o in objs]    
