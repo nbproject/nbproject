@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template import TemplateDoesNotExist
 from django.views.generic.simple import direct_to_template
 import  urllib, json, base64, logging 
@@ -10,6 +10,7 @@ import string, random, forms
 from random import choice
 from django.core.mail.message import EmailMessage
 from django.template.loader import render_to_string
+from django.utils.datetime_safe import datetime
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
 
@@ -297,6 +298,18 @@ def properties_ensemble_users(req, id):
 
 def spreadsheet(req):
     return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),))
+
+def fbchannel(req):
+    import datetime
+    r = HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
+    r["Pragma"] = "Public"    
+    cache_expire = 60*60*24*365
+    r["Cache-Control"] = "max-age="+cache_expire
+    r["Expires"]=(datetime.datetime.now()+datetime.timedelta(cache_expire)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+    return r
+
+
+ 
 #   
 # UR.getUserInfo(req)
 #    if user is None: 

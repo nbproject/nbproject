@@ -46,12 +46,13 @@ urlpatterns = patterns("",
                        (r'^invite$', 'pages.views.invite'), 
                        (r'^logout$', 'pages.views.logout'),
                        (r'^newsite$', 'pages.views.newsite'),   
-                                               (r'^subscribe$', 'pages.views.subscribe'),      
-                         (r'^confirm_invite$', 'pages.views.confirm_invite'), 
-                        (r'^enteryourname$', 'pages.views.enter_your_name'), 
-                        (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
+                       (r'^subscribe$', 'pages.views.subscribe'),      
+                       (r'^confirm_invite$', 'pages.views.confirm_invite'), 
+                       (r'^enteryourname$', 'pages.views.enter_your_name'), 
+                       (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
                          (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
-                        (r'^spreadsheet$', 'pages.views.spreadsheet'),
+                       (r'^spreadsheet$', 'pages.views.spreadsheet'),
+                       (r'^fbchannel$', 'pages.views.fbchannel'),
                         (r'^polls', include(polls.urls)),  
 
                        )
@@ -72,8 +73,7 @@ urlpatterns += patterns('django.views.generic.simple',
                             (r'^subscribe_thanks$',                           'direct_to_template', {'template': 'web/subscribe_thanks.html'}),
                         (r'^notallowed$',                           'direct_to_template', {'template': 'web/notallowed.html'}),
                              (r'^news$',                           'direct_to_template', {'template': 'web/news.html'}),
-
-
+                             (r'^fb$',                           'direct_to_template', {'template': 'web/fb.html'}),
                         )
 urlpatterns += patterns('', 
                          (r'djangoadmin/',    include(admin.site.urls)),
