@@ -24,7 +24,10 @@ MANAGERS = ADMINS
 NB_SERVERNAME   = settings_credentials.__dict__.get("NB_SERVERNAME", "localhost")
 NB_HTTP_PORT    = settings_credentials.__dict__.get("NB_HTTP_PORT", "80")
 CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cron@gmail.com")
-DATABASES = settings_credentials.DATABASES 
+DATABASES       = settings_credentials.DATABASES 
+FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
+FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
+
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     print msg_credentials()
     exit(1)
@@ -102,6 +105,12 @@ TEMPLATE_DIRS = (
 )
 ALLOWED_INCLUDE_ROOT = (abspath("%s/../templates/web" % (ROOTDIR, )),)
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+"django.contrib.auth.context_processors.auth",
+'django_facebook.context_processors.facebook',
+)
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -111,12 +120,14 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     "django_openid_auth",
+    'django_facebook',
     "base",
     "polls"
 )
 
 AUTHENTICATION_BACKENDS = (
     'django_openid_auth.auth.OpenIDBackend',
+    'django_facebook.auth_backends.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -215,3 +226,4 @@ OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
 OPENID_USE_AS_ADMIN_LOGIN       = False
+AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'

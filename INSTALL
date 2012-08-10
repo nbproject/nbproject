@@ -26,7 +26,7 @@ Then, NB can be deplyed as a django app, which requires the following:
     * python-openid
     * python-django-openid-auth (for OpenId authentication) 
        Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package
-
+    * django_facebook (for Facebook authentication). For example, use:  pip install django_facebook
 
 
 

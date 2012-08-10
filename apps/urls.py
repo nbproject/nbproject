@@ -85,6 +85,9 @@ urlpatterns += patterns('',
                         (r'^openid_logout/$', 'django.contrib.auth.views.logout'),
                         (r'^openid_private/$', "pages.views.require_authentication"),
                         (r'^openid_index$', "pages.views.openid_index"),
+                        (r'^facebook/', include('django_facebook.urls')),
+                        (r'^accounts/', include('django_facebook.auth_urls'))
+
 )
 
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
