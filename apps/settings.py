@@ -96,6 +96,8 @@ ROOT_URLCONF = "urls"
 #ROOT_URLCONF = 'servers.urls'
 
 
+STATIC_ROOT = abspath("%s/../static" % (ROOTDIR, ))
+STATIC_URL = "/static/"
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -117,6 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     "django_openid_auth",
