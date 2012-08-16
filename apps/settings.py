@@ -96,7 +96,7 @@ ROOT_URLCONF = "urls"
 #ROOT_URLCONF = 'servers.urls'
 
 
-STATIC_ROOT = abspath("%s/../static" % (ROOTDIR, ))
+STATIC_ROOT = "%s/" % (abspath("%s/../static" % (ROOTDIR, )),)
 STATIC_URL = "/static/"
 
 TEMPLATE_DIRS = (
