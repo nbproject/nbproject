@@ -124,14 +124,16 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     "django_openid_auth",
-    'django_facebook',
+   # 'django_facebook',
+    'facebook',
     "base",
     "polls"
 )
 
 AUTHENTICATION_BACKENDS = (
     'django_openid_auth.auth.OpenIDBackend',
-    'django_facebook.auth_backends.FacebookBackend',
+#    'django_facebook.auth_backends.FacebookBackend',
+    'facebook.backend.FacebookBackend',                                                                                        
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -230,4 +232,8 @@ OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
 OPENID_USE_AS_ADMIN_LOGIN       = False
-AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
+
+#Facebook stuff:
+#AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
+AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'                                                                          
+FACEBOOK_SCOPE = 'email'
