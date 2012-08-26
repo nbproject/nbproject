@@ -252,18 +252,18 @@ NB.files.edit_assignment = function(id){
     $('#due_time').calendricalTime({usa: true,  isoTime: true, two_digit_mdh: true, meridiemUpperCase: true});
 }
     
-NB.files.rename_file = function(id){
+NB.files.rename_file = function(id, item_type){
     var $filename = $("#rename_file_name");
-    $filename[0].value =  NB.files.model.o.file[id].title;
+    $filename[0].value =  (item_type==="file")? NB.files.model.o.file[id].title :  NB.files.model.o.folderid].name;
     $('#rename_file_dialog').dialog({
-	    title: "Rename file...", 
+	    title: "Rename "+item_type+"...", 
 		width: 390,
 		buttons: { 
 		"Cancel": function() { 
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("rename_file")({id: id, title:  $filename[0].value}, function(p){NB.files.model.add("file", p.files);$.I("file renamed");} );
+			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){NB.files.model.add(item_type, p.[item_type+"s");$.I(item_type+" renamed");} );
 			$(this).dialog("destroy");
 		    }
 	    }

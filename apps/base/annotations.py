@@ -636,11 +636,16 @@ def create_folder(id_ensemble, id_parent, name):
     return folder.pk
 
 def rename_file(uid, P):
-    source = M.Source.objects.get(pk=P['id'])
-    source.title = P["title"]
-    source.save()
-    return get_files(uid, {"id":  P["id"]})
-
+    if P["item_type"]=="file": 
+        source = M.Source.objects.get(pk=P['id'])
+        source.title = P["title"]
+        source.save()
+        return get_files(uid, {"id":  P["id"]})
+    else: 
+        folder = M.Folder.objects.get(pk=P["id"])
+        folder.name = P["title"]
+        folder.save()
+        return get_folders(uid,  {"id":  P["id"]})
 
 def edit_assignment(uid, P):
     source = M.Source.objects.get(pk=P['id'])
