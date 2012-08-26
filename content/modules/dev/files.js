@@ -263,7 +263,7 @@ NB.files.rename_file = function(id, item_type){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){NB.files.model.add(item_type, p.[item_type+"s");$.I(item_type+" renamed");} );
+			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){NB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
 			$(this).dialog("destroy");
 		    }
 	    }
