@@ -103,7 +103,7 @@ NB.pers.init = function(){
 		source_id_getter:	function(P, cb){NB.pers.call("request_source_id", P, cb);}, 
 		add_folder_menu:	function(P, cb){NB.files.addFolder(P.id_ensemble, P.id_folder);}, 
 		add_folder:		function(P, cb){NB.pers.call("add_folder", P, cb)}, 		
-	rename_file_menu:	function(P, cb){NB.files.rename_file(P.id,P.item_type);},
+		rename_file_menu:	function(P, cb){NB.files.rename_file(P.id,P.item_type);},
 	 	rename_file:		function(P, cb){NB.pers.call("rename_file", P, cb)},
 		delete_file_menu:	function(P, cb){NB.files.delete_file(P.id)},
 		delete_file:		function(P, cb){NB.pers.call("delete_file", P, cb)},

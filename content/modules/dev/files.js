@@ -254,7 +254,7 @@ NB.files.edit_assignment = function(id){
     
 NB.files.rename_file = function(id, item_type){
     var $filename = $("#rename_file_name");
-    $filename[0].value =  (item_type==="file")? NB.files.model.o.file[id].title :  NB.files.model.o.folderid].name;
+    $filename[0].value =  (item_type==="file")? NB.files.model.o.file[id].title :  NB.files.model.o.folder[id].name;
     $('#rename_file_dialog').dialog({
 	    title: "Rename "+item_type+"...", 
 		width: 390,

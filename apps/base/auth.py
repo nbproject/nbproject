@@ -175,6 +175,13 @@ def canRenameFile(uid, id):
     m = M.Membership.objects.filter(user__id=uid, ensemble__in=e)
     return m.count()>0 and m[0].admin
 
+def canRenameFolder(uid, id): 
+    """need to be an admin on the ensemble that contains that folder"""
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    return m.count()>0 and m[0].admin
+
+
 def canEditAssignment(uid, id): 
     return canRenameFile(uid, id)
 

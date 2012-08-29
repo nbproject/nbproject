@@ -464,9 +464,10 @@ def __send_email(recipients, msg):
         raise smtplib.SMTPException, errstr
 
 def rename_file(P, req): 
-    #this methos is used to rename both files and folders. 
+    #this method is used to rename both files and folders. 
     uid = UR.getUserId(req)
-    if not auth.canRenameFile(uid, P["id"]):
+    f_auth = auth.canRenameFile if P["item_type"]=="file" else auth.canRenameFolder
+    if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({P["item_type"]+"s": annotations.rename_file(uid, P)})
 
