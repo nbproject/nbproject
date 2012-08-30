@@ -188,6 +188,18 @@ def canEditAssignment(uid, id):
 def canDeleteFile(uid, id): 
     return canRenameFile(uid, id)
 
+def canDeleteFolder(uid, id): 
+    """
+        - Need to be an admin on the ensemble that contains that folder. 
+        - Can't contain any file that's not already deleted
+        - Can't contain any folder
+    """
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    o = M.Ownership.objects.filter(deleted=False, folder__id=id)
+    f = M.Folder.objects.filter(parent__id=id)
+    return m.count()>0 and m[0].admin and o.count()==0 and f.count()==0
+
 def canMoveFile(uid, id): 
     return canRenameFile(uid, id)
 

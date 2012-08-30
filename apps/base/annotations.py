@@ -600,10 +600,16 @@ def approveNote(uid, payload):
 
 def delete_file(uid, P): 
     id = P["id"]
-    o = M.Ownership.objects.get(source__id=id)
-    o.deleted = True
-    o.save()    
-    return id
+    if P["item_type"]=="file": 
+        o = M.Ownership.objects.get(source__id=id)
+        o.deleted = True
+        o.save()    
+        return id
+    else: #folder
+        folder =  M.Folder.objects.get(pk=id)
+        M.Ownership.objects.filter(folder__id=id).update(folder=None)
+        folder.delete()
+        return id
 
 def create_ensemble(uid, P): #name, description, uid, allow_staffonly, allow_anonymous, ):
     import random, string

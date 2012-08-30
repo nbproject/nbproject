@@ -472,8 +472,10 @@ def rename_file(P, req):
     return UR.prepare_response({P["item_type"]+"s": annotations.rename_file(uid, P)})
 
 def delete_file(P, req): 
+    #this method is used to rename both files and folders. 
     uid = UR.getUserId(req)
-    if not auth.canDeleteFile(uid, P["id"]):
+    f_auth = auth.canDeleteFile if P["item_type"]=="file" else auth.canDeleteFolder
+    if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({"id": annotations.delete_file(uid, P)}) #special form since file isn't in there anymore
 
