@@ -31,13 +31,13 @@
 
 		
 		self.element.addClass("filesView");
-		$(document).on("click", "button[action=add_file]", function(){
+		$(document.body).on("click", "button[action=add_file]", function(){
 			$.concierge.get_component("add_file_menu")({id_ensemble: self._id_ensemble, id_folder:  self._id_folder});
 		    });
-		$(document).on("click","button[action=add_folder]", function(){
+		$(document.body).on("click","button[action=add_folder]", function(){
 			$.concierge.get_component("add_folder_menu")({id_ensemble: self._id_ensemble, id_folder:  self._id_folder});
 		    });
-		$(document).on("click","button[action=invite_users]", function(){
+		$(document.body).on("click","button[action=invite_users]", function(){
 			$.concierge.get_component("invite_users_menu")({id_ensemble: self._id_ensemble});
 		    });
 	
