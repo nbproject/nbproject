@@ -12,15 +12,99 @@ import sys,os
 import datetime
 if "." not in sys.path: 
     sys.path.append(".")
-if "DJANGO_SETTINGS_MODULE" not in os.environ: 
+if "DJANGO_SETTINGS_MODULE" not in os.environ or __name__=="__main__": 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.conf import settings
 import base.utils as utils, base.models as M
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Max
+from django.db.models.deletion import Collector
+from django.db.utils import IntegrityError
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
+
+pending_inserts = []
+def extract_obj(o, from_class, cut_at):
+    #inspired from from  http://stackoverflow.com/a/2315053/768104
+    extracted = {}
+    print "pulling objects related to %s" % (o,)
+    links = [rel.get_accessor_name() for rel in o._meta.get_all_related_objects()]
+    for link in links:
+        rel_objects = getattr(o, link).all()
+        for ro in rel_objects:
+            classname = ro.__class__.__name__
+            if classname not in extracted: 
+                extracted[classname]={}
+            if ro.id not in extracted[classname]:
+                extracted[classname][ro.id]=1 
+                extract_obj(ro, classname, cut_at)
+from django.db.models.fields.related import ForeignKey
+def duplicate(objs, using_src, using_dest, special_handlers):
+    #adapted from http://stackoverflow.com/a/6064096/768104    
+    collector = Collector(using_src)
+    collector.collect(objs)
+    collector.sort()
+    related_models = collector.data.keys()
+    duplicate_order = reversed(related_models)
+    extracted = {}
+    for model in duplicate_order:
+        # Find all FKs on model that point to a related_model.
+        fks = []
+        for f in model._meta.fields:
+            if isinstance(f, ForeignKey) and f.rel.to not in related_models:
+                fks.append(f)
+        # Replace each `sub_obj` with a duplicate.
+        if model not in collector.data:
+            continue
+        sub_objects = collector.data[model]
+        for obj in sub_objects:
+            for fk in fks:
+                rel_obj = getattr(obj, fk.name)
+                rel_cls = rel_obj.__class__
+                if rel_cls not in extracted:
+                    extracted[rel_cls]={}
+                if rel_obj is not None and rel_obj.id not in extracted[rel_cls]: 
+                    extracted[rel_cls][rel_obj.id]=True
+                    rel_obj.save(using=using_dest)
+                    #print "-> saved related object %s" % (rel_obj,)
+            #now ready to insert obj: 
+            if model not in extracted:
+                extracted[model]={}
+            if obj is not None and obj.id not in extracted[model]: 
+                extracted[model][obj.id]=True
+                try: 
+                    obj.save(using=using_dest)            
+                except IntegrityError as e: 
+                    pending_inserts.append(obj)
+        print "%s done TOTAL objects written: %s " % (model.__name__, sum([len(extracted[i]) for i in extracted]))        
+    do_pending_inserts(using_dest)
+
+def do_pending_inserts(using):
+    global pending_inserts
+    new_pending = []
+    for o in pending_inserts: 
+        try: 
+            o.save(using=using)
+        except IntegrityError as e: 
+            new_pending.append(o)
+                            
+def do_extract(t_args):
+    objs = [(M.Ensemble, 237), ]
+    objs_src = [o[0].objects.using("default").get(pk=o[1]) for o in objs]    
+    def insert_parent_comments(o, using_dest):
+        ancestors = []
+        c = o.parent
+        while c is not None: 
+            ancestors.append(c)
+            c = c.parent
+        for c2 in reversed(ancestors):
+            c2.save(using=using_dest)        
+        print "Special Comment case: inserted %s parent comments" % (len(ancestors),)
+    duplicate(objs_src, "default", "sel", {M.Comment: insert_parent_comments})
+    objs_dest = [o[0].objects.using("sel").get(pk=o[1]) for o in objs]  
+    
+    
 
 def do_watchdog(t_args):
     when = datetime.datetime.now()
@@ -253,7 +337,8 @@ if __name__ == "__main__" :
     ACTIONS = {
         "immediate": do_immediate,
         "digest": do_digest, 
-        "watchdog": do_watchdog
+        "watchdog": do_watchdog,
+        "extract": do_extract
         }
     utils.process_cli(__file__, ACTIONS)
 

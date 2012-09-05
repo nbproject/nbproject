@@ -55,7 +55,10 @@ __EXPORTS = [
     "move_file", 
     "register_user", 
     "login_user", 
-    "set_grade_assignment"
+    "set_grade_assignment", 
+    "markThread", 
+    "getPending", 
+    "rate_reply"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -95,6 +98,24 @@ def parseEntities(x, d):
             return __parseEntities_list(x,delimiter)
         return __parseEntities_str(x,delimiter)
 
+def rate_reply(P,req):
+    uid = UR.getUserId(req);
+    status = P["status"]
+    tm = M.ThreadMark.objects.get(pk=P["threadmark_id"])
+    previous_accepted_ratings = M.ReplyRating.objects.filter(threadmark=tm, status__gt=M.ReplyRating.TYPE_UNRESOLVED)
+    if tm.user_id == uid:
+        rr = M.ReplyRating()
+        rr.status = status
+        rr.threadmark = tm
+        rr.comment_id = P["comment_id"]
+        rr.save()
+        if status: 
+            tm.active = status==M.ReplyRating.TYPE_UNRESOLVED and previous_accepted_ratings.count()==0 
+            tm.save()
+        return UR.prepare_response({"replyrating": {rr.id: UR.model2dict(rr)}})
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")      
+
+    
 def sendInvites(payload, req): 
     from django.core.mail import EmailMessage
     uid = UR.getUserId(req);
@@ -211,7 +232,14 @@ def getParams(payload, req):
     o={}
     for p in payload["name"]:
         if p in __AVAILABLE_PARAMS:
-            o[p] = constants.__dict__[p]            
+            o[p] = constants.__dict__[p]
+    if UR.CID != 0 and "clienttime" in payload:
+        try: 
+            s = M.Session.objects.get(ctime=UR.CID)
+            s.clienttime = datetime.datetime.fromtimestamp((payload["clienttime"]+0.0)/1000)
+            s.save()
+        except M.Session.DoesNotExist:
+            pass    
     return UR.prepare_response({"value": o})
 
 
@@ -250,16 +278,6 @@ def getObjects(payload, req):
         output[t] = getattr(annotations, "get_"+t)(uid, p2)
     return UR.prepare_response(output)
 
-
-    # now is a good time to register the connection, if this hasn't been done: 
-#    if cid not in __SESSIONS:
-#        __SESSIONS = 
-#    event = {}
-#    event["type"] = "SAYHELLO"
-#    event["msg"] = "upload and processing completed, you can use your file now"
-#    responder.notify( cid,event)
-
-
 def save_settings(payload, req): 
     uid = UR.getUserId(req);
     if uid is None:
@@ -289,10 +307,10 @@ def getNotes(payload, req):
     if "file" in payload: #access by file
         after = payload.get("after", None)
         id_source = payload["file"]
-        if auth.canReadFile(uid, id_source):
+        if auth.canReadFile(uid, id_source, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, after)
+            output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -303,17 +321,22 @@ def getNotes(payload, req):
 def saveNote(payload, req): 
     uid = UR.getUserId(req)
     if not auth.canAnnotate(uid,  payload["id_ensemble"]):
-        return UR.prepare_response({}, 1,  "NOT ALLOWED")
- 
+        return UR.prepare_response({}, 1,  "NOT ALLOWED") 
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
-    #for mark in payload["marks"]:
-    #    annotations.markNote(uid, {"action": payload["marks"][mark], "id_comment": a["id_comment"]})
-    if "id_location" in a:
-        retval["locations"] = annotations.getLocation(a["id_location"])
-    retval["comments"] = annotations.getComment(a["id_comment"], uid)
-    retval["marks"] =  annotations.getMark(uid,{"id_comment":  a["id_comment"]})
+    tms = {}
+    for mark in payload["marks"]:
+        tm = M.ThreadMark()
+        tm.type = [c[0] for c in tm.TYPES if c[1]==mark][0]
+        tm.user_id = uid         
+        tm.comment=a
+        tm.location_id=a.location_id
+        tm.save()
+        tms[tm.id] = UR.model2dict(tm)  
+    retval["locations"] = annotations.getLocation(a.location_id)
+    retval["comments"] = annotations.getComment(a.id, uid)
+    retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
 
@@ -323,11 +346,8 @@ def editNote(payload, req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         annotations.editNote(payload)
-        #for mark in payload["marks"]:
-        #    annotations.markNote(uid, {"action": payload["marks"][mark], "id_comment": payload["id_comment"]})
-        return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid), 
-                   "marks": annotations.getMark(uid,{"id_comment":  payload["id_comment"]}) 
-                   })
+    #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
+    return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid)})
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)
@@ -337,6 +357,13 @@ def deleteNote(payload, req):
     else:
         annotations.deleteNote(payload)
         return UR.prepare_response({"id_comment": payload["id_comment"] })
+
+def getPending(payload, req):
+    uid = UR.getUserId(req)
+    output = annotations.getPending(uid, payload)
+    return UR.prepare_response(output)
+  
+
 
 def getMyNotes(payload, req): 
     uid = UR.getUserId(req)
@@ -371,6 +398,19 @@ def getMembers(payload, req):
         if auth.canGetMembers(uid, payload["id_ensemble"]): 
             return UR.prepare_response(annotations.get_members(payload["id_ensemble"]))
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
+
+
+def markThread(payload, req):
+    uid = UR.getUserId(req)
+    id_location =  payload["id_location"]
+    if not auth.canMarkThread(uid,id_location ):
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    else: 
+        mark = annotations.markThread(uid, payload);
+        tms = {}
+        tms[mark["id"]] = mark                
+        p = {"threadmarks": tms}
+        return UR.prepare_response(p)
 
 def markNote(payload, req):
     uid = UR.getUserId(req)
@@ -424,22 +464,27 @@ def __send_email(recipients, msg):
         raise smtplib.SMTPException, errstr
 
 def rename_file(P, req): 
+    #this method is used to rename both files and folders. 
     uid = UR.getUserId(req)
-    if not auth.canRenameFile(uid, P["id"]):
+    f_auth = auth.canRenameFile if P["item_type"]=="file" else auth.canRenameFolder
+    if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    return UR.prepare_response({"files": annotations.rename_file(uid, P)})
+    return UR.prepare_response({P["item_type"]+"s": annotations.rename_file(uid, P)})
 
 def delete_file(P, req): 
+    #this method is used to rename both files and folders. 
     uid = UR.getUserId(req)
-    if not auth.canDeleteFile(uid, P["id"]):
+    f_auth = auth.canDeleteFile if P["item_type"]=="file" else auth.canDeleteFolder
+    if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({"id": annotations.delete_file(uid, P)}) #special form since file isn't in there anymore
 
 def move_file(P,req): 
     uid = UR.getUserId(req)
-    if not auth.canMoveFile(uid, P["id"]):
+    f_auth = auth.canMoveFile if P["item_type"]=="file" else auth.canMoveFolder
+    if not f_auth(uid, P["id"], P["dest"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    return UR.prepare_response({"files": annotations.move_file(uid, P)})
+    return UR.prepare_response({P["item_type"]+"s": annotations.move_file(uid, P)})
 
 def add_ensemble(payload, req): 
     uid = UR.getUserId(req)
@@ -502,9 +547,12 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["comments"] = annotations.getCommentsByFile(id_source, uid, previous_activity)             
+                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
+        elif R["type"] == "newPending":
+            #for now, we retrieve all the pending stuff. 
+            output = annotations.getPending(uid, payload)
     return UR.prepare_response(output)
-
+  
 def get_location_info(payload, req): 
     id = payload["id"]
     uid = UR.getUserId(req);

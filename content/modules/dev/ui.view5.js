@@ -120,11 +120,51 @@
 	    return $("input.focusgrabber", this.element);
 	},
 	_expand: function(){
-	    var $expand	= $(this.options.expand);
-	    if ($expand.length){
-		var s0		= $expand.offset().top+parseInt($expand.css("margin-top")) - this.element.offset().top;
-		$expand.height(this.element.height() - s0);
+	    //pre: this.option.expand, is defined, refers to selectors for some children of the element
+	    if (!(this.options.expand)){
+		return;
 	    }
+	    var parent = this.element;	    	    
+	    var $expand	= parent.children(this.options.expand);
+	    if ($expand.length==0){
+		return;
+	    }
+	    if ($expand.length == 1){ //allocate the whole available space
+		var s0          = $expand.offset().top+parseInt($expand.css("margin-top")||0)+parseInt($expand.css("margin-bottom")||0)+parseInt($expand.css("border-top")||0)+parseInt($expand.css("border-bottom")||0) - this.element.offset().top;
+		var new_height = this.element.height() - s0;
+		$expand.height(new_height);
+		return;
+	    }
+	    //expand refers to more than one element, so we'll allocate each height based on the expand elements' current heights.    
+	    var $others = parent.children().not(this.options.expand);
+	    var h_others = 0;
+	    $others.each(function(i){
+		    var $elt = $(this);
+		    h_others+=$elt.height()+parseInt($elt.css("margin-top")||0)+parseInt($elt.css("margin-bottom")||0)+parseInt($elt.css("border-top")||0)+parseInt($elt.css("border-bottom")||0);
+		});
+	    var h_available = parent.height()-parseInt(parent.css("padding-top")||0)-parseInt(parent.css("padding-bottom")||0)-h_others;
+	    var $expand_visible = $expand.filter(":visible");
+	    var FIXED_PART = 0.3; //percentage assigned equally to each widget (intedepent of its current height)
+	    var h_available_fixed = h_available*FIXED_PART;
+	    var h_available_proportional = h_available - h_available_fixed;
+	    //now get a sense of how much each widget needs:
+	    var h_expands = 0;
+	    $expand_visible.each(function(i){		    
+		    this.style.height = ""; //reset previous resize
+		    var $elt  = $(this);
+		    var h	= $elt.height();
+		    var m	= parseInt($elt.css("margin-top")||0)+parseInt($elt.css("margin-bottom")||0)+parseInt($elt.css("border-top")||0)+parseInt($elt.css("border-bottom")||0);
+		    h_expands += h+m;
+		    //	    heights.push(h);
+		    //		    margins.push(m);
+		});
+	    //now resize. 
+	    var frac = h_available_proportional/h_expands;
+	    var fixed = parseInt(h_available_fixed/$expand_visible.length);
+	    $expand_visible.each(function(i){		    
+		    var $elt  = $(this);
+		    $elt.height(fixed+parseInt(frac*$elt.height()));
+		});
 	}
     };
     

@@ -52,15 +52,23 @@ def getUserId(req):
     return None
 
 
-def getUserInfo(req, allow_guest=False): 
+def getUserInfo(req, allow_guest=False, extra_confkey_getter=None): 
     u_in        = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote("{}")))) or {}
-    ckey        = req.GET.get("ckey") or req.COOKIES.get("ckey", None) or (u_in["ckey"] if "ckey" in u_in else None)      
+    ckey        = req.GET.get("ckey") or req.COOKIES.get("ckey", None) or (u_in["ckey"] if "ckey" in u_in else None) or (extra_confkey_getter(req) if extra_confkey_getter is not None else None)
     if ckey is None and allow_guest:         
         ckey = auth.getGuestCkey()
     info = auth.getCkeyInfo(ckey)
     if info is None and allow_guest: #there was a wrong ckey to start with, assign a guest one
         ckey = auth.getGuestCkey()
         info = auth.getCkeyInfo(ckey)
+    if (info is None or info.guest) and extra_confkey_getter is not None:
+        #check again: maybe it's a use logged in w/ external credentials, so we want srg better than guest login !         
+        ckey2 = extra_confkey_getter(req)        
+        if ckey2 is not None:
+            newinfo = auth.getCkeyInfo(ckey2)
+            if ckey is not None: 
+                auth.log_guest_login(ckey, newinfo.id)            
+            info = newinfo
     return info
 
 

@@ -24,3 +24,21 @@ background-color: #d7d7d7;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 }
+
+
+ins.jstree_icon{
+background-image: url("/content/data/icons/png/default_theme.png") !important;
+ background-repeat: no-repeat !important;
+}
+
+ins.jstree_icon.home{
+background-position: -420px 0px !important;
+}
+
+ins.jstree_icon.admin{
+background-position: -440px 0px !important;
+}
+
+ins.jstree_icon.reg{
+background-position: -40px 0px !important;
+}

@@ -64,6 +64,11 @@ overflow: hidden;
 padding-left: 5px;
 }
 
+div.location-shortbody.replyrequested{
+background-color: #ffa070;
+}
+
+
 div.location-shortbody-ellipsis{
 background-image: url(/content/data/icons/png/fuzzy_border_right_20.png);
 background-repeat: repeat-y;
@@ -76,7 +81,9 @@ margin-top: -4px;
 
 
 div.location-shortbody-text{
-width: 3000px;
+white-space: nowrap;
+overflow-x: hidden;
+text-overflow: ellipsis;
 font-size: medium; 
 font-family: arial;
 color: #222266;
@@ -120,9 +127,11 @@ div.notepaneView-pages{
 overflow-y: auto;
 }
 
+
+
 div.location-flags{
 float: left;
-width: 60px;
+min-width: 60px;
 }
 
 ins.locationflag{
@@ -277,3 +286,71 @@ font-size: x-large;
 color: #c0c0c0;
 margin: 10px;
 }
+
+
+/*filters*/
+div.filter-controls{
+float: right;
+padding-top: 4px;
+}
+
+div.filter-controls > a.filter{
+margin-right: 10px;
+padding: 0px;
+border: thin solid #808080;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+display: inline-block;
+
+}
+
+div.filter-controls > a.filter.active{
+border-bottom-width: 5px;
+border-bottom-color: #ffff00;
+display: inline; //HACK: needed in order to remain inside header;
+}
+
+div.filter-controls  a.filter span{
+background-color: #909090;
+color: #f0f0f0;
+padding-left: 5px;
+padding-right: 5px;
+font-size: medium;
+}
+
+div.filter-controls  div.filter-count{
+font-weight: bold;
+background-color: #f0f0f0;
+color: #707070;
+min-width: 1.5em;
+display: inline-block;
+padding-left: 5px;
+margin-right: 1px;
+font-size: medium;
+//text-decoration: underline;
+}
+
+
+div.notepaneView-header{
+background-color: #c0c0c0;
+padding: 3px 5px 5px 5px;
+border-bottom: thin solid #a0a0a0;
+}
+
+span.filter-msg-unfiltered, span.filter-msg-filtered{
+padding-right: 10px;
+color: #808080;
+}
+
+span.n_filtered{
+color: #ffff00;
+font-size: large;
+font-weight: bold;
+}
+
+span.n_unfiltered{
+font-size: large;
+font-weight: bold;
+}
+
+

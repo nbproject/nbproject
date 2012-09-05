@@ -39,7 +39,7 @@ NB.pers.init = function(){
 		js: ["/content/modules/dev/ui.docView9.js",  "/content/modules/dev/ui.drawable4.js"],
 		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
 		    }, 
-		notepaneview: {js: ["/content/modules/dev/ui.notepaneView9.js"],css: [] }, 
+		notepaneview: {js: ["/content/modules/dev/ui.notepaneView9.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
 		threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
 		editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
 
@@ -194,7 +194,7 @@ NB.pers.createStore = function(payload){
     //now check if need to move to a given annotation: 
     if ("c" in NB.pers.params){
 	var id =  NB.pers.params.c;
-	var c = m.get("comment", {ID: NB.pers.params.c})[id];
+	var c = m.get("comment", {ID: NB.pers.params.c}).items[id];
 	$.concierge.trigger({type: "select_thread", value: c.ID_location});
     }
 };

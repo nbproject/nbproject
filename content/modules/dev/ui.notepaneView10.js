@@ -18,11 +18,11 @@
 		var self = this;
 		return function(){
 		    var m		= self._model;
-		    var o		= m.get("comment", {ID_location: id_location});
+		    var o		= m.get("comment", {ID_location: id_location}).items;
 		    var i;
 		    var new_seen	= {};
 		    for (i in o){
-			if (o.hasOwnProperty(i) && (!(i in m.o.seen))){
+			if (!(i in m.o.seen)){
 			    new_seen[i] = {id: i, id_location: id_location};
 			    $.concierge.logHistory("seen", i);
 			}
@@ -48,9 +48,7 @@
 		self.element.addClass("notepaneView").addClass("threadview").append("<div class='splash'/><div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
 		$("div.splash", self.element).html($.concierge.get_component("splash_notepaneview")());
        		$.mods.declare({
-			notepaneView1: {js: [], css: ["/content/modules/dev/ui.notepaneView6.css"]}, 
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-		$.mods.ready("notepaneView1", function(){});
 		$.mods.ready("contextmenu", function(){});
 		$("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");	       	    },
 	    _defaultHandler: function(evt){

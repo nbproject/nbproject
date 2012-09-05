@@ -121,3 +121,8 @@ div.pagenumberbottom{
 bottom: 0px;
 }
 
+#docview_drawingarea{
+position: absolute; 
+width: 800px;
+height: 600px;
+}

@@ -1,4 +1,5 @@
 *.pyc
+*~
 .project
 .pydevproject
 apps/apache/django.wsgi
@@ -7,3 +8,4 @@ conf/nb_apache
 conf/nb_crontab
 content/compiled
 content/ui/admin/conf_local.js
+content/.settings

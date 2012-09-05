@@ -72,7 +72,7 @@ NB.pers.settings_menu = function(){
 
 	    var id_item = this.getAttribute("id_item");
 	    id_item = m.get("ds", {name: id_item}).first().id;
-	    var labels = m.get("sl",{setting_id: id_item}).as_object();
+	    var labels = m.get("sl",{setting_id: id_item}).items;
 	    var set_value =  m.o.ds[id_item].value;
 	    var us = m.get("us", {setting_id: id_item}).first();
 	    if (us != null){
@@ -107,5 +107,7 @@ NB.pers.settings_menu = function(){
     var u = NB.conf.userinfo;
     $("#your_firstname").text(u.firstname);
     $("#your_lastname").text(u.lastname);
+    $("#your_email").text(u.email);
+
 };
 

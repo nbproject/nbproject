@@ -45,6 +45,7 @@
 	    this._p0 =  p0;
 	    this._M0 =  M0;
 	    this._helper.show().css({top: M0.top+"px", left: M0.left+"px"});
+	    $.concierge.trigger({type: "drawable_start", value:0});
 	    return true;
 	},
 
@@ -83,15 +84,8 @@
 	}, 
 				    
 	editorFactory2: function(){
-	    //		    var self=this;
 	    var h = this._helper;
-	    var userinfo = $.concierge.get_component("get_userinfo")();
-	    if (userinfo.guest == 1){
-		$.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
-	    }
-	    else{
-		$.concierge.trigger({type: "new_thread", value: {selection: h}});
-	    }
+	    $.concierge.trigger({type: "new_thread", value: {selection: h}});
 	    h.hide();
 	}
     };

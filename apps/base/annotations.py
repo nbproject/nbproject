@@ -176,7 +176,15 @@ __NAMES = {
               "id": None, 
               "grade": None, 
               "id_user": "user_id", 
-              "id_source": "source_id"},                 
+              "id_source": "source_id"},      
+           "threadmark":{
+                         "id": None,
+                         "location_id": None,
+                         "user_id": None,
+                         "active": None,
+                         "type": None, 
+                         "comment_id": None                      
+                         }           
 }         
         
 def get_ensembles(uid, payload):
@@ -335,10 +343,18 @@ def getCommentsByFile(id_source, uid, after):
     ensembles_im_admin = M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True))
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
+    membership = M.Membership.objects.get(user__id=uid, ensemble__ownership__source__id=id_source)
+    if membership.section is not None:
+        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
+    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
+        threadmarks = threadmarks.filter(ctime__gt=after)
+    if after is not None: 
+        comments = comments.filter(ctime__gt=after)    
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
+    threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
@@ -346,7 +362,7 @@ def getCommentsByFile(id_source, uid, after):
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
-    return locations_dict, comments_dict
+    return locations_dict, comments_dict, threadmarks_dict
     #return __post_process_comments(o, uid)
 
 def get_comments_collection(uid, P):
@@ -487,6 +503,41 @@ def getSeenByFile(id_source, uid):
     seen = M.CommentSeen.objects.select_related("comment").filter(comment__in=comments).filter(user__id=uid)
     return UR.qs2dict(seen, names, "id")
 
+def markThread(uid, payload):
+    mtype = int(payload["type"])
+    lid  = int(payload["id_location"])
+    #comment_id = None if "comment_id" not in payload or payload["comment_id"] is None else int(payload["comment_id"])
+    comment_id = int(payload["comment_id"])
+    mark = M.ThreadMark.objects.filter(user__id=uid, type=mtype, location__id=lid, active=True)
+    if mark.count()>0: # only allow one active threadmark of a given type per thread
+        mark = mark[0]
+        mh = M.ThreadMarkHistory()
+        mh.active = mark.active
+        mh.comment_id = mark.comment_id
+        mh.ctime = mark.ctime
+        mh.location_id = mark.location_id
+        mh.user_id = mark.user_id    
+        mh.type = mark.type
+        mh.save()  
+        mark.ctime = datetime.datetime.now()
+        active_default = True
+        if comment_id != mark.comment_id: 
+            #there was a real change of comment_id: don't update active default value
+            active_default = mark.active
+        else: #then probably just a toggle
+            active_default = not mark.active                        
+        mark.comment_id = comment_id            
+        mark.active =  payload["active"] if "active" in payload else active_default # if no arg given, toggle 
+    else: 
+        mark = M.ThreadMark()
+        mark.user_id = uid
+        mark.location_id = lid
+        mark.comment_id = comment_id
+        mark.type = mtype
+        mark.active = payload["active"] if "active" in payload else True 
+    mark.save()
+    return UR.model2dict(mark)
+
 def getMark(uid, payload):
     names = {
         "ID": "id",
@@ -500,29 +551,33 @@ def getMark(uid, payload):
 
 def addNote(payload):
     id_location = None
+    author =  M.User.objects.get(pk=payload["id_author"])
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
     else:
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
-        location.ensemble = M.Ensemble.objects.get(pk=payload["id_ensemble"])
+        location.ensemble = M.Ensemble.objects.get(pk=payload["id_ensemble"])        
         location.y = payload["top"]
         location.x = payload["left"]
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
+        location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
         location.save()        
     comment = M.Comment()
     if "id_parent" in payload:
         comment.parent = M.Comment.objects.get(pk=payload["id_parent"])
     comment.location = location
-    comment.author = M.User.objects.get(pk=payload["id_author"])
+    comment.author = author
     comment.body = payload["body"]
     comment.type = payload["type"]
     comment.signed = payload["signed"] == 1
     comment.save()
-    return {"id_location": location.id, "id_comment": comment.id}
+    return comment
+    #return {"id_location": location.id, "id_comment": comment.id}
+
 
 def editNote(payload):
     id_type = payload["type"]
@@ -545,10 +600,16 @@ def approveNote(uid, payload):
 
 def delete_file(uid, P): 
     id = P["id"]
-    o = M.Ownership.objects.get(source__id=id)
-    o.deleted = True
-    o.save()    
-    return id
+    if P["item_type"]=="file": 
+        o = M.Ownership.objects.get(source__id=id)
+        o.deleted = True
+        o.save()    
+        return id
+    else: #folder
+        folder =  M.Folder.objects.get(pk=id)
+        M.Ownership.objects.filter(folder__id=id).update(folder=None)
+        folder.delete()
+        return id
 
 def create_ensemble(uid, P): #name, description, uid, allow_staffonly, allow_anonymous, ):
     import random, string
@@ -581,11 +642,16 @@ def create_folder(id_ensemble, id_parent, name):
     return folder.pk
 
 def rename_file(uid, P):
-    source = M.Source.objects.get(pk=P['id'])
-    source.title = P["title"]
-    source.save()
-    return get_files(uid, {"id":  P["id"]})
-
+    if P["item_type"]=="file": 
+        source = M.Source.objects.get(pk=P['id'])
+        source.title = P["title"]
+        source.save()
+        return get_files(uid, {"id":  P["id"]})
+    else: 
+        folder = M.Folder.objects.get(pk=P["id"])
+        folder.name = P["title"]
+        folder.save()
+        return get_folders(uid,  {"id":  P["id"]})
 
 def edit_assignment(uid, P):
     source = M.Source.objects.get(pk=P['id'])
@@ -599,10 +665,16 @@ def edit_assignment(uid, P):
 
 def move_file(uid, P): 
     id = P["id"]
-    o = M.Ownership.objects.get(source__id=id)
-    o.folder_id = P["dest"]
-    o.save()
-    return get_files(uid, {"id": id})
+    if P["item_type"]=="file": 
+        o = M.Ownership.objects.get(source__id=id)
+        o.folder_id = P["dest"]
+        o.save()
+        return get_files(uid, {"id": id})
+    else: 
+        o = M.Folder.objects.get(pk=id)
+        o.parent_id = P["dest"]
+        o.save()
+        return get_folders(uid, {"id": id})
 
 def createSource(uid, payload):
     """ 
@@ -721,12 +793,47 @@ def page_served(uid, p):
     o.save()
     
 def markActivity(cid):
-    session = M.Session.objects.filter(ctime=cid)
-    if len(session) == 0: 
-        return None, None
-    session = session[0]
-    previous_activity = session.lastactivity
-    session.lastactivity = datetime.datetime.now()
-    session.save()    
-    return session, previous_activity
+    try: 
+        session = M.Session.objects.get(ctime=cid)
+        previous_activity = session.lastactivity
+        session.lastactivity = datetime.datetime.now()
+        session.save()
+        return session, previous_activity    
+    except M.Session.DoesNotExist: 
+        pass     
+    return None, None    
+
+def getPending(uid, payload):
+    #reply requested threadmarks:    
+    questions = M.ThreadMark.objects.filter(location__ensemble__membership__user__id=uid, type=1, active=True).exclude(user__id=uid)
+    comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
+    locations = M.Location.objects.filter(comment__in=comments)
+    all_comments = M.Comment.objects.filter(location__in=locations)
+    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
     
+    unrated_replies_ids = list(unrated_replies.values_list("id", flat=True))    
+    questions = questions.exclude(location__comment__in=unrated_replies_ids)
+    comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
+    locations = M.Location.objects.filter(comment__in=comments)
+    
+    #now items where action required: 
+    my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)#extra(select={"pending": "false"})
+    my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, status = M.ReplyRating.TYPE_UNRESOLVED)
+    my_comments_unresolved =M.Comment.objects.filter(replyrating__in=my_unresolved) 
+    recent_replies = M.Comment.objects.extra(where=["base_threadmark.ctime<base_comment.ctime"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)
+    recent_replies_base = M.Comment.objects.extra(where=["base_threadmark.comment_id=base_comment.id or (base_threadmark.comment_id is null and base_comment.parent_id is null)"]).filter(location__threadmark__in=my_questions).exclude(id__in=my_comments_unresolved)     
+    #list() makes sure this gets evaluated. 
+    #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
+    recent_replies_ids = list(recent_replies.values_list("id", flat=True))    
+    recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
+    replied_questions = my_questions.filter(location__in=recent_locations)
+    replied_questions = replied_questions.extra(select={"pending": "true"})    
+    output = {}    
+    output["questions"] = UR.qs2dict(questions|replied_questions)#, {"id":None, "type": None, "active":None, "location_id":None, "comment_id":None, "ctime":None, "pending":None, "user_id":None})    
+    output["locations"] = UR.qs2dict(locations|recent_locations)
+    output["comments"]  = UR.qs2dict(comments)
+    output["comments"].update(UR.qs2dict(recent_replies)) #same reason as the list() above: we don't want a query to produce an error if reevaluated in a different context
+    output["basecomments"] = UR.qs2dict(recent_replies_base)    
+    return output
+
+
