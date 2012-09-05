@@ -200,8 +200,23 @@ def canDeleteFolder(uid, id):
     f = M.Folder.objects.filter(parent__id=id)
     return m.count()>0 and m[0].admin and o.count()==0 and f.count()==0
 
-def canMoveFile(uid, id): 
+def canMoveFile(uid, id, id_dest=None): 
     return canRenameFile(uid, id)
+
+def __isDirOrParent(id_a, id_b): 
+    #returns true is a == b or is a is a parent of b
+    d = M.Folder.objects.get(pk=id_b)
+    while d.parent_id is not None: 
+        if d.id == id_a: 
+            return True
+        d = d.parent
+    return id_a == d.id
+
+def canMoveFolder(uid, id, id_dest): 
+    """need to be an admin on the ensemble that contains that folder, and folder dest not to be the same or a subfolder of id"""
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    return m.count()>0 and m[0].admin and not __isDirOrParent(id_dest, id)
 
 def canUpdateFile(uid, id): 
     return  canRenameFile(uid, id)

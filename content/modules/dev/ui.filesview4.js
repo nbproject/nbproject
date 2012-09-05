@@ -72,27 +72,27 @@
 		this._render();
 	    },
 	    _filelens: function(f){
-		var self=this;
 		var ckey = $.concierge.get_component("get_userinfo")().ckey;
 		var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
 		var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
 		var download = "";
-		if (self._admin || self._model.o.ensemble[f.id_ensemble].allow_download ){
+		if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download ){
 		    download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
 		
 		    //for now only admin can download annotated PDF:
-		    if (self._admin){
+		    if (this._admin){
 			download += " <a target='_blank' href='"+this.options.img_server+"/pdf/annotated/"+f.ID+"?ckey="+ckey+"'>annotated</a>";
 		    }
 		    download = "<td>"+download+"</td>";
 		}
-		var f_stats =  self._model.o.file_stats[f.ID];
+		var f_stats =  this._model.o.file_stats[f.ID];
 		var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":"<td/>";
 		return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon pdficon'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
 
 	    }, 
 	    _folderlens: function(f){
-		return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:$.concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td></tr>");
+		var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
+		return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:$.concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
 	    }, 
 	    _draw_pending: function(){
 		var self = this;
@@ -273,6 +273,12 @@
 		    }
 		    $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
 		    $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
+		    $("#contextmenu_filesview").bind("beforeShow", function(event, el){
+			    $("li", this).show();
+			    if (el.closest(".filesview_row").attr("item_type") ==="folder"){
+				$("li.update, li.assignment", this).hide();
+			    }
+			});
 		    /*
 		      $e_info = $("div.filesView-ensemble").empty();
 		      if (id_folder==null && self._admin){ 

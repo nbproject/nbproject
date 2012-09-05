@@ -665,10 +665,16 @@ def edit_assignment(uid, P):
 
 def move_file(uid, P): 
     id = P["id"]
-    o = M.Ownership.objects.get(source__id=id)
-    o.folder_id = P["dest"]
-    o.save()
-    return get_files(uid, {"id": id})
+    if P["item_type"]=="file": 
+        o = M.Ownership.objects.get(source__id=id)
+        o.folder_id = P["dest"]
+        o.save()
+        return get_files(uid, {"id": id})
+    else: 
+        o = M.Folder.objects.get(pk=id)
+        o.parent_id = P["dest"]
+        o.save()
+        return get_folders(uid, {"id": id})
 
 def createSource(uid, payload):
     """ 

@@ -26,6 +26,7 @@ catch (e){
 NB.files.currentEnsemble = 0;
 NB.files.currentFolder=0;
 NB.files.model = null;
+NB.files.labelfields = {file: "title", folder: "name"};
 NB.files.set_model = function(model){
     NB.files.model = model;
     var $util_window = $.concierge.get_component("get_util_window")();
@@ -254,7 +255,8 @@ NB.files.edit_assignment = function(id){
     
 NB.files.rename_file = function(id, item_type){
     var $filename = $("#rename_file_name");
-    $filename[0].value =  (item_type==="file")? NB.files.model.o.file[id].title :  NB.files.model.o.folder[id].name;
+    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
+    $filename[0].value =  o[NB.files.labelfields[item_type]];
     $('#rename_file_dialog').dialog({
 	    title: "Rename "+item_type+"...", 
 		width: 390,
@@ -281,7 +283,8 @@ NB.files.delete_file = function(id, item_type){
 	return;
     }
     var $filename = $("#delete_"+item_type+"_name");
-    $filename.text((item_type==="file")? NB.files.model.o.file[id].title :  NB.files.model.o.folder[id].name);
+    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
+    $filename.text( o[NB.files.labelfields[item_type]]);
     $('#delete_'+item_type+'_dialog').dialog({
 	    title: "Delete "+item_type+"...", 
 		width: 390,
@@ -313,31 +316,47 @@ NB.files.__abspath = function(id_folder){
     return s;
 };
 
-NB.files.__generate_folders = function(id_ensemble, id_sel){
+NB.files.__isDirOrParent = function(id_a,id_b){
+    //returns true is a == b or is a is a parent of b
+    var folders = NB.files.model.o.folder;
+    var d = folders[id_b];
+    while (d.id_parent !== null){
+	if (d.ID === id_a){
+	    return true;
+	}
+	d = folders[d.id_parent];
+    }
+    return id_a === d.ID;
+};
+
+NB.files.__generate_folders = function(id_ensemble, id_sel, id_exclude){
     var subfolders  = NB.files.model.get("folder", {id_ensemble:id_ensemble }); 
     var sel_str = (id_sel==null) ? " selected='selected' ": " ";
     var s="<option "+sel_str+" id_item='0'>"+NB.files.model.o.ensemble[id_ensemble].name+"</option>";
     for (var i in subfolders.items){ 
-	sel_str = (i==id_sel ) ? " selected='selected' ": " ";
-	s+="<option "+sel_str+" id_item='"+i+"'>"+NB.files.__abspath(i)+"</option>";
+	if (id_exclude === undefined || (!NB.files.__isDirOrParent(parseInt(id_exclude), parseInt(i)))){
+	    sel_str = (i==id_sel ) ? " selected='selected' ": " ";
+	    s+="<option "+sel_str+" id_item='"+i+"'>"+NB.files.__abspath(i)+"</option>";
+	}
     }
     return s;
 };
 
-NB.files.move_file = function(id){  
+NB.files.move_file = function(id, item_type){  
     var $filename = $("#move_file_name");
-    $filename.text(NB.files.model.o.file[id].title);
+    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
+    $filename.text( o[NB.files.labelfields[item_type]]);
     $select = $("#move_file_select");
-    $select.html(NB.files.__generate_folders(NB.files.model.o.file[id].id_ensemble,NB.files.model.o.file[id].id_folder));
+    $select.html(NB.files.__generate_folders(o.id_ensemble,o.id_folder||o.id_parent, (item_type==="file")?undefined:id));
     $('#move_file_dialog').dialog({
-	    title: "Move file...", 
+	    title: "Move "+item_type+"...", 
 		width: 390,
 		buttons: { 
 		"Cancel": function() { 
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("move_file")({id: id, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){NB.files.model.add("file", p.files);$.I("file moved");} );
+			$.concierge.get_component("move_file")({id: id, item_type: item_type, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){NB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type + " moved");} );
 			$(this).dialog("destroy");
 		    }
 	    }

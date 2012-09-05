@@ -481,9 +481,10 @@ def delete_file(P, req):
 
 def move_file(P,req): 
     uid = UR.getUserId(req)
-    if not auth.canMoveFile(uid, P["id"]):
+    f_auth = auth.canMoveFile if P["item_type"]=="file" else auth.canMoveFolder
+    if not f_auth(uid, P["id"], P["dest"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    return UR.prepare_response({"files": annotations.move_file(uid, P)})
+    return UR.prepare_response({P["item_type"]+"s": annotations.move_file(uid, P)})
 
 def add_ensemble(payload, req): 
     uid = UR.getUserId(req)
