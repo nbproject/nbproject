@@ -110,7 +110,7 @@ ALLOWED_INCLUDE_ROOT = (abspath("%s/../templates/web" % (ROOTDIR, )),)
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
 "django.contrib.auth.context_processors.auth",
-'django_facebook.context_processors.facebook',
+#'django_facebook.context_processors.facebook',
 )
 
 

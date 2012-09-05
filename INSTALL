@@ -23,10 +23,14 @@ Then, NB can be deplyed as a django app, which requires the following:
     To make sure you have these installed, you can run the following command: 
     sudo make prereqs_django
 
-    * python-openid
+    * python-openid (>= 2.2.0)
     * python-django-openid-auth (for OpenId authentication) 
-       Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package
-    * django_facebook_oath, for example from this github fok: https://github.com/sachazyto/django_facebook_oauth
+       Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package:
+       - Download the tarball from https://launchpad.net/django-openid-auth
+       - Untar and sudo python setup.py install
+    * django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
+      - download the zip and unzip
+      - sudo python setup.py install
 
 
 
