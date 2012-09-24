@@ -4,16 +4,8 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-
-body{
-font-family: Tahoma, sans-serif;
-//margin-left: 5%;
-//margin-right: 5%;
-}
-
 .patron{
 width: 850px;
-//vertical-align: top;
 }
 
 .rounded {
@@ -23,13 +15,7 @@ width: 850px;
 }
 
 .bulle, .section{
--moz-border-radius:5px;
--webkit-border-radius:5px;
-
-border:thin solid #c0c0c0;
-background-color: #e0e0e0;
 margin: 2px;
-//padding: 5px
 }
 
 .bulle {
@@ -66,22 +52,22 @@ vertical-align: top;
 
 
 div.section-header {
--moz-border-radius-topleft:5px;
--moz-border-radius-topright:5px;
-border-top-left-radius: 5px;
-border-top-right-radius: 5px
-
-background-color:#d0d0d0;
-border-bottom:thin solid #c0c0c0;
-//font-size:larg;
-padding:3px 0;
+padding:5px 0;
 text-align:center;
 width:100%;
+font-weight: normal;
+font-size: 1.1em;
 }
 
 div.section-body {
-margin:7px;
+padding:7px 12px;
+border: 1px solid #BFBFBF;
+background-color: #FCFCFC;
+box-shadow: 0 2px 2px #EEE inset;
+min-height: 130px;
 }
+div.section-body>div>p:first-child {
+margin-top: 0; }
 
 span.try{
 font-size: x-large; 

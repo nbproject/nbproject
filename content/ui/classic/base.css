@@ -2,66 +2,90 @@ html, body {
     margin:0;
     padding:0;
     font-family: verdana, sans-serif;
-    background-color: #a0a0a0;
+    background-color: #F4F4F4;
 }
 
-#zn_main {
-    max-width:950px;
-    margin:0 auto;
-    text-align:left;
+#content_main,
+#header>div,
+#footer>div {
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+#content_main {
     background:#FFFFFF;
-    padding:10px 30px 10px 30px;
+    padding:100px 30px 10px 30px;
     margin-bottom:20px;
+    border: 1px solid #BFBFBF;
+    -moz-border-radius: 0 0 6px 6px;
+    -ms-border-radius: 0 0 6px 6px;
+    -o-border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+    text-align: left;
 }
 
 
 #header {
     margin:0;
     padding:0;
-    height:94px;  
+    height:90px;  
+    background: #EDEDED;
+    border-bottom: 1px #BFBFBF solid;
+    box-shadow: 0 2px 2px #DFDFDF;
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+}
+
+#header>div {
+    padding: 20px 30px 0 30px;
 }
 
 #mainnav {
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    background-color: #E0E0E0;
-    border: thin solid #C0C0C0;
     margin-left: 150px;
     height:48px;
-    background:#f0f0f0;
 }
 
 #mainnav > ul { 	
     font-weight: bold;
     font-size:16px;
     list-style-type: none;
-    text-align: center;
+    text-align: right;
     overflow:hidden;
+    margin-top: 32px;
+    height: 20px;
 }
 
 
 #mainnav > ul >li {
-    display:inline;
-    margin:0;
-    //padding: 10px 0px 10px 0px;
+    display:inline-block;
+    margin-left:8px;
 }
 
 #mainnav a{
-text-decoration: none;
-color: #444444;
-
-height: 48px;
-padding: 0px 10px 0px 10px;
+    text-decoration: none;
+    color: #444444;
+    height: 48px;
+    padding: 0px 10px 0px 10px;
 }
 
 
 #mainnav a:hover{
-//    background-color: #404040;
     color: #4444ff;
+
 }
 
 #footer {
-font-size: small;
-color: #707070;
-font-variant: italic
+    font-size: small;
+    color: #707070;
+    font-style: italic
+}
+
+#footer>div {
+    text-align: center;
+}
+
+#footer a:link,
+#footer a:visited {
+    color: #404080;
 }
