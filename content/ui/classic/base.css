@@ -89,3 +89,24 @@ html, body {
 #footer a:visited {
     color: #404080;
 }
+
+.column {
+  width: 50%;
+  text-align: justify;
+}
+.column>div{
+  margin: 0 20px;
+}
+.column.right {
+  float: right;
+}
+.column.right>div{
+  margin-right: 0;
+}
+.column.left {
+  float: left;
+  box-shadow: 32px 0 32px -32px #888;
+}
+.column.left>div{
+  margin-left: 0;
+}

@@ -4,8 +4,10 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-.patron{
-width: 850px;
+.desc{
+  font-size: 0.8em;
+  font-style: italic;
+  display: block; text-align: center;
 }
 
 .rounded {
@@ -64,7 +66,7 @@ padding:7px 12px;
 border: 1px solid #BFBFBF;
 background-color: #FCFCFC;
 box-shadow: 0 2px 2px #EEE inset;
-min-height: 130px;
+min-height: 110px;
 }
 div.section-body>div>p:first-child {
 margin-top: 0; }
@@ -138,3 +140,4 @@ font-weight: bold;
 color: #c03333;
 display: none;
 }
+
