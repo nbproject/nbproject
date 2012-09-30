@@ -9,6 +9,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * [unison]
    * postgresql-plpython-8.4
    * python-pypdf
+   * mupdf-tools (for pdfdraw)
    * context (for rich, i.e. annotated pdf generation)
 
 To make sure you have these installed, you can run the following command: 
