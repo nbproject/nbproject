@@ -5,9 +5,24 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
 */
 
 .desc{
-  font-size: 0.8em;
+  font-size: 0.7em;
   font-style: italic;
   display: block; text-align: center;
+}
+
+.desc>span {
+  display: block;
+}
+
+.desc a:link,
+.desc a:visited {
+  color: #445;
+}
+
+span.courtesy,
+span.caution {
+color: #555;
+
 }
 
 .rounded {
@@ -79,18 +94,6 @@ margin-right: 10px;
 
 }
 
-span.courtesy{
-font-size: small;
-color: #777777;
-
-}
-
-span.caution{
-font-size: small;
-color: #777777;
-}
-
-
 span.n{
 color: #f9f650;
 background-color: #a0a0dd;
@@ -141,3 +144,23 @@ color: #c03333;
 display: none;
 }
 
+div.big-button>a:link,
+div.big-button>a:visited {
+  text-decoration: none;
+  display: block;
+  color: #444;
+  margin: 10px;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  font-size: 24px;
+}
+
+div.big-button>a:active,
+div.big-button>a:hover{
+  background-color: #F4F4F4;
+  border-color: #DDD;
+  color: #666;
+}
