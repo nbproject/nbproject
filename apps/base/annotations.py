@@ -484,7 +484,7 @@ def get_comments_auth_admin(uid, P):
 def getPublicCommentsByFile(id_source):
     names_location = __NAMES["location_v_comment2"]
     names_comment = __NAMES["comment2"]
-    comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).query("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False, type__gt=2)   
+    comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False, type__gt=2)   
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     #Anonymous comments

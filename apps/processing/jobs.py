@@ -112,7 +112,7 @@ def process_file(id_source):
         else:
             me = 0
         msg = '\n'+r'\comment{note-%s}{%d}{%s}{%d}{%d}' % (n, levels, texify(body), me, int(n))
-        OUTPUT.append(unicode(msg).encode("utf-8"))
+        OUTPUT.append(unicode(msg).encode("ascii", "ignore"))
         if levels == 0 and page != 0:  # a root comment not on page 0 needs callout
             root = roots[n]
             # Sacha's coords are from top left corner, relative to TrimBox
