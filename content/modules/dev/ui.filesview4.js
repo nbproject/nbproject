@@ -206,6 +206,7 @@
 	    },
 	    _draw_frame: function(){
 		var self = this;
+		self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
 		var header	= self._admin ? "<div class='filesView-header'><div class='nbicon blueadminicon'/><span id='adminconsole-label'>Admin Console</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
@@ -226,8 +227,6 @@
 		var id_ensemble = self._id_ensemble;		
 		var id_folder = self._id_folder;
 		var model = self._model; 
-		self._admin = id_ensemble == null ? false : model.o.ensemble[id_ensemble].admin;
-		
 		if (id_ensemble == null){
 		    // TODO: put drawing code here.
 		}
