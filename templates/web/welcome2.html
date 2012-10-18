@@ -15,59 +15,41 @@
   "/content/compiled/apidev.js", 
   "/content/ui/admin/conf.js", 
   "/content/modules/dev/pers2.js", 
-  "/content/ui/admin/login2.js", 
-  function(){$(function(){$("div.section").each(NB.dom.addSection);NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
+  "/content/ui/admin/login2.js"
   );
 </script>
 {% endblock %}
 {% block content %}
-<div align="center">
-  <table id="main">
-    <tr class="row">
-      <td colspan="3">
-	<div id="features" class="section" label="Features">
-	  <div>
-	    <p>With <span class="n">n</span><span class="b">b</span>, you can annotate course material online, either for yourself, or to discuss it with the class.</p>
-	    
-	    <ul class="features_list">
-	      <li> Did you notice something interesting ? <div class="suggestion">Jot a note for others to read...</div></li>
-	      <li> Do you have a question ? <div class="suggestion">Jot it down to get an answer...</div></li>
-	      <li> Did you see a question you can answer ?<div class="suggestion"> Right-click on it to post an answer...</div></li>
-	      <li> Do you like or dislike a note ? <div class="suggestion">Moderate it up or down...</div></li>
-	    </ul>	  
- 	  </div>
-	</div>
-      </td>
-      <td colspan="3">
-	<div align="center">
-	  <object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="wmode" value="transparent"><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object>
-	</div>
-      </td>
-    </tr>
-    <tr class="row">
 
-      <td colspan="2">
-	<div id="apply" class="section" label="Teach with NB">
-	  <div>
-	    <div class="big-button"><a href="/newsite">Create a new group</a></div>
-	    <div class="desc">
-	      <span>&nbsp;</span>
-	      <span>&nbsp;</span>
-	    </div>
+	<div class="section">
+	    <p>With <span class="nb">nb</span>, you can annotate course material online, either for yourself, or to discuss it with the class.</p>
+
+	    <h3>Make a note.</h3>
+	    <!-- image -->
+	    <p class="suggestion">Draw others' attention to something interesting. Click &amp; drag to hilight.</p>
+
+	    <h3>Ask a question.</h3>
+	    <p class="suggestion">Don't understanding something? Hilight the text and and ask your class.</p>
+
+	    <h3>Answer a question.</h3>
+	    <p class="suggestion">If you see a question and you know the answer, just right click it to answer it.</p>
+
+	    <h3>Rate others' notes.</h3>
+	    <p class="suggestion">You can upvote or downvote things other people have posted to help raise awareness of good content.</p>
+	</div>
+
+	<div class="section" label="Give it a try now">
+	  <div class="video">
+	    <object width="400" height="300">
+	      <param name="allowfullscreen" value="true" />
+	      <param name="wmode" value="transparent" />
+	      <param name="allowscriptaccess" value="always" />
+	      <param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" />
+	      <embed src="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed>
+	    </object>
 	  </div>
-<!--
-	  <ul>
-	    <li><a href="/newsite">Create a new <span class="n">n</span><span class="b">b</span> site now</a></li>
-	    <li>Already a user? Access your <a href="/admin">Staff Console</a></li>
 
-	  </ul>
--->
-	</div>
-      </td>
-
-      <td colspan="2" >
-	<div id="sandbox" class="section" label="Give it a try now">
-	  <div>
+	  <div class="sandbox">
 	    <div class="big-button">
 	      <a href="http://nb.mit.edu?ckey=sScTIoymrSAvfAWvCIvXxPBkdpFpyPMRqdG7A8bw9f1boSO7Wh">nb sandbox</a>
 	    </div>
@@ -77,17 +59,9 @@
 	    </div>
 	  </div>
 	</div>
-<!-- <img border="0" alt="sandbox" src="/content/data/icons/png/sandbox.png"/> -->
-      </td>
 
-      <td colspan="2" >
-	<div class="section" label="Log in">
-	  <div id="auth_fragment"></div>
-	  <button id="auth_submit">Log in</button>
+	<div id="apply" class="section" label="Teach with NB">
+	    <div class="big-button"><a href="/newsite">Create a new group</a></div>
 	</div>
-      </td>
-    </tr>
-  </table>
-  
-</div>
+
 {% endblock %}

@@ -43,7 +43,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None):
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
     r = render_to_response(tpl, {"o": o}, mimetype='application/xhtml+xml')
-    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e9)
+    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
 
 def __serve_page_old(req, tpl, allow_guest=False): 
@@ -89,11 +89,11 @@ def __serve_page_old(req, tpl, allow_guest=False):
             o["LOGIN_MSG"] = "wrong email/password, please retry!"
     r = render_to_response(template, {"o": o}, mimetype='application/xhtml+xml')
     if "INVITE_KEY" in o: 
-        r.set_cookie("invite_key", o["INVITE_KEY"], 1e9)
-        r.set_cookie("screenname", o["EMAIL"], 1e9)
+        r.set_cookie("invite_key", o["INVITE_KEY"], 1e6)
+        r.set_cookie("screenname", o["EMAIL"], 1e6)
     elif "invite_key" in req.COOKIES: 
         r.delete_cookie("invite_key")
-    r.set_cookie("uid", o["UID"] if "UID" in o else 0, 1e9) #this is just to inform the client-side app, don't use it for auth. purposes
+    r.set_cookie("uid", o["UID"] if "UID" in o else 0, 1e6) #this is just to inform the client-side app, don't use it for auth. purposes
     if "logout" in req.COOKIES: 
         r.delete_cookie("logout")
     return r

@@ -25,15 +25,6 @@ color: #555;
 
 }
 
-.bulle, .section{
-margin: 2px;
-}
-
-.bulle {
-padding: 5px;
-}
-
-
 div.navbar {
 text-align:center;
 margin-bottom:5px;
@@ -61,24 +52,15 @@ tr.row{
 vertical-align: top;
 }
 
-
-div.section-header {
-padding:5px 0;
-text-align:center;
-width:100%;
-font-weight: normal;
-font-size: 1.1em;
+div.section {
+margin: 2px;
+clear: both;
 }
 
-div.section-body {
-padding:7px 12px;
-border: 1px solid #BFBFBF;
-background-color: #FCFCFC;
-box-shadow: 0 2px 2px #EEE inset;
-min-height: 110px;
-}
-div.section-body>div>p:first-child {
-margin-top: 0; }
+/** debug **/ div.section, div.video, div.sandbox { border: 1px solid #000; } /* enddebug */
+
+div.video { float: right;}
+div.sandbox { margin-right: 400px;}
 
 span.try{
 font-size: x-large; 
@@ -89,7 +71,8 @@ margin-right: 10px;
 }
 
 span.n,
-span.b{
+span.b,
+span.nb{
 font-weight: bold;
 }
 
@@ -97,32 +80,15 @@ ul.features_list{
 color: #404040;
 }
 
-div.suggestion{
-color: #707070;
-text-align: right;
-padding-left: 20px;
+.suggestion{
+font-size: 0.9em;
 font-style: italic;
-}
 
-#eu-email, #eu-password{
-width: 12em;
 }
 
 #credits{
 font-size: small;
 color: #a0a0a0;
-}
-
-#lostpassword{
-font-size: x-small;
-margin-left: 20px;
-}
-
-#wronglogin{
-font-size: small;
-font-weight: bold;
-color: #c03333;
-display: none;
 }
 
 div.big-button>a:link,
