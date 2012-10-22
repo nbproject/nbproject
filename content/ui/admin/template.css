@@ -122,6 +122,60 @@ div.stafficon{
     background-position: -140px 0px;
 }
 
+div.staricon{
+    background-position: -160px 0px;
+}
+
+div.questionicon{
+    background-position: -180px 0px;
+}
+
+div.staricon-hicontrast{
+    background-position: -200px 0px;
+}
+
+div.questionicon-hicontrast{
+    background-position: -220px 0px;
+}
+
+div.no-staricon{
+    background-position: -240px 0px;
+}
+
+div.no-questionicon{
+    background-position: -260px 0px;
+}
+
+div.thanksicon{
+    background-position: -280px 0px;
+}
+
+div.replyicon{
+    background-position: -300px 0px;
+}
+
+div.editicon{
+    background-position: -320px 0px;
+}
+
+div.deleteicon{
+    background-position: -340px 0px;
+}
+div.checkicon{
+    background-position: -360px 0px;
+}
+div.thankscheckicon{
+    background-position: -380px 0px;
+}
+
+div.refuseicon{
+    background-position: -400px 0px;
+}
+
+
+div.blueadminicon{
+    background-position: -440px 0px;
+}
 
 
 

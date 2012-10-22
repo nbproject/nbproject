@@ -233,8 +233,8 @@
 		    contents="";
 		    locations = model.get("location", {id_source: id_file, page: p});
 		    //facet_page._filter(p, "", true);
-		    for (var id in locations){
-			note = locations[id];
+		    for (var id in locations.items){
+			note = locations.items[id];
 			//			if (note.id_source[0]==id_file){
 			ID=note.ID;
 			t=note.top*s;

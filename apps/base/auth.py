@@ -34,13 +34,13 @@ def invite2uid(id):
         return None
     return invite[0].user.id
   
-def canReadFile(uid, id_source):
+def canReadFile(uid, id_source, req=None):
     try: 
         id_source = int(id_source)
     except ValueError:
         return False
-    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False)
-    return len(o)>0 or canGuestReadFile(id_source)
+    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False, guest=False)
+    return len(o)>0 or canGuestReadFile(uid, id_source, req)
 
 def canDownloadPDF(uid, id_source):
     try: 
@@ -50,8 +50,26 @@ def canDownloadPDF(uid, id_source):
     o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid)
     return (len(o)>0 and (o[0].admin or o[0].ensemble.allow_download)) or canGuestDownloadPDF(id_source)
 
-def canGuestReadFile(id_source):
+def canGuestReadFile(uid, id_source, req=None):
     o = M.Ownership.objects.get(source__id=id_source)
+    e = M.Ensemble.objects.get(pk=o.ensemble_id)
+    if o.ensemble.allow_guest and len(M.Membership.objects.filter(user__id=uid, ensemble=e))==0: 
+        #add membership for guest user: 
+        m = M.Membership()
+        m.user_id = uid
+        m.ensemble_id = e.id
+        m.guest = True
+        if e.section_assignment == M.Ensemble.SECTION_ASSGT_RAND:             
+            #assign guest to a random section if there are sections, unless we find a pgid cookie that correponded to a existing section  
+            sections =  M.Section.objects.filter(ensemble=e)
+            if sections:
+                if req is not None and "pgid" in req.COOKIES: 
+                    prev_sections = M.Section.objects.filter(membership__user__id=int(req.COOKIES.get("pgid")), membership__ensemble__id=e.id)
+                    if  len(prev_sections): 
+                        m.section = prev_sections[0]
+                if m.section is None: 
+                    m.section = random.choice(sections)
+        m.save()
     return o.ensemble.allow_guest
 
 def canGuestDownloadPDF(id_source):
@@ -157,14 +175,48 @@ def canRenameFile(uid, id):
     m = M.Membership.objects.filter(user__id=uid, ensemble__in=e)
     return m.count()>0 and m[0].admin
 
+def canRenameFolder(uid, id): 
+    """need to be an admin on the ensemble that contains that folder"""
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    return m.count()>0 and m[0].admin
+
+
 def canEditAssignment(uid, id): 
     return canRenameFile(uid, id)
 
 def canDeleteFile(uid, id): 
     return canRenameFile(uid, id)
 
-def canMoveFile(uid, id): 
+def canDeleteFolder(uid, id): 
+    """
+        - Need to be an admin on the ensemble that contains that folder. 
+        - Can't contain any file that's not already deleted
+        - Can't contain any folder
+    """
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    o = M.Ownership.objects.filter(deleted=False, folder__id=id)
+    f = M.Folder.objects.filter(parent__id=id)
+    return m.count()>0 and m[0].admin and o.count()==0 and f.count()==0
+
+def canMoveFile(uid, id, id_dest=None): 
     return canRenameFile(uid, id)
+
+def __isDirOrParent(id_a, id_b): 
+    #returns true is a == b or is a is a parent of b
+    d = M.Folder.objects.get(pk=id_b)
+    while d.parent_id is not None: 
+        if d.id == id_a: 
+            return True
+        d = d.parent
+    return id_a == d.id
+
+def canMoveFolder(uid, id, id_dest): 
+    """need to be an admin on the ensemble that contains that folder, and folder dest not to be the same or a subfolder of id"""
+    e = M.Folder.objects.get(pk=id).ensemble     
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    return m.count()>0 and m[0].admin and not __isDirOrParent(id_dest, id)
 
 def canUpdateFile(uid, id): 
     return  canRenameFile(uid, id)
@@ -199,7 +251,16 @@ def canEdit(uid, id_ann):
 def canDelete(uid, id_ann):    
     return canEdit(uid, id_ann)
 
-
+def canMarkThread(uid, id_location):
+    #user needs to be able to read root comment in that location
+    location = M.Location.objects.get(pk=id_location)
+    root_comment = M.Comment.objects.get(parent=None, location=location)
+    if root_comment.author_id == uid: 
+        return True
+    m = M.Membership.objects.filter(ensemble = location.ensemble, user__id=uid)
+    return m.count()>0 and (root_comment.type>2 or (m[0].admin and root_comment.type>1)) 
+    
+ 
 def log_guest_login(ckey, id_user):
     guest = M.User.objects.get(confkey=ckey)
     glh = M.GuestLoginHistory(user_id=id_user, guest=guest)

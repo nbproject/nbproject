@@ -24,9 +24,14 @@ try{
 catch (e){
     alert("[inbox] Init Error: "+e);
 }
+$.mods.declare({
+	__pers2: {js: [], css: ["/content/modules/superfish-1.4.8/css/superfish.css"]}
+    });
+$.mods.ready("__pers2", function(){});
+
 
 /* trick for browsers that don't support document.activeElement 
-adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
+   adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
 */
 if (!("activeElement" in document)){
     document.activeElement = document.body;
@@ -77,12 +82,12 @@ NB.pers.call = function(fctname, dict, callback, errback){
 NB.pers.__authenticate = function(init_ui){
     NB.conf.userinfo = JSON.parse(unescape(NB.auth.get_cookie("userinfo"))) || {guest: 1};    
     var uinfo = NB.conf.userinfo; //shortcut ! 
-    var login_contents =  "";
+    var $login_contents;
     if (uinfo.guest != 0){
-	login_contents = "<span id='login-name'>Guest</span> <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a> <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a>";
+	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
 	var $util_window = $.concierge.get_component("get_util_window")();
-	$("#register_user_dialog, #login_user_dialog").remove();
-	$util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr></table>   <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>   <div class=\"form_errors\"></div> </div>").append("<div id='login_user_dialog' > <table> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td></td><td><a href='/password_reminder'>Lost password ?</a></td></tr></table><div class='form_errors'/></div>");
+	$("#register_user_dialog, #login_user_dialog").remove();	
+	$util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
 	if (init_ui){
 	    $("#login_user_password").keypress(function(e) {if(e.keyCode == 13 && this.value.length>0) {
 			$.D("using shortcut");
@@ -91,11 +96,16 @@ NB.pers.__authenticate = function(init_ui){
     }
     else{
 	var screenname = uinfo.firstname == null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
-	login_contents = "<span id='login-name'>"+screenname+"</span> <a href='javascript:NB.pers.logout()'>Log out</a>"
+	$login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:NB.pers.logout()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
 	$("#login-window").remove();
-	$("body").append("<div id='login-window'><a href='/help' style='margin-right: 50px' target='_blank'>Help</a>"+login_contents+"</div>");
+	var $login_window = $("<div id='login-window'/>");
+	$login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
+	$login_window.append($login_contents);
+	$("body").append($login_window);
+
+	//	$("ul.sf-menu").superfish();
     }
     NB.pers.params = NB.dom.getParams();
 }
@@ -125,17 +135,32 @@ NB.pers.__components = {
 	   - if "direction" is "down": "closest" is the location at the top-most position of the next page which has a location
 	   - if "direction" is "up": "closest" is the location at the bottom-most position of the previous page which has a location
 	*/
-	var loc = p.model.o.location[p.id];
-	var file = p.model.o.file[loc.id_source];
+	var m = p.model;
+	var loc = m.o.location[p.id];
+	var me = $.concierge.get_component("get_userinfo")();
+	var file = m.o.file[loc.id_source];
 	var page = loc.page;
 	var f_sort_down = function(o1, o2){return o1.top-o2.top};	
+	var TYPE_STAR = $.concierge.get_constant("STAR");
+ 	var TYPE_QUESTION = $.concierge.get_constant("QUESTION");
 	var new_id = null;    
 	var i, ids;
 	var locs;
 	if (p.direction == "down"){
 	    i = page+1;
 	    while (i<=file.numpages){
-		locs = p.model.get("location", {id_source: loc.id_source, page: i});
+		locs = m.get("location", {id_source: loc.id_source, page: i});
+		if (p.filters){
+		    if (p.filters.me){
+			locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    }
+		    if (p.filters.star){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+		    }
+		    if (p.filters.question){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+		    }
+		}
 		if (locs.length()){
 		    new_id = locs.min("top");
 		    break;
@@ -146,7 +171,18 @@ NB.pers.__components = {
 	else{
 	    i = page-1;
 	    while (i>0){
-		locs = p.model.get("location", {id_source: loc.id_source, page: i});
+		locs = m.get("location", {id_source: loc.id_source, page: i});
+		if (p.filters){
+		    if (p.filters.me){
+			locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+		    }
+		    if (p.filters.star){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+		    }
+		    if (p.filters.question){
+			locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+		    }
+		}
 		if (locs.length()){
 		    new_id = locs.max("top");
 		    break;
@@ -201,7 +237,7 @@ NB.pers.__components = {
 			    $.concierge.get_component("register_user")(payload, function(p){
 				    $.I("Thanks for registering... You should receive a confirmation code by email in less than a minute...");
 				    $dlg.dialog("destroy");
-					}, function(status, p){
+				}, function(status, p){
 				    err(status.msg);});
 			}
 		}
@@ -272,6 +308,8 @@ NB.pers.__components = {
 	return widget;
     },
     note_deleter: function(P, cb){NB.pers.call("deleteNote", P, cb);},
+    rate_reply: function(P,cb){NB.pers.call("rate_reply", P, cb);}, 
+    mark_thread: function(P,cb){NB.pers.call("markThread", P, cb);},
     get_login_window: function(P,cb){
 	return $("#login-window");
     }, 
@@ -288,5 +326,24 @@ NB.pers.__components = {
 	    msg = P.msg;
 	}
 	return "<div align='center' class='loadingpane'><img src='content/data/icons/gif/loader1.gif'/><div class='loadingpane-msg'>"+msg+"</div></div>";
+    }, 
+    pretty_print_timedelta: function(P,cb){
+	var d = new Date(P.t);
+	var now = new Date();
+	var delta_s = parseInt((now-d)/1000);	
+	var s = "";
+	if (delta_s<3600){	   
+	    s += (parseInt(delta_s/60) + " minutes ago");
+	}
+	else if (delta_s < 3600*24){
+	    s += (parseInt(delta_s/3600) + " hours ago");
+	}
+	else{
+	    s += (parseInt(delta_s/(3600*24)) + " days ago");
+	}
+	return s;
+    }, 
+    get_login_dialog_markup: function(P,cb){
+	return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
     }
 };

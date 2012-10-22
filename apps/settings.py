@@ -24,7 +24,10 @@ MANAGERS = ADMINS
 NB_SERVERNAME   = settings_credentials.__dict__.get("NB_SERVERNAME", "localhost")
 NB_HTTP_PORT    = settings_credentials.__dict__.get("NB_HTTP_PORT", "80")
 CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cron@gmail.com")
-DATABASES = settings_credentials.DATABASES 
+DATABASES       = settings_credentials.DATABASES 
+FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
+FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
+
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     print msg_credentials()
     exit(1)
@@ -93,6 +96,8 @@ ROOT_URLCONF = "urls"
 #ROOT_URLCONF = 'servers.urls'
 
 
+STATIC_ROOT = "%s/" % (abspath("%s/../static" % (ROOTDIR, )),)
+STATIC_URL = "/static/"
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -102,16 +107,34 @@ TEMPLATE_DIRS = (
 )
 ALLOWED_INCLUDE_ROOT = (abspath("%s/../templates/web" % (ROOTDIR, )),)
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.static',
+"django.contrib.auth.context_processors.auth",
+#'django_facebook.context_processors.facebook',
+)
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    "django_openid_auth",
+   # 'django_facebook',
+    'facebook',
     "base",
     "polls"
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_openid_auth.auth.OpenIDBackend',
+#    'django_facebook.auth_backends.FacebookBackend',
+    'facebook.backend.FacebookBackend',                                                                                        
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/nb")
@@ -120,7 +143,7 @@ SERVER_USERNAME = "www-data"
 
 LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
 
-DESKTOP_TEMPLATE= "web/desktop10.xhtml"
+DESKTOP_TEMPLATE= "web/desktop14.xhtml"
 
 #COLLAGE_TEMPLATE= "web/collage1_compat.xhtml"
 COLLAGE_TEMPLATE= "web/desktop11.xhtml"
@@ -132,6 +155,7 @@ FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.xhtml"
+YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
 SPREADSHEET_TEMPLATE = "web/desktop12.xhtml"
 
@@ -199,3 +223,17 @@ MONITOR = {"PAGE_SERVED": True,
            }            
 REDIRECT = False
 REDIRECT_URL = "http://nb.mit.edu"
+
+
+#OPENID SSO: 
+OPENID_CREATE_USERS             = True
+OPENID_UPDATE_DETAILS_FROM_SREG = True
+OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+LOGIN_URL                       = '/openid/login/'
+LOGIN_REDIRECT_URL              = '/'
+OPENID_USE_AS_ADMIN_LOGIN       = False
+
+#Facebook stuff:
+#AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
+AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'                                                                          
+FACEBOOK_SCOPE = 'email'

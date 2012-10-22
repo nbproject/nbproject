@@ -41,19 +41,21 @@ urlpatterns = patterns("",
                        (r'^file/(\d+)$' , 'pages.views.source'),
                        (r'^f/(\d+)$' , 'pages.views.source', {"allow_guest": True}),
                        (r'^c/(\d+)$' , 'pages.views.comment'),
+                       (r'^r/(\d+)$' , 'pages.views.comment'),
                        (r'^draft/(\w+)$' , 'pages.views.draft',),
                        (r'^settings$' , 'pages.views.your_settings',),
                        (r'^invite$', 'pages.views.invite'), 
                        (r'^logout$', 'pages.views.logout'),
                        (r'^newsite$', 'pages.views.newsite'),   
-                                               (r'^subscribe$', 'pages.views.subscribe'),      
-                         (r'^confirm_invite$', 'pages.views.confirm_invite'), 
-                        (r'^enteryourname$', 'pages.views.enter_your_name'), 
-                        (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
+                       (r'^subscribe$', 'pages.views.subscribe'),      
+                       (r'^confirm_invite$', 'pages.views.confirm_invite'), 
+                       (r'^enteryourname$', 'pages.views.enter_your_name'), 
+                       (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
                          (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
+                       (r'^fbchannel$', 'pages.views.fbchannel'),  #TODO: not sure this is needed anymore. 
                         (r'^spreadsheet$', 'pages.views.spreadsheet'),
+                         (r'^debug', 'pages.views.debug'),
                         (r'^polls', include(polls.urls)),  
-
                        )
 
 urlpatterns += patterns('django.views.generic.simple',
@@ -61,6 +63,9 @@ urlpatterns += patterns('django.views.generic.simple',
                          (r'^about/$',                           'direct_to_template', {'template': 'web/about.html'}),
                         (r'^help/$',                           'direct_to_template', {'template': 'web/help.html'}),
                         (r'^tutorial/$',                           'direct_to_template', {'template': 'web/help.html'}),
+                        (r'^faq/$',                           'direct_to_template', {'template': 'web/faq.html'}),
+                        (r'^disclaimer/$',                           'direct_to_template', {'template': 'web/disclaimer.html'}),
+
                         (r'^password_reminder/$',                           'direct_to_template', {'template': 'web/password_reminder.html'}),
                         (r'^terms_public_site/$',                           'direct_to_template', {'template': 'web/terms_public_site.html'}),
                         (r'^robots.txt/$',                           'direct_to_template', {'template': 'web/robots.txt'}),
@@ -72,12 +77,23 @@ urlpatterns += patterns('django.views.generic.simple',
                             (r'^subscribe_thanks$',                           'direct_to_template', {'template': 'web/subscribe_thanks.html'}),
                         (r'^notallowed$',                           'direct_to_template', {'template': 'web/notallowed.html'}),
                              (r'^news$',                           'direct_to_template', {'template': 'web/news.html'}),
-
-
+                             (r'^fb$',                           'direct_to_template', {'template': 'web/fb.html'}),
                         )
 urlpatterns += patterns('', 
                          (r'djangoadmin/',    include(admin.site.urls)),
-                         
+                        (r'^openid/', include('django_openid_auth.urls')),
+                        (r'^openid_logout/$', 'django.contrib.auth.views.logout'),
+                        (r'^openid_private/$', "pages.views.require_authentication"),
+                        (r'^openid_index$', "pages.views.openid_index"),
+#                        (r'^facebook/', include('django_facebook.urls')),
+#                        (r'^accounts/', include('django_facebook.auth_urls'))
+                        url(r'^facebooksample$', 'pages.views.facebooksample'),
+                        url(r'^facebook/login$', 'facebook.views.login'),
+                        url(r'^facebook/authentication_callback$', 'facebook.views.authentication_callback'),
+                        url(r'^logout$', 'django.contrib.auth.views.logout'),
+
+
+
 )
 
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server

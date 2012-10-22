@@ -75,11 +75,17 @@ margin-right: 35px;
 }
 
 div.editor button[action=save]{
-width: 90%;
+width: 60%;
 min-height: 50px;
 margin-left: 15px;
+margin-right: 20px;
+
+}
+
+div.editor_checkbox_options{
+padding: 5px 5px 10px 10px;
 }
 
 #signoption{
-padding: 5px 5px 10px 10px;
+padding-left: 15px;
 }

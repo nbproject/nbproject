@@ -25,9 +25,10 @@
 	    log: {}, 
 	    fct: null, 
 	    T: null, 
-	    latestentrytime:false, 
+	    latestentrytime:(new Date()).getTime(), 
 	    T_idle: 120000,
-	    latesteventtime: false 
+	    latesteventtime: false, 
+	    timeout: 0
 	};
 	this.activeView = null;
 	/*
@@ -39,8 +40,8 @@
 	*/
 	//keypress is better in mozilla, since we get repeated strokes, but doesn't work in other browsers
 	var f_key_cb = function(event){
-	    if (document.activeElement != document.body){
-		return true; //a focusable element has the focus: let's not interfere
+	    if (document.activeElement != document.body && document.activeElement.tagName != "a"){
+		return true; //a "non-anchor" focusable element has the focus: let's not interfere
 	    }
 	    if ("activeView" in self && self.activeView != null){
 		return self.activeView._keydown(event);
@@ -102,14 +103,19 @@
 	}
 	this.historyHelper.latesteventtime = now;
     };
-    Concierge.prototype.setHistoryHelper = function(fct, T, cb){
-	//cb is optional
+    Concierge.prototype.setHistoryHelper = function(fct, T, cb, timeout){
+	//cb and timeout are optional
 	var self=this;
 	self.historyHelper.T = T;
+	if (timeout){
+	    self.historyHelper.timeout = timeout;
+	}
 	var f = function(){
 	    var now = (new Date()).getTime();
-	    if (self.historyHelper.latestentrytime && now-self.historyHelper.latestentrytime<T){
-		//there have been some events		
+	    var delta = now-self.historyHelper.latestentrytime;
+	    if ((self.historyHelper.latestentrytime && delta<T) || 
+		(self.historyHelper.timeout && delta > self.historyHelper.timeout)){
+		//there have been some events or a timeout		
 		fct(self.historyHelper.log, cb || function(){});
 		self.historyHelper.log={};
 	    }
@@ -225,11 +231,11 @@
 	var l = s.length;
 	return (l>n) ? s.substring(0,n) + "...": s;
     };
-    $.pluralize = function(n, alt){
-	if (n>1){
-	    return alt || "s";
+    $.pluralize = function(n, plural, singular){
+	if (n == 1){
+	    return singular || "";
 	}
-	return "";
+	return plural || "s";
     }
       
 })(jQuery);

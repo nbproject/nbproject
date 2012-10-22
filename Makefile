@@ -23,6 +23,8 @@ DBHOST		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;a=DATABAS
 CRON_EMAIL	= $(shell python -c 'from  $(SRCDIR).settings import CRON_EMAIL;print CRON_EMAIL')
 CONTENTDIR	= $(PWD)/content
 HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SRCDIR).settings import HTTPD_MEDIA;print HTTPD_MEDIA')
+NB_STATIC_MEDIA_DIR= $(shell python -c 'from  $(SRCDIR).settings import STATIC_ROOT;print STATIC_ROOT')
+NB_STATICURL	= $(shell python -c 'from  $(SRCDIR).settings import STATIC_URL;print STATIC_URL')
 HTTPD_PDF_DIR	= $(HTTPD_MEDIA_DIR)/pdf
 HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
 HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
@@ -64,7 +66,6 @@ check_settings:
 	echo ''	
 	$(shell python -c 'import $(SRCDIR).settings')
 
-.SILENT:
 
 create_dirs: 
 	echo 'attempting to create Media dir: ' $(HTTPD_MEDIA_DIR)
@@ -79,6 +80,10 @@ create_dirs:
 	- mkdir -p $(HTTPD_CACHE_DIR)
 	echo 'attempting to chown Media dir: ' $(HTTPD_MEDIA_DIR)
 	- chown -R $(SERVER_USERNAME):$(SERVER_USERNAME) $(HTTPD_MEDIA_DIR)
+	echo 'attempting to create static media dir: ' $(NB_STATIC_MEDIA_DIR)
+	- mkdir -p $(NB_STATIC_MEDIA_DIR)
+
+.SILENT:
 
 create_db:
 	if  psql -h $(DBHOST) -U $(DBUSER) -d $(DBNAME) -c 'select 0;' > /dev/null ; then echo 'DB OK ! '; else echo 'DB TEST CONNECTION FAILED using parameters: user=$(DBUSER) host=$(DBHOST) database=$(DBNAME)\nMake sure you have created a database compatible with the params defined in $(SETTINGSFILE)\nFor more info, read the INSTALL file '; fi
@@ -89,7 +94,7 @@ all:
 django: check_settings
 	sed 's|@@SRC_DIR@@|$(PREFIXDIR)/$(SRCDIR)|g' $(WSGISKEL)   > $(WSGIFILE)
 	sed -e 's|@@NB_DIR@@|$(PWD)|g' -e 's|@@SRCDIR@@|$(SRCDIR)|g'  -e 's|@@NB_CRON_EMAIL@@|$(CRON_EMAIL)|g' $(CRONSKEL) > $(CRONFILE)
-	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' $(APACHESKEL)   > $(APACHEFILE)
+	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' -e 's|NB_STATICURL|$(NB_STATICURL)|g' -e 's|NB_STATIC_MEDIA_DIR|$(NB_STATIC_MEDIA_DIR)|g' $(APACHESKEL)   > $(APACHEFILE)
 	echo ''
 	echo '--------- Apache configuration file ------------'
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'

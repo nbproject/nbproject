@@ -31,7 +31,7 @@ NB.pers.init = function(){
 		js: ["/content/modules/dev/ui.docView8.js",  "/content/modules/dev/ui.drawable4.js"],
 		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
 		    }, 
-		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: [] }, 
+		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
 		threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
 		editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
 		treeview: {js: ["/content/modules/dev/ui.treeview6.js"],css: [] },
@@ -130,11 +130,17 @@ NB.pers.createStore = function(payload){
 		file_stats:{references: {id: "file"}},
 		mark: {}, 
 		draft: {},
+		question: {references: {location_id: "location"}},
 	    seen:{references: {id_location: "location"}}
 	});
     $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
     NB.files.set_model(NB.pers.store);
     $.concierge.trigger({type:"admin_init", value: 0});
+    //get more stats (pending stuff)
+    NB.pers.call("getPending", {}, function(P){
+	    NB.pers.store.add("question", P["questions"]);
+	    NB.pers.store.add("comment", P["comments"]);	
+	});
 };
 
 

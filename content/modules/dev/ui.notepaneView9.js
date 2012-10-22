@@ -18,11 +18,11 @@
 		var self = this;
 		return function(){
 		    var m = self._model;
-		    var o = m.get("comment", {ID_location: id_location});
+		    var o = m.get("comment", {ID_location: id_location}).items;
 		    var i;
 		    var new_seen = {};
 		    for (i in o){
-			if (o.hasOwnProperty(i) && (!(i in m.o.seen))){
+			if (!(i in m.o.seen)){
 			    new_seen[i] = {id: i, id_location: id_location};
 			    $.concierge.logHistory("seen", i);
 			}
@@ -45,10 +45,8 @@
 		self._location = null; //selected location (might not be on current page)
 
 		self.element.addClass("notepaneView").append("<div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
-       		$.mods.declare({
-			notepaneView1: {js: [], css: ["/content/modules/dev/ui.notepaneView6.css"]}, 
+       		$.mods.declare({		
 			    contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-		$.mods.ready("notepaneView1", function(){});
 		$.mods.ready("contextmenu", function(){});
 		$("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");	       	    },
 	    _defaultHandler: function(evt){
@@ -120,7 +118,7 @@
 		var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
 		var bold_cl	= numnew > 0 ? "location-bold" : "";
 		var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
-		var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,90));
+		var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,200));
 		return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
 	    }, 
 	    _keydown: function(event){

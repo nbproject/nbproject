@@ -30,7 +30,7 @@ NB.pers.init = function(){
 	alert("Can't open file b/c URL pathname doesn't have an integer: "+document.location.pathname);
     }
     NB.pers.id_source =  matches[1];
-    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
+    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
 	    $.concierge.addConstants(p.value);
 	});
     $.mods.declare({
@@ -38,7 +38,7 @@ NB.pers.init = function(){
 		js: ["/content/modules/dev/ui.docView8.js",  "/content/modules/dev/ui.drawable4.js"],
 		    css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
 		    }, 
-		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: [] }, 
+		notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
 		threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
 		editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
 
@@ -113,7 +113,7 @@ NB.pers.init = function(){
 	payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
     }
     NB.pers.call("getGuestFileInfo", {id_source: NB.pers.id_source}, NB.pers.createStore, NB.pers.on_fileinfo_error );
-    $.concierge.addConstants({res: 288, scale: 25});
+    $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2, });
     $.concierge.addComponents({
 	    notes_loader:	function(P, cb){NB.pers.call("getNotes", P, cb);}, 
 		note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
@@ -131,6 +131,7 @@ NB.pers.createStore = function(payload){
 		location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
 		link: {pFieldName: "links"}, 
 		mark: {}, 
+		threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
 		draft: {},
 	    seen:{references: {id_location: "location"}}
 	});
@@ -170,24 +171,30 @@ NB.pers.createStore = function(payload){
 	    m.add("comment", P["comments"]);
 	    m.add("location", P["locations"]);
 	    m.add("link", P["links"]);
+	    m.add("threadmark", P["threadmarks"]);
 	    //now check if need to move to a given annotation: 
 	    if ("c" in NB.pers.params){
 		window.setTimeout(function(){
 			var id =  NB.pers.params.c;
-			var c = m.get("comment", {ID: NB.pers.params.c})[id];
+			var c = m.get("comment", {ID: id}).items[id];
+			if ("reply" in NB.pers.params){
+			    $.concierge.trigger({type: "reply_thread", value: c.ID});
+			}			
 			$.concierge.trigger({type: "select_thread", value: c.ID_location});
-		    }, 100);
+
+
+		    }, 300);
 	    }
 	    else if ("p" in NB.pers.params){
 		window.setTimeout(function(){
 			var page = NB.pers.params.p;
 			$.concierge.trigger({type: "page", value: page});
-		    }, 100);
+		    }, 300);
 	    }
 	    else{
 		window.setTimeout(function(){
 			$.concierge.trigger({type: "page", value: 1});
-		    }, 500);
+		    }, 300);
 	    }
 	});
 };

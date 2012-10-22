@@ -11,6 +11,13 @@ Order deny,allow
 Allow from all
 </Directory>
 
+Alias NB_STATICURL NB_STATIC_MEDIA_DIR
+
+<Directory NB_STATIC_MEDIA_DIR>
+Order deny,allow
+Allow from all
+</Directory>
+
 WSGIScriptAlias / NB_WSGIDIR/django.wsgi
 
 <Directory NB_WSGIDIR/>

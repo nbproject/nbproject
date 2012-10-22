@@ -68,8 +68,15 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
         for scale in scales: 
             pageno = fmt % (i,)
             density = (int(res)*int(scale))/100   
-            crop_cmd = " -crop %sx%s+%s+%s " % (w*density/d_ref, h*density/d_ref,box.getLowerLeft_x()*density/d_ref,box.getLowerLeft_y()*density/d_ref) if do_crop else " "            
-            cmd = "nice convert -quality 100  %s  -density %s %s/%s[%s] %s/%s/%s/%s_%s.png" % (crop_cmd, density,  pdf_dir, id,i, img_dir, res,scale,  id, pageno)            
+            output_dir =  "%s/%s/%s" % (img_dir, res, scale)
+            output_file = ("%s_"+fmt+".png") % (id, i)
+            crop_params = " -crop %sx%s+%s+%s " % (w*density/d_ref, h*density/d_ref,box.getLowerLeft_x()*density/d_ref,box.getLowerLeft_y()*density/d_ref) if do_crop else ""            
+            #now try w/ mu.pdf: 
+            src = "%s/%s" % (pdf_dir, id)
+            cmd_rasterize = "nice pdfdraw -o %s/%s -r %s -b 8 %s %s" % (output_dir, output_file, density, src, (i+1))
+            #cmd = "nice convert -quality 100  %s  -density %s %s/%s[%s] %s/%s/%s/%s_%s.png" % (crop_cmd, density,  pdf_dir, id,i, img_dir, res,scale,  id, pageno)            
+            cmd_crop =  "echo" if crop_params=="" else "nice convert -quality 100  %s  -density %s %s/%s %s/%s" % (crop_params, density,output_dir, output_file, output_dir, output_file)
+            cmd = "(%s) && (%s)" % (cmd_rasterize, cmd_crop)
             print cmd
             retval =  os.system(cmd)
     return True        

@@ -63,11 +63,9 @@
 		var $files = $("tbody", self.element).empty();
 		var f;
 		var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
-		for (var i in elts){
-		    if (elts.hasOwnProperty(i)){
-			f = model.o.file[i];
-			$files.append(self._lens(f));
-		    }
+		for (var i in elts.items){
+		    f = model.o.file[i];
+		    $files.append(self._lens(f));
 		}
 		$("table.tablesorter", self.element).trigger("update"); 
 		//.trigger("sorton", this.options.sort_list);

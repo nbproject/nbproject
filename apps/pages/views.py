@@ -1,6 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
 from django.views.generic.simple import direct_to_template
 import  urllib, json, base64, logging 
@@ -10,9 +11,13 @@ import string, random, forms
 from random import choice
 from django.core.mail.message import EmailMessage
 from django.template.loader import render_to_string
+from django.utils.html import escape
+
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 
 def on_serve_page(sender, **payload): 
     req = payload["req"]
@@ -29,12 +34,19 @@ if settings.MONITOR.get("PAGE_SERVED", False):
     signals.page_served.connect(on_serve_page, weak=False)
 
 
+def __extra_confkey_getter(req): 
+    if req.user.is_authenticated(): 
+        try: 
+            o = M.User.objects.get(email=req.user.email)
+            return o.confkey
+        except M.User.DoesNotExist: 
+            return None
+    return None
 
-
-def __serve_page(req, tpl, allow_guest=False, nologin_url=None): 
-    """Serve the template 'tpl' if user is DB or allow_guest is True. If not, serve the welcome/login screen"""
+def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None): 
+    """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
     o           = {} #for template
-    user       = UR.getUserInfo(req, allow_guest)
+    user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
     if user is None:
         redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
         return HttpResponseRedirect(redirect_url)
@@ -42,8 +54,10 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None):
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
-    r = render_to_response(tpl, {"o": o}, mimetype='application/xhtml+xml')
+
+    r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
+
     return r
 
 def __serve_page_old(req, tpl, allow_guest=False): 
@@ -105,7 +119,8 @@ def collage(req):
     return __serve_page(req, settings.COLLAGE_TEMPLATE)
 
 def admin(req): 
-    return __serve_page(req, settings.ADMIN_TEMPLATE)
+    return HttpResponseRedirect("/")    #no more admin
+#    return __serve_page(req, settings.ADMIN_TEMPLATE)
 
 def alpha(req): 
     return __serve_page(req, settings.ALPHA_TEMPLATE)
@@ -120,7 +135,11 @@ def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
 def source(req, n, allow_guest=False):
+    source = M.Source.objects.get(pk=n)
+    if source.type==M.Source.TYPE_YOUTUBE: 
+        return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
     return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest)
+    
 
 def your_settings(req): 
     return __serve_page(req, 'web/your_settings.html')
@@ -188,7 +207,8 @@ def comment(req, id_comment):
     #id_source = annotations.getSourceForComment(id_comment)
     #[id_comment]
     org=("&org="+req.GET["org"]) if "org" in req.GET else ""
-    return HttpResponseRedirect("/f/%s?c=%s%s" % (c.location.source.id, id_comment, org))
+    do_reply = "&reply=1" if req.path.split("/")[1]=="r" else ""
+    return HttpResponseRedirect("/f/%s?c=%s%s%s" % (c.location.source.id, id_comment, org, do_reply))
     
 def invite(req): 
     pass #SACHA TODO
@@ -196,8 +216,13 @@ def invite(req):
 def logout(req): 
     o = {}
     r = render_to_response("web/logout.html", {"o": o})
+    user = UR.getUserInfo(req, False)
+    if user is not None and user.guest: 
+        r.set_cookie("pgid", user.id, 1e9)
     r.delete_cookie("userinfo")
     r.delete_cookie("ckey")
+    from django.contrib.auth import logout as djangologout
+    djangologout(req)
     return r
 
 def confirm_invite(req):        
@@ -226,7 +251,7 @@ def subscribe(req):
     P = {"ensemble": e, "key": key}   
     if req.method == 'POST':
         if auth_user is None:
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            user = M.User(confkey="".userjoin([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
             user_form = forms.UserForm(req.POST, instance=user)
             if user_form.is_valid(): 
                 user_form.save()  
@@ -297,6 +322,18 @@ def properties_ensemble_users(req, id):
 
 def spreadsheet(req):
     return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),))
+
+def fbchannel(req):
+    import datetime
+    r = HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
+    r["Pragma"] = "Public"    
+    cache_expire = 60*60*24*365
+    r["Cache-Control"] = "max-age="+cache_expire
+    r["Expires"]=(datetime.datetime.now()+datetime.timedelta(cache_expire)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+    return r
+
+
+ 
 #   
 # UR.getUserInfo(req)
 #    if user is None: 
@@ -308,3 +345,41 @@ def spreadsheet(req):
 #    if not auth.canEditEnsemble(user.id,id_ensemble):
 #        return HttpResponseRedirect("/notallowed")
 #       
+
+def openid_index(request):
+    s = ['<p>']
+    if request.user.is_authenticated():
+        s.append('You are signed in as <strong>%s</strong> (%s)' % (
+                escape(request.user.username),
+                escape(request.user.get_full_name())))
+        s.append(' | <a href="/openid_logout">Sign out</a>')
+    else:
+        s.append('<a href="/openid/login">Sign in with OpenID</a>')
+    s.append('</p>')
+    s.append('<p><a href="/private">This requires authentication</a></p>')
+    return HttpResponse('\n'.join(s))
+
+
+@login_required
+def require_authentication(request):
+    return HttpResponse('This page requires authentication')
+
+
+
+@receiver(post_save, sender=User)
+def user_post_save_handler(sender, **kwargs): 
+    user = kwargs["instance"]
+    u = None
+    if user is not None: 
+        email = user.email
+        try: 
+            u = M.User.objects.get(email=email)
+            if u.firstname == "" or u.lastname== "":
+                u.firstname = user.first_name
+                u.lastname = user.last_name
+                u.save()
+        except M.User.DoesNotExist: 
+            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,6)])
+            confkey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
+            u = M.User(email=email, firstname=user.first_name, lastname=user.last_name, password=password, confkey=confkey, guest=False, valid=True )
+            u.save()
