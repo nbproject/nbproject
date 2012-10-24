@@ -249,7 +249,7 @@ def subscribe(req):
     P = {"ensemble": e, "key": key}   
     if req.method == 'POST':
         if auth_user is None:
-            user = M.User(confkey="".userjoin([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
             user_form = forms.UserForm(req.POST, instance=user)
             if user_form.is_valid(): 
                 user_form.save()  
