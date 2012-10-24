@@ -4,6 +4,10 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
+div.video {
+  padding: 0 16px;
+}
+
 .desc{
   font-size: 0.7em;
   font-style: italic;
@@ -52,15 +56,10 @@ tr.row{
 vertical-align: top;
 }
 
-div.section {
+section {
 margin: 2px;
 clear: both;
 }
-
-/** debug **/ div.section, div.video, div.sandbox { border: 1px solid #000; } /* enddebug */
-
-div.video { float: right;}
-div.sandbox { margin-right: 400px;}
 
 span.try{
 font-size: x-large; 
@@ -80,10 +79,33 @@ ul.features_list{
 color: #404040;
 }
 
-.suggestion{
+div.suggestion {
+  display: inline-block;
+  width: 25%;
+  padding: 0 16px 16px 16px;
+  box-sizing: border-box;
+  vertical-align: top;
+  text-align: justify;
+}
+
+section>p{
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+div.suggestion:hover {
+  background-color: #F8F8F8;
+}
+
+div.suggestion>p{
 font-size: 0.9em;
 font-style: italic;
+height: 60px;
+}
 
+div.suggestion>img{
+width: 100%;
+height: auto;
 }
 
 #credits{
