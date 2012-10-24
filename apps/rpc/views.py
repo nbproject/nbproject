@@ -328,12 +328,14 @@ def saveNote(payload, req):
     tms = {}
     for mark in payload["marks"]:
         tm = M.ThreadMark()
-        tm.type = [c[0] for c in tm.TYPES if c[1]==mark][0]
-        tm.user_id = uid         
-        tm.comment=a
-        tm.location_id=a.location_id
-        tm.save()
-        tms[tm.id] = UR.model2dict(tm)  
+        m_types = [c[0] for c in tm.TYPES if c[1]==mark]
+        if len(m_types): #old clients may return types we don't have in DB so ignore them 
+            tm.type = m_types[0]
+            tm.user_id = uid         
+            tm.comment=a
+            tm.location_id=a.location_id
+            tm.save()
+            tms[tm.id] = UR.model2dict(tm)  
     retval["locations"] = annotations.getLocation(a.location_id)
     retval["comments"] = annotations.getComment(a.id, uid)
     retval["threadmarks"] =  tms

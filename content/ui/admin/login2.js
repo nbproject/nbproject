@@ -29,7 +29,7 @@ catch (e){
 }
 
 NB.pers.init = function(){
-    $("#auth_fragment").append($("#login_user_dialog"));
+    $("#auth_fragment").append($.concierge.get_component("get_login_dialog_markup")());
     $("#loginbutton_classic").append($("#auth_submit").css("min-width", "80px" ));
     $("#auth_submit").click(function(){
 	    var err = function(msg){

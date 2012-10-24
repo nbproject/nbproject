@@ -9,6 +9,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * [unison]
    * postgresql-plpython-8.4
    * python-pypdf
+   * mupdf-tools (for pdfdraw)
    * context (for rich, i.e. annotated pdf generation)
 
 To make sure you have these installed, you can run the following command: 
@@ -18,7 +19,7 @@ Then, NB can be deplyed as a django app, which requires the following:
 - For the apache django version: 
     * apache (>= 2)
     * python-psycopg2 
-    * django (>=1.2).  
+    * django (>=1.3.1).  
     * libapache2-mod-wsgi
     To make sure you have these installed, you can run the following command: 
     sudo make prereqs_django
@@ -33,21 +34,20 @@ Then, NB can be deplyed as a django app, which requires the following:
       - sudo python setup.py install
 
 
-
--> then edit vals in servers/settings.py
+-> make django 
+-> edit values in apps/settings_credentials.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
 -> make django       #make Apache aware of Django framework
--> make api          #Since there is alot of js, this improves performance 
--> make compat       #do this for Python 2.5 compatibility (otherwise compat is 2.7)  
+-> make apidev          #Since there is alot of js, this improves performance 
 -> edit params in content/ui/classic/conf.js: Tell which server(s) the client should use to fetch various pieces data
 
-
-
-2- Database installation: 
-   * The user-readable schema is in conf/nb_skeleton.sql, and a version that's usable to create and empty database is conf/nb_skeleton.dump  It assumes the owner of the DB is 'nbadmin', so add that user and db if they don't exist: 
-   * if neccessary, log in as someone who has postgres create role and create database privileges, such as postgres
+2- Database Initialization: 
+   * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')
    * createuser nbadmin -P #important to setup as superuser since only superusers can create a language (used for plpythonu) 
-   * createdb -U nbadmin -h localhost notabene
+   * Back to the regular user: 
+   * 	  createdb -U nbadmin -h localhost notabene
+   *	  cd apps
+   *	  ./manage.py syncdb   #to actually create the tables. 
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/8.4/main/pg_hba.conf 
           o host    notabene       nbadmin       127.0.0.1/0     password
@@ -55,15 +55,12 @@ Then, NB can be deplyed as a django app, which requires the following:
    * if you make a mistake:
           o dropdb  -U nbadmin -h localhost notabene
           o createdb -U nbadmin -h localhost notabene
-	  o cd conf
-          o pg_restore  -s -d notabene -U nbadmin -h localhost  nb_skeleton.dump
+... at this point you can try your installation using the Django debug server (but never use this in production...): 
+    from the apps directory:  ./manage.py runserver
+    in your browser: http//localhost:8000
 
-3- Main configuration file: conf/default.conf 
-   You need to fill in the values with the parameters of your server. Most of the values that you need to fill are located towards the beggining of the file. Note that it's important that your system has the following directories (with permissions so that the nb server  can write to them): 
-   - The directory that contains all the NB media files (indicated by "HTTPD_MEDIA" in the default.conf)
-   - The directory that contains the PDFs (indicated by "REPOSITORY_DIR", and relative to  "HTTPD_MEDIA" )
-   - The directory that contains the images files (indicated by "CACHE_DIR" and  relative to  "HTTPD_MEDIA" )
-   - for rich pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
+3- Extra stuff
+   - To be able to genereate annotated pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
 
 4- Crontab setup
    A sample crontab as part of the 'make django'. You just need to add it to your crontab for it to take effect
@@ -75,14 +72,7 @@ Then, NB can be deplyed as a django app, which requires the following:
      "%s%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) (cf your settings.py files for actual values). 
 
 6- Notes: 
-    Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the 1.2 version so it can be installed from the svn as:
-      export DJANGO_DIR=/opt/django/django1.2.1
-      sudo mkdir -p $DJANGO_DIR
-      cd $DJANGO_DIR
-      svn co http://code.djangoproject.com/svn/django/tags/releases/1.2.1 . 
-      sudo chown -R www-data:www-data $DJANGO_DIR
-      cd /usr/lib/python2.6/dist-packages
-      sudo ln -s $DJANGO_DIR/django/ .
+    Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the Django 1.3.1 version so it can be installed from the the Django website
 
 
 Questions: sacha@csail.mit.edu
