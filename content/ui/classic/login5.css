@@ -103,10 +103,6 @@ section>p{
   padding-right: 16px;
 }
 
-div.suggestion:hover {
-  background-color: #F8F8F8;
-}
-
 div.suggestion>p{
 font-size: 0.9em;
 font-style: italic;
