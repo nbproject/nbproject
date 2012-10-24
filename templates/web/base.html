@@ -12,27 +12,27 @@
     {% block scripts %}{% endblock %}
   </head>
   <body>
-    <div id="header">
+    <header>
       <div>
-	<a id="logo" style="float: left" href="/">nb</a>
+	<a id="logo" href="/">nb</a>
 	<div id="login"><a href="/login">Sign Up / Log in</a></div>
-	<div id="mainnav" mainnav_select="{% block mainnav_select %}home{% endblock %}" >
+	<nav class="main" id="mainnav" mainnav_select="{% block mainnav_select %}home{% endblock %}" >
 	  <ul>
-	    <li><a id="mainnav-about"	href="/about">About</a></li>
-	    <li><a id="mainnav-tut"	href="/tutorial">Tutorial</a></li>
+	    <li><a id="mainnav-about" href="/about">About</a></li>
+	    <li><a id="mainnav-tut" href="/tutorial">Tutorial</a></li>
 	    <li><a id="mininav-forums" href="http://nbproject.vanillaforums.com/">Project Forums</a></li>
-	    <li><a id="mainnav-contact"	href="http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">Contact Us</a></li>
+	    <li><a id="mainnav-contact" href="http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">Contact Us</a></li>
 	  </ul>
-	</div>
+	</nav>
       </div>
-    </div>
+    </header>
     <div id="content_main">
       {% block content %}{% endblock %}
     </div>
-    <div id="footer">
+    <footer>
 	<div>
 	<a href="/"><span class="n">n</span><span class="b">b</span></a> is a project of the  <a href="http://groups.csail.mit.edu/haystack">Haystack</a> Group at <a href="http://web.mit.edu">MIT</a> and currently works with <a href="http://www.mozilla.com/en-US/firefox/personal.html">Firefox</a>, <a href="http://www.apple.com/safari/">Safari</a> , <a href="http://www.google.com/chrome">Chrome</a> and   <a href="http://windows.microsoft.com/en-US/internet-explorer/downloads/ie">IE9</a> <a style="margin-left: 10px; font-decoration: none;" href="http://www.twitter.com/planet_nb">Follow us on <img  border="0" style="position: relative; top: 8px" src="http://twitter-badges.s3.amazonaws.com/twitter-b.png" alt="Follow planet_nb on Twitter"/></a>
 	</div>
-    </div>
+    </footer>
   </body>
 </html>
