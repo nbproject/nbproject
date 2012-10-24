@@ -4,6 +4,16 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
+section.expandable>div.desc {
+   height: 0; overflow: hidden;
+   transition: height 0.5s;
+   -webkit-transition: height 0.5s;
+}
+
+section.expandable:hover>div.desc {
+   height: 32px;
+}
+
 div.video {
   padding: 0 16px;
 }
