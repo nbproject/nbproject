@@ -162,13 +162,18 @@
 		}
 		$("#filesView-allquestions-link").attr("href", viewall_url);
 		var locs = m.get("location", query_params).intersect(m.get("question").exclude({user_id: self._me.id}).values("location_id")).sort(f_location_sort);
-		if (locs.length){
-		    $("#filesView-question-header-total").text(locs.length);
-		    $("#filesView-question-header-plural").text($.pluralize(locs.length));
+		if (!locs.length){
+		    $("#filesView-panel-question").hide();
+		    $("#filesView-question-header-help").hide();
+
 		}
 		else{
-		    $("#filesView-panel-question").hide();
+		    $("#filesView-question-header-help").show();
 		}
+		$("#filesView-question-header-total").text(locs.length ? locs.length : " no "  );
+		$("#filesView-question-header-plural").text($.pluralize(locs.length));
+		
+
 		var i,l,c,q;
 		for (i in locs){
 		    l = locs[i];
@@ -211,7 +216,7 @@
 		var opts	= self._admin ? "<th>Actions</th>" : "";
 
 		var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
-		var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. Can you help them ? <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
+		var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
 		var filesView_files = (self._id_ensemble == null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 		self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
