@@ -43,7 +43,11 @@ def getUserId(req):
     if "ckey" in req.GET: 
         return auth.getGuest(req.GET["ckey"]).id
     if "ckey" in req.COOKIES:
-        return auth.getGuest(req.COOKIES["ckey"]).id    
+        u = auth.getGuest(req.COOKIES["ckey"])
+        try:
+            return u.id
+        except AttributeError: #just a dict
+            return  u["id_user"].id   
     if "guest" in req.GET:
         return  getUserInfo(req, True).id  
     return None

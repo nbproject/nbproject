@@ -77,7 +77,11 @@ def canGuestDownloadPDF(id_source):
 def getGuest(ckey=None):
     if ckey is None:
         return createGuest()
-    o = M.User.objects.get(confkey=ckey)
+    o = None
+    try: 
+        o = M.User.objects.get(confkey=ckey)
+    except M.User.DoesNotExist:
+        pass         
     return o if o is not None else createGuest()
 
 def getCkeyInfo(ckey): 
