@@ -42,9 +42,19 @@ display: none;
 
 
 {% block content %}
-<h1>This page requires authentication....</h1>
+<div class="left column"><div>
+<h1>Log in to <span class="nb">nb</span> to continue...</h1>
 <div id="auth_fragment"></div>
 <button id="auth_submit">OK</button>
+</div></div>
 
+<div class="right column"><div>
+<h2>Or, sign up to <span class="nb">nb</span></h2>
+<p>... by <a href="/newsite">creating a new group</a>.</p>
+<p>At this time, regular users wishing to join a site cannot sign up without receiving an invite to join a reading group. If you want to create a new reading group
+(for a class or otherwise), click the link above.</p>
+</div></div>
+
+<div style="clear:both;"></div>
 
 {% endblock %}
