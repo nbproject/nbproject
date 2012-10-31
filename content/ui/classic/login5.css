@@ -4,38 +4,40 @@ License:  Copyright (c) 2010 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-
-body{
-font-family: Tahoma, sans-serif;
-//margin-left: 5%;
-//margin-right: 5%;
+section.expandable>div.desc {
+   height: 0; overflow: hidden;
+   transition: height 0.5s;
+   -webkit-transition: height 0.5s;
 }
 
-.patron{
-width: 1000px;
-//vertical-align: top;
+section.expandable:hover>div.desc {
+   height: 32px;
 }
 
-.rounded {
--moz-border-radius:5px;
--webkit-border-radius:5px;
-
+div.video {
+  padding: 0 16px;
 }
 
-.bulle, .section{
--moz-border-radius:5px;
--webkit-border-radius:5px;
-
-border:thin solid #c0c0c0;
-background-color: #e0e0e0;
-margin: 2px;
-//padding: 5px
+.desc{
+  font-size: 0.7em;
+  font-style: italic;
+  display: block; text-align: center;
 }
 
-.bulle {
-padding: 5px;
+.desc>span {
+  display: block;
 }
 
+.desc a:link,
+.desc a:visited {
+  color: #445;
+}
+
+span.courtesy,
+span.caution {
+color: #555;
+
+}
 
 div.navbar {
 text-align:center;
@@ -64,23 +66,9 @@ tr.row{
 vertical-align: top;
 }
 
-
-div.section-header {
--moz-border-radius-topleft:5px;
--moz-border-radius-topright:5px;
-border-top-left-radius: 5px;
-border-top-right-radius: 5px
-
-background-color:#d0d0d0;
-border-bottom:thin solid #c0c0c0;
-//font-size:larg;
-padding:3px 0;
-text-align:center;
-width:100%;
-}
-
-div.section-body {
-margin:7px;
+section {
+margin: 2px;
+clear: both;
 }
 
 span.try{
@@ -91,49 +79,39 @@ margin-right: 10px;
 
 }
 
-span.courtesy{
-font-size: small;
-color: #777777;
-
-}
-
-span.caution{
-font-size: small;
-color: #777777;
-}
-
-
-span.n{
-color: #f9f650;
-background-color: #a0a0dd;
-font-family:Trebuchet MS;
-padding-left: 0.2em;
-}
-
-
-span.b{
-background-color: #f9f650;
-color: #a0a0dd;
-font-family:Trebuchet MS;
-padding-right: 0.2em;
-
+span.n,
+span.b,
+span.nb{
+font-weight: bold;
 }
 
 ul.features_list{
 color: #404040;
-//padding: 0;
-//list-style: none;
 }
 
-div.suggestion{
-color: #707070;
-text-align: right;
-padding-left: 20px;
+div.suggestion {
+  display: inline-block;
+  width: 25%;
+  padding: 0 16px 16px 16px;
+  box-sizing: border-box;
+  vertical-align: top;
+  text-align: justify;
+}
+
+section>p{
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+div.suggestion>p{
+font-size: 0.9em;
 font-style: italic;
+height: 60px;
 }
 
-#eu-email, #eu-password{
-width: 12em;
+div.suggestion>img{
+width: 100%;
+height: auto;
 }
 
 #credits{
@@ -141,14 +119,23 @@ font-size: small;
 color: #a0a0a0;
 }
 
-#lostpassword{
-font-size: x-small;
-margin-left: 20px;
+div.big-button>a:link,
+div.big-button>a:visited {
+  text-decoration: none;
+  display: block;
+  color: #444;
+  margin: 10px;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  font-size: 24px;
 }
 
-#wronglogin{
-font-size: small;
-font-weight: bold;
-color: #c03333;
-display: none;
+div.big-button>a:active,
+div.big-button>a:hover{
+  background-color: #F4F4F4;
+  border-color: #DDD;
+  color: #666;
 }

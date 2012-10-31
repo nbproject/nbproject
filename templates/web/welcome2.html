@@ -15,69 +15,63 @@
   "/content/compiled/apidev.js", 
   "/content/ui/admin/conf.js", 
   "/content/modules/dev/pers2.js", 
-  "/content/ui/admin/login2.js", 
-  function(){$(function(){$("div.section").each(NB.dom.addSection);NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
+  "/content/ui/admin/login2.js"
   );
 </script>
 {% endblock %}
 {% block content %}
-<div align="center">   
-  <table id="main" class="patron">
-    <tr class="row">
-      <td colspan="3">
-	<div id="features" class="section" label="Features">
-	  <div>
-	    <p>With <span class="n">n</span><span class="b">b</span>, you can annotate course material online, either for yourself, or to discuss it with the class.</p>
-	    
-	    <ul class="features_list">
-	      <li> Did you notice something interesting ? <div class="suggestion">Jot a note for others to read...</div></li>
-	      <li> Do you have a question ? <div class="suggestion">Jot it down to get an answer...</div></li>
-	      <li> Did you see a question you can answer ?<div class="suggestion"> Right-click on it to post an answer...</div></li>
-	      <li> Do you like or dislike a note ? <div class="suggestion">Moderate it up or down...</div></li>
-	    </ul>	  
- 	  </div>
-	</div>
-      </td>
-      <td colspan="3">
-	<!--	    <div id="tour" class="section" label="Take the tour !"> -->
-	<div align="center">
-	  <object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object>
-	</div>
-      </td>      
-    </tr>
-    <tr class="row">
-      <td colspan="2">
-	<div id="apply" class="section" label="For Teaching Staff">
-	  <ul>
-	    <li><a href="/staff_benefits">See how</a> you can benefit from <span class="n">n</span><span class="b">b</span>.</li>
-	    <li><a href="/newsite">Create a new <span class="n">n</span><span class="b">b</span> site now</a></li>
-	    <li>Take a 5-minute <a href="http://scripts.mit.edu/~sacha/nb/main.py?a=staff2"> tutorial</a></li>
-	    <li>Already a user ? Access your <a href="/admin">Staff Console</a></li>
 
-	  </ul>
-	</div>
+	<section>
+	    <p>With <span class="nb">nb</span>, you can annotate course material online, either for yourself, or to discuss it with the class.</p>
 
-      </td>
-      <td colspan="2" >
-	<div id="sandbox" class="section" label="Give it a try now">
-	  <div>
-	    <div align="center"><a href="http://nb.mit.edu?ckey=sScTIoymrSAvfAWvCIvXxPBkdpFpyPMRqdG7A8bw9f1boSO7Wh"><img border="0" alt="sandbox" src="/content/data/icons/png/sandbox.png"/></a></div>
+	    <div class="suggestion">
+	      <h3>Make a note.</h3>
+	      <p>Draw others' attention to something interesting. Click &amp; drag to hilight.</p>
+	      <img src="/content/data/img/suggest01.png" alt="" />
+	    </div><div class="suggestion">
+	      <h3>Ask a question.</h3>
+	      <p>Don't understanding something? Hilight the text and and ask your class about it.</p>
+	      <img src="/content/data/img/suggest02.png" alt="" />
+	    </div><div class="suggestion">
+	      <h3>See trouble spots.</h3>
+	      <p>Know which parts of the material need more attention by seeing where students are confused.</p>
+	      <img src="/content/data/img/suggest03.png" alt="" />
+	    </div><div class="suggestion">
+	      <h3>Answer a question.</h3>
+	      <p>If you see a question and you know the answer, just right click it to answer it.</p>
+	      <img src="/content/data/img/suggest04.png" alt="" />
+	    </div>
+
+	</section>
+
+	<section label="Give it a try now">
+	  <h3>Using NB</h3>
+	  <div class="video">
+	    <object width="914" height="514">
+	      <param name="allowfullscreen" value="true" />
+	      <param name="wmode" value="transparent" />
+	      <param name="allowscriptaccess" value="always" />
+	      <param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" />
+	      <embed src="http://vimeo.com/moogaloop.swf?clip_id=7370219&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed>
+	    </object>
+	  </div>
+	</section>
+
+	<section class="sandbox expandable">
+	  <div class="big-button">
+	    <a href="http://nb.mit.edu?ckey=sScTIoymrSAvfAWvCIvXxPBkdpFpyPMRqdG7A8bw9f1boSO7Wh">nb sandbox</a>
+	  </div>
+          <div class="desc">
 	    <span class="courtesy">Material courtesy:  <a href="http://people.csail.mit.edu/meyer/">Professor Albert Meyer</a></span>
-	    <br/> 
 	    <span class="caution">Notes in the sandbox may be discarded.</span>
 	  </div>
-	</div>
+	</section>
 
-	
-      </td>
-      <td colspan="2" >
-	<div class="section" label="Login">
-	  <div id="auth_fragment"></div>
-	  <button id="auth_submit">OK</button>
-	</div>	
-      </td>
-    </tr>
-  </table>
-  
-</div>
+	<section class="expandable" id="apply" label="Teach with NB">
+	    <div class="big-button"><a href="/newsite">Create a new group</a></div>
+	    <div class="desc">
+	        <span>If you already have an nb account, <a href="/login">log in</a> instead and add an additional site from the <a href="/admin">admin page</a>.</span>
+	    </div>
+	</section>
+
 {% endblock %}
