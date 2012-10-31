@@ -146,7 +146,7 @@
 				  "</div><textarea/><br/></div> <div class='editor-footer'><table class='editorcontrols'><tr><td class='tablecontrols'><table><tr> <td><input type='radio' checked='checked' name='vis_", 
 				  id_item, 
 				  "' value='3' /></td><td>The entire class</td></tr>", staffoption, 
-				  "<tr><td><input type='radio' name='vis_"+id_item+"' value='1'/></td><td>Myself only</td></tr></table></td><td>"+checkbox_options+"<button action='save' >Save</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
+				  "<tr><td><input type='radio' name='vis_"+id_item+"' value='1'/></td><td>Myself only</td></tr></table></td><td>"+checkbox_options+"<button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
 		self.element.append(contents);
 		$("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
 		var $textarea = $("textarea", self.element).keypress(function(e){

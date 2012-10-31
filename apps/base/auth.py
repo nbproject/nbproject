@@ -1,9 +1,6 @@
 """
 utils_auth.py - Authentication and per-user rights-check routines
 
-Author 
-    Sacha Zyto <sacha@csail.mit.edu>
-
 License
     Copyright (c) 2010 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
@@ -80,7 +77,11 @@ def canGuestDownloadPDF(id_source):
 def getGuest(ckey=None):
     if ckey is None:
         return createGuest()
-    o = M.User.objects.get(confkey=ckey)
+    o = None
+    try: 
+        o = M.User.objects.get(confkey=ckey)
+    except M.User.DoesNotExist:
+        pass         
     return o if o is not None else createGuest()
 
 def getCkeyInfo(ckey): 
@@ -262,6 +263,9 @@ def canMarkThread(uid, id_location):
     
  
 def log_guest_login(ckey, id_user):
-    guest = M.User.objects.get(confkey=ckey)
-    glh = M.GuestLoginHistory(user_id=id_user, guest=guest)
-    glh.save()
+    try: 
+        guest = M.User.objects.get(confkey=ckey)
+        glh = M.GuestLoginHistory(user_id=id_user, guest=guest)
+        glh.save()
+    except: 
+        pass

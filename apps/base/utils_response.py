@@ -1,9 +1,6 @@
 """
 utils_response.py - Authentication and per-user rights-check routines
 
-Author 
-    Sacha Zyto <sacha@csail.mit.edu>
-
 License
     Copyright (c) 2010 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
@@ -46,7 +43,11 @@ def getUserId(req):
     if "ckey" in req.GET: 
         return auth.getGuest(req.GET["ckey"]).id
     if "ckey" in req.COOKIES:
-        return auth.getGuest(req.COOKIES["ckey"]).id    
+        u = auth.getGuest(req.COOKIES["ckey"])
+        try:
+            return u.id
+        except AttributeError: #just a dict
+            return  u["id_user"].id   
     if "guest" in req.GET:
         return  getUserInfo(req, True).id  
     return None
