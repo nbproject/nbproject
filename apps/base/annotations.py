@@ -753,8 +753,12 @@ def markIdle(uid, id_session, o):
         
 def markCommentSeen(uid, id_session, o):    
     for id in o:
-        x = M.CommentSeen(user_id=uid, session_id=id_session, comment_id=id, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
-        x.save()
+        try: 
+            comment_id = int(id)
+            x = M.CommentSeen(user_id=uid, session_id=id_session, comment_id=comment_id, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
+            x.save()
+        except ValueError: 
+            pass
             
 def markPageSeen(uid, id_session, o):    
     for id in o:
