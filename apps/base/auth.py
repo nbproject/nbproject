@@ -129,25 +129,14 @@ def addInvite(key, id_user, id_ensemble, admin):
     o = M.Invite(key=key, user_id=id_user, ensemble_id=id_ensemble, admin=admin)
     o.save()
     
-
 def createGuest():
     key                 = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,20)])
     email               = "guest_%s@nb.test" % (key, )
     passwd              = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
-    id                  = addUser(email,passwd, key, 0, 1)
-    i                   = {}
-    i["id_user"]        = id
-    i["email"]          = email
-    i["password"]       = passwd
-    i["id_channel"]     = 0
-    i["admin"]          = 0
-    i["valid"]          = 0
-    i["guest"]          = 1
-    i["ckey"]          = key
-    return i
+    return addUser(email,passwd, key, 0, 1)
 
 def getGuestCkey(): 
-    return createGuest()["ckey"]
+    return createGuest().confkey
 
 def user_from_email(email):
     users =  M.User.objects.filter(email=email)
