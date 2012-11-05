@@ -608,25 +608,28 @@ def other(req):
 def run(req):    
     r = HttpResponse()
     r["Access-Control-Allow-Origin"]="*"
-    if req.method == "OPTIONS" or len(req.POST)==0: #FF3 trying to check if Cross Site Request allowed. 
-        #print "options request"
-        return r
-    else: 
+    try: 
+        if req.method == "OPTIONS" or len(req.POST)==0: #FF3 trying to check if Cross Site Request allowed. 
+            return r
+        else: 
         #rpc request:
-        #if settings.ENABLE_REMOTE_DEBUGGING: 
-        #    import pydevd; pydevd.settrace()
-        fctname = req.POST["f"]
-        payload = json.loads(req.POST["a"])
-        cid = req.POST["cid"]
-        if cid == "0" or cid == 0: 
-            cid = datetime.datetime.now()
-            signals.register_session.send("rpc", cid=cid,req=req)            
-        UR.CID = cid
-        MODULE = sys.modules[__name__]
-        if  fctname in __EXPORTS:
-            r.content = getattr(MODULE, fctname)(payload, req)
-            return r
-        else:
-            assert False, "[PDF] method '%s' not found in __EXPORTS" %  fctname
-            r.content = UR.prepare_response({}, 1,"[PDF] method '%s' not found in __EXPORTS" %  fctname)
-            return r
+            fctname = req.POST["f"]
+            payload = json.loads(req.POST["a"])
+            cid = req.POST["cid"]
+            if cid == "0" or cid == 0: 
+                cid = datetime.datetime.now()
+                signals.register_session.send("rpc", cid=cid,req=req)            
+            UR.CID = cid
+            MODULE = sys.modules[__name__]
+            if  fctname in __EXPORTS:
+                r.content = getattr(MODULE, fctname)(payload, req)
+                return r
+            else:
+                assert False, "[PDF] method '%s' not found in __EXPORTS" %  fctname
+                r.content = UR.prepare_response({}, 1,"[PDF] method '%s' not found in __EXPORTS" %  fctname)
+                return r
+    except IOError: 
+        logging.error("[rpc.views.run] IOError")
+        r.content = UR.prepare_response({}, 1,"I/O Error")
+        return r
+
