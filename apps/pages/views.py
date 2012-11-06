@@ -170,7 +170,7 @@ def newsite(req):
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
-            p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "http://%s/admin?ckey=%s" %(settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
+            p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
             email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname),
                 render_to_string("email/confirm_newsite", p), 
