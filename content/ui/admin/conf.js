@@ -18,15 +18,6 @@ catch (e){
     alert("[conf] Init Error: "+e);
 }
 
-/*
-NB.conf.servers = {
-    rpc: "http://nboeit",
-    img: "http://nboeit", 
-    upload: "http://nboeit", 
-
-};
-*/
-
 NB.conf.servers = {
     rpc: "",
     img: "",

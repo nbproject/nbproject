@@ -39,7 +39,7 @@ Then, NB can be deplyed as a django app, which requires the following:
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
 -> make django       #make Apache aware of Django framework
 -> make apidev          #Since there is alot of js, this improves performance 
--> edit params in content/ui/classic/conf.js: Tell which server(s) the client should use to fetch various pieces data
+-> [optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same databse, for consistency.  
 
 2- Database Initialization: 
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')
