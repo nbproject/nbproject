@@ -142,7 +142,7 @@ def source(req, n, allow_guest=False):
     
 
 def your_settings(req): 
-    return __serve_page(req, 'web/your_settings.html')
+    return __serve_page(req, 'web/your_settings.html', mimetype="text/html")
 
 def draft(req, tplname):
     try:
