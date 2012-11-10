@@ -91,11 +91,15 @@ color: #404040;
 
 div.suggestion {
   display: inline-block;
+    *display: inline;
+    zoom: 1;
   width: 25%;
-  padding: 0 16px 16px 16px;
-  box-sizing: border-box;
   vertical-align: top;
   text-align: justify;
+}
+
+div.suggestion>div{
+  margin: 0 16px 16px 16px;
 }
 
 section>p{
@@ -103,13 +107,13 @@ section>p{
   padding-right: 16px;
 }
 
-div.suggestion>p{
+div.suggestion p{
 font-size: 0.9em;
 font-style: italic;
 height: 60px;
 }
 
-div.suggestion>img{
+div.suggestion img{
 width: 100%;
 height: auto;
 }
