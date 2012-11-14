@@ -39,7 +39,7 @@ def serve_img(req, res, scale, id_source):
         basedir = dirname(dirname(dirname(abspath(__file__))))
         #basedir =  sys.modules["servers"].__path__[0].rpartition("/")[0]
         #TODO: would be better to do a redirect to the not_available page
-        f = open("%s/data/icons/png/not_available.png" % basedir)
+        f = open("%s/content/data/icons/png/not_available.png" % basedir)
         s = f.read()
         f.close()
         return HttpResponse(s)
