@@ -133,6 +133,6 @@
 		    m.add("comment", P["comments"]);
 		    m.add("location", P["locations"]);
 		    render();
-		    $.D("notes loaded");});
+		    $.L("notes loaded");});
 	}, 3000);
 })()

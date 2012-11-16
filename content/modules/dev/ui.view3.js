@@ -159,7 +159,7 @@
 	/*
 	 * view is optional and used for transitions. 
 	 */
-		$.D("---- event trigger: "+ evt.type +" (val="+evt.value+")");
+		$.L("---- event trigger: "+ evt.type +" (val="+evt.value+")");
 	this.__updateIdleStatus();
 	var O = this.state.o;
 	var A = this.state.a;
@@ -170,7 +170,7 @@
 		var x = this.listeners[evt.type];
 		for (var i in x){
 		    if (x[i].cb===null){//shorthand for views
-			//		    $.D("calling default evthandler for ", i);
+			//		    $.L("calling default evthandler for ", i);
 			x[i].l._defaultHandler(evt);
 		    }
 		    else{
@@ -181,7 +181,7 @@
 		/*
 			}
 	else {
-	    $.D("[view] not propagating event resulting in same state: "+evt.type+", val="+evt.value);
+	    $.L("[view] not propagating event resulting in same state: "+evt.type+", val="+evt.value);
 	}
 		*/
 	//do views need to be created ? If so, create them now. 
@@ -230,18 +230,18 @@
 			});
 		    
 		}
-		// $.D("setting view ", this.element[0].id, " to " , this);
+		// $.L("setting view ", this.element[0].id, " to " , this);
 		$.concierge.views[this.element[0].id]=this;
 	    }
 	}, 
 	defaultHandler: function(evt){
-	    $.D("[View]: default handler... override me !, evt=", evt);
+	    $.L("[View]: default handler... override me !, evt=", evt);
 	},
 	beforeMove: function(evt){
-	    $.D("[View]: default beforemove... override me !, evt=", evt);
+	    $.L("[View]: default beforemove... override me !, evt=", evt);
 	},
 	afterMove: function(evt){
-	    $.D("[View]: default aftermmove... override me !, evt=", evt);
+	    $.L("[View]: default aftermmove... override me !, evt=", evt);
 	},
 	set_model: function(model){
 	    this._setData('model', model);
@@ -268,7 +268,7 @@
 	    this._expand();
 	},
 	_keydown: function(event){
-	    $.D("[view._keydown] override me for ", this.element);
+	    $.L("[view._keydown] override me for ", this.element);
  	}, 
 	get_adapter: function(){
 	    /* enables a view to be called by the methods of an mvc.model */
@@ -282,7 +282,7 @@
 	},
 	close: function(){
 	    var self = this;
-	    $.D("[View]: default closer ...override me !");
+	    $.L("[View]: default closer ...override me !");
 	    delete $.concierge.views[self.element[0].id];
 	},
 	provides: function(){
@@ -290,13 +290,13 @@
 	    return self.options.provides || {};
 	},
 	select: function(){
-	    $.D("[view]: selected ", this.element[0].id);
+	    $.L("[view]: selected ", this.element[0].id);
 	}, 
 	sayHello: function(){
-	    $.D("Hello, I'm view ", this.element.id);
+	    $.L("Hello, I'm view ", this.element.id);
 	}, 
 	update: function(action, payload, items_fieldname){
-	    $.D("[view] updating view:, ", action, payload);
+	    $.L("[view] updating view:, ", action, payload);
 	}, 
 	keyboard_grabber: function(){
 	    return $("input.focusgrabber", this.element);
@@ -322,9 +322,9 @@
 		});
     $.concierge = new Concierge(); //singleton pattern
     var popup = $("<div class='ui-view-popup'/>");
-    $.D = function(){
+    $.L = function(){
 	if (window.console){
-	    console.debug(arguments);
+	    console.log(arguments);
 	}
     };
     $.I = function(msg){

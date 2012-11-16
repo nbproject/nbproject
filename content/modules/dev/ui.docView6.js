@@ -156,7 +156,7 @@
 				    if ( (area_indicator != self._getData("area_indicator")) || (pbar!=pbar_old)){
 					var newpage = (area_indicator) ?  pbar: pbar+1;
 					self._setData("in_page_transition", true); //prevent animation
-					$.D("[scroll listener] triggering 'page' to " + newpage);
+					$.L("[scroll listener] triggering 'page' to " + newpage);
 					$.concierge.trigger({type: "page", value:newpage});
 					self._setData("in_page_transition", false);
 				    }
@@ -196,7 +196,7 @@
 			new_sel = $("div.selection")[codes[event.keyCode].no_sel](); 
 			if (new_sel.length){
 			    new_sel.click();
-			    //			    $.D("moving selection");
+			    //			    $.L("moving selection");
 			}
 		    }
 		    return false;
@@ -204,11 +204,11 @@
 		else{
 		    return true; // let the event be captured for other stuff
 		}
-		//		$.D("keypressed");
+		//		$.L("keypressed");
 	    }, 
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[docview.update] TODO:, ", action, payload, props);
+		$.L("[docview.update] TODO:, ", action, payload, props);
 	    }, 
 	    _update: function(){
 		$.ui.view.prototype._update.call(this);
@@ -225,7 +225,7 @@
 		var id =  this._getData("file");
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing docviewer",  id);
+		$.L("closing docviewer",  id);
 	    },
 	    _scroll_to_page: function(cb){
 		var self = this;
@@ -238,13 +238,13 @@
 		    var divOffset = self.element.offset().top;
 		    var imgOffset = 	$("img.material[page="+current_page+"]", self.element).parent().offset().top;
 		    self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
-			    $.D("scroll2page done");
+			    $.L("scroll2page done");
 			    self._setData("in_page_transition", false);
 			    //if (cb)
 			});
 		}
 		else{
-		    $.D("animation to page "+current_page+" prevented, pbar="+pbar);
+		    $.L("animation to page "+current_page+" prevented, pbar="+pbar);
 		}
 		var w1 = $("div.material[page=1]", self.element).width();
 		var w2 = self.element.width();
@@ -371,7 +371,7 @@
 		    }
 		}
 		scale		= candidate_scale;
-		//		$.D("selected scale: ", scale);
+		//		$.L("selected scale: ", scale);
 		self._setData("resolution", res0);
 		self._setData("scale", scale);
 		$.concierge.trigger({type: "scale", value: scale}); //way to let other views (such as editor) know. 

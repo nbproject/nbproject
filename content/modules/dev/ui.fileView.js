@@ -35,7 +35,7 @@
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[fileview] TODO updating:, ", action, payload, props);
+		$.L("[fileview] TODO updating:, ", action, payload, props);
 	    }, 
 	    _update: function(){
 		let outerview = this.element.parent();

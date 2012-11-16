@@ -101,7 +101,7 @@ License
 		};
 		let f_remove_controls = function(event){
 		    $("#notecontrols_-template")
-		    //		    $.D("out");
+		    //		    $.L("out");
 		}
 		let f_after_update = function(){
 		    //$("div.notes-container", self.element).hide();
@@ -266,7 +266,7 @@ License
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[notepaneview] TODO updating:, ", action, payload, props);
+		$.L("[notepaneview] TODO updating:, ", action, payload, props);
 	    }
 	});
     $.widget("ui.notepaneView",V_OBJ );

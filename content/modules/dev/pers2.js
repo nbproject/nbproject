@@ -71,7 +71,7 @@ NB.pers.call = function(fctname, dict, callback, errback){
 	    NB.debug(x.status.msg);
 	    return;
 	}
-	//     console.debug("cb w/ x=", x);
+	//     console.log("cb w/ x=", x);
 	callback(x.payload);
     };
     var auth_str = NB.conf.userinfo.guest ? "guest=1" : "ckey="+NB.conf.userinfo.ckey;
@@ -90,7 +90,7 @@ NB.pers.__authenticate = function(init_ui){
 	$util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
 	if (init_ui){
 	    $("#login_user_password").keypress(function(e) {if(e.keyCode == 13 && this.value.length>0) {
-			$.D("using shortcut");
+			$.L("using shortcut");
 			$("#login_user_dialog").parent().find("button:contains('Ok')").click();}});	
 	}
     }
@@ -193,7 +193,7 @@ NB.pers.__components = {
 	return new_id;
     }, 
     register_user_menu : function(P, cb){
-	$.D("register_user_menu");
+	$.L("register_user_menu");
 	$('#register_user_dialog').dialog({
 		title: "Register for a new account...", 
 		    width: 400,
@@ -245,7 +245,7 @@ NB.pers.__components = {
 	$('#register_user_dialog').dialog("open");
     }, 
     login_user_menu: function(P,cb){
-	$.D("login_user_menu");
+	$.L("login_user_menu");
 	$('#login_user_dialog').dialog({
 		title: "Log in...", 
 		    width: 390,

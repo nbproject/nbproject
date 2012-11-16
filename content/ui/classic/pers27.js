@@ -214,7 +214,7 @@ NB.pers.on_getStore = function(payload){
     Exhibit.Functions["false2null"] = {
 	f: function(args) {
 	    var arg=args[0]._values[0];
-	    $.D(arg);
+	    $.L(arg);
 	    return new Exhibit.Expression._Collection(arg ? [arg]: [], arg ? "boolean": null);
 	}
     };

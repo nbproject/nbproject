@@ -50,7 +50,7 @@ License
 		    //Call plugins and callbacks
 		    //		this._trigger("start", event);
 		    //this._mouseDrag(event, true); //Execute the drag once - this causes the helper not to be visible before getting its correct position
-		    //		$.D("mousestart");
+		    //		$.L("mousestart");
 		    //only listen if on current page: 
 		    if (this.element.attr("page")!=$.concierge.get_state("page")){
 			return false;
@@ -65,7 +65,7 @@ License
 		},
 
 		    _mouseDrag: function(event, noPropagation) {
-		    //		$.D("mousedrag");
+		    //		$.L("mousedrag");
 		    var p0 = this._getData("p0");
 		    var M0 = this._getData("M0");
 		    var p={};
@@ -93,7 +93,7 @@ License
 		},
 
 		    _mouseStop: function(event) {
-		    //		$.D("mousestop");
+		    //		$.L("mousestop");
 		    		    this.editorFactory2();
 
 				    //		    this.editorFactory();

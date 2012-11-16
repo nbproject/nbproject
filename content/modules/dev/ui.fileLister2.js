@@ -56,7 +56,7 @@ License
 		}
 	    }, 
 	    sayhello: function(evt){
-		$.D("HELLO evt=", evt);
+		$.L("HELLO evt=", evt);
 	    },
 	    set_model: function(model){
 		this.model = model;
@@ -82,7 +82,7 @@ License
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		//		$.D("[fileLister2] updating:, ", action, payload, props);
+		//		$.L("[fileLister2] updating:, ", action, payload, props);
 		var model = payload.model;
 		var diff = payload.diff;
 		var VIEWID = self.element.attr("id");

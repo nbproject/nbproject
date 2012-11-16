@@ -69,10 +69,10 @@
 		self._render();
 		break;
 		case "doc_scroll_down": 
-		$.D("[docView11] TODO: doc_scroll_down");		
+		$.L("[docView11] TODO: doc_scroll_down");		
 		break;
 		case "doc_scroll_up": 
-		$.D("[docView11] TODO: doc_scroll_up");		
+		$.L("[docView11] TODO: doc_scroll_up");		
 		break;
 		case "drawable_start": 
 		self._player.pauseVideo();
@@ -143,7 +143,7 @@
 		    return false;
 		}
 		else if (event.keyCode in scroll_codes){
-		    $.D("[docView11] TODO _keydown");
+		    $.L("[docView11] TODO _keydown");
 		}
 		else{
 		    return true; // let the event be captured for other stuff
@@ -161,12 +161,12 @@
 			//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
 		    }
 		    else{
-			$.D("[docView11] TODO: update");
+			$.L("[docView11] TODO: update");
 		    }
 		}
 		else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
 		    var D		= payload.diff;
-		    $.D("[docView11] TODO: remove");
+		    $.L("[docView11] TODO: remove");
 		}
 	    }, 
 	    _update: function(){
@@ -186,7 +186,7 @@
 		var id =  this._id_source;
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing docviewer",  id);
+		$.L("closing docviewer",  id);
 	    },
 	    _generate_selections: function(){
 		/* 
@@ -274,7 +274,7 @@
 				event.target.playVideo();
 			    },
 			    'onStateChange': function(event){
-				$.D("[docView11] TODO: YouTube.onStateChange:  "+event);
+				$.L("[docView11] TODO: YouTube.onStateChange:  "+event);
 			    }
 			}
 		    });

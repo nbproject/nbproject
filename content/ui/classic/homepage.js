@@ -110,7 +110,7 @@ NB.homepage.Homepage.prototype.__build_explorer = function(){
 	$(this.explorer.container).addClass("homepanel");
 	this.$main.find("td.explorer").append(this.explorer.container);
     }
-    //    console.debug(this.explorer);
+    //    console.log(this.explorer);
 }
 
 

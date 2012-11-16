@@ -181,7 +181,7 @@
 		let page =  $.concierge.get_state("page");
 		if ((id_source in editors) && (page in editors[id_source])){
 		    for (let id_comment in editors[id_source][page]){			
-			// $.D("time to regenerate editor for comment "+id_comment);
+			// $.L("time to regenerate editor for comment "+id_comment);
 			let note = $("div.note-lens[id_item="+id_comment+"]", self.element).append( editors[id_source][page][id_comment][0]);
 			if ("doEdit" in  editors[id_source][page][id_comment][1]){
 			    $("span.body",note).hide();
@@ -267,20 +267,20 @@
 		$.concierge.get_component("addExhibitListener")({
 			id_collection: "collection_notepane_loc", 
 			    event_type: "onItemsChanged"}, function(){
-			$.D("notes changed");
+			$.L("notes changed");
 			self._after_update();
 		    });
 		$.concierge.get_component("addExhibitListener")({
 			id_collection: "collection_notepane_loc0", 
 			    event_type: "onItemsChanged"}, function(){
-			$.D("global notes changed");
+			$.L("global notes changed");
 			$("span.global_comments_cnt").text(exhibit._collectionMap.collection_notepane_loc0.countRestrictedItems());
 			self._after_update("global_comment_dialog");
 		    });
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[notepaneview] TODO updating:, ", action, payload, props);
+		$.L("[notepaneview] TODO updating:, ", action, payload, props);
 	    }
 	});
     $.widget("ui.notepaneView",V_OBJ );

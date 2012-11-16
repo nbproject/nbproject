@@ -94,7 +94,7 @@ NB.pers.init = function(){
 				    if (evt.value == this.l.element[0].id){
 					delete($.concierge.features.doc_viewer[id]);
 				    }
-				    $.D("closeview: ", evt, this.l.element[0].id);
+				    $.L("closeview: ", evt, this.l.element[0].id);
 				} 	
 			    }, 
 				views: {
@@ -200,7 +200,7 @@ NB.pers.createStore = function(payload){
 };
 
 NB.pers.on_fileinfo_error = function(P){
-    //    console.debug("fileinfo error", P);
+    //    console.log("fileinfo error", P);
     $("#login-window").hide();
     var me = $.concierge.get_component("get_userinfo")();
     var name = "a guest";

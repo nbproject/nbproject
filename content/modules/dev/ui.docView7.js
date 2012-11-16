@@ -177,7 +177,7 @@
 			new_sel = $("div.selection")[codes[event.keyCode].no_sel](); 
 			if (new_sel.length){
 			    new_sel.click();
-			    //			    $.D("moving selection");
+			    //			    $.L("moving selection");
 			}
 		    }
 		    return false;
@@ -230,7 +230,7 @@
 		var id =  this._getData("id_source");
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing docviewer",  id);
+		$.L("closing docviewer",  id);
 	    },
 	    _scroll_to_page: function(cb){
 		var self = this;
@@ -249,7 +249,7 @@
 			});
 		}
 		else{
-		    $.D("animation to page "+current_page+" prevented, pbar="+pbar);
+		    $.L("animation to page "+current_page+" prevented, pbar="+pbar);
 		}	
 		self.element.scrollLeft((w1-w2)/2); //centers page
 			

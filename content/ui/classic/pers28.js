@@ -78,7 +78,7 @@ NB.pers.init = function(){
     //init the observer machinery:
     if ("observer" in NB){
 	NB.observer.register("/__RESPONDER", {
-		"SAYHELLO": function(event){$.D("hello", event);}
+		"SAYHELLO": function(event){$.L("hello", event);}
 	    });
     }
     $("#pers1").perspective();

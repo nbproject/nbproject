@@ -100,7 +100,7 @@ NB.pers.init = function(){
 				    if (evt.value == this.l.element[0].id){
 					delete($.concierge.features.doc_viewer[id]);
 				    }
-				    $.D("closeview: ", evt, this.l.element[0].id);
+				    $.L("closeview: ", evt, this.l.element[0].id);
 				}
 
 			    }, 

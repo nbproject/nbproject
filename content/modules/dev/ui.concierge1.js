@@ -171,7 +171,7 @@
 	/*
 	 * view is optional and used for transitions. 
 	 */
-	//		$.D("---- event trigger: "+ evt.type +" (val="+evt.value+")");
+	//		$.L("---- event trigger: "+ evt.type +" (val="+evt.value+")");
 	this.__updateIdleStatus();
 	var O = this.state.o;
 	var A = this.state.a;
@@ -182,7 +182,7 @@
 		var x = this.listeners[evt.type];
 		for (var i in x){
 		    if (x[i].cb===null){//shorthand for views
-			//		    $.D("calling default evthandler for ", i);
+			//		    $.L("calling default evthandler for ", i);
 			x[i].l._defaultHandler(evt);
 		    }
 		    else{
@@ -193,7 +193,7 @@
 		/*
 			}
 	else {
-	    $.D("[view] not propagating event resulting in same state: "+evt.type+", val="+evt.value);
+	    $.L("[view] not propagating event resulting in same state: "+evt.type+", val="+evt.value);
 	}
 		*/
 	//do views need to be created ? If so, create them now. 
@@ -208,9 +208,9 @@
     };
  $.concierge = new Concierge(); //singleton pattern
     var popup = $("<div class='ui-view-popup'/>");
-    $.D = function(){
+    $.L = function(){
 	if (window.console){
-	    console.debug(arguments);
+	    console.log(arguments);
 	}
     };
     $.I = function(msg, do_html, time_ms){

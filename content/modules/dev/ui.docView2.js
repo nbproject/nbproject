@@ -78,7 +78,7 @@
 		// is it second time we click on this selection ?
 		if (self._getData("last_clicked_selection")==evt.value){
 		    // then send to back
-		    //console.debug("sendign to back");
+		    //console.log("sendign to back");
 		    let original = $("div.selection[id_item="+evt.value+"]", self.element);
 		    let parent = original.parent();
 		    let clone = original.clone(true);
@@ -88,7 +88,7 @@
 		    parent.prepend(clone);
 		    $.concierge.trigger({type:"note_out", value: evt.value});
 
-		    //		    console.debug("done");
+		    //		    console.log("done");
 
 		    
 		}
@@ -141,7 +141,7 @@
 				    if ( (area_indicator != self._getData("area_indicator")) || (pbar!=pbar_old)){
 					let newpage = (area_indicator) ?  pbar: pbar+1;
 					self._setData("in_page_transition", true); //prevent animation
-					$.D("[scroll listener] triggering 'page' to " + newpage);
+					$.L("[scroll listener] triggering 'page' to " + newpage);
 					$.concierge.trigger({type: "page", value:newpage});
 					self._setData("in_page_transition", false);
 				    }
@@ -153,7 +153,7 @@
 			    
 			}
 			else{
-			    $.D("in page transition...");
+			    $.L("in page transition...");
 			}
 		    });
 		
@@ -161,13 +161,13 @@
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[thumbnailview] TODO updating:, ", action, payload, props);
+		$.L("[thumbnailview] TODO updating:, ", action, payload, props);
 	    }, 
 	    close: function(){
 		let id =  this._getData("file");
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing docviewer",  id);
+		$.L("closing docviewer",  id);
 
 	    },
 	    _scroll_to_page: function(){
@@ -180,12 +180,12 @@
 		    let divOffset = self.element.offset().top;
 		    let imgOffset = 	$("img.material[page="+current_page+"]", self.element).parent().offset().top;
 		    self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
-			    $.D("scroll2page done");
+			    $.L("scroll2page done");
 			    self._setData("in_page_transition", false);
 			});
 		}
 		else{
-		    $.D("animation to page "+current_page+" prevented, pbar="+pbar);
+		    $.L("animation to page "+current_page+" prevented, pbar="+pbar);
 		}
 			
 	    },
@@ -316,7 +316,7 @@
 		    }
 		}
 		scale=candidate_scale;
-		//		$.D("selected scale: ", scale);
+		//		$.L("selected scale: ", scale);
 		self._setData("resolution", res0);
 		self._setData("scale", scale);
 		let w = parseInt(width0*zoom);

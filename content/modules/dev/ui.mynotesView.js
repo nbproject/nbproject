@@ -38,7 +38,7 @@ License
 	},
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[mynotesView] TODO updating:, ", action, payload, props);
+	    $.L("[mynotesView] TODO updating:, ", action, payload, props);
 	}, 
     });
 			 

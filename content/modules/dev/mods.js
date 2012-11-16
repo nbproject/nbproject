@@ -72,7 +72,7 @@
     };
     Mods.prototype.onsuccess = function(filename,type,  data){
 	//MOD_DATA = data;
-	//	console.debug("[enter success] ", filename);
+	//	console.log("[enter success] ", filename);
 	var f = this.files[filename];
 	f.loading	= false;
 	f.loaded	= true;
@@ -95,7 +95,7 @@
 	    for (var i in modules){
 		var name = modules[i];
 		var M =  this.modules[name];
-		//console.debug("success for ", filename, " deps:", M.deps);
+		//console.log("success for ", filename, " deps:", M.deps);
 
 		if (filename in M.files){
 		    M.deps--;
@@ -111,7 +111,7 @@
 		this._cb_ready(id_bundle, filename);
 	    }
 	}
-	console.debug("[exit  success] ", filename);
+	console.log("[exit  success] ", filename);
     };
     Mods.prototype._cb_ready = function(id_bundle, filename){
 	//all the modules for this bundle are loaded: run the cb and get rid of that bundle !

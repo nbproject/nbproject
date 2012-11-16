@@ -88,7 +88,7 @@
 	    },
 	    update: function(action, payload, items_fieldname){
 		if (action == "add" && items_fieldname=="grade" && this._rendered){
-		    $.D("TODO re_render");
+		    $.L("TODO re_render");
 		    this._render()
 		}
 	    },
@@ -107,7 +107,7 @@
 		var id =  this._id_collection;
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing spreadsheetviewer",  id);
+		$.L("closing spreadsheetviewer",  id);
 	    },
 	    _generate_contents: function(){
 		this._render();

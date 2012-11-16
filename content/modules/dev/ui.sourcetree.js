@@ -20,7 +20,7 @@ License
 	
 	update: function(action, payload, items_fieldname){
 	    var self = this;
-	    $.D("[sourcetree] updating:, ", action, payload, items_fieldname);
+	    $.L("[sourcetree] updating:, ", action, payload, items_fieldname);
 	    var model = payload.model;
 	    var diff = payload.diff;
 	    var i=0;

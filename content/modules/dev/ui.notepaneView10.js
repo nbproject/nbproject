@@ -233,7 +233,7 @@
 		    else{
 			return true; // let the event be captured for other stuff
 		    }
-		    //		$.D("keypressed");
+		    //		$.L("keypressed");
 		}, 
 		_f_location_click : function(event){
 		    var id_item = event.currentTarget.getAttribute("id_item");
@@ -339,7 +339,7 @@
 				    //Are we within 20px from the bottom of scrolling ?
 				    while ($pane.children().last().offset().top - $pane.offset().top - $pane.height() < 20){
 					var maxpage = self._maxpage;
-					$.D("scroll: maxpage="+maxpage);
+					$.L("scroll: maxpage="+maxpage);
 					if (maxpage < items.length){
 					    self._render_one(maxpage+1);
 					}

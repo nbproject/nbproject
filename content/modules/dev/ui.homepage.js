@@ -39,7 +39,7 @@ License
 	_defaultHandler: function(evt){
 	    var self = this;
 	    if (evt.type == "page"){
-		$.D("[homepage]: TODO - current_page, look at thumbnail");
+		$.L("[homepage]: TODO - current_page, look at thumbnail");
 	    }
 	    else if (evt.type == "file"){
 		//bring to front
@@ -53,7 +53,7 @@ License
 	},
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[thumbnailview] TODO updating:, ", action, payload, props);
+	    $.L("[thumbnailview] TODO updating:, ", action, payload, props);
 	}
     });
     $.widget("ui.homepage",V_OBJ );

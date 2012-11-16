@@ -73,7 +73,7 @@ License
 		// is it second time we click on this selection ?
 		if (self._getData("last_clicked_selection")==evt.value){
 		    // then send to back
-		    //console.debug("sendign to back");
+		    //console.log("sendign to back");
 		    let original = $("div.selection[id_item="+evt.value+"]", self.element);
 		    let parent = original.parent();
 		    let clone = original.clone(true);
@@ -83,7 +83,7 @@ License
 		    parent.prepend(clone);
 		    $.concierge.trigger({type:"note_out", value: evt.value});
 
-		    //		    console.debug("done");
+		    //		    console.log("done");
 
 		    
 		}
@@ -131,13 +131,13 @@ License
 	},
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[thumbnailview] TODO updating:, ", action, payload, props);
+	    $.L("[thumbnailview] TODO updating:, ", action, payload, props);
 	}, 
 	close: function(){
 	    let id =  this._getData("file");
 	    delete $.concierge.features["doc_viewer"][id];
 	    $.ui.view.prototype.close.call(this);
-	    $.D("closing docviewer",  id);
+	    $.L("closing docviewer",  id);
 
 	},
 	_scroll_to_page: function(){
@@ -229,7 +229,7 @@ License
 		}
 	    }
 	    scale=candidate_scale;
-	    //		$.D("selected scale: ", scale);
+	    //		$.L("selected scale: ", scale);
 	    self._setData("resolution", res0);
 	    self._setData("scale", scale);
 	    let w = parseInt(width0*zoom);

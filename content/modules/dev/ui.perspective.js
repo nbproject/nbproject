@@ -25,7 +25,7 @@ License
 	    }	
 	    if ($sep.length!=1){
 		alert("there are "+ $sep.length +" separators in here !"); 
-		$.D("there are ", $sep.length ," separators: ",$sep); 
+		$.L("there are ", $sep.length ," separators: ",$sep); 
 		return;
 	    }
 	    var $p = $sep.parent();
@@ -211,7 +211,7 @@ License
 			}
 		    });
 		window.addEventListener("resize",function(evt){
-		    //			$.D("window resize");
+		    //			$.L("window resize");
 			self._adjust(self.element.children("div.separator"));
 			self.element.trigger("resize_perspective", ["xy"]);
 

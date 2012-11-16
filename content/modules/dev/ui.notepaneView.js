@@ -187,7 +187,7 @@ License
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[notepaneview] TODO updating:, ", action, payload, props);
+		$.L("[notepaneview] TODO updating:, ", action, payload, props);
 	    }
 	});
     $.widget("ui.notepaneView",V_OBJ );

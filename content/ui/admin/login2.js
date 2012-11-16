@@ -52,6 +52,6 @@ NB.pers.init = function(){
 		});
 	});
     $("#login_user_password").keypress(function(e) {if(e.keyCode == 13 && this.value.length>0) {
-		$.D("using shortcut");
+		$.L("using shortcut");
 		$("#auth_submit").click();}});   
 };

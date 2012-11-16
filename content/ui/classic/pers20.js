@@ -64,7 +64,7 @@ $(document).ready(function(){
 
 	//init the observer machinery:
 	NB.observer.register("/__RESPONDER", {
-		"SAYHELLO": function(event){$.D("hello", event);}
+		"SAYHELLO": function(event){$.L("hello", event);}
 	    });
     
 	//	$("#pers1").perspective();

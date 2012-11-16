@@ -214,7 +214,7 @@
 			    });
 			break;
 		    case "thanks": 
-			$.D("TODO: " + action);
+			$.L("TODO: " + action);
 			break;
 		    case "delete":
 			if (confirm("Are you sure you want to delete this note ?")){

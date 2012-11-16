@@ -105,7 +105,7 @@
 		    switch (action){
 		    case "open": 
 		    $.concierge.get_component("file_open")({id: el.attr("id_item")});
-		    //console.debug("open", el);
+		    //console.log("open", el);
 		    break;
 		    default: 
 		    $.concierge.get_component(action+"_file_menu")({id: el.attr("id_item")});
@@ -154,7 +154,7 @@
 		if (action == "add" || action == "remove"){
 		    this._render();
 		}
-		//		console.debug("model update !", action, payload, items_fieldname);
+		//		console.log("model update !", action, payload, items_fieldname);
 	    }
 	});
 			 

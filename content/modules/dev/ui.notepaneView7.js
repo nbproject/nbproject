@@ -108,7 +108,7 @@
 			new_sel = $("div.location-lens")[codes[event.keyCode].no_sel](); 
 			if (new_sel.length){
 			    new_sel.click();
-			    //			    $.D("moving selection");
+			    //			    $.L("moving selection");
 			}
 		    }
 		    return false;
@@ -116,7 +116,7 @@
 		else{
 		    return true; // let the event be captured for other stuff
 		}
-		//		$.D("keypressed");
+		//		$.L("keypressed");
 	    }, 
 	    _f_location_click : function(event){
 		var id_item = event.currentTarget.getAttribute("id_item");

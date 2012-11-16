@@ -42,7 +42,7 @@ License
 	},
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[settingsView] TODO updating:, ", action, payload, props);
+	    $.L("[settingsView] TODO updating:, ", action, payload, props);
 	}, 
     });
 			 

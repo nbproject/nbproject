@@ -47,7 +47,7 @@ License
 		},
 
 		    _mouseDrag: function(event, noPropagation) {
-		    //		$.D("mousedrag");
+		    //		$.L("mousedrag");
 		    var p0 = this._p0;
 		    var M0 = this._M0;
 		    var p={};
