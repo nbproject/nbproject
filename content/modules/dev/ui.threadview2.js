@@ -112,7 +112,8 @@
 		var creation_info	= " <span class='created'> - "+o.created+"</span> ";
 		var replymenu		= " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
 		var optionmenu		= " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
-		var body		= o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+		var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
+		var body		= o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
 		return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info, me_info, question_info, type_info, creation_info,"</div>"].join("");
 	    },
 	    _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
