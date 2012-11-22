@@ -13,6 +13,53 @@
 */
 
 (function($) {
+    var METRONOME_STATES = {
+	PLAYING: 1, 
+	PAUSED: 2
+    };
+
+    var pretty_print_time = function(t){
+	var n = Math.floor(t);
+	var n_minutes = Math.floor(n / 60);
+	var n_seconds = n % 60;
+	if (n_seconds <10){
+	    n_seconds = "0" + n_seconds;
+	}
+	return n_minutes+":"+n_seconds;
+    };
+
+    var metronome = function( position_helper, position, refresh_ms){
+	this.position = position || 0; 
+	this.refresh_ms = refresh_ms || 1000;
+	this.state = METRONOME_STATES.PAUSED;
+	this.position_helper = position_helper;
+    };
+    metronome.prototype.play = function(){
+	if (this.state === METRONOME_STATES.PAUSED){
+	    this.state = METRONOME_STATES.PLAYING;
+	    this.__go();
+	}
+	else{
+	    console.log("[metronome.play] ignoring since state is already playing");
+	}
+    };
+
+    metronome.prototype.__go = function(){
+	if (!( this.position_helper)){
+	    console.error("[metronome] position helper not set !");
+	    return;
+	}
+	if (this.state === METRONOME_STATES.PLAYING){
+	    this.value = this.position_helper();
+	    $.concierge.trigger({type: "metronome", value:this.value});
+	    window.setTimeout(this.__go.bind(this), this.refresh_ms);
+	}
+    };
+
+    metronome.prototype.pause = function(){
+	this.state = METRONOME_STATES.PAUSED;
+    };
+
     var V_OBJ = $.extend({},$.ui.view.prototype,{
 	    _create: function() {
 		$.ui.view.prototype._create.call(this);
@@ -23,13 +70,15 @@
 		self._w = 800;
 		self._h = 600;//sample init
 		self._scale = 33;
-		self.SEC_MULT_FACTOR = 100;
+		self.SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
+		self.T_METRONOME = $.concierge.get_component("get_metronome_period_s")();
 		self.___best_fit =  true;
 		self.___best_fit_zoom =  1.0; //this is computed later
 		self._page =  null; 
 		self._id_source =  null;
 		self._player = null;
 		self._id_location       = null; //location_id of selected thread
+		self._metronome = null;
 	    },
 	    _defaultHandler: function(evt){
 		var self	= this;
@@ -65,7 +114,10 @@
 		var o = model.o.location[evt.value];
 		self._id_location = evt.value;
 		self._page = self._model.o.location[self._id_location].page;
-		self._player.seekTo(self._page/self.SEC_MULT_FACTOR);
+		//move player if it was far enough: 
+		if (Math.abs(self._page/self.SEC_MULT_FACTOR - self._player.getCurrentTime()) > self.T_METRONOME){
+		    self._player.seekTo(self._page/self.SEC_MULT_FACTOR);
+		}
 		self._render();
 		break;
 		case "doc_scroll_down": 
@@ -81,6 +133,13 @@
 		break;
 		case "editor_saving": 
 		self._player.playVideo();
+		break;
+		case "metronome": 
+		var $thumb = $("#docview_scrollbar_thumb");
+		var thumbstyle = getComputedStyle($thumb[0]);
+		var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width')) || 0)); 
+		$thumb.css({left: total_w*evt.value/self._player.getDuration()+"px"});
+		$("#docview_scrollbar_elapsed").text(pretty_print_time(evt.value));
 		break;
 		}
 	    },
@@ -243,12 +302,31 @@
 		$.concierge.trigger({type: "scale", value: self._scale}); 
 		var w		= self._w;
 		var h		= self._h;
-		var style	= "width: "+w+"px;height: "+h+"px";	
-		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_controls'> <b><a href='#' id='docview_button_play'>Play</a></b> <b><a href='#'  id='docview_button_pause'>Pause</a></b></div>";
+		var style	= "width: "+w+"px;height: "+h+"px";
+		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_scrollbar'><span/ id='docview_scrollbar_elapsed'>0:00</span><span/ id='docview_scrollbar_total'>2:36</span><div id='docview_scrollbar_list'/><div id='docview_scrollbar_thumb'/></div><div id='docview_controls'> <button id='docview_button_sb'/><button id='docview_button_play'/><button id='docview_button_sf'/></div>";
 		$("div.contents", self.element).html(contents);
+		var drag_helper = function($thumb, pos, make_new_req){
+		    var duration = self._player.getDuration();
+		    var thumbstyle = getComputedStyle($thumb[0]);
+		    var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width')) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width')) || 0)); 
+		    self._player.seekTo(duration * (pos+0.0) / total_w, make_new_req);
+		}
+		$("#docview_scrollbar_thumb").draggable({axis: "x",
+							 containment: "parent", 
+							 stop: function(evt, ui) { drag_helper(ui.helper, ui.position.left, true);}, 
+							 drag: function(evt, ui) { drag_helper(ui.helper, ui.position.left, false);}
+		    });
 		$("#docview_drawingarea").drawable({model: self._model})
 		$("#docview_button_play").click(function(evt){
-			self._player.playVideo();
+			var $elt = $(evt.currentTarget);
+			if ($elt.hasClass("paused")){
+			    //$elt.removeClass("paused");
+			    self._player.playVideo();
+			}
+			else{
+			    //$elt.addClass("paused");
+			    self._player.pauseVideo();
+			}
 		    });
 		$("#docview_button_pause").click(function(evt){
 			self._player.pauseVideo();
@@ -259,7 +337,7 @@
 			
 		    }).mouseenter(function(evt){
 			    var numpage = evt.currentTarget.getAttribute("page");
-			    if (numpage != self._page){
+			    if (numpage !== self._page){
 				$.concierge.trigger({type: "page_peek", value:numpage});
 			    }
 			});
@@ -271,10 +349,24 @@
 			playerVars: {controls: 0}, 
 			events: {
 			    'onReady': function(event){
-				event.target.playVideo();
+				//				var player = event.target;
+				console.log("player onready -  creating metronome!");
+				self._metronome = new metronome(function(){return  self._player.getCurrentTime();}, 0, self.T_METRONOME*1000);
+				self._player.playVideo();
+
 			    },
 			    'onStateChange': function(event){
-				$.L("[docView11] TODO: YouTube.onStateChange:  "+event);
+				if (event.data === 1){
+				    // TODO: put this at init time once we have the length metadata
+				    $("#docview_scrollbar_total").text(pretty_print_time(self._player.getDuration()));
+
+				    self._metronome.play();
+				    $("#docview_button_play").removeClass("paused");
+				}
+				else{
+				    self._metronome.pause();
+				    $("#docview_button_play").addClass("paused")
+				}
 			    }
 			}
 		    });
@@ -352,6 +444,7 @@
 	    select_thread: null,
 	    drawable_start: null,
 	    editor_saving: null,
+	    metronome: null
 	}		    
     };
 })(jQuery);

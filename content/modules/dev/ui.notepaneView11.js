@@ -35,6 +35,8 @@
 		$.ui.view.prototype._create.call(this);
 		var self = this;
 		self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
+		self.SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
+		self.T_METRONOME = $.concierge.get_component("get_metronome_period_s")();
 		self._page =  null; 
 		self._scrollTimerID	=  null;
 		self._seenTimerID	= null;
@@ -116,6 +118,18 @@
 			break;
 		    case "keydown": 
 			self._keydown(evt.value);
+			break;
+		    case "metronome": 
+			//is there an annotation over the upcoming metronom period
+			var p0 = Math.floor(evt.value * self.SEC_MULT_FACTOR);
+			var p1 = p0 + self.SEC_MULT_FACTOR * self.T_METRONOME; 
+			var locs = self._model.get("location", {page__in: [p0, p1]});
+			if (!locs.is_empty()){
+			    var firstlocid = String(locs.first().ID);
+			    if (firstlocid !== self._id_location){
+				$.concierge.trigger({type:"select_thread", value: firstlocid});
+			    }
+			}
 			break;
 		    }	
 		}	
@@ -376,7 +390,7 @@
 	});
     $.widget("ui.notepaneView",V_OBJ );
     $.ui.notepaneView.prototype.options = {
-	loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
+	loc_sort_fct: function(o1, o2){return o1.page-o2.page;},
 	expand: "div.notepaneView-pages", 
 	listens: {
 	    page: null, 
@@ -385,7 +399,8 @@
 	    select_thread: null, 
 	    warn_page_change: null, 
 	    keydown: null,
-	    filter_toggle: null
+	    filter_toggle: null, 
+	    metronome: null
 	}		    
     };
 })(jQuery);
