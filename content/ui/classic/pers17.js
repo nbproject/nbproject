@@ -54,7 +54,7 @@ $(document).ready(function(){
     $("#pers1").perspective();
     $("#viewport1, #viewport2, #viewport3").viewport({maxAppendTo:"#pers1", dock_visible: false} );
     $("#view-1").view({listens:{openDocument:function(evt){
-		    console.debug("[view-1]", evt);
+		    console.log("[view-1]", evt);
     }}});
     $("#view-3").sourcetree({transitions:{openDocument: "thumbnails"}});
     $("#view-9").fileLister({transitions:{"file": "thumbnails"}});

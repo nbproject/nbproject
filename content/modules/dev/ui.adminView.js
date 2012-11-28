@@ -45,7 +45,7 @@ License
 	},
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[adminView] TODO updating:, ", action, payload, props);
+	    $.L("[adminView] TODO updating:, ", action, payload, props);
 	}, 
     });
 			 

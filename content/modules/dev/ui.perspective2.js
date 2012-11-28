@@ -259,7 +259,7 @@
 		    $("#"+v).css("width", self.options._allocated[v]+"px").parent().parent(".pers-widget").css("width", self.options._allocated[v]+"px");
 
 		}
-		//		console.debug(self.options._allocated);
+		//		console.log(self.options._allocated);
 	    }
 	},
 	_init: function() {

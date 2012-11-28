@@ -132,11 +132,11 @@ License
 		let id =  this._getData("ensemble");
 		delete $.concierge.features["ensemble_viewer"][id];
 		$.ui.view.prototype.close.call(this);
-		$.D("closing ensembleviewer",  id);
+		$.L("closing ensembleviewer",  id);
 	    }, 
 	update: function(action, payload, props){
 	    var self = this;
-	    $.D("[ensembleView] TODO updating:, ", action, payload, props);
+	    $.L("[ensembleView] TODO updating:, ", action, payload, props);
 	}, 
 	proceedUpload: function(payload){
 	    var self = this;

@@ -66,13 +66,13 @@ NB.pers.init = function(){
 				    if (evt.value == this.l.element[0].id){
 					delete($.concierge.features.doc_viewer[id]);
 				    }
-				    $.D("closeview: ", evt, this.l.element[0].id);
+				    $.L("closeview: ", evt, this.l.element[0].id);
 				}, 
 				    ensemble: function(evt){
-				    $.D("loading stats for ensemble"+evt.value);
+				    $.L("loading stats for ensemble"+evt.value);
 				    $.concierge.get_component("get_file_stats")({"id_ensemble": evt.value}, function(P2){
 					    NB.pers.store.add("file_stats", P2["file_stats"]);
-					    $.D("stats loaded !");
+					    $.L("stats loaded !");
 					});
 				}
 			    }, 

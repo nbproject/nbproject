@@ -265,7 +265,7 @@
 			switch (action){
 			case "open": 
 			$.concierge.get_component("file_open")({id: el.attr("id_item")});
-			//console.debug("open", el);
+			//console.log("open", el);
 			break;
 			default: 
 			    $.concierge.get_component(action+"_file_menu")({item_type: el.attr("item_type"), id: el.attr("id_item")});
@@ -384,7 +384,7 @@
 		    }
 		    */
 		}
-		//		console.debug("model update !", action, payload, items_fieldname);
+		//		console.log("model update !", action, payload, items_fieldname);
 	    }, 
 	    _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Dismiss", 
 			     2: "<div class='nbicon checkicon'/>Accept", 

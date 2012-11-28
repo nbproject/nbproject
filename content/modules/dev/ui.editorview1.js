@@ -115,7 +115,7 @@
 		self.element.append(contents);
 
  		var f_sel = function(evt, ui){
-		    $.D("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
+		    $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
 		}
 		var f_cleanup = function(){
 		    self.element.trigger("before_cleanup", true);

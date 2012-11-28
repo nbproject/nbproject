@@ -28,7 +28,7 @@ License
 		    self.element.parent().viewport("smoothSelect", self.element.attr("id"));
 		}
 		else{
-		    $.D("[collectionView]: TODO -", evt.type);
+		    $.L("[collectionView]: TODO -", evt.type);
 		}
 	    }, 
 	    set_model: function(model){
@@ -38,7 +38,7 @@ License
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		$.D("[collectionview] TODO updating:, ", action, payload, props);
+		$.L("[collectionview] TODO updating:, ", action, payload, props);
 	    }
 	});
     $.widget("ui.collectionView",V_OBJ );

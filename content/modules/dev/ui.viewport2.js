@@ -90,7 +90,7 @@ License
 		var href = $(this).siblings("a").attr("href");
 		var id = /#(.*)-outer/.exec(href)[1];
 		$.concierge.trigger({type: "close_view", value: id});
-		$.D('closing', self, this);
+		$.L('closing', self, this);
 		var index = self.element.tabs('get_index', href);
 		self.element.tabs('remove', index);
 		event.stopPropagation();
@@ -209,11 +209,11 @@ License
 		this._decorate();
 		self.element.addClass("viewport").tabs({
 			"add": function(e, ui) {
-			    //$.D("e: ", e, ", ui:", ui);
+			    //$.L("e: ", e, ", ui:", ui);
 			    self._decorate($(ui.tab.parentNode));
 			}, 
 			    "show": function(evt, ui){
-				//$.D(ui.panel , " selected");
+				//$.L(ui.panel , " selected");
 				var cbs = self._getData("cbs");
 				if (ui.panel.id in cbs && "show" in cbs[ui.panel.id]){
 				    cbs[ui.panel.id].show();
@@ -222,19 +222,19 @@ License
 		    }).find(".ui-tabs-nav").addClass('connectedSortable').sortable({
 			    connectWith: '.connectedSortable', 
 				remove: function(event, ui){
-				$.D("[remove] evt:", event, ", ui:", ui);
+				$.L("[remove] evt:", event, ", ui:", ui);
 			    }, 
 				receive: function(event, ui){
-				$.D("[receive] evt:", event, ", ui:", ui);
+				$.L("[receive] evt:", event, ", ui:", ui);
 			    }, 
 				stop: function(event, ui){
-				$.D("[stop] evt=" ,event, ", ui=", ui );
+				$.L("[stop] evt=" ,event, ", ui=", ui );
 				if (isSameVP){ //reorder tabs in depth
 				    $vp_src.tabs();
 				}
 			    }, 
 				start: function(event, ui){
-				$.D("[start] evt=" ,event, ", ui=", ui, ", this=", this );
+				$.L("[start] evt=" ,event, ", ui=", ui, ", this=", this );
 				$vp_src	= $(ui.item[0].parentNode.parentNode);
 				var href =  $(ui.item).children("a:first").attr("href");
 				index_src=$vp_src.tabs('get_index', href)

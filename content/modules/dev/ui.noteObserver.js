@@ -31,14 +31,14 @@ License
 		    $.concierge.logRemote("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
 		}
 		else if (evt.type == "file"){
-		    //$.D("[noteObserver]: TODO - update file");
+		    //$.L("[noteObserver]: TODO - update file");
 		    //load notes for that file if we don't have them already. 
 		    let files_notes_loaded =  this._getData('files_notes_loaded');
 		    if (evt.value in files_notes_loaded){
-			$.D("[noteobserver]: notes already loaded for file ", evt.value);
+			$.L("[noteobserver]: notes already loaded for file ", evt.value);
 		    }
 		    else{
-			$.D("[noteobserver]: loading notes for file ", evt.value);
+			$.L("[noteobserver]: loading notes for file ", evt.value);
 			$.concierge.get_component("notes_loader")( {file:evt.value }, function(p){self._on_notes(p, self);});
 			files_notes_loaded[evt.value]=true;
 			//			this._setData('files_notes_loaded', 
@@ -51,7 +51,7 @@ License
 		model.register($.ui.view.prototype.get_adapter.call(this),  {});
 	    },
 	    _on_notes: function(payload, self){
-		$.D("[noteObserver]: received: ", payload );
+		$.L("[noteObserver]: received: ", payload );
 		let m = self._getData('model');
 		m.add("comment", payload["comments"]);
 		m.add("location", payload["locations"]);

@@ -113,7 +113,7 @@ NB.pers.fillEnsembles = function(payload){
 	    a1 = a[i].split("=");
 	    params[a1[0]] = a1[1];
 	}
-	//	console.debug("args: ", params);
+	//	console.log("args: ", params);
 	if ("id_source" in params){
 	    id_source = params["id_source"];
 	    if (id_source in NB.pers.docs.items){

@@ -47,7 +47,7 @@ $(document).ready(function(){
 
 	//init the observer machinery:
 	NB.observer.register("/__RESPONDER", {
-		"SAYHELLO": function(event){$.D("hello", event);}
+		"SAYHELLO": function(event){$.L("hello", event);}
 	    });
 
 	//Tell View system about events hierarchy: 
@@ -241,7 +241,7 @@ NB.pers.on_getStore = function(payload){
     NB.pers.ex1.configureFromDOM();
 
     window.exhibit._collectionMap["collection_notepane_loc"].addListener({ onItemsChanged: function(args){
-		$.D("items changed: ", args);
+		$.L("items changed: ", args);
 	    }
 	});
 

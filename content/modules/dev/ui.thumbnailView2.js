@@ -31,7 +31,7 @@ License
 		self.element.addClass("thumbnailView").html(controls);
 		$(".button[action=zoom]", controls).click(function(evt){
 		    let direction  = evt.currentTarget.getAttribute("direction");
-		    $.D(direction);
+		    $.L(direction);
 		    let v = parseFloat($.concierge.get_state("zoom"));
 		    if (direction == "out"){
 			v*=ZOOMOUT_FACTOR;
@@ -43,7 +43,7 @@ License
 		});
 		$(".button[action=page]", controls).click(function(evt){
 		    let direction  = evt.currentTarget.getAttribute("direction");
-		    $.D(direction);
+		    $.L(direction);
 		    let p = parseInt($.concierge.get_state("page"));
 		    let numpages = self._getData('model').o.file[ $.concierge.get_state("file")].numpages;
 		    if (direction == "previous" && p>1){

@@ -44,7 +44,7 @@ License
 		self.element.addClass("thumbnailView").html(controls);
 		$(".button[action=zoom]", controls).click(function(evt){
 		    let direction  = evt.currentTarget.getAttribute("direction");
-		    $.D(direction);
+		    $.L(direction);
 		    let v = parseFloat($.concierge.get_state("zoom"));
 		    if (direction == "out"){
 			v*=ZOOMOUT_FACTOR;
@@ -58,7 +58,7 @@ License
 
 		$(".button[action=page]", controls).click(function(evt){
 		    let direction  = evt.currentTarget.getAttribute("direction");
-		    $.D(direction);
+		    $.L(direction);
 		    let p = parseInt($.concierge.get_state("page"));
 		    let numpages = self._getData('model').o.file[ $.concierge.get_state("file")].numpages;
 		    if (direction == "previous" && p>1){
@@ -97,7 +97,7 @@ License
 		    case "file": 
 		    self.__update_file();
 		    self.element.parent().parent().viewport("smoothSelect", self.element.attr("id")+"-outer");
-		    $.D("[thumbnailView]: TODO - update file");
+		    $.L("[thumbnailView]: TODO - update file");
 		    break;
 		case "zoom": 
 		    let v = Math.floor(parseFloat($.concierge.get_state("zoom"))*100);
@@ -151,7 +151,7 @@ License
 	    },
 	    update: function(action, payload, props){
 		var self = this;
-		//		$.D("[thumbnailview] TODO updating:, ", action, payload, props);
+		//		$.L("[thumbnailview] TODO updating:, ", action, payload, props);
 	    }
 	});
     $.widget("ui.thumbnailView",V_OBJ );

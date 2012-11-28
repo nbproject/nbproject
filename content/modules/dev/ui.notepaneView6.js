@@ -34,7 +34,7 @@
 				new_sel = sel[codes[event.keyCode].sel]();
 				if (new_sel.length){
 				    new_sel.click();
-				    $.D("moving selection");
+				    $.L("moving selection");
 				}
 				else { // we need to find next location on subsequent pages
 				    id_item = sel.attr("id_item");
@@ -46,12 +46,12 @@
 				new_sel = $("div.location-lens")[codes[event.keyCode].no_sel](); 
 				if (new_sel.length){
 				    new_sel.click();
-				    $.D("moving selection");
+				    $.L("moving selection");
 				}
 			    }
 
 			}
-			$.D("keypressed");
+			$.L("keypressed");
 		    });
 		$.mods.declare({
 			notepaneView1: {js: [], css: ["/content/modules/dev/ui.notepaneView6.css"]}, 

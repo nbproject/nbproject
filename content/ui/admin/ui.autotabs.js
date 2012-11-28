@@ -50,7 +50,7 @@ License
 		let href = $(this).siblings("a").attr("href");
 		let id = /#(.*)-outer/.exec(href)[1];
 		self.element.trigger("close_view", id);
-		$.D('closing', self, this);
+		$.L('closing', self, this);
 		let index = self.element.tabs('get_index', href);
 		self.element.tabs('remove', index);
 		event.stopPropagation();
@@ -166,11 +166,11 @@ License
 		this._decorate();
 		self.element.addClass("autotabs").tabs({
 			"add": function(e, ui) {
-			    //$.D("e: ", e, ", ui:", ui);
+			    //$.L("e: ", e, ", ui:", ui);
 			    self._decorate($(ui.tab.parentNode));
 			}, 
 			    "show": function(evt, ui){
-				$.D(ui.panel , " selected");
+				$.L(ui.panel , " selected");
 				if (self.options.select){
 				    self.options.select(ui.panel);
 				}
@@ -178,10 +178,10 @@ License
 		    }).find(".ui-tabs-nav").addClass('connectedSortable').sortable({
 			    connectWith: '.connectedSortable', 
 				remove: function(event, ui){
-				//$.D("[remove] evt:", event, ", ui:", ui);
+				//$.L("[remove] evt:", event, ", ui:", ui);
 			    }, 
 				receive: function(event, ui){
-				//$.D("[received] evt:", event, ", ui:", ui, ", src:", $vp_src);
+				//$.L("[received] evt:", event, ", ui:", ui, ", src:", $vp_src);
 				isSameVP = false;
 				var $a = $(ui.item).children("a");
 				var label = $a.text();
@@ -209,16 +209,16 @@ License
 				$div[0].appendChild(tab_contents);
 	
 				self._moveView(id_tab,  $vp_dest[0].id);
-				$.D(_M);
+				$.L(_M);
 			    }, 
 				stop: function(event, ui){
-				//$.D("[stop] evt=" ,event, ", ui=", ui );
+				//$.L("[stop] evt=" ,event, ", ui=", ui );
 				if (isSameVP){ //reorder tabs in depth
 				    $vp_src.tabs();
 				}
 			    }, 
 				start: function(event, ui){
-				//				$.D("[start] evt=" ,event, ", ui=", ui, ", this=", this );
+				//				$.L("[start] evt=" ,event, ", ui=", ui, ", this=", this );
 				$vp_src	= $(ui.item[0].parentNode.parentNode);
 				var href =  $(ui.item).children("a:first").attr("href");
 				index_src=$vp_src.tabs('get_index', href)

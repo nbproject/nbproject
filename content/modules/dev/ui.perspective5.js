@@ -392,13 +392,13 @@
 			views[key].data.content($div);
 			if (id in VD._transcient){
 			    $div.bind({minimize: function(){
-					$.D("minimizing ", id);
+					$.L("minimizing ", id);
 					VD._transcient[id] = false;
 					self._resize_contents(true);
 					self._adjust(self.element.children("div.separator"));
 					self.element.trigger("resize_perspective", ["xy"]);
 				    }, restore:  function(){
-					$.D("restore ", id);
+					$.L("restore ", id);
 					VD._transcient[id] = true;
 					self._resize_contents(true);
 					self._adjust(self.element.children("div.separator"));

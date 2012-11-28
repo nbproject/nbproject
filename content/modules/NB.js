@@ -34,7 +34,7 @@ NB.debug = function(msg, l) {
 	level = l;
     }
     if ((level <= NB.DEBUG_LEVEL) && (window.console !== undefined)){
-	console.debug("[NB] "+msg);
+	console.log("[NB] "+msg);
     }
 };
 

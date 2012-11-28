@@ -55,7 +55,7 @@ License
 	_decorate: function(tab_elt){
 	    var self = this;
 	    var f_close = function(event){
-		//		console.debug('closing', self, this);
+		//		console.log('closing', self, this);
 	    };
 	    var f_togglemax = function(event){
 		$(self.element[0]).toggleClass("ui-maximized");
@@ -92,16 +92,16 @@ License
 		this._decorate();
 		self.element.tabs({
 			"add": function(e, ui) {
-			    //console.debug("e: ", e, ", ui:", ui);
+			    //console.log("e: ", e, ", ui:", ui);
 			    self._decorate($(ui.tab.parentNode));
 			}			
 		    }).find(".ui-tabs-nav").addClass('connectedSortable').sortable({
 			connectWith: '.connectedSortable', 
 			    remove: function(event, ui){
-				//console.debug("[remove] evt:", event, ", ui:", ui);
+				//console.log("[remove] evt:", event, ", ui:", ui);
 			}, 
 			    receive: function(event, ui){
-				//console.debug("[received] evt:", event, ", ui:", ui, ", src:", $vp_src);
+				//console.log("[received] evt:", event, ", ui:", ui, ", src:", $vp_src);
 			    isSameVP = false;
 			    var $a = $(ui.item).children("a");
 			    var label = $a.text();
@@ -121,7 +121,7 @@ License
 			    temp_tab.append($div);
 			    $vp_dest.tabs('add', "#"+id_tab, label, index_dest);
 			    //replace tab contents
-			    //console.debug("try to repplace tab now:", $("ul:first>li", $vp_dest)[index_dest]);
+			    //console.log("try to repplace tab now:", $("ul:first>li", $vp_dest)[index_dest]);
 			    //var oldNode = $("ul:first>li", $vp_dest)[index_dest];
 			    //			    $($("ul:first>li", $vp_dest)[index_dest]).replaceWith(ui.item[0]);
 			    // oldNode.parentNode.replaceChild(ui.item[0], oldNode);
@@ -129,7 +129,7 @@ License
 			}, 
 			    stop: function(event, ui){
 			    //$(".ui-view-tab-close", ui.item[0]).show();
-				//console.debug("[stop] evt=" ,event, ", ui=", ui );
+				//console.log("[stop] evt=" ,event, ", ui=", ui );
 			    if (isSameVP){ //reorder tabs in depth
 				$vp_src.tabs();
 			    }
@@ -137,14 +137,14 @@ License
 			    start: function(event, ui){
 			    //			    $(".ui-view-tab-close", ui.item[0]).hide();
 			    //			    $(".ui-view-tab-close", ui.item[0]).remove();
-				//				console.debug("[start] evt=" ,event, ", ui=", ui, ", this=", this );
+				//				console.log("[start] evt=" ,event, ", ui=", ui, ", this=", this );
 
 			    $vp_src	= $(ui.item[0].parentNode.parentNode);
 			    //			    index_src	= __elt_pos(ui.item[0]);
 			    var href =  $(ui.item).children("a:first").attr("href");
 			    index_src=$vp_src.tabs('get_index', href)
 
-				//			    console.debug("[start] src=", $vp_src[0], " at pos ", index_src );
+				//			    console.log("[start] src=", $vp_src[0], " at pos ", index_src );
 			}, 
 			    forceHelperSize: true
 		    });

@@ -83,11 +83,11 @@ NB.models.Store.prototype.create = function(payload, propsList){
 	    //see if it's time to build an index: 
 	    if (name in self.future_indexes.t){
 		//SACHA TODO
-		console.debug("TODO: Add index");
+		console.log("TODO: Add index");
 	    }
 	    else if (name in self.future_indexes.o){
 		//SACHA TODO
-		console.debug("TODO: Add index");
+		console.log("TODO: Add index");
 	    }
 	}
 

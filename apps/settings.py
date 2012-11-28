@@ -142,13 +142,8 @@ IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
 LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
-
 DESKTOP_TEMPLATE= "web/desktop14.xhtml"
-
-#COLLAGE_TEMPLATE= "web/collage1_compat.xhtml"
 COLLAGE_TEMPLATE= "web/desktop11.xhtml"
-
-#ADMIN_TEMPLATE  = "web/admin1.xhtml"
 ADMIN_TEMPLATE  = "web/desktop9.xhtml"
 FEEDBACK_TEMPLATE = "web/feedback1.xhtml"
 FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"

@@ -63,7 +63,7 @@ NB.pers.call = function(fctname, dict, callback, nowait){
 	    NB.debug(x.status.msg);
 	    return;
 	}
-	//     console.debug("cb w/ x=", x);
+	//     console.log("cb w/ x=", x);
 	callback(x.payload);
     };
     $.post(NB.conf.servers.rpc+"/pdf3/rpc?invite_key=" + NB.conf.identity,{"cid": NB.pers.connection_id, "f": fctname, "a": JSON.stringify(dict)}, cb, "json");

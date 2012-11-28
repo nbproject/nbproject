@@ -65,7 +65,7 @@
 		    switch (action){
 		    case "reply": 
 		    $.concierge.get_component("editor_menu")();
-		    $.D("open", el);
+		    $.L("open", el);
 		    break;
 		    }
 		};

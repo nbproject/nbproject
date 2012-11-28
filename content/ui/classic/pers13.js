@@ -36,7 +36,7 @@ $(document).ready(function(){
 		    remove: function(event, ui){
 		}, 
 		    receive: function(event, ui){
-		    //		    console.debug("received: evt:", event, "ui:", ui);
+		    //		    console.log("received: evt:", event, "ui:", ui);
 
 		    var $a = $(ui.item).children("a");
 		    var label = $a.text();
@@ -60,12 +60,12 @@ $(document).ready(function(){
 	      
 		}, 
 		    stop: function(event, ui){
-		    //console.debug("[stop] evt=" ,event, ", ui=", ui );
+		    //console.log("[stop] evt=" ,event, ", ui=", ui );
 		}, 
 		    start: function(event, ui){
 		    $vp_src	= $(ui.item[0].parentNode.parentNode);
 		    index_src	= NB.dom.elementPosition(ui.item[0]);		    
-		    //console.debug("[start] src=", $vp_src[0], " at pos ", index_src );
+		    //console.log("[start] src=", $vp_src[0], " at pos ", index_src );
 		}
 	    });
 

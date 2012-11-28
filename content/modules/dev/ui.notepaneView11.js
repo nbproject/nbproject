@@ -27,7 +27,7 @@
 			    $.concierge.logHistory("seen", i);
 			}
 		    }		    
-		    //		    $.D("Marking thread " + id_location + " as seen !");
+		    //		    $.L("Marking thread " + id_location + " as seen !");
 		    self._model.add("seen", new_seen);
 		};
 	    },
@@ -79,7 +79,7 @@
 			$("div.location-lens[id_item="+evt.value+"]", self.element).removeClass("hovered");		
 			break;
 		    case "warn_page_change": 
-			$.D("[notepaneView11] TODO: warn_page_change");
+			$.L("[notepaneView11] TODO: warn_page_change");
 			break;
 		    case "select_thread": 
 			$("div.location-pagesummary.selected", self.element).removeClass("selected");
@@ -226,7 +226,7 @@
 			new_sel = $("div.location-lens")[codes[event.keyCode].no_sel](); 
 			if (new_sel.length){
 			    new_sel.click();
-			    //			    $.D("moving selection");
+			    //			    $.L("moving selection");
 			}
 		    }
 		    return false;
@@ -234,7 +234,7 @@
 		else{
 		    return true; // let the event be captured for other stuff
 		}
-		//		$.D("keypressed");
+		//		$.L("keypressed");
 	    }, 
 	    _f_location_click : function(event){
 		var id_item = event.currentTarget.getAttribute("id_item");
@@ -316,7 +316,7 @@
 				//Are we within 20px from the bottom of scrolling ?
 				while ($pane.children().last().offset().top - $pane.offset().top - $pane.height() < 20){
 				    var maxpage = self._maxpage;
-				    $.D("scroll: maxpage="+maxpage);
+				    $.L("scroll: maxpage="+maxpage);
 				    if (maxpage < f.numpages){
 					self._render_one(maxpage+1);
 				    }

@@ -44,7 +44,7 @@ $(document).ready(function(){
 	Exhibit.Functions["false2null"] = {
 	    f: function(args) {
 		var arg=args[0]._values[0];
-		$.D(arg);
+		$.L(arg);
 		return new Exhibit.Expression._Collection(arg ? [arg]: [], arg ? "boolean": null);
 	    }
 	};
@@ -68,7 +68,7 @@ $(document).ready(function(){
 
 	//init the observer machinery:
 	NB.observer.register("/__RESPONDER", {
-		"SAYHELLO": function(event){$.D("hello", event);}
+		"SAYHELLO": function(event){$.L("hello", event);}
 	    });
 
 	//Tell View system about events hierarchy: 
@@ -258,7 +258,7 @@ NB.pers.on_getStore = function(payload){
     $("#view-7").notepaneView('set_model', NB.pers.store);
     /*
       window.exhibit._collectionMap["collection_notepane_loc"].addListener({ onItemsChanged: function(args){
-      $.D("items changed: ", args);
+      $.L("items changed: ", args);
       }
       });
     */

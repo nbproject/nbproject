@@ -156,7 +156,7 @@
 		    }).width(self.element.width()-15);	 
 		$textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height()-30);
 		var f_sel = function(evt, ui){
-		    $.D("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
+		    $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
 		}
 		
 		var f_discard = function(evt){
