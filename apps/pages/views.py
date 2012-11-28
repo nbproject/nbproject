@@ -113,7 +113,7 @@ def __serve_page_old(req, tpl, allow_guest=False):
     return r
 
 def index(req): 
-    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome")
+    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
    
 def collage(req): 
     return __serve_page(req, settings.COLLAGE_TEMPLATE)
@@ -138,7 +138,10 @@ def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
     if source.type==M.Source.TYPE_YOUTUBE: 
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
-    return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest)
+    elif source.type==M.Source.TYPE_HTML5:
+        return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
+    else:
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
     
 
 def your_settings(req): 
