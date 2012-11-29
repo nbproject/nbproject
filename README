@@ -10,11 +10,7 @@
 
 cf INSTALL for installation instructions. 
 
-The NB server is meant to be run to be run either:                           
-
-1- As a django app on a django-enabled apache server
-2- (For development only) As a standalone application, using the embedded django development server. 
-3- As a standalone application (which uses a twisted-based server). 
+The NB server is meant to be run as a django app on a django-enabled apache server. For development only, you can also run it as a standalone application, using the embedded django development server. 
 
 Startup instructions: 
 
@@ -23,17 +19,9 @@ Startup instructions:
    WSGIScriptAlias / $(PATH_TO_NB)/servers/apache/django.wsgi
    ... where $(PATH_TO_NB) refers to to location of the nb directory. 
 
-2- Using the embedded django development server
+2- Using the embedded django development server (for development / debug purposes only)
    cd  $(PATH_TO_NB)/servers
    python manage.py runserver
-
-3- As a twisted-powered standalone application: 
-   cd $(PATH_TO_NB)
-   sudo nohup ./runserver
-   [Ctrl-Z]
-   bg
-   (I can then logout from the terminal I started the process)
-
 
 Thanks for your interest in NB ! 
 
