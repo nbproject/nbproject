@@ -8,7 +8,7 @@ Author
     Sacha Zyto (sacha@csail.mit.edu) 
 
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 Complete  Example (change location of jquery, jquery-ui and jquery-ui stylesheet if necessary): 
