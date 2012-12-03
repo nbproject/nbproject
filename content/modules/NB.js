@@ -8,7 +8,7 @@
  * It requires the follwing modules:
  *	Module
 Author 
-    Sacha Zyto (sacha@csail.mit.edu) 
+    cf AUTHORS.txt 
 
 License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.

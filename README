@@ -5,7 +5,8 @@
 *** Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 *** code released under the MIT License 
 *** (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
-*** Contact: Sacha Zyto <sacha@csail.mit.edu>
+*** Contact: <nb-team@csail.mit.edu>
+*** Authors: cf AUTHORS file in this directory
 ********************************************************************************
 
 cf INSTALL for installation instructions. 
@@ -33,7 +34,7 @@ Please keep in mind that...
 
 - NB is an active research project that *** NEEDS YOUR PARTICIPATION ***: 
   So, how can you participate ? 
-  1- Contact us (sacha@csail.mit.edu) to donate (some of) your annotations: If you setup an NB server, please, consider granting us read access to (part of) your NB database (email sacha@csail.mit.edu). This is VITAL so we can so we can use the notes for our research (extract statistics, look at themes of annotations, and usage patterns, see how usage habits change when feature X is being introduced). Of course, we will need to ask users their permission in order to be able to use quotes from their notes in any kind of published research (and if anything gets published, it will be anonymized), in accordance with the COUHES protocol: http://web.mit.edu/committees/couhes/
+  1- Contact us (nb-team@csail.mit.edu) to donate (some of) your annotations: If you setup an NB server, please, consider granting us read access to (part of) your NB database (email nb-team@csail.mit.edu). This is VITAL so we can so we can use the notes for our research (extract statistics, look at themes of annotations, and usage patterns, see how usage habits change when feature X is being introduced). Of course, we will need to ask users their permission in order to be able to use quotes from their notes in any kind of published research (and if anything gets published, it will be anonymized), in accordance with the COUHES protocol: http://web.mit.edu/committees/couhes/
   2- Add features and fix bugs. 
 
 
