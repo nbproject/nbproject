@@ -63,6 +63,7 @@ urlpatterns += patterns('django.views.generic.simple',
                          (r'^about/$',                           'direct_to_template', {'template': 'web/about.html'}),
                         (r'^help/$',                           'direct_to_template', {'template': 'web/help.html'}),
                         (r'^tutorial/$',                           'direct_to_template', {'template': 'web/help.html'}),
+                        (r'^contact/$',                           'direct_to_template', {'template': 'web/contact.html'}),
                         (r'^faq/$',                           'direct_to_template', {'template': 'web/faq.html'}),
                         (r'^disclaimer/$',                           'direct_to_template', {'template': 'web/disclaimer.html'}),
 
