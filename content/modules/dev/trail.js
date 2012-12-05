@@ -1,5 +1,6 @@
 (function(){
-    var server_url = "http://localhost:8001"; //TODO: Can we get this from document ? 
+    var server_info =  document.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);    
+    var server_url = server_info[1]+"://"+server_info[2];
     var add_script=function(url){
 	var o = document.createElement("script");
 	o.type = "text/javascript";
