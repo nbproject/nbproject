@@ -1,5 +1,5 @@
 (function(){
-    var server_url = "http://nb.mit.edu:8080"; //TODO: Can we get this from document ? 
+    var server_url = "http://localhost:8001"; //TODO: Can we get this from document ? 
     var add_script=function(url){
 	var o = document.createElement("script");
 	o.type = "text/javascript";
@@ -13,7 +13,9 @@
 	o.rel = "stylesheet";
 	document.getElementsByTagName("head")[0].appendChild(o);
     };
-    var scripts = ["http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js",  server_url+"/content/modules/dev/mods2.js",
+    var scripts = ["http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js",  
+		   server_url+"/content/modules/head.js/head099.min.js",
+		   server_url+"/content/modules/dev/mods2.js",
 		   server_url+"/content/modules/dev/ui.concierge1.js", 
 		   server_url+"/content/compiled/apidev.js", 
 		   server_url+"/content/ui/admin/conf.js", 
@@ -134,5 +136,5 @@
 		    m.add("location", P["locations"]);
 		    render();
 		    $.L("notes loaded");});
-	}, 3000);
+	}, 5000);
 })()

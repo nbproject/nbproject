@@ -1,8 +1,5 @@
 /**
  * dom.js: Convenience fcts for DOM manipulation
- * It requires the following modules:
- *		Module
- *		NB
 Author 
     cf AUTHORS.txt 
 
@@ -12,17 +9,9 @@ License
 
  */
 
-
-try{    
-    Module.require("NB", 0.1);
-    Module.createNamespace("NB.dom", 0.1);
-}
-catch (e){
-    alert("[dom] Init Error: "+e);
-}
-
-
-NB.dom.elementItem = function(node, n){ //0-based    
+(function(GLOB){
+GLOB.dom = {};
+GLOB.dom.elementItem = function(node, n){ //0-based    
     var i=0;
     var child = node.firstChild;
     while(true){
@@ -41,7 +30,7 @@ NB.dom.elementItem = function(node, n){ //0-based
 
 
 
-NB.dom.firstElement = function(node){
+GLOB.dom.firstElement = function(node){
     var child = node.firstChild;
     while (child.nodeType != 1){
 	child = child.nextSibling;
@@ -49,7 +38,7 @@ NB.dom.firstElement = function(node){
     return child;
 };
 
-NB.dom.previousElement = function(node){
+GLOB.dom.previousElement = function(node){
     var n = node.previousSibling;
     while(n){
 	if (n.nodeType == 1){
@@ -63,7 +52,7 @@ NB.dom.previousElement = function(node){
 };
 
 
-NB.dom.nextElement = function(node){
+GLOB.dom.nextElement = function(node){
     var n = node.nextSibling;
     while(n){
 	if (n.nodeType == 1){
@@ -76,23 +65,23 @@ NB.dom.nextElement = function(node){
     return null;
 };
 
-NB.dom.elementPosition = function(node){ 
+GLOB.dom.elementPosition = function(node){ 
     /**
      * returns the 0-based element-position of 'node',
      * i.e. the number of DOM **elements** that are before 'node'
      *
      **/
     var i = 0;
-    var n = NB.dom.previousElement(node);
+    var n = GLOB.dom.previousElement(node);
     while(n){
 	i++;
-	n= NB.dom.previousElement(n);
+	n= GLOB.dom.previousElement(n);
     }
     return i;
 };
 
 
-NB.dom.getAncestorByHasAttribute = function(elt, name){
+GLOB.dom.getAncestorByHasAttribute = function(elt, name){
     var parent = elt.parentNode; 	
     while(parent && (!(parent.hasAttribute(name)))){	
 	parent = parent.parentNode;
@@ -100,7 +89,7 @@ NB.dom.getAncestorByHasAttribute = function(elt, name){
     return parent;
 };
 
-NB.dom.getParams = function(){
+GLOB.dom.getParams = function(){
     var s = document.location.search;
     var params = {};
     if (s != ""){	
@@ -118,22 +107,23 @@ NB.dom.getParams = function(){
 };
 
 
-NB.dom.__sections = {
+GLOB.dom.__sections = {
  do_toc: false, 
  toc_id: "toc", 
  do_b2t: false
 }; //parameters. 
-NB.dom.addSection = function(){
+GLOB.dom.addSection = function(){
     /*
      * inspired from sections.js in stats2
      * just need to initialize it with
-     *     $("div.section").each(NB.dom.addSection);
+     *     $("div.section").each(GLOB.dom.addSection);
      */
     var title = this.getAttribute("label");
-    if (NB.dom.__sections.do_toc){
-	$("#"+NB.dom.__sections.toc_id).append("<a href='#"+this.id+"'>"+title+"</a>");
+    if (GLOB.dom.__sections.do_toc){
+	$("#"+GLOB.dom.__sections.toc_id).append("<a href='#"+this.id+"'>"+title+"</a>");
     }
     $(this).children().wrapAll("<div class='section-body'></div>");
-    var b2t = (NB.dom.__sections.do_b2t) ? "<a class=\"navlink\"  href=\"#"+NB.dom.__sections.toc_id+"\">back to top </a>" : "";
+    var b2t = (GLOB.dom.__sections.do_b2t) ? "<a class=\"navlink\"  href=\"#"+GLOB.dom.__sections.toc_id+"\">back to top </a>" : "";
     $(this).prepend("<div class='section-header'>"+b2t+title+"</div>");
 };
+})(NB);

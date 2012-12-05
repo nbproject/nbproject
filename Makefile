@@ -53,7 +53,7 @@ API_DEST	= $(COMPILED_DIR)/api.js
 API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
 APIDEV_ROOT	= content/modules
 APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
-APIDEV_FILES	= Module.js NB.js auth.js dom.js mvc.js dev/models2.js 
+APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
 
 compat: api
 	(rm content/compat/*; cd src; python compat.py dir ../ ../templates/web ../content/compat/)

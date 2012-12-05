@@ -1,12 +1,6 @@
 /**
  * NB.js: Main module file
  *
- * This is a module of useful functions that are
- * compatible with JSAN-type modules.
- * It gathers functions that are useful at the window level
- * This module defines the namespace NB
- * It requires the follwing modules:
- *	Module
 Author 
     cf AUTHORS.txt 
 
@@ -15,31 +9,30 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
+var NB;
 
-try{
-    Module.createNamespace("NB", 0.1);
-}
-catch (e){
-    alert("[NB] Init Error - Details: "+e);
+if (NB && (typeof NB !== "object")){
+    alert("Error: NB already exists and isn't an object!");
 }
 
-NB.DEBUG_LEVEL = 0;
+NB = {};
 
-/*
- * won't output anything if firebug not installed
- */
-NB.debug = function(msg, l) {
-    var level = 0;
-    if (l!==undefined){
-	level = l;
-    }
-    if ((level <= NB.DEBUG_LEVEL) && (window.console !== undefined)){
-	console.log("[NB] "+msg);
+NB.log = function(){
+    if (window.console){
+	console.log(arguments);
     }
 };
 
-NB.banner = function(msg){
+NB.warn = function(){
+    if (window.console){
+	console.warn(arguments);
+    }
+};
 
+NB.error = function(){
+    if (window.console){
+	console.error(arguments);
+    }
 };
 
 NB.len = function(o){
