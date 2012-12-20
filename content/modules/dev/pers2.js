@@ -36,7 +36,8 @@
     GLOB.pers.connection_id = 0;
     GLOB.pers.first_connection = true;
     GLOB.pers.connection_T = 1000;  // in msec
-
+    var server_info =  document.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);    
+    GLOB.pers.server_url = server_info[1]+"://"+server_info[2];
     GLOB.pers.call = function(fctname, dict, callback, errback){
 	if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id == 0) {
 	    // we haven't received a reply yet so put this function to wait for a while
@@ -68,8 +69,7 @@
 
 
     GLOB.pers.__authenticate = function(init_ui){
-	GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: 1};    
-	var uinfo = GLOB.conf.userinfo; //shortcut ! 
+	var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: 1}; 
 	var $login_contents;
 	if (uinfo.guest != 0){
 	    $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:GLOB.pers.logout()'>Log out</a></li></ul></li></ul>");
