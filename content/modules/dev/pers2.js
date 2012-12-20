@@ -18,6 +18,9 @@
 
 (function(GLOB){
     //require auth
+    if (NB$){
+	var $ = NB$;
+    }
     GLOB.pers = {};
 
     /* trick for browsers that don't support document.activeElement 

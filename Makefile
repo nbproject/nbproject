@@ -52,11 +52,14 @@ API_DEST	= $(COMPILED_DIR)/api.js
 #API_FILES	= Module.js NB.js auth.js dom.js rpc.js observer.js mvc.js dev/models.js 
 API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
 APIDEV_ROOT	= content/modules
+APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
 APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
 BUILDTRAIL_DEST = $(COMPILED_DIR)/buildTrail.js
 BUILDTRAIL_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildTrail.js
+BUILDEMBED_DEST =  $(COMPILED_DIR)/buildEmbed.js
+BUILDEMBED_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildEmbed.js
 
-APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
+
 
 compat: api
 	(rm content/compat/*; cd src; python compat.py dir ../ ../templates/web ../content/compat/)
@@ -149,6 +152,8 @@ apidev:
 	echo '' > $(APIDEV_DEST)
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
 	for i in $(BUILDTRAIL_FILES); do cat $$i >> $(BUILDTRAIL_DEST) ; done
+	for i in $(BUILDEMBED_FILES); do cat $$i >> $(BUILDEMBED_DEST) ; done
+
 
 #for some reason, the following doesn't perform Ok when in makefile, but OK when executed from shell...
 check_prereqs: 

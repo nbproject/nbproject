@@ -7,6 +7,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 */
+var NB$ = jQuery.noConflict();
+
 (function($) {   
  var Concierge = function(){
 	var self = this;
@@ -238,4 +240,4 @@
 	return plural || "s";
     }
       
-})(jQuery);
+})(NB$);
