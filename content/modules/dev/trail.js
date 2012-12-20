@@ -20,7 +20,9 @@
 		   server_url+"/content/modules/dev/ui.concierge1.js", 
 		   server_url+"/content/compiled/apidev.js", 
 		   server_url+"/content/ui/admin/conf.js", 
-		   server_url+"/content/modules/dev/pers2.js", 	       
+		   server_url+"/content/modules/dev/pers2.js",
+		   server_url+"/content/modules/dev/build.js",
+
 		   ];
     var css = [server_url+"/content/modules/dev/trail.css"];
     for (var i in scripts){
