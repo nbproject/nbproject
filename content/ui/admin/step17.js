@@ -68,6 +68,11 @@ NB.pers.init = function(){
 				    }
 				    $.L("closeview: ", evt, this.l.element[0].id);
 				}, 
+				    successful_login: function(evt){
+				    NB.auth.set_cookie("ckey", evt.value);
+				    document.location ="http://"+document.location.host+document.location.pathname;
+				    $.I("Welcome !");
+				},
 				    ensemble: function(evt){
 				    $.L("loading stats for ensemble"+evt.value);
 				    $.concierge.get_component("get_file_stats")({"id_ensemble": evt.value}, function(P2){

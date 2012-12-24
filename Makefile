@@ -57,7 +57,8 @@ APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
 BUILDTRAIL_DEST = $(COMPILED_DIR)/buildTrail.js
 BUILDTRAIL_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildTrail.js
 BUILDEMBED_DEST =  $(COMPILED_DIR)/buildEmbed.js
-BUILDEMBED_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildEmbed.js
+BUILDEMBED_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildEmbed.js
+
 
 
 

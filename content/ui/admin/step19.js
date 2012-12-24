@@ -83,6 +83,11 @@ NB.pers.init = function(){
 	    $pers.perspective({
 		    height: function(){return $vp.height() - $pers.offset().top;}, 
 			listens: {
+			successful_login: function(evt){
+			    NB.auth.set_cookie("ckey", evt.value);
+			    document.location ="http://"+document.location.host+document.location.pathname;
+			    $.I("Welcome !");
+			}, 
 			selection: function(evt){
 			    var v = evt.value;
 			    var sel = v.sel;

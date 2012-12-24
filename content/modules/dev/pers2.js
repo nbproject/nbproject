@@ -256,10 +256,7 @@
 				};
 				$.concierge.get_component("login_user")(payload , function(p){
 					if (p.ckey != null){
-					    //					GLOB.auth.set_cookie("userinfo", escape("{ckey: \""+p.ckey+"\"}"));
-					    GLOB.auth.set_cookie("ckey", p.ckey);
-					    document.location ="http://"+document.location.host+document.location.pathname;
-					    $.I("Welcome !");
+					    $.concierge.trigger({type:"successful_login", value: p.ckey});
 					}
 					else{
 					    err("email or password doesn't match. Please try again");

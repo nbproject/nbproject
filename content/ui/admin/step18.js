@@ -102,7 +102,13 @@ NB.pers.init = function(){
 				delete($.concierge.features.doc_viewer[id]);
 			    }
 			    $.L("closeview: ", evt, this.l.element[0].id);
-			} 	
+			}, 
+			    successful_login: function(evt){
+				    NB.auth.set_cookie("ckey", evt.value);
+				    document.location ="http://"+document.location.host+document.location.pathname;
+				    $.I("Welcome !");
+			}
+ 	
 		    }, 
 			views: {
 			v1:{ data: docview }, 

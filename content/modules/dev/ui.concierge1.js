@@ -67,7 +67,8 @@ var NB$ = jQuery.noConflict();
     Concierge.prototype.addListeners = function(view, o){
 	/*
 	 * pre: view is a object that has a:  
-	 *  - _defaultHandler method, or that passed a specific listener function. 
+	 *  - _defaultHandler method, or that passed a specific listener function. See step??.js for an example where ui.perspective?.js is used as a view, 
+	 *     although perspectives don't have a _defaultHandler method
 	 *  - an id that can be retrieved by  element[0].id
 	 * In any case it DOESN'T need to be a class derived from ui.view
 	*/

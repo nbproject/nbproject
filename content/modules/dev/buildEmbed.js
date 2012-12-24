@@ -22,8 +22,8 @@
 	*/
 	GLOB.pers.connection_id = 1;
 	GLOB.conf.servers.rpc=GLOB.pers.server_url;
-	$("body").append("<div id='nb_controls' class='nb_controls_inactive'><button id='nb_loginbutton'>Log in to NB</button></div>");
-	$("nb_loginbutton").click(function(){
+	$("body").append("<div id='nb_sidebar' class='nb_inactive'><div id='nb_controls' class='nb_inactive'><button id='nb_loginbutton'>Log in to NB</button></div></div>");
+	$("#nb_loginbutton").click(function(){
 		alert("TODO: login");
 	    });
     }; 

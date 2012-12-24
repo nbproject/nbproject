@@ -1,5 +1,8 @@
-#nb_controls_inactive{
-position: absolute;
+#nb_sidebar{
 right: 0px;
 top: 0px;
+} 
+
+div.nb_controls_inactive{
+position: absolute;
 }

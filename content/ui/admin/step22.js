@@ -90,6 +90,11 @@ NB.pers.init = function(){
 				    //need to add 1 value for uniqueness
 				    $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
 				}, 
+				    successful_login: function(evt){
+				    NB.auth.set_cookie("ckey", evt.value);
+				    document.location ="http://"+document.location.host+document.location.pathname;
+				    $.I("Welcome !");
+				},
 				close_view: function(evt){
 				    if (evt.value == this.l.element[0].id){
 					delete($.concierge.features.doc_viewer[id]);
