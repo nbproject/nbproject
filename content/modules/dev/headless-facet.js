@@ -55,7 +55,7 @@ Exhibit.HeadlessFacet.createFromDOM = function(configElmt, containerElmt, uiCont
     var configuration = Exhibit.getConfigurationFromDOM(configElmt);
     var uiContext = Exhibit.UIContext.createFromDOM(configElmt, uiContext);
     var facet = new Exhibit.HeadlessFacet(
-        containerElmt != null ? containerElmt : configElmt, 
+        containerElmt !== null ? containerElmt : configElmt, 
         uiContext
     );
     
@@ -63,19 +63,19 @@ Exhibit.HeadlessFacet.createFromDOM = function(configElmt, containerElmt, uiCont
     
     try {
         var expressionString = Exhibit.getAttribute(configElmt, "expression");
-        if (expressionString != null && expressionString.length > 0) {
+        if (expressionString !== null && expressionString.length > 0) {
             facet._expression = Exhibit.ExpressionParser.parse(expressionString);
         }
         
         var selection = Exhibit.getAttribute(configElmt, "selection", ";");
-        if (selection != null && selection.length > 0) {
+        if (selection !== null && selection.length > 0) {
             for (var i = 0, s; s = selection[i]; i++) {
                 facet._valueSet.add(s);
             }
         }
         
         var selectMissing = Exhibit.getAttribute(configElmt, "selectMissing");
-        if (selectMissing != null && selectMissing.length > 0) {
+        if (selectMissing !== null && selectMissing.length > 0) {
             facet._selectMissing = (selectMissing === "true");
         }
     } catch (e) {
@@ -107,10 +107,10 @@ Exhibit.HeadlessFacet._configure = function(facet, configuration) {
     
     if (!("facetLabel" in facet._settings)) {
         facet._settings.facetLabel = "missing ex:facetLabel";
-        if (facet._expression != null && facet._expression.isPath()) {
+        if (facet._expression !== null && facet._expression.isPath()) {
             var segment = facet._expression.getPath().getLastSegment();
             var property = facet._uiContext.getDatabase().getProperty(segment.property);
-            if (property != null) {
+            if (property !== null) {
                 facet._settings.facetLabel = segment.forward ? property.getLabel() : property.getReverseLabel();
             }
         }
@@ -135,7 +135,7 @@ Exhibit.HeadlessFacet._configure = function(facet, configuration) {
     
     if ("formatter" in facet._settings) {
         var formatter = facet._settings.formatter;
-        if (formatter != null && formatter.length > 0) {
+        if (formatter !== null && formatter.length > 0) {
             try {
                 facet._formatter = eval(formatter);
             } catch (e) {
@@ -208,7 +208,7 @@ Exhibit.HeadlessFacet.prototype.setSelection = function(value, selected) {
 }
 
 Exhibit.HeadlessFacet.prototype.setSelectMissing = function(selected) {
-    if (selected != this._selectMissing) {
+    if (selected !== this._selectMissing) {
         this._selectMissing = selected;
         this._notifyCollection();
     }
@@ -228,7 +228,7 @@ Exhibit.HeadlessFacet.prototype.restrict = function(items) {
 };
 
 Exhibit.HeadlessFacet.prototype.onUncollapse = function() {
-    if (this._delayedUpdateItems != null) {
+    if (this._delayedUpdateItems !== null) {
         //        this.update(this._delayedUpdateItems);
         this._delayedUpdateItems = null;
     }
@@ -335,7 +335,7 @@ Exhibit.HeadlessFacet.prototype._createSortFunction = function(valueType) {
     if (this._settings.sortMode === "count") {
         sortFunction = function(a, b) {
             var c = b.count - a.count;
-            return c != 0 ? c : sortValueFunction(a, b);
+            return c !== 0 ? c : sortValueFunction(a, b);
         }
     }
 

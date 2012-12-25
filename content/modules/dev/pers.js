@@ -35,7 +35,7 @@ $(document).ready(function(){
     //if email and password provided by server, set them as cookies for auto-login
     //so that we're authenticated for subsequent function calls
     var identity = NB.auth.get_cookie("invite_key");
-    if (identity != null){
+    if (identity !== null){
         NB.conf.identity = identity;
     }
     NB.pers.init();

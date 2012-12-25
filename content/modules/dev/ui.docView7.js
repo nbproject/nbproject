@@ -35,7 +35,7 @@
         var self    = this;
         var id_source    = self._getData("id_source");
         var model    = self._getData("model");
-        if (id_source != $.concierge.get_state("file")){
+        if (id_source !== $.concierge.get_state("file")){
             return;
         }
         /*
@@ -71,7 +71,7 @@
         break;
         case "select_thread": 
         var o = model.o.location[evt.value];
-        if (o.page !=  this._getData("page")){
+        if (o.page !==  this._getData("page")){
             this._setData("page", o.page);
             this._render();
             $("div.material.selected", self.element).removeClass("selected");
@@ -104,7 +104,7 @@
         },
         select: function(){
         var id = this._getData("id_source");
-        if (id && id != $.concierge.get_state("file")){
+        if (id && id !== $.concierge.get_state("file")){
             $.concierge.trigger({type:"file", value:this._getData("id_source") });
         }
         }, 
@@ -119,7 +119,7 @@
         self.element.addClass("docView").scroll(function(evt){
             //we use a timer to coalesce scroll events happening in quick succession. 
             var timerID = self._getData("scrollTimerID")
-            if (timerID != null){
+            if (timerID !== null){
                 window.clearTimeout(timerID);
                 self._setData("scrollTimerID", null);
             }
@@ -131,7 +131,7 @@
                     var prem = h-st%h;
                     var area_indicator = (prem-0.5*evt.currentTarget.clientHeight)>0;
                     var pbar_old = self._getData("__pbar_old");
-                    if ( (area_indicator != self._getData("area_indicator")) || (pbar!=pbar_old)){
+                    if ( (area_indicator !== self._getData("area_indicator")) || (pbar!=pbar_old)){
                     var newpage = (area_indicator) ?  pbar: pbar+1;
                     self._setData("in_page_transition", true); //prevent animation 
                     $.concierge.trigger({type: "page", value:newpage});
@@ -165,7 +165,7 @@
             else { // we need to find next location on subsequent pages
                 id_item = sel.attr("id_item");
                 id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: this._getData("model"), direction: codes[event.keyCode].dir}); 
-                if (id_new != null){
+                if (id_new !== null){
                 $.concierge.trigger({type:"select_thread", value: id_new});
                 }
                 else{
@@ -240,7 +240,7 @@
         var w2 = self.element.width();
         var pbar = Math.ceil((st+0.01)/(self._getData("h")+self._getData("v_margin")));
         var current_page = self._getData("page");
-        if ((self._getData("in_page_transition")==false) && (pbar != current_page)){
+        if ((self._getData("in_page_transition")==false) && (pbar !== current_page)){
             self._setData("in_page_transition", true);
             var divOffset = self.element.offset().top;
             var imgOffset =     $("img.material[page="+current_page+"]", self.element).parent().offset().top;
@@ -374,7 +374,7 @@
             }
         }
         scale        = candidate_scale;
-        if ( res0 != self._getData("resolution") || scale != self._getData("scale")){
+        if ( res0 !== self._getData("resolution") || scale !== self._getData("scale")){
             self._setData("pages", {});
             self._setData("resolution", res0);
             self._setData("scale", scale);
@@ -391,7 +391,7 @@
             $("div.contents", self.element).html(contents);
             var $material = $("div.material", self.element).click(function(evt){
                 var numpage = evt.currentTarget.getAttribute("page");
-                if (numpage != self._getData("page")){
+                if (numpage !== self._getData("page")){
                 self._setData("in_page_transition", true); //prevent animation
                 $.concierge.trigger({type: "page", value:numpage});
                 self._setData("in_page_transition", false);

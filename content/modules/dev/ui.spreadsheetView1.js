@@ -159,8 +159,8 @@
         var user    = self._users[i_user];
         var stat    = m.o.stat[user.id+"_"+file.id];
         var grade    = m.get("grade", {id_user: user.id, id_source:file.id}).first();
-        var lens_stat    = (stat != undefined) ? "<span class='stat'>"+stat.cnt+"</span>" : "";
-        var lens_grade    = (grade != null) ?  "<span class='grade'>"+$.concierge.get_component("grade2litt")(grade.grade)+"</span>": "";
+        var lens_stat    = (stat !== undefined) ? "<span class='stat'>"+stat.cnt+"</span>" : "";
+        var lens_grade    = (grade !== null) ?  "<span class='grade'>"+$.concierge.get_component("grade2litt")(grade.grade)+"</span>": "";
         return lens_stat+" "+lens_grade;        
         }, 
         _render: function(){
@@ -194,7 +194,7 @@
         s.push("</tr></thead><tbody>");
         for (j in self._users){            
             user = self._users[j];    
-            lens = (user.lastname != null) ? (user.firstname + " "+user.lastname) : ("<i>"+user.email+"</i>");
+            lens = (user.lastname !== null) ? (user.firstname + " "+user.lastname) : ("<i>"+user.email+"</i>");
             if (user.admin){
             //TODO improve styling
             lens+= " <i style='color: #a0a0a0'>admin</i>";
@@ -205,8 +205,8 @@
             file = self._files[i];
                 stat = m.o.stat[user.id+"_"+file.id];
                 grade =  m.get("grade", {id_user: user.id, id_source:file.id}).first();
-                lens_stat = (stat != undefined) ? stat.cnt : "";
-                lens_grade = (grade != null) ? grade.grade: ""
+                lens_stat = (stat !== undefined) ? stat.cnt : "";
+                lens_grade = (grade !== null) ? grade.grade: ""
                 s.push("<td>"+lens_stat+" "+lens_grade+"</td>");        
             */
             //TODO remove var declarations

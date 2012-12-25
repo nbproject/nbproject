@@ -53,7 +53,7 @@
         var self    = this;
         switch (evt.type){
         case "page":
-        if (self._page != evt.value){
+        if (self._page !== evt.value){
             self._page =  evt.value;            
             self._render();
             var scrollby;
@@ -71,12 +71,12 @@
         break;
         case "select_thread": 
         self._id_location = evt.value;
-        if (self._seenTimerID != null){
+        if (self._seenTimerID !== null){
             window.clearTimeout(self._seenTimerID);
         }
         self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
         var o = self._model.o.location[evt.value];
-        if (self._location === null || o.ID != self._location.ID){
+        if (self._location === null || o.ID !== self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -222,7 +222,7 @@
         var $pane = $("div.notepaneView-pages", self.element);
         $pane.scroll(function(evt){
             var timerID = self._scrollTimerID;
-            if (timerID != null){
+            if (timerID !== null){
                 window.clearTimeout(timerID);
             }            
             timerID = window.setTimeout(function(){
@@ -288,7 +288,7 @@
             var locs_done = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].id_location}).first();
-            if (loc != null  && (!(loc.ID in locs_done))){
+            if (loc !== null  && (!(loc.ID in locs_done))){
                 locs_done[loc.ID] = null;
                 $("div.location-lens[id_item="+loc.ID+"]",this.element).html(this._lens(loc));
             }

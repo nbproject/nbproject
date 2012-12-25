@@ -59,7 +59,7 @@
         if (self._id_source ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "page":
-            if (self._page != evt.value){
+            if (self._page !== evt.value){
                 self._page =  evt.value;            
                 self._render();
             }
@@ -83,12 +83,12 @@
             break;
             case "select_thread": 
             $("div.location-pagesummary.selected", self.element).removeClass("selected");
-            if (self._seenTimerID != null){
+            if (self._seenTimerID !== null){
                 window.clearTimeout(self._seenTimerID);
             }
             self._seenTimerID = window.setTimeout(self._f_location_seen(evt.value), 1000);
             var o = self._model.o.location[evt.value];
-            if (o.page !=  self._page){
+            if (o.page !==  self._page){
                 self._page =  o.page;
                 self._render();
             }
@@ -207,7 +207,7 @@
             else { // we need to find a following location on subsequent pages
                 id_item = sel.attr("id_item");
                 id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: self._model, direction: codes[event.keyCode].dir, filters: self._filters}); 
-                if (id_new != null){
+                if (id_new !== null){
                 if (self._is_first_stroke){//add an extra keystroke between changing pages
                     self._is_first_stroke = false;                
                     $.concierge.trigger({type:"warn_page_change", value: id_new});
@@ -309,7 +309,7 @@
         var $pane = $("div.notepaneView-pages", self.element);
         $pane.scroll(function(evt){
             var timerID = self._scrollTimerID;
-            if (timerID != null){
+            if (timerID !== null){
                 window.clearTimeout(timerID);
             }            
             timerID = window.setTimeout(function(){
@@ -355,7 +355,7 @@
             var locs_done = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].id_location}).first();
-            if (loc != null && loc.id_source === self._id_source && (!(loc.ID in locs_done))){
+            if (loc !== null && loc.id_source === self._id_source && (!(loc.ID in locs_done))){
                 locs_done[loc.ID] = null;
                 $("div.location-lens[id_item="+loc.ID+"]",self.element).html(self._lens(loc));
             }

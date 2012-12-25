@@ -36,7 +36,7 @@
         var self    = this;
         var id_source    = self._id_source;
         var model    = self._model;
-        if (id_source != $.concierge.get_state("file")){
+        if (id_source !== $.concierge.get_state("file")){
             return;
         }
         /*
@@ -80,7 +80,7 @@
         case "select_thread": 
         var o = model.o.location[evt.value];
         self._id_location = evt.value;
-        if (o.page !=  this._page){
+        if (o.page !==  this._page){
             this._page =  o.page;
             this._render();
             $("div.material.selected", self.element).removeClass("selected");
@@ -124,7 +124,7 @@
         },
         select: function(){
         var id = this._id_source;
-        if (id && id != $.concierge.get_state("file")){
+        if (id && id !== $.concierge.get_state("file")){
             $.concierge.trigger({type:"file", value:this._id_source });
         }
         }, 
@@ -139,7 +139,7 @@
         self.element.addClass("docView").scroll(function(evt){
             //we use a timer to coalesce scroll events happening in quick succession. 
             var timerID = self._scrollTimerID;
-            if (timerID != null){
+            if (timerID !== null){
                 window.clearTimeout(timerID);
                 self._scrollTimerID =  null;
             }
@@ -151,7 +151,7 @@
                     var prem = h-st%h;
                     var area_indicator = (prem-0.5*evt.currentTarget.clientHeight)>0;
                     var pbar_old = self.___pbar_old;
-                    if ( (area_indicator != self._area_indicator) || (pbar!=pbar_old)){
+                    if ( (area_indicator !== self._area_indicator) || (pbar!=pbar_old)){
                     var newpage = (area_indicator) ?  pbar: pbar+1;
                     self._in_page_transition =  true; //prevent animation 
                     $.concierge.trigger({type: "page_peek", value:newpage});
@@ -189,7 +189,7 @@
             else { // we need to find next location on subsequent pages
                 id_item = sel.attr("id_item");
                 id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: this._model, direction: thread_codes[event.keyCode].dir}); 
-                if (id_new != null){
+                if (id_new !== null){
                 $.concierge.trigger({type:"select_thread", value: id_new});
                 }
                 else{
@@ -286,7 +286,7 @@
         var w2 = self.element.width();
         var pbar = Math.ceil((st+0.01)/(self._h+self._v_margin));
         var current_page = self._page;
-        if ((self._in_page_transition==false) && (pbar != current_page)){
+        if ((self._in_page_transition==false) && (pbar !== current_page)){
             self._in_page_transition =  true;
             var divOffset = self.element.offset().top;
             var imgOffset =     $("img.material[page="+current_page+"]", self.element).parent().offset().top;
@@ -424,7 +424,7 @@
             }
         }
         scale        = candidate_scale;
-        if ( res0 != self._resolution || scale != self._scale){
+        if ( res0 !== self._resolution || scale !== self._scale){
             self._pages =  {};
             self._resolution =  res0;
             self._scale =  scale;
@@ -441,14 +441,14 @@
             $("div.contents", self.element).html(contents);
             var $material = $("div.material", self.element).click(function(evt){
                 var numpage = evt.currentTarget.getAttribute("page");
-                //if (numpage != self._page){
+                //if (numpage !== self._page){
                 //    self._in_page_transition =  true; //prevent animation
                 $.concierge.trigger({type: "page", value:numpage});
                 //    self._in_page_transition =  false;
                 //                }
             }).mouseenter(function(evt){
                 var numpage = evt.currentTarget.getAttribute("page");
-                if (numpage != self._page){
+                if (numpage !== self._page){
                     $.concierge.trigger({type: "page_peek", value:numpage});
                 }
                 });

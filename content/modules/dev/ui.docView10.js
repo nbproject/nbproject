@@ -85,7 +85,7 @@
         break;
         case "select_thread": 
         var o = model.o.location[evt.value];
-        if (self._location === null || o.ID != self._location.ID){
+        if (self._location === null || o.ID !== self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -149,7 +149,7 @@
         self.element.addClass("docView").scroll(function(evt){
             //we use a timer to coalesce scroll events happening in quick succession. 
             var timerID = self._scrollTimerID;
-            if (timerID != null){
+            if (timerID !== null){
                 window.clearTimeout(timerID);
                 self._scrollTimerID =  null;
             }
@@ -360,7 +360,7 @@
             $.concierge.trigger({type: "page", value:numpage});            
             }).mouseenter(function(evt){
                 var numpage = evt.currentTarget.getAttribute("page");
-                if (numpage != self._page){
+                if (numpage !== self._page){
                 $.concierge.trigger({type: "page_peek", value:numpage});
                 }
             });

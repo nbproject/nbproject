@@ -101,7 +101,7 @@
     $("a").each(function(i, elt){
         var href = elt.getAttribute("href") || "";
         var matches = href.match(/^nb(\d+)$/);
-        if (matches != null){
+        if (matches !== null){
             GLOB.pers._comments.push(Number(matches[1]));
         }
         });

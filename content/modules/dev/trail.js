@@ -116,7 +116,7 @@
         $("a").each(function(i, elt){
             var href = elt.getAttribute("href") || "";
             var matches = href.match(/^nb(\d+)$/);
-            if (matches != null){
+            if (matches !== null){
             NB.pers._comments.push(Number(matches[1]));
             }
         });

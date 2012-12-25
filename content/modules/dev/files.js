@@ -307,7 +307,7 @@ GLOB.files.__abspath = function(id_folder){
     var id_parent = f.id_parent;
     var s = f.name;
     var p;
-    while (id_parent != null){
+    while (id_parent !== null){
     p = m.o.folder[id_parent];
     s = p.name + "/" + s;
     id_parent = p.id_parent;

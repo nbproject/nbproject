@@ -69,7 +69,7 @@ License
         var id_view = new_id+"-outer";
         this.element.tabs('add', "#"+id_view, title);
         this._addView(id_view,this.element[0].id,title, "true");
-        if (cbs != undefined){
+        if (cbs !== undefined){
         this._getData("cbs")[id_view] = cbs;
         }
         return new_id;

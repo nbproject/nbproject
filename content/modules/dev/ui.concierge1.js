@@ -35,17 +35,17 @@ var NB$ = jQuery.noConflict();
     this.activeView = null;
     /*
     this.keydown = function(event){
-        if (self.activeView != null){
+        if (self.activeView !== null){
         return self.activeView._keydown(event);
         }
     };
     */
     //keypress is better in mozilla, since we get repeated strokes, but doesn't work in other browsers
     var f_key_cb = function(event){
-        if (document.activeElement != document.body && document.activeElement.tagName != "a"){
+        if (document.activeElement !== document.body && document.activeElement.tagName !== "a"){
         return true; //a "non-anchor" focusable element has the focus: let's not interfere
         }
-        if ("activeView" in self && self.activeView != null){
+        if ("activeView" in self && self.activeView !== null){
         return self.activeView._keydown(event);
         }
         else{
@@ -179,7 +179,7 @@ var NB$ = jQuery.noConflict();
     var O = this.state.o;
     var A = this.state.a;
     //set active state: 
-        //    if ((evt.value != A[evt.type]) || (evt.type in this.allowed_repeat_event)){
+        //    if ((evt.value !== A[evt.type]) || (evt.type in this.allowed_repeat_event)){
         A[evt.type] = evt.value;
         if (evt.type in this.listeners){
         var x = this.listeners[evt.type];

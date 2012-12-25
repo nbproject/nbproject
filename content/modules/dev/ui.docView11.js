@@ -35,7 +35,7 @@
         var self    = this;
         var id_source    = self._id_source;
         var model    = self._model;
-        if (id_source != $.concierge.get_state("file")){
+        if (id_source !== $.concierge.get_state("file")){
             return;
         }
         /*
@@ -86,7 +86,7 @@
         },
         select: function(){
         var id = this._id_source;
-        if (id && id != $.concierge.get_state("file")){
+        if (id && id !== $.concierge.get_state("file")){
             $.concierge.trigger({type:"file", value:this._id_source });
         }
         }, 
@@ -126,7 +126,7 @@
             else { // we need to find next location on subsequent pages
                 id_item = sel.attr("id_item");
                 id_new = $.concierge.get_component("location_closestpage")({id: Number(id_item), model: this._model, direction: thread_codes[event.keyCode].dir}); 
-                if (id_new != null){
+                if (id_new !== null){
                 $.concierge.trigger({type:"select_thread", value: id_new});
                 }
                 else{
@@ -259,7 +259,7 @@
             
             }).mouseenter(function(evt){
                 var numpage = evt.currentTarget.getAttribute("page");
-                if (numpage != self._page){
+                if (numpage !== self._page){
                 $.concierge.trigger({type: "page_peek", value:numpage});
                 }
             });

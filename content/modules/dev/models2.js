@@ -160,7 +160,7 @@
             v_new = objs[pk][fieldname];
             v_old = this.o[type_name][pk][fieldname];
             //if the foreign key has changed, propagate the change: 
-            if (v_new != v_old){
+            if (v_new !== v_old){
                 //regular index
                 delete(index[v_old][pk]);
                 if  (!(v_new in index)){
@@ -175,7 +175,7 @@
             v_new = objs[pk][fieldname];
             v_old = this.o[type_name][pk][fieldname];
             //if the foreign key has changed, propagate the change: 
-            if (v_new != v_old){
+            if (v_new !== v_old){
                 //will the new val end up affecting the bin ? 
                 newbin = Math.floor(v_new/index_info.width);
                 if ((!(newbin in index))||(!(pk in index[newbin]))){
@@ -396,7 +396,7 @@
     };
 
     GLOB.models.QuerySet.prototype.length = function(){
-    if (this.__length != null){ //speedup if gets called multiple times
+    if (this.__length !== null){ //speedup if gets called multiple times
         return this.__length;
     }
     var l=0; 
@@ -481,7 +481,7 @@
         new_ids[ids] = null;
         ids = new_ids;
     }
-    if (field != undefined){ 
+    if (field !== undefined){ 
         for (var i in items){
         if (items[i][field] in ids){
             new_items[i] =items[i];
@@ -535,7 +535,7 @@
         delete items[i];
         n_removed++;
     }
-    if (this.__length != null){ //update length if already computed
+    if (this.__length !== null){ //update length if already computed
         this.__length-=n_removed;
     }
     return this;

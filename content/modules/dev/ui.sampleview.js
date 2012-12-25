@@ -35,7 +35,7 @@
         },
         select: function(){
         var id = this._getData("file");
-        if (id && id != $.concierge.get_state("file")){
+        if (id && id !== $.concierge.get_state("file")){
             $.concierge.trigger({type:"file", value:this._getData("file") });
         }
         }, 

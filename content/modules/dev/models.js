@@ -240,7 +240,7 @@ NB.models.Store.prototype.__db_add = function(type_name, o){
         obj = editList[i];        
         //        id =  editList[i][1];
         for (let j in obj){
-        if ((j!="ID") && (obj[j]!=null) && ((!(j in this.db._spo[i])) || (obj[j] != this.db._spo[i][j][0]))){
+        if ((j!="ID") && (obj[j]!=null) && ((!(j in this.db._spo[i])) || (obj[j] !== this.db._spo[i][j][0]))){
             this.db.editItem(i, j, obj[j]);
         }
         }
@@ -322,7 +322,7 @@ NB.models.Store.prototype.__db_add_batch = function(payload){
     for (let i in editList){    // edit items if any
         let obj = editList[i];        
         for (let j in obj){
-        if ((j!="ID") &&  ((!(j in this.db._spo[i])) || (obj[j] != this.db._spo[i][j][0])) ){
+        if ((j!="ID") &&  ((!(j in this.db._spo[i])) || (obj[j] !== this.db._spo[i][j][0])) ){
             this.db.editItem(i, j, obj[j]);
         }
         }

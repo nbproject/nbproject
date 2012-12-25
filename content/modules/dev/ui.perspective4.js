@@ -166,7 +166,7 @@
             VD._min_width[id]    =  "min_width" in views[v].data ?  views[v].data.min_width : W;
             VD._min_height[id]=  "min_height" in views[v].data ?  views[v].data.min_height : H;
             var priority        =  views[v].data.priority;
-            if (priority != 1 && priority != 2){
+            if (priority !== 1 && priority !== 2){
             throw new Error("priority="+priority+"  but can only be 1 or 2 for now");
             }
             VD._pr2id[priority][id]    = null;

@@ -93,7 +93,7 @@
                 var o = data.rslt.obj;
                 var id_item = o.attr("id_item");
                 var rel = o.attr("rel");
-                //    if (rel != self._selection.rel || id_item != self._selection.id_item){
+                //    if (rel !== self._selection.rel || id_item !== self._selection.id_item){
                 self._selection =  {rel: rel, id_item: id_item};
                 $.concierge.trigger({type:rel, value:id_item});
                 $.jstree._reference(o).toggle_node(o);

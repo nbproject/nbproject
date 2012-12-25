@@ -104,7 +104,7 @@
         var id_ensemble = self._id_ensemble;
         var  query_params = {};
         var viewall_url = "/collage?q=pending";
-        if (id_ensemble != null){
+        if (id_ensemble !== null){
             query_params["ensemble_id"] = id_ensemble;
             viewall_url+="&amp;id_ensemble="+id_ensemble; 
         }
@@ -156,7 +156,7 @@
         var id_ensemble = self._id_ensemble;
         var  query_params = {};
         var viewall_url = "/collage?q=questions";
-        if (id_ensemble != null){
+        if (id_ensemble !== null){
             query_params["ensemble_id"] = id_ensemble;
             viewall_url+="&amp;id_ensemble="+id_ensemble; 
         }
@@ -327,7 +327,7 @@
         var scroll_handler = function(evt){
             var $this = $(this);
             var timerID = self._scrollTimerID;
-            if (timerID != null){
+            if (timerID !== null){
             window.clearTimeout(timerID);
             self._scrollTimerID =  null;
             }

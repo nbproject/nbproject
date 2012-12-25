@@ -62,12 +62,12 @@
             break;
         case "select_thread": 
             self._id_location = evt.value;
-            if (self._seenTimerID != null){
+            if (self._seenTimerID !== null){
             window.clearTimeout(self._seenTimerID);
             }
             self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
             var o = self._model.o.location[evt.value];
-            if (self._location === null || o.ID != self._location.ID){
+            if (self._location === null || o.ID !== self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -122,7 +122,7 @@
                 $.I("grade added");
                 });
             };
-            if (grade != null){
+            if (grade !== null){
             $("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
             }
             $("span.gradeitem", header).click(f_grade_click);
@@ -267,13 +267,13 @@
                 $.I("grade added");
                 });
             };
-            if (grade != null){
+            if (grade !== null){
             $("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
             }
             $("span.gradeitem", header).click(f_grade_click);
             */
             var grade = m.get("grade", {id_user: meta.id_user, id_source:meta.id_source}).first();
-            if (grade != null){
+            if (grade !== null){
             var header = $("div.notepaneView-header", this.element);
             $("span.gradeitem", header).removeClass("selected");
             $("span.gradeitem[id_item="+grade.grade+"]", header).addClass("selected");
@@ -332,7 +332,7 @@
             var $pane = $("div.notepaneView-pages", self.element).empty();
             $pane.scroll(function(evt){
                 var timerID = self._scrollTimerID;
-                if (timerID != null){
+                if (timerID !== null){
                 window.clearTimeout(timerID);
                 }            
                 timerID = window.setTimeout(function(){

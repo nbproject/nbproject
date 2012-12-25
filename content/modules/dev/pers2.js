@@ -57,7 +57,7 @@
         }
         if (x.status.errno){
         //just display that there was an error for now
-        if (errback != undefined){
+        if (errback !== undefined){
             errback(x.status, x.payload);
         }
         GLOB.debug(x.status.msg);
@@ -74,7 +74,7 @@
     GLOB.pers.__authenticate = function(init_ui){
     var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: 1}; 
     var $login_contents;
-    if (uinfo.guest != 0){
+    if (uinfo.guest !== 0){
         $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:GLOB.pers.logout()'>Log out</a></li></ul></li></ul>");
         var $util_window = $.concierge.get_component("get_util_window")();
         $("#register_user_dialog, #login_user_dialog").remove();    
@@ -198,7 +198,7 @@
                 var err = function(msg){
                     $dlg.find("div.form_errors").hide().text(msg).show("fast");
                 };
-                if ($("#register_user_password1")[0].value != $("#register_user_password2")[0].value){
+                if ($("#register_user_password1")[0].value !== $("#register_user_password2")[0].value){
                     err("passwords don't match: please retype them");
                     return;
                 }
@@ -255,7 +255,7 @@
                     password: $("#login_user_password")[0].value
                 };
                 $.concierge.get_component("login_user")(payload , function(p){
-                    if (p.ckey != null){
+                    if (p.ckey !== null){
                         $.concierge.trigger({type:"successful_login", value: p.ckey});
                     }
                     else{
@@ -287,7 +287,7 @@
     }, 
     mini_splashscreen: function(P,cb){
         var widget;
-        if (GLOB.conf.userinfo.guest != 0){ //splashscreen for non-registered user
+        if (GLOB.conf.userinfo.guest !== 0){ //splashscreen for non-registered user
         widget =  "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"minisplashscreen ui-corner-all\">  <div id=\"splash-welcome\">Welcome to NB !</div><div id=\"nb-def\">...a forum on top of every PDF.</div> <ul id=\"splash-list-instructions\"> <li>Use your mouse or the <span class=\"ui-icon ui-icon-circle-triangle-w\"></span> and <span class=\"ui-icon ui-icon-circle-triangle-e\"></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class=\"ui-icon ui-icon-circle-triangle-n\"></span> and  <span class=\"ui-icon ui-icon-circle-triangle-s\"></span> keys to scroll up and down the document.</li> <li>New user ? <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a> now...</li> </ul>  <a target=\"_blank\" href=\"/help\">More help...</a>  </div>       ";
         }
         else{ //splashscreen for registered user
@@ -310,7 +310,7 @@
     }, 
     in_progress: function(P,cb){
         var msg="Loading in progress...";
-        if (P != undefined && "msg" in P){
+        if (P !== undefined && "msg" in P){
         msg = P.msg;
         }
         return "<div align='center' class='loadingpane'><img src='content/data/icons/gif/loader1.gif'/><div class='loadingpane-msg'>"+msg+"</div></div>";

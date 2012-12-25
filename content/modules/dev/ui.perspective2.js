@@ -115,7 +115,7 @@
             //TODO: Change relative sizes to absolute 
             self.options._min[id]    =  views[v].data.min;
             var priority        =  views[v].data.priority;
-            if (priority != 1 && priority != 2){
+            if (priority !== 1 && priority !== 2){
             throw new Error("priority="+priority+"  but can only be 1 or 2 for now");
             }
             self.options._pr2id[priority][id]=null;
