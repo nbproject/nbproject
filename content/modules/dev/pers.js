@@ -2,10 +2,10 @@
  * pers.js: common fct for perspective-based views
  * This module defines the namespace NB.pers
  * It requires the following modules:
- *		Module
- *		NB
- *		NB.auth
- *		jquery
+ *        Module
+ *        NB
+ *        NB.auth
+ *        jquery
  *
  *
  Author 
@@ -31,40 +31,40 @@ NB.pers.first_connection = true;
 NB.pers.connection_T = 1000;  // in msec
 
 $(document).ready(function(){
-	NB.pers.params = NB.dom.getParams();
-	//if email and password provided by server, set them as cookies for auto-login
-	//so that we're authenticated for subsequent function calls
-	var identity = NB.auth.get_cookie("invite_key");
-	if (identity != null){
-	    NB.conf.identity = identity;
-	}
-	NB.pers.init();
+    NB.pers.params = NB.dom.getParams();
+    //if email and password provided by server, set them as cookies for auto-login
+    //so that we're authenticated for subsequent function calls
+    var identity = NB.auth.get_cookie("invite_key");
+    if (identity != null){
+        NB.conf.identity = identity;
+    }
+    NB.pers.init();
     });
 
 NB.pers.call = function(fctname, dict, callback, nowait){
     if (NB.conf.identity == ""){
-	NB.conf.identity = prompt("Please enter your invite key...");
+    NB.conf.identity = prompt("Please enter your invite key...");
     }
     if ((!NB.pers.first_connection) && NB.pers.connection_id == 0) {
-	// we haven't received a reply yet so put this function to wait for a while
-	NB.debug("waiting until we get a connection id...")
-	window.setTimeout(function(){
-		NB.pers.call(fctname, dict, callback, nowait);
-	    }, NB.pers.connection_T);
-	return;
+    // we haven't received a reply yet so put this function to wait for a while
+    NB.debug("waiting until we get a connection id...")
+    window.setTimeout(function(){
+        NB.pers.call(fctname, dict, callback, nowait);
+        }, NB.pers.connection_T);
+    return;
     }
     NB.pers.first_connection = false;
     var cb = function(x){
-	if ("CID" in x.status){
-	    NB.pers.connection_id = x.status.CID;
-	}
-	if (x.status.errno){
-	    //just display that there was an error for now
-	    NB.debug(x.status.msg);
-	    return;
-	}
-	//     console.log("cb w/ x=", x);
-	callback(x.payload);
+    if ("CID" in x.status){
+        NB.pers.connection_id = x.status.CID;
+    }
+    if (x.status.errno){
+        //just display that there was an error for now
+        NB.debug(x.status.msg);
+        return;
+    }
+    //     console.log("cb w/ x=", x);
+    callback(x.payload);
     };
     $.post(NB.conf.servers.rpc+"/pdf3/rpc?invite_key=" + NB.conf.identity,{"cid": NB.pers.connection_id, "f": fctname, "a": JSON.stringify(dict)}, cb, "json");
 };

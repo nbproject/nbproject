@@ -2,9 +2,9 @@
  * files.js: 
  * This module defines the namespace NB.files
  * It requires the following modules:
- *		Module
- *		NB
- *		jquery
+ *        Module
+ *        NB
+ *        jquery
  *
  *
  Author 
@@ -19,7 +19,7 @@
 (function(GLOB){
     //require auth
     if (NB$){
-	var $ = NB$;
+    var $ = NB$;
     }
     GLOB.files = {};
 
@@ -48,18 +48,18 @@ GLOB.files.addFile = function(id_ensemble, id_folder){
     $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
 
     $('#add_file_dialog').dialog({
-	    title: "Add a PDF File...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("source_id_getter")({}, GLOB.files.proceedUpload);
-			$.I("Uploading in progress...");
-		    }
-	    }
-	});
+        title: "Add a PDF File...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("source_id_getter")({}, GLOB.files.proceedUpload);
+            $.I("Uploading in progress...");
+            }
+        }
+    });
     $('#add_file_dialog').dialog("open");
 };
 
@@ -74,16 +74,16 @@ GLOB.files.proceedUpload = function(payload){
     $('#add_file_dialog').dialog("destroy");
     //SACHA TODO: Fix this when we setup connectionIds
     window.setTimeout(function(){
-	    //NOTE (important !) 
-	    $.I("NB is processing your file... You should receive an email once your file is available on GLOB."); 
-	    var payload_objects = {types:["files"],  id: payload.id_source};
-	    if ("id_ensemble" in GLOB.pers.params){
-		payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
-	    }
-	    GLOB.pers.call("getObjects", payload_objects, function(p){
-		    GLOB.pers.store.add("file", p.files);
-		} );
-	}, 3000);
+        //NOTE (important !) 
+        $.I("NB is processing your file... You should receive an email once your file is available on GLOB."); 
+        var payload_objects = {types:["files"],  id: payload.id_source};
+        if ("id_ensemble" in GLOB.pers.params){
+        payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
+        }
+        GLOB.pers.call("getObjects", payload_objects, function(p){
+            GLOB.pers.store.add("file", p.files);
+        } );
+    }, 3000);
 };
 
 
@@ -92,22 +92,22 @@ GLOB.files.update_file = function(id){
     var $filename = $("#update_file_name");
     $filename.html(GLOB.files.model.o.file[id].title);
     $('#update_file_dialog').dialog({
-	    title: "Update a PDF File...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			var form = $("#file_update_form")[0];
-			var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
-			form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload/update?id_source="+ id+newauth);
-			form.submit();
-			$.I("Updating in progress...");
-			$(this).dialog("destroy");  
-		    }
-	    }
-	});
+        title: "Update a PDF File...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            var form = $("#file_update_form")[0];
+            var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
+            form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload/update?id_source="+ id+newauth);
+            form.submit();
+            $.I("Updating in progress...");
+            $(this).dialog("destroy");  
+            }
+        }
+    });
     $('#update_file_dialog').dialog("open");
 };
 
@@ -121,16 +121,16 @@ GLOB.files.proceedUpdate = function(payload){
     $('#update_file_dialog').dialog("destroy");
     //SACHA TODO: Fix this when we setup connectionIds
     window.setTimeout(function(){
-	    //NOTE (important !) 
-	    $.I("NB is processing your file... You should receive an email once your file has been updated."); 
-	    var payload_objects = {types:["files"],  id: payload.id_source};
-	    if ("id_ensemble" in GLOB.pers.params){
-		payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
-	    }
-	    GLOB.pers.call("getObjects", payload_objects, function(p){
-		    GLOB.pers.store.add("file", p.files);
-		} );
-	}, 3000);
+        //NOTE (important !) 
+        $.I("NB is processing your file... You should receive an email once your file has been updated."); 
+        var payload_objects = {types:["files"],  id: payload.id_source};
+        if ("id_ensemble" in GLOB.pers.params){
+        payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
+        }
+        GLOB.pers.call("getObjects", payload_objects, function(p){
+            GLOB.pers.store.add("file", p.files);
+        } );
+    }, 3000);
 };
 
 
@@ -140,21 +140,21 @@ GLOB.files.inviteUsers = function(id_ensemble){
     GLOB.files.currentEnsemble = id_ensemble;
     $("#invite_users_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     $('#invite_users_dialog').dialog({
-	    title: "Send an invitation...", 
-		width: 550,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			var to = $("#invite_users_emails")[0].value;
-			var msg = $("#invite_users_msg")[0].value;
-			var admin = $("#invite_users_admin:checked").length;
-			$.concierge.get_component("invite_users")({id_ensemble: id_ensemble, to: to, msg: msg, admin: admin}, function(){$.I("Your invitation has been sent !");})
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Send an invitation...", 
+        width: 550,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            var to = $("#invite_users_emails")[0].value;
+            var msg = $("#invite_users_msg")[0].value;
+            var admin = $("#invite_users_admin:checked").length;
+            $.concierge.get_component("invite_users")({id_ensemble: id_ensemble, to: to, msg: msg, admin: admin}, function(){$.I("Your invitation has been sent !");})
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#invite_users_dialog').dialog("open");
 };
 
@@ -168,18 +168,18 @@ GLOB.files.addEnsemble = function(){
     $("input[name=allow_download][value=1]")[0].checked="true";
     $("input[name=use_invitekey][value=1]")[0].checked="true";
     $('#add_ensemble_dialog').dialog({
-	    title: "Create a new class...", 
-		width: 540,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value==1, allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value==1, allow_guest: $("input[name=allow_guest]:checked")[0].value==1,  allow_download: $("input[name=allow_download]:checked")[0].value==1, use_invitekey: $("input[name=use_invitekey]:checked")[0].value==1 }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Create a new class...", 
+        width: 540,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value==1, allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value==1, allow_guest: $("input[name=allow_guest]:checked")[0].value==1,  allow_download: $("input[name=allow_download]:checked")[0].value==1, use_invitekey: $("input[name=use_invitekey]:checked")[0].value==1 }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#add_ensemble_dialog').dialog("open");
 };
 
@@ -196,18 +196,18 @@ GLOB.files.addFolder = function(id_ensemble, id_folder){
     $("#add_folder_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
 
     $('#add_folder_dialog').dialog({
-	    title: "Add a Folder...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("add_folder")({id_parent: id_folder, id_ensemble: id_ensemble, name: $("#add_folder_name")[0].value}, function(p){GLOB.files.model.add("folder", p);$.I("folder added");} );
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Add a Folder...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("add_folder")({id_parent: id_folder, id_ensemble: id_ensemble, name: $("#add_folder_name")[0].value}, function(p){GLOB.files.model.add("folder", p);$.I("folder added");} );
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#add_folder_dialog').dialog("open");
 };
 
@@ -217,37 +217,37 @@ GLOB.files.edit_assignment = function(id){
     var assignment_ref = f.assignment ? "1" : "0";
     var checkboxes = $("input[name=is_assignment]");
     var f_checkbox = function(){
-	var v = checkboxes.filter(":checked")[0].value;
-	$("#assignment_due")[v=="1"? "show":"hide"]();
+    var v = checkboxes.filter(":checked")[0].value;
+    $("#assignment_due")[v=="1"? "show":"hide"]();
     }
     checkboxes.click(f_checkbox);
     checkboxes.filter("[value="+assignment_ref+"]")[0].checked="true";
     f_checkbox();     
     if (f.due!=null){
-	$('#due_date')[0].value = f.due.substring(7,5)+"/"+f.due.substring(10,8)+"/"+f.due.substring(4,0);
-	$('#due_time')[0].value = f.due.substring(13,11)+":"+f.due.substring(16,14);
+    $('#due_date')[0].value = f.due.substring(7,5)+"/"+f.due.substring(10,8)+"/"+f.due.substring(4,0);
+    $('#due_time')[0].value = f.due.substring(13,11)+":"+f.due.substring(16,14);
     }   
     $('#edit_assignment_dialog').dialog({
-	    title: "Assignment Properties for "+$.E(f.title), 
-	    width: 600,
-		height: 380,
-	    buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		"Ok": function() { 
-		    var v_date = $('#due_date')[0].value;
-		    var v_time = $('#due_time')[0].value;
+        title: "Assignment Properties for "+$.E(f.title), 
+        width: 600,
+        height: 380,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+        "Ok": function() { 
+            var v_date = $('#due_date')[0].value;
+            var v_time = $('#due_time')[0].value;
 
-		    //TODO: validate form
-		    var due_datetime = v_date == "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
-		    
-		    $('#due_date')[0].value
-		    $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value=="1", due:due_datetime}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
-		    $(this).dialog("destroy");
-		}
-	    }
-	});
+            //TODO: validate form
+            var due_datetime = v_date == "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
+            
+            $('#due_date')[0].value
+            $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value=="1", due:due_datetime}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
+            $(this).dialog("destroy");
+        }
+        }
+    });
     $('#edit_assignment_dialog').dialog("open");
     $('#due_date').calendricalDate({usa: true,  isoTime: true, two_digit_mdh: true});
     $('#due_time').calendricalTime({usa: true,  isoTime: true, two_digit_mdh: true, meridiemUpperCase: true});
@@ -258,18 +258,18 @@ GLOB.files.rename_file = function(id, item_type){
     var o =  (item_type==="file")? GLOB.files.model.o.file[id] : GLOB.files.model.o.folder[id];
     $filename[0].value =  o[GLOB.files.labelfields[item_type]];
     $('#rename_file_dialog').dialog({
-	    title: "Rename "+item_type+"...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Rename "+item_type+"...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#rename_file_dialog').dialog("open");
     $filename.focus();
 };
@@ -279,25 +279,25 @@ GLOB.files.rename_file = function(id, item_type){
 GLOB.files.delete_file = function(id, item_type){
     var m = GLOB.pers.store;
     if (item_type==="folder" && (!m.get("file", {id_folder: id}).is_empty() || !m.get("folder", {id_parent: id}).is_empty())){
-	alert("This folder isn't empty. You can only delete folders that are empty.");
-	return;
+    alert("This folder isn't empty. You can only delete folders that are empty.");
+    return;
     }
     var $filename = $("#delete_"+item_type+"_name");
     var o =  (item_type==="file")? GLOB.files.model.o.file[id] : GLOB.files.model.o.folder[id];
     $filename.text( o[GLOB.files.labelfields[item_type]]);
     $('#delete_'+item_type+'_dialog').dialog({
-	    title: "Delete "+item_type+"...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("delete_file")({id: id, item_type: item_type}, function(P){GLOB.files.model.remove(item_type, P["id"]);$.I(item_type+" deleted");} );
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Delete "+item_type+"...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("delete_file")({id: id, item_type: item_type}, function(P){GLOB.files.model.remove(item_type, P["id"]);$.I(item_type+" deleted");} );
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#delete_'+item_type+'_dialog').dialog("open");
 };
 
@@ -308,9 +308,9 @@ GLOB.files.__abspath = function(id_folder){
     var s = f.name;
     var p;
     while (id_parent != null){
-	p = m.o.folder[id_parent];
-	s = p.name + "/" + s;
-	id_parent = p.id_parent;
+    p = m.o.folder[id_parent];
+    s = p.name + "/" + s;
+    id_parent = p.id_parent;
     }
     s = GLOB.files.model.o.ensemble[f.id_ensemble].name + "/" + s; 
     return s;
@@ -321,10 +321,10 @@ GLOB.files.__isDirOrParent = function(id_a,id_b){
     var folders = GLOB.files.model.o.folder;
     var d = folders[id_b];
     while (d.id_parent !== null){
-	if (d.ID === id_a){
-	    return true;
-	}
-	d = folders[d.id_parent];
+    if (d.ID === id_a){
+        return true;
+    }
+    d = folders[d.id_parent];
     }
     return id_a === d.ID;
 };
@@ -334,10 +334,10 @@ GLOB.files.__generate_folders = function(id_ensemble, id_sel, id_exclude){
     var sel_str = (id_sel==null) ? " selected='selected' ": " ";
     var s="<option "+sel_str+" id_item='0'>"+GLOB.files.model.o.ensemble[id_ensemble].name+"</option>";
     for (var i in subfolders.items){ 
-	if (id_exclude === undefined || (!GLOB.files.__isDirOrParent(parseInt(id_exclude), parseInt(i)))){
-	    sel_str = (i==id_sel ) ? " selected='selected' ": " ";
-	    s+="<option "+sel_str+" id_item='"+i+"'>"+GLOB.files.__abspath(i)+"</option>";
-	}
+    if (id_exclude === undefined || (!GLOB.files.__isDirOrParent(parseInt(id_exclude), parseInt(i)))){
+        sel_str = (i==id_sel ) ? " selected='selected' ": " ";
+        s+="<option "+sel_str+" id_item='"+i+"'>"+GLOB.files.__abspath(i)+"</option>";
+    }
     }
     return s;
 };
@@ -349,18 +349,18 @@ GLOB.files.move_file = function(id, item_type){
     $select = $("#move_file_select");
     $select.html(GLOB.files.__generate_folders(o.id_ensemble,o.id_folder||o.id_parent, (item_type==="file")?undefined:id));
     $('#move_file_dialog').dialog({
-	    title: "Move "+item_type+"...", 
-		width: 390,
-		buttons: { 
-		"Cancel": function() { 
-		    $(this).dialog("close");  
-		},
-		    "Ok": function() { 
-			$.concierge.get_component("move_file")({id: id, item_type: item_type, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type + " moved");} );
-			$(this).dialog("destroy");
-		    }
-	    }
-	});
+        title: "Move "+item_type+"...", 
+        width: 390,
+        buttons: { 
+        "Cancel": function() { 
+            $(this).dialog("close");  
+        },
+            "Ok": function() { 
+            $.concierge.get_component("move_file")({id: id, item_type: item_type, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type + " moved");} );
+            $(this).dialog("destroy");
+            }
+        }
+    });
     $('#move_file_dialog').dialog("open");
 };
 

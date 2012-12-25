@@ -18,7 +18,7 @@ Exhibit.HeadlessFacet = function(containerElmt, uiContext) {
     this._valueSet = new Exhibit.Set();
     this._selectMissing = false;
 
-	this._delayedUpdateItems = null;
+    this._delayedUpdateItems = null;
     
     this._settings = {};
     this._dom = null;
@@ -184,9 +184,9 @@ Exhibit.HeadlessFacet.prototype.clearAllRestrictions = function(do_batch) {
         restrictions.selectMissing = this._selectMissing;
         this._selectMissing = false;
         
-	if (do_batch){
-	    this._notifyCollection();
-	}
+    if (do_batch){
+        this._notifyCollection();
+    }
     }
     return restrictions;
 };
@@ -199,7 +199,7 @@ Exhibit.HeadlessFacet.prototype.applyRestrictions = function(restrictions, do_ba
     this._selectMissing = restrictions.selectMissing;
     
     if (!(do_batch)){
-	this._notifyCollection();
+    this._notifyCollection();
     }
 };
 
@@ -233,10 +233,10 @@ Exhibit.HeadlessFacet.prototype.restrict = function(items) {
 };
 
 Exhibit.HeadlessFacet.prototype.onUncollapse = function() {
-	if (this._delayedUpdateItems != null) {
-	    //		this.update(this._delayedUpdateItems);
-		this._delayedUpdateItems = null;
-	}
+    if (this._delayedUpdateItems != null) {
+        //        this.update(this._delayedUpdateItems);
+        this._delayedUpdateItems = null;
+    }
 }
 
 Exhibit.HeadlessFacet.prototype.update = function(items) {};
