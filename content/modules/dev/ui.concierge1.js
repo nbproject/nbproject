@@ -235,7 +235,7 @@ var NB$ = jQuery.noConflict();
     return (l>n) ? s.substring(0,n) + "...": s;
     };
     $.pluralize = function(n, plural, singular){
-    if (n == 1){
+    if (n === 1){
         return singular || "";
     }
     return plural || "s";

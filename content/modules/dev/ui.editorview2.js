@@ -32,7 +32,7 @@
         var guest_msg    = "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
         switch (evt.type){
         case "new_thread":
-            if (me.guest == 1){
+            if (me.guest === 1){
             $.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
             return;
             }
@@ -58,7 +58,7 @@
             self._render(id_item);    
             break;
         case "reply_thread": 
-            if (me.guest == 1){
+            if (me.guest === 1){
             $.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
             return;
             }
@@ -119,7 +119,7 @@
         var answerplease_opt = " ";
         if(self._doEdit && self._note.ID in model.o.mark){
             var mark = model.o.mark[self._note.ID];
-            if (mark.answerplease == 1){
+            if (mark.answerplease === 1){
             answerplease_opt = " checked='checked' ";
             }
         }
@@ -150,7 +150,7 @@
         self.element.append(contents);
         $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
         var $textarea = $("textarea", self.element).keypress(function(e){
-            if(e.keyCode == 27 && this.value.length==0){
+            if(e.keyCode === 27 && this.value.length==0){
                 f_cleanup();
             }
             }).width(self.element.width()-15);     

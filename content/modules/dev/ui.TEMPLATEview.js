@@ -23,7 +23,7 @@
         $.mods.ready("editorview1", function(){});
         },
         _defaultHandler: function(evt){
-        if (this._file ==  $.concierge.get_state("file")){
+        if (this._file ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "__YOUR_EVENT_HERE__":
             break;

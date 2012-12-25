@@ -45,7 +45,7 @@ License
         var answerplease_opt = " ";
         if(O.doEdit && O.note.ID in model.o.mark){
         var mark = model.o.mark[O.note.ID];
-        if (mark.answerplease == 1){
+        if (mark.answerplease === 1){
             answerplease_opt = " checked='checked' ";
         }
         }

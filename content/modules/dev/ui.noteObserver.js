@@ -25,12 +25,12 @@ License
         },
         _defaultHandler: function(evt){
         var self = this;
-        if (evt.type == "page"){
+        if (evt.type === "page"){
             let id_source =  $.concierge.get_state("file");
             //need to add 1 value for uniqueness
             $.concierge.logRemote("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
         }
-        else if (evt.type == "file"){
+        else if (evt.type === "file"){
             //$.L("[noteObserver]: TODO - update file");
             //load notes for that file if we don't have them already. 
             let files_notes_loaded =  this._getData('files_notes_loaded');

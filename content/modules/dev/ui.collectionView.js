@@ -23,7 +23,7 @@ License
         },
         _defaultHandler: function(evt){
         var self = this;
-        if (evt.type == "collection"){
+        if (evt.type === "collection"){
             //bring to front
             self.element.parent().viewport("smoothSelect", self.element.attr("id"));
         }

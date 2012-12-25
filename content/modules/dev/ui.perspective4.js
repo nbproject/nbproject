@@ -194,7 +194,7 @@
         newprefix    = prefix+self.PREFIXES[v];
         id        = elt_id + newprefix;
         if ("data" in views[v]){//found a leaf
-            if (views[v].data.priority == 1 && views.orientation==P.orientation1){
+            if (views[v].data.priority === 1 && views.orientation==P.orientation1){
             //here we make the approx that this IS on the critical path
             VD[P.cp][id] = null;               
             }

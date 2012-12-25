@@ -125,10 +125,10 @@
             cs = m.get("comment", {location_id: l.id}).items;
             comments = "";
             s = m.o.file[l.source_id];
-            ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+            ensemble_info = id_ensemble === null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
             for (var cid in cs){
             c = cs[cid];
-            if (!((q.comment_id == null && c.parent_id == null) || q.comment_id == c.id)){
+            if (!((q.comment_id === null && c.parent_id === null) || q.comment_id === c.id)){
                 //only display real answers, not the original comment
                 body = $.E(c.body).replace(/\n/g, " ");
                 reply_link = "/r/"+c.id;   
@@ -193,7 +193,7 @@
         body = $.E(c.body).replace(/\n/g, " ");
         comment_link = "/c/"+c.id;
         reply_link = q==undefined ? "" : "<a target='_blank' href='/r/"+c.id+"'><button>Reply</button></a>";
-        ensemble_info = id_ensemble == null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
+        ensemble_info = id_ensemble === null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
         parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
         scalefactor = 0.6334;
@@ -218,7 +218,7 @@
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
         var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
-        var filesView_files = (self._id_ensemble == null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
+        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
 
@@ -232,7 +232,7 @@
         var id_ensemble = self._id_ensemble;        
         var id_folder = self._id_folder;
         var model = self._model; 
-        if (id_ensemble == null){
+        if (id_ensemble === null){
             // TODO: put drawing code here.
         }
         else{
@@ -307,7 +307,7 @@
         if (self._draw_pending()){
             open_candidate = "#filesView-pending-header";
         }
-        if (self._defaultopen == null){
+        if (self._defaultopen === null){
             self._defaultopen = open_candidate;
         }
         self._draw_files();
@@ -373,7 +373,7 @@
 
         },
         update: function(action, payload, items_fieldname){
-        if (action == "add" || action == "remove"){
+        if (action === "add" || action === "remove"){
             this._render();
             /*
             if ("replyrating" in payload){

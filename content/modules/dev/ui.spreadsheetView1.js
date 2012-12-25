@@ -87,7 +87,7 @@
         }
         },
         update: function(action, payload, items_fieldname){
-        if (action == "add" && items_fieldname=="grade" && this._rendered){
+        if (action === "add" && items_fieldname=="grade" && this._rendered){
             $.L("TODO re_render");
             this._render()
         }
@@ -167,8 +167,8 @@
         var self    = this;
         var m        = self._model;
         var f_sort_user = function(o1, o2){
-            if (o1.lastname == null){
-            return  o2.lastname == null ? 0 : 1;
+            if (o1.lastname === null){
+            return  o2.lastname === null ? 0 : 1;
             }
             if (o1.lastname > o2.lastname){
             return 1;

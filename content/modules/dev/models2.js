@@ -236,7 +236,7 @@
     */
     var self = this;
     var ids = {};
-    if (typeof(pkeys) == "object"){
+    if (typeof(pkeys) === "object"){
         ids = pkeys;
     }
     else{

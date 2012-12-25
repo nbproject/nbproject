@@ -129,7 +129,7 @@
         if ($expand.length==0){
         return;
         }
-        if ($expand.length == 1){ //allocate the whole available space
+        if ($expand.length === 1){ //allocate the whole available space
         var s0          = $expand.offset().top+parseInt($expand.css("margin-top")||0)+parseInt($expand.css("margin-bottom")||0)+parseInt($expand.css("border-top")||0)+parseInt($expand.css("border-bottom")||0) - this.element.offset().top;
         var new_height = this.element.height() - s0;
         $expand.height(new_height);

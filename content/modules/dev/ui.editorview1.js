@@ -26,7 +26,7 @@
         $.mods.ready("editorview1", function(){});
         },
         _defaultHandler: function(evt){
-        if (this._file ==  $.concierge.get_state("file")){
+        if (this._file ===  $.concierge.get_state("file")){
             var self        = this;
             var model        = self._model;
             switch (evt.type){
@@ -92,7 +92,7 @@
         var answerplease_opt = " ";
         if(self._doEdit && self._note.ID in model.o.mark){
             var mark = model.o.mark[self._note.ID];
-            if (mark.answerplease == 1){
+            if (mark.answerplease === 1){
             answerplease_opt = " checked='checked' ";
             }
         }

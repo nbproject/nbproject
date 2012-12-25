@@ -108,7 +108,7 @@
         else{
             $.concierge.trigger({type:"page", value: 1});
         }
-        if ($.concierge.activeView == null){
+        if ($.concierge.activeView === null){
             $.concierge.activeView = self; //init. 
         }
         },
@@ -151,10 +151,10 @@
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
 
-        if (action == "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname=="location"){
             var id_source    = this._id_source; 
             var page        = this._page;
-            if (page == null || id_source == null ){
+            if (page === null || id_source === null ){
             //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
             this._page =  1;
             this._render();
@@ -164,7 +164,7 @@
             $.L("[docView11] TODO: update");
             }
         }
-        else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
+        else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
             var D        = payload.diff;
             $.L("[docView11] TODO: remove");
         }

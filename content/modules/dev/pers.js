@@ -42,10 +42,10 @@ $(document).ready(function(){
     });
 
 NB.pers.call = function(fctname, dict, callback, nowait){
-    if (NB.conf.identity == ""){
+    if (NB.conf.identity === ""){
     NB.conf.identity = prompt("Please enter your invite key...");
     }
-    if ((!NB.pers.first_connection) && NB.pers.connection_id == 0) {
+    if ((!NB.pers.first_connection) && NB.pers.connection_id === 0) {
     // we haven't received a reply yet so put this function to wait for a while
     NB.debug("waiting until we get a connection id...")
     window.setTimeout(function(){

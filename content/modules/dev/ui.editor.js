@@ -35,10 +35,10 @@ License
         let unclear_opt = " ";
         if(self.options.doEdit && self.options.note.ID in model.o.mark){
         let mark = model.o.mark[self.options.note.ID];
-        if (mark.answerplease == 1){
+        if (mark.answerplease === 1){
             answerplease_opt = " checked='checked' ";
         }
-        if (mark.subscribe == 1){
+        if (mark.subscribe === 1){
             unclear_opt = " checked='checked' ";
         }
         }

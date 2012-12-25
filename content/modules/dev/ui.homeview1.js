@@ -151,7 +151,7 @@
         */
         }, 
         update: function(action, payload, items_fieldname){
-        if (action == "add" || action == "remove"){
+        if (action === "add" || action === "remove"){
             this._render();
         }
         //        console.log("model update !", action, payload, items_fieldname);

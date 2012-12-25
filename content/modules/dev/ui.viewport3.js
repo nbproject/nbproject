@@ -22,7 +22,7 @@ License
     var __previousElement = function(node){
     var n = node.previousSibling;
     while(n){
-        if (n.nodeType == 1){
+        if (n.nodeType === 1){
         return n;
         }
         else{
@@ -193,7 +193,7 @@ License
         var self = this;
         // initialization from scratch
         if (init) {
-        if (temp_tab == null){
+        if (temp_tab === null){
             temp_tab =  $("<div style='display:none'/>");
             $("body").append(temp_tab);
         }

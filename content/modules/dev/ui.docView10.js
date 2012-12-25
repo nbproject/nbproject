@@ -85,7 +85,7 @@
         break;
         case "select_thread": 
         var o = model.o.location[evt.value];
-        if (self._location == null || o.ID != self._location.ID){
+        if (self._location === null || o.ID != self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -164,7 +164,7 @@
                     var next_p;
                     var cond = p.offset().top < 0;
                     var C = {true: {moveto: "next"}, false: { moveto: "prev"}};
-                    while (p.offset().top<0 == cond){
+                    while (p.offset().top<0 === cond){
                     next_p =  p[C[cond].moveto]();
                     if (next_p[0].hasAttribute("page")){
                         p = next_p;
@@ -187,7 +187,7 @@
         if (init_event){
             $.concierge.trigger(init_event);
         }
-        if ($.concierge.activeView == null){
+        if ($.concierge.activeView === null){
             $.concierge.activeView = self; //init. 
         }
         },
@@ -207,10 +207,10 @@
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
 
-        if (action == "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname=="location"){
             var id_collection    = this._id_collection; 
             var page        = this._page;
-            if (page == null || id_collection == null ){
+            if (page === null || id_collection === null ){
             //initial rendering: Let's render the first page. We don't check the id_collection here since other documents will most likely have their page variable already set. 
             this._page =  1;
             this._location = this._collection.items[0];
@@ -223,9 +223,9 @@
             var pages    = this._pages;
             var do_render_now = false;
             for (var i in D){
-                if (D[i].id_collection == id_collection){
+                if (D[i].id_collection === id_collection){
                 delete pages[D[i].page];
-                if (page == D[i].page){ 
+                if (page === D[i].page){ 
                     do_render_now = true;
                 }
                 }
@@ -235,7 +235,7 @@
             }
             }
         }
-        else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
+        else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
             var D        = payload.diff;
             var pages_done    = {};
             var i, page;

@@ -78,7 +78,7 @@
   <li class='context delete separator'><a href='#delete'>Delete</a></li></ul>");                   
         },
         _defaultHandler: function(evt){
-        if (this._file ==  $.concierge.get_state("file")){
+        if (this._file ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "select_thread":
             this._location =  evt.value;
@@ -90,9 +90,9 @@
         _lens: function(o){
         var self        = this;
         var m            = self._model;
-        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty() || o.id_author == self._me.id) ? "" : "note-bold";
+        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty() || o.id_author === self._me.id) ? "" : "note-bold";
         var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-        var me_info        = (o.id_author == self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+        var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
         var question_info_me    = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
 
         var tms            = m.get("threadmark", {comment_id: o.ID,  active: true, type: self._QUESTION });        
@@ -102,10 +102,10 @@
         var question_info    = tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' style='margin-top: -3px;'/> "+tms.length()+" </div>";
 
         var type_info        = "";
-        if (o.type == 1) {
+        if (o.type === 1) {
             type_info        = " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
         }
-        else if (o.type == 2){
+        else if (o.type === 2){
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
         var author_info        = " <span class='author'>"+o.fullname+"</span> ";
@@ -153,7 +153,7 @@
         _render: function(){    
         var self    = this;
         self._me =  $.concierge.get_component("get_userinfo")();
-        if (self._ready == false){
+        if (self._ready === false){
             self._doDelayedRender = true;
             return;
         }
@@ -162,7 +162,7 @@
         self._render_header();
         var $pane    = $("div.threadview-pane", self.element).empty();
         var root    = model.get("comment", {ID_location: self._location, id_parent: null}).sort(this._comment_sort_fct)[0];
-        if (root == undefined){ //happens after deleting a thread that only contains 1 annotation
+        if (root === undefined){ //happens after deleting a thread that only contains 1 annotation
             return;
         }
         $pane.append(this._fill_tree(model, root));
@@ -170,7 +170,7 @@
             $.I("Note #"+p.id_comment+" has been deleted");
             var c = model.o.comment[p.id_comment];
             model.remove("comment", p.id_comment);
-            if (c.id_parent == null){
+            if (c.id_parent === null){
             model.remove("location", c.ID_location);
             }
             else{
@@ -238,7 +238,7 @@
             $("li", this).show();
 
             //edit and delete: 
-            if ((!(c.id_author == self._me.id)) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
+            if ((!(c.id_author === self._me.id)) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
                 $("li.context.edit, li.context.delete", this).hide();
             }        
             //star and question: 
@@ -249,7 +249,7 @@
             to_hide.push(tms_comment.is_empty() ?  "li.context.noquestion": "li.context.question");
             to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context.nostar": "li.context.star" );
             // can't thank a comment for which I'm the author or where I haven't any replyrequested or which was authored before the comment I marked as "reply requested".
-            if ( tms_location.is_empty() || c.id_author == self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
+            if ( tms_location.is_empty() || c.id_author === self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
                 to_hide.push("li.context.thanks");
             }
             $(to_hide.join(","), this).hide();            
@@ -271,7 +271,7 @@
         return true;
         }, 
         update: function(action, payload, items_fieldname){
-        if ((action == "add"|| action == "remove") && (items_fieldname=="comment" || items_fieldname=="threadmark") && this._location){
+        if ((action === "add"|| action === "remove") && (items_fieldname=="comment" || items_fieldname=="threadmark") && this._location){
             this._render();
         }
         }

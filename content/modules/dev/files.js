@@ -43,7 +43,7 @@ GLOB.files.set_model = function(model){
 GLOB.files.addFile = function(id_ensemble, id_folder){
     GLOB.files.currentEnsemble = id_ensemble;
     GLOB.files.currentFolder = id_folder;
-    var foldername = (id_folder == null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
+    var foldername = (id_folder === null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
     $("#add_file_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
 
@@ -66,7 +66,7 @@ GLOB.files.addFile = function(id_ensemble, id_folder){
 GLOB.files.proceedUpload = function(payload){
     var form = $("#file_upload_form")[0];
     // we need a way to pass the id_ensemble and id_folder: we do it in the URL
-    var folder_fragment = (GLOB.files.currentFolder == null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+    var folder_fragment = (GLOB.files.currentFolder === null) ? "" : "&id_folder="+GLOB.files.currentFolder;
     var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
     form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
     form.submit();
@@ -114,7 +114,7 @@ GLOB.files.update_file = function(id){
 GLOB.files.proceedUpdate = function(payload){
     var form = $("#file_upload_form")[0];
     // we need a way to pass the id_ensemble and id_folder: we do it in the URL
-    var folder_fragment = (GLOB.files.currentFolder == null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+    var folder_fragment = (GLOB.files.currentFolder === null) ? "" : "&id_folder="+GLOB.files.currentFolder;
     form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment);
     form.submit();
     //$.I("File updateed to remote repository");    
@@ -190,7 +190,7 @@ GLOB.files.addEnsemble = function(){
 GLOB.files.addFolder = function(id_ensemble, id_folder){
     GLOB.files.currentEnsemble = id_ensemble;
     GLOB.files.currentFolder = id_folder;
-    var foldername = (id_folder == null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
+    var foldername = (id_folder === null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
     $("#add_folder_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     //    $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+GLOB.pers.store.o.folder[GLOB.files.currentFolder].name+"</option>").attr("disabled", "disabled");
     $("#add_folder_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
@@ -240,7 +240,7 @@ GLOB.files.edit_assignment = function(id){
             var v_time = $('#due_time')[0].value;
 
             //TODO: validate form
-            var due_datetime = v_date == "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
+            var due_datetime = v_date === "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
             
             $('#due_date')[0].value
             $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value=="1", due:due_datetime}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
@@ -317,7 +317,7 @@ GLOB.files.__abspath = function(id_folder){
 };
 
 GLOB.files.__isDirOrParent = function(id_a,id_b){
-    //returns true is a == b or is a is a parent of b
+    //returns true is a === b or is a is a parent of b
     var folders = GLOB.files.model.o.folder;
     var d = folders[id_b];
     while (d.id_parent !== null){

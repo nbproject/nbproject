@@ -76,7 +76,7 @@
         }
         self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
         var o = self._model.o.location[evt.value];
-        if (self._location == null || o.ID != self._location.ID){
+        if (self._location === null || o.ID != self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -128,7 +128,7 @@
             var sel = $("div.location-lens.selected", this.element);
             if (sel.length){
             new_page =  this._collection.index[this._location.ID]+1 + codes[event.keyCode].dir;
-            if (new_page == 0 || new_page>this._collection.items.length){
+            if (new_page === 0 || new_page>this._collection.items.length){
                 $.I( codes[event.keyCode].msg);
             }
             else{
@@ -136,7 +136,7 @@
             }
             }
             else{ // no selection on the page
-            new_sel = codes[event.keyCode].no_sel == "first" ? 0 :  this._collection.items.length-1;
+            new_sel = codes[event.keyCode].no_sel === "first" ? 0 :  this._collection.items.length-1;
             $.concierge.trigger({type:"select_thread", value: this._collection.items[new_sel]});
                  //        new_sel.click();
             }
@@ -245,7 +245,7 @@
             $pane.append("<div class='notepaneView-comments' page='"+i+"'/>");
         }
         this._update();    
-        if (this._page == null){
+        if (this._page === null){
             this._page = 1;
         }
         if (items.length>0){
@@ -253,10 +253,10 @@
         }
         }, 
         update: function(action, payload, items_fieldname){
-        if (action == "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname=="location"){
             var id_collection    = this._id_collection; 
             var page        = this._page;
-            if (page == null || id_collection == null ){
+            if (page === null || id_collection === null ){
             //initial rendering: Let's render the first page. We don't check the id_collection here since other documents will most likely have their page variable already set. 
             this._page =  1;
             this._pages = {};
@@ -271,7 +271,7 @@
             var do_render_now = false;
             for (var i in D){
                 delete pages[D[i].page];
-                if (page == D[i].page){ 
+                if (page === D[i].page){ 
                 do_render_now = true;
                 }
             }
@@ -294,7 +294,7 @@
             }
             }           
         }
-        else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
+        else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
             var D        = payload.diff;
             var pages_done    = {};
             var i, page;

@@ -27,8 +27,8 @@ License
         var s="";
         var a;
         var items;
-        if (model.type == "ensemble"){
-        if (action == "create"){
+        if (model.type === "ensemble"){
+        if (action === "create"){
             items = model.getItems();
             for (i in items){
             a = items[i];
@@ -36,7 +36,7 @@ License
             }
             self.element.html(s);
         }
-        else if(action == "add"){
+        else if(action === "add"){
             items = diff[items_fieldname];
             for (i=0;i<items.length;i++){
             a = items[i];
@@ -44,14 +44,14 @@ License
             }
             self.element.append(s);
         }
-        else if(action == "delete"){
+        else if(action === "delete"){
             items= diff[items_fieldname];
             for (i=0;i<items.length;i++){
             a = items[i];
             $("#ensemble_"+a.id+"_"+this.id).remove();
             } 
         }
-        else if(action == "update"){
+        else if(action === "update"){
             items= diff[items_fieldname];
             for (i=0;i<items.length;i++){
             a = items[i];
@@ -59,8 +59,8 @@ License
             } 
         }
         }
-        else if (model.type == "source"){
-        if (action == "create" || action == "add"){
+        else if (model.type === "source"){
+        if (action === "create" || action === "add"){
             items = model.getItems();
             for (i in items){
             a = items[i];
@@ -68,14 +68,14 @@ License
             $("#ensemble_"+a.id_ensemble+"_"+this.id+">.leaves").append(s);
             }
         }
-        else if(action == "delete"){
+        else if(action === "delete"){
             items= diff[items_fieldname];
             for (i=0;i<items.length;i++){
             a = items[i];
             $("#source_"+a.id+"_"+this.id).remove();
             } 
         }
-        else if(action == "update"){
+        else if(action === "update"){
             items= diff[items_fieldname];
             for (i=0;i<items.length;i++){
             a = items[i];

@@ -99,7 +99,7 @@
 
         if (filename in M.files){
             M.deps--;
-            if (M.deps == 0){
+            if (M.deps === 0){
             M.ready = true;
             }
             else{
@@ -190,14 +190,14 @@
         
         for (var k=0;k<files.length;k++){
             var f = files[k];
-            if (f.getAttribute(rec.infile_attr) == j){
+            if (f.getAttribute(rec.infile_attr) === j){
             this.files[j].loaded = true;
             this.modules[i].deps--;
             break;
             }
         }
         }
-        this.modules[i].ready = (this.modules[i].deps == 0);
+        this.modules[i].ready = (this.modules[i].deps === 0);
     }
     };
     $.mods = new Mods(); //singleton pattern

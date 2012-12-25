@@ -20,10 +20,10 @@
     var replymenu, body;
     var bold_cl = m.get("seen", {id: o.ID}).is_empty() ? "" : "note-bold";
     var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-    //    var me_info = (o.id_author == this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+    //    var me_info = (o.id_author === this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
     var me_info = "";
     var type_info = "";
-    if (o.type == 1) {
+    if (o.type === 1) {
         type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
     }
     else if (o.type ==2){

@@ -67,7 +67,7 @@
             }
             self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
             var o = self._model.o.location[evt.value];
-            if (self._location == null || o.ID != self._location.ID){
+            if (self._location === null || o.ID != self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
@@ -146,12 +146,12 @@
         var m = this._model;
         var meta = this._collection.meta;
         var replymenu, body;
-        if (o.id_author == meta.id_user){
+        if (o.id_author === meta.id_user){
             var bold_cl = m.get("seen", {id: o.ID}).is_empty() ? "" : "note-bold";
             var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-            var me_info = (o.id_author == this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+            var me_info = (o.id_author === this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
             var type_info = "";
-            if (o.type == 1) {
+            if (o.type === 1) {
             type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
             }
             else if (o.type ==2){
@@ -210,7 +210,7 @@
             var sel = $("div.location-lens.selected", this.element);
             if (sel.length){
                 new_page =  this._collection.index[this._location.ID]+1 + codes[code].dir;
-                if (new_page == 0 || new_page>this._collection.items.length){
+                if (new_page === 0 || new_page>this._collection.items.length){
                 $.I( codes[code].msg);
                 }
                 else{
@@ -218,7 +218,7 @@
                 }
             }
             else{ // no selection on the page
-                new_sel = codes[code].no_sel == "first" ? 0 :  this._collection.items.length-1;
+                new_sel = codes[code].no_sel === "first" ? 0 :  this._collection.items.length-1;
                 $.concierge.trigger({type:"select_thread", value: this._collection.items[new_sel]});
                 //        new_sel.click();
             }
@@ -355,7 +355,7 @@
             $pane.append("<div class='notepaneView-comments' page='"+i+"'/>");
             }
             this._update();    
-            if (this._page == null){
+            if (this._page === null){
             this._page = 1;
             }
             if (items.length>0){
@@ -363,11 +363,11 @@
             }
         }, 
         update: function(action, payload, items_fieldname){
-             if (action == "add" && this._rendered){
-             if (items_fieldname == "grade"){
+             if (action === "add" && this._rendered){
+             if (items_fieldname === "grade"){
                  this._render();
              }
-             else if (items_fieldname == "comment"){
+             else if (items_fieldname === "comment"){
                  this._pages = {};
                  this._render();
              }

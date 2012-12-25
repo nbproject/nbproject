@@ -57,7 +57,7 @@
         $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
         _defaultHandler: function(evt){
         var self=this;
-        if (self._id_source ==  $.concierge.get_state("file")){
+        if (self._id_source ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "page":
             if (self._page != evt.value){
@@ -393,10 +393,10 @@
         update: function(action, payload, items_fieldname){
         var self = this;
         var m = self._model;
-        if (action == "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname=="location"){
             var id_source    = self._id_source; 
             var page        = self._page;
-            if (page == null || id_source == null ){
+            if (page === null || id_source === null ){
             //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
             self._page =  1;
             self._pages = {};
@@ -410,7 +410,7 @@
             var pages    = self._pages;
             pages_to_render = {};
             for (var i in D){
-                if (D[i].id_source == id_source){
+                if (D[i].id_source === id_source){
                 delete pages[D[i].page];
                 pages_to_render[[D[i].page]] = null;
                 }
@@ -426,13 +426,13 @@
             var locs_done = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].id_location}).first();
-            if (loc != null && loc.id_source == self._id_source && (!(loc.ID in locs_done))){
+            if (loc != null && loc.id_source === self._id_source && (!(loc.ID in locs_done))){
                 locs_done[loc.ID] = null;
                 $("div.location-lens[id_item="+loc.ID+"]",self.element).html(self._lens(loc));
             }
             }           
         }
-        else if (action == "remove" && items_fieldname == "location"){ //just re-render the pages where locations were just removed. 
+        else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
             var D        = payload.diff;
             var pages_done    = {};
             var i, page;

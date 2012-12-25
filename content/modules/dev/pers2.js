@@ -29,7 +29,7 @@
     if (!("activeElement" in document)){
     document.activeElement = document.body;
     document.addEventListener("focus",function(evt){ 
-        document.activeElement = evt.target == document ? document.body : evt.target;
+        document.activeElement = evt.target === document ? document.body : evt.target;
         } ,true);
     document.addEventListener("blur",function(evt){ 
         document.activeElement = document.body;
@@ -42,7 +42,7 @@
     var server_info =  document.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);    
     GLOB.pers.server_url = server_info[1]+"://"+server_info[2];
     GLOB.pers.call = function(fctname, dict, callback, errback){
-    if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id == 0) {
+    if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id === 0) {
         // we haven't received a reply yet so put this function to wait for a while
         GLOB.debug("waiting until we get a connection id...")
         window.setTimeout(function(){
@@ -80,13 +80,13 @@
         $("#register_user_dialog, #login_user_dialog").remove();    
         $util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
         if (init_ui){
-        $("#login_user_password").keypress(function(e) {if(e.keyCode == 13 && this.value.length>0) {
+        $("#login_user_password").keypress(function(e) {if(e.keyCode === 13 && this.value.length>0) {
                 $.L("using shortcut");
                 $("#login_user_dialog").parent().find("button:contains('Ok')").click();}});    
         }
     }
     else{
-        var screenname = uinfo.firstname == null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
+        var screenname = uinfo.firstname === null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
         $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:GLOB.pers.logout()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
@@ -102,7 +102,7 @@
     }
 
     GLOB.pers.preinit = function(init_ui){
-    if (init_ui == undefined){
+    if (init_ui === undefined){
         init_ui = true;
     }
     $.concierge.addComponents(GLOB.pers.__components);
@@ -137,7 +137,7 @@
         var new_id = null;    
         var i, ids;
         var locs;
-        if (p.direction == "down"){
+        if (p.direction === "down"){
         i = page+1;
         while (i<=file.numpages){
             locs = m.get("location", {id_source: loc.id_source, page: i});
@@ -214,7 +214,7 @@
                     err("Please enter a valid e-mail address");
                     return;
                 }
-                if ($("#termsandconditions:checked").length == 0){
+                if ($("#termsandconditions:checked").length === 0){
                     err("You need to accept NB terms and conditions in order to register.");
                     return;
                 }
@@ -270,7 +270,7 @@
     get_util_window: function(P, cb){
         var $util_window = $("div.util_windows");
     
-        if ($util_window.length == 0){
+        if ($util_window.length === 0){
         $util_window = $("<div class='util_windows' style='display:none'/>");
         }
         $("body").append($util_window);

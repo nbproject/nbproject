@@ -76,7 +76,7 @@ function define_headless_facet(){
         
         var selectMissing = Exhibit.getAttribute(configElmt, "selectMissing");
         if (selectMissing != null && selectMissing.length > 0) {
-        facet._selectMissing = (selectMissing == "true");
+        facet._selectMissing = (selectMissing === "true");
         }
     } catch (e) {
         SimileAjax.Debug.exception(e, "HeadlessFacet: Error processing configuration of list facet");
@@ -220,7 +220,7 @@ function define_headless_facet(){
     }
 
     Exhibit.HeadlessFacet.prototype.restrict = function(items) {
-    if (this._valueSet.size() == 0 && !this._selectMissing) {
+    if (this._valueSet.size() === 0 && !this._selectMissing) {
         return items;
     }
     
@@ -261,12 +261,12 @@ function define_headless_facet(){
     var wasSelected;
     var wasOnlyThingSelected;
     
-    if (value == null) { // the (missing this field) case
+    if (value === null) { // the (missing this field) case
         wasSelected = oldSelectMissing;
-        wasOnlyThingSelected = wasSelected && (oldValues.size() == 0);
+        wasOnlyThingSelected = wasSelected && (oldValues.size() === 0);
         
         if (selectOnly) {
-        if (oldValues.size() == 0) {
+        if (oldValues.size() === 0) {
             newSelectMissing = !oldSelectMissing;
         } else {
             newSelectMissing = true;
@@ -278,7 +278,7 @@ function define_headless_facet(){
         }
     } else {
         wasSelected = oldValues.contains(value);
-        wasOnlyThingSelected = wasSelected && (oldValues.size() == 1) && !oldSelectMissing;
+        wasOnlyThingSelected = wasSelected && (oldValues.size() === 1) && !oldSelectMissing;
         
         if (selectOnly) {
         newSelectMissing = false;
@@ -328,7 +328,7 @@ function define_headless_facet(){
             return a.selectionLabel.localeCompare(b.selectionLabel);
         }
         }
-    } else if (valueType == "number") {
+    } else if (valueType === "number") {
         sortValueFunction = function(a, b) {
         a = parseFloat(a.value);
         b = parseFloat(b.value);
@@ -337,7 +337,7 @@ function define_headless_facet(){
     }
     
     var sortFunction = sortValueFunction;
-    if (this._settings.sortMode == "count") {
+    if (this._settings.sortMode === "count") {
         sortFunction = function(a, b) {
         var c = b.count - a.count;
         return c != 0 ? c : sortValueFunction(a, b);
@@ -345,7 +345,7 @@ function define_headless_facet(){
     }
 
     var sortDirectionFunction = sortFunction;
-    if (this._settings.sortDirection == "reverse"){
+    if (this._settings.sortDirection === "reverse"){
         sortDirectionFunction = function(a, b) {
         return sortFunction(b, a);
         }

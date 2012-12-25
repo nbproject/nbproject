@@ -44,13 +44,13 @@ License
         },
         _defaultHandler: function(evt){
         var self = this;
-        if (evt.type == "ensemble"){
+        if (evt.type === "ensemble"){
             //            self._setData("ensemble", evt.value);
             $("div.ensemble.selected", self.element).removeClass("selected");
             $("div.ensemble[id_item="+evt.value+"]", self.element).addClass("selected");
             self.__update_file();
         }
-        else if (evt.type == "file"){
+        else if (evt.type === "file"){
             $("div.file.selected", self.element).removeClass("selected");
             $("div.file[id_item="+evt.value+"]", self.element).addClass("selected");
         }
@@ -90,7 +90,7 @@ License
         for (let prop in props){
             if (prop=="ensemble"){
             let $w = $("div.fileLister-ensemble", self.element);
-            if (action == "create"){
+            if (action === "create"){
                 let s="";
                 for (let id in model.o[prop]){
                 let item = model.o[prop][id];

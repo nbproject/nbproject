@@ -114,7 +114,7 @@ NB.models.Store.prototype.add = function(type_name, o, noexhibit){
         this.o[type_name][i]=o[i];
     }
     //SACHA: TODO update indexes if any
-    if (noexhibit == undefined){
+    if (noexhibit === undefined){
         self.__db_add(type_name, o);
     }
     }

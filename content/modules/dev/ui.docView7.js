@@ -188,10 +188,10 @@
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
 
-        if (action == "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname=="location"){
             var id_source    = this._getData("id_source"); 
             var page        = this._getData("page");
-            if (page == null || id_source == null ){
+            if (page === null || id_source === null ){
             //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
             this._setData("page", 1);
             this._render();
@@ -203,9 +203,9 @@
             var pages    = this._getData("pages");
             var do_render_now = false;
             for (var i in D){
-                if (D[i].id_source == id_source){
+                if (D[i].id_source === id_source){
                 delete pages[D[i].page];
-                if (page == D[i].page){ 
+                if (page === D[i].page){ 
                     do_render_now = true;
                 }
                 }

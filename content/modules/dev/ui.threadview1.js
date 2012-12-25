@@ -34,7 +34,7 @@
         $("body").append("<ul id='contextmenu_threadview' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   
         },
         _defaultHandler: function(evt){
-        if (this._getData("file") ==  $.concierge.get_state("file")){
+        if (this._getData("file") ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "select_thread":
             this._setData("location", evt.value);
