@@ -15,23 +15,20 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.auth", 0.1);
-    Module.require("NB.pers", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
 
-NB.pers.init = function(){
-    if ("q" in NB.pers.params){
-	NB.pers.query = NB.pers.params.q;
+(function(GLOB){
+    if (NB$){
+	var $ = NB$;
+    }
+    
+GLOB.pers.init = function(){
+    if ("q" in GLOB.pers.params){
+	GLOB.pers.query = GLOB.pers.params.q;
     }
     else{
-	NB.pers.query = "auth";
+	GLOB.pers.query = "auth";
     }
-    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
+    GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
 	    $.concierge.addConstants(p.value);
 	});
     $.mods.declare({
@@ -53,8 +50,8 @@ NB.pers.init = function(){
 	    var docview		=  {priority: 1, min_width: 650, desired_width: 35, 
 				    content: function($div){
 		    $.mods.ready("docview", function(){
-			    $div.docView({img_server: NB.conf.servers.img});
-			    $div.docView("set_model",NB.pers.store );
+			    $div.docView({img_server: GLOB.conf.servers.img});
+			    $div.docView("set_model",GLOB.pers.store );
 			});
 		}
 	    };
@@ -62,7 +59,7 @@ NB.pers.init = function(){
 				    content: function($div){
 		    $.mods.ready("notepaneview", function(){
 			    $div.notepaneView();
-			    $div.notepaneView("set_model",NB.pers.store );
+			    $div.notepaneView("set_model",GLOB.pers.store );
 			});
 		}
 	    }; 
@@ -70,7 +67,7 @@ NB.pers.init = function(){
 				   content: function($div){
 		    $.mods.ready("threadview", function(){
 			    $div.threadview();
-			    $div.threadview("set_model",NB.pers.store );			    
+			    $div.threadview("set_model",GLOB.pers.store );			    
 			});
 		}
 	    };
@@ -79,13 +76,13 @@ NB.pers.init = function(){
 		    $.mods.ready("editorview", function(){
 			    /* TODO: this needs to be done at comment creation time since we can have notes spanning several ensembles */
 			    /*
-			      var m = NB.pers.store;
+			      var m = GLOB.pers.store;
 			      var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];				    
 			      $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
 			    */
 			    //temporary fix: restrict all
 			    $div.editorview({allowStaffOnly: false, allowAnonymous: false});
-			    $div.editorview("set_model",NB.pers.store );			    
+			    $div.editorview("set_model",GLOB.pers.store );			    
 			});
 		}
 	    };
@@ -94,7 +91,7 @@ NB.pers.init = function(){
 			listens: {
 			page_peek: function(evt){
 			    //need to add 1 value for uniqueness
-			    var location = NB.pers.store.o.location[NB.pers.collection.items[Number(evt.value)-1]];		    
+			    var location = GLOB.pers.store.o.location[GLOB.pers.collection.items[Number(evt.value)-1]];		    
 			    $.concierge.logHistory("page", location.page+"|"+location.id_source+"|"+(new Date()).getTime());
 			}, 
 			    close_view: function(evt){
@@ -104,7 +101,7 @@ NB.pers.init = function(){
 			    $.L("closeview: ", evt, this.l.element[0].id);
 			}, 
 			    successful_login: function(evt){
-				    NB.auth.set_cookie("ckey", evt.value);
+				    GLOB.auth.set_cookie("ckey", evt.value);
 				    document.location ="http://"+document.location.host+document.location.pathname;
 				    $.I("Welcome !");
 			}
@@ -121,52 +118,52 @@ NB.pers.init = function(){
 	});
     
     //get data: 
-    var P2 =  {query: NB.pers.query};
-    if ("id_ensemble" in NB.pers.params){
-	P2["id_ensemble"] = NB.pers.params.id_ensemble;
+    var P2 =  {query: GLOB.pers.query};
+    if ("id_ensemble" in GLOB.pers.params){
+	P2["id_ensemble"] = GLOB.pers.params.id_ensemble;
     }
-    if ("id_source" in NB.pers.params){
-	P2["id_source"] = NB.pers.params.id_source;
+    if ("id_source" in GLOB.pers.params){
+	P2["id_source"] = GLOB.pers.params.id_source;
     }
-    if ("id_author" in NB.pers.params){
-	P2["id_author"] = NB.pers.params.id_author;
+    if ("id_author" in GLOB.pers.params){
+	P2["id_author"] = GLOB.pers.params.id_author;
     }
-    if ("unread" in NB.pers.params){
-	P2["unread"] = NB.pers.params.unread;
+    if ("unread" in GLOB.pers.params){
+	P2["unread"] = GLOB.pers.params.unread;
     }
-    NB.pers.call("getMyNotes", P2,  NB.pers.createStore );
+    GLOB.pers.call("getMyNotes", P2,  GLOB.pers.createStore );
     $.concierge.addConstants({res: 288, scale: 25});
 
     $.concierge.addComponents({
-	    add_file_menu:		function(P, cb){NB.files.addFile(P.id_ensemble, P.id_folder);},
-		source_id_getter:	function(P, cb){NB.pers.call("request_source_id", P, cb);}, 
-		add_folder_menu:	function(P, cb){NB.files.addFolder(P.id_ensemble, P.id_folder);}, 
-		add_folder:		function(P, cb){NB.pers.call("add_folder", P, cb)}, 		
-		rename_file_menu:	function(P, cb){NB.files.rename_file(P.id);},
-		rename_file:		function(P, cb){NB.pers.call("rename_file", P, cb)},
-		delete_file_menu:	function(P, cb){NB.files.delete_file(P.id)},
-		delete_file:		function(P, cb){NB.pers.call("delete_file", P, cb)},
-		move_file_menu:		function(P, cb){NB.files.move_file(P.id);},
-		move_file:		function(P, cb){NB.pers.call("move_file", P, cb);},
-		update_file_menu:	function(P, cb){NB.files.update_file(P.id)},		
-		add_ensemble_menu:	function(P, cb){NB.files.addEnsemble();}, 
-		add_ensemble:		function(P, cb){NB.pers.call("add_ensemble", P, cb)}, 			
-		get_sequence:		function(P, cb){return NB.pers.sequence;},
-		get_collection:		function(P, cb){return NB.pers.collection;},
+	    add_file_menu:		function(P, cb){GLOB.files.addFile(P.id_ensemble, P.id_folder);},
+		source_id_getter:	function(P, cb){GLOB.pers.call("request_source_id", P, cb);}, 
+		add_folder_menu:	function(P, cb){GLOB.files.addFolder(P.id_ensemble, P.id_folder);}, 
+		add_folder:		function(P, cb){GLOB.pers.call("add_folder", P, cb)}, 		
+		rename_file_menu:	function(P, cb){GLOB.files.rename_file(P.id);},
+		rename_file:		function(P, cb){GLOB.pers.call("rename_file", P, cb)},
+		delete_file_menu:	function(P, cb){GLOB.files.delete_file(P.id)},
+		delete_file:		function(P, cb){GLOB.pers.call("delete_file", P, cb)},
+		move_file_menu:		function(P, cb){GLOB.files.move_file(P.id);},
+		move_file:		function(P, cb){GLOB.pers.call("move_file", P, cb);},
+		update_file_menu:	function(P, cb){GLOB.files.update_file(P.id)},		
+		add_ensemble_menu:	function(P, cb){GLOB.files.addEnsemble();}, 
+		add_ensemble:		function(P, cb){GLOB.pers.call("add_ensemble", P, cb)}, 			
+		get_sequence:		function(P, cb){return GLOB.pers.sequence;},
+		get_collection:		function(P, cb){return GLOB.pers.collection;},
 		});
     
     $.concierge.addComponents({
-	    notes_loader:	function(P, cb){NB.pers.call("getNotes", P, cb);}, 
-		note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
-		note_editor:	function(P, cb){NB.pers.call("editNote", P, cb);},
+	    notes_loader:	function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+		note_creator:	function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+		note_editor:	function(P, cb){GLOB.pers.call("editNote", P, cb);},
 		});   
 };
 
 
     
-NB.pers.createStore = function(payload){
-    NB.pers.store = new NB.models.Store();
-    NB.pers.store.create(payload, {
+GLOB.pers.createStore = function(payload){
+    GLOB.pers.store = new GLOB.models.Store();
+    GLOB.pers.store.create(payload, {
 	    ensemble:	{pFieldName: "ensembles"}, 
 		file:	{pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
 		folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
@@ -177,13 +174,13 @@ NB.pers.createStore = function(payload){
 		draft: {},
 		seen:{pFieldName: "seen", references: {id_location: "location"}}
 	});
-    NB.pers.sequence = payload.sequence;
+    GLOB.pers.sequence = payload.sequence;
     //generate collection: 
     var ids_location = [];
     var ids_location_idx = {};
 
-    var items = NB.pers.sequence.data;
-    var m = NB.pers.store;
+    var items = GLOB.pers.sequence.data;
+    var m = GLOB.pers.store;
     var c, l, id_comment, id_location;
     for (var i in items){
 	id_comment = items[i];
@@ -193,16 +190,16 @@ NB.pers.createStore = function(payload){
 	    ids_location_idx[id_location]=ids_location.length-1;
 	}
     }
-    NB.pers.collection = {type: "location", sequence: NB.pers.sequence, items: ids_location, index: ids_location_idx};
-    $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
+    GLOB.pers.collection = {type: "location", sequence: GLOB.pers.sequence, items: ids_location, index: ids_location_idx};
+    $.concierge.setHistoryHelper(function(payload, cb){GLOB.pers.call("log_history", payload, cb);}, 120000);
     $.concierge.trigger({type:"collection", value: 1});
-    document.title = $.E(NB.pers.sequence.description);
+    document.title = $.E(GLOB.pers.sequence.description);
     //now check if need to move to a given annotation: 
-    if ("c" in NB.pers.params){
-	var id =  NB.pers.params.c;
-	var c = m.get("comment", {ID: NB.pers.params.c}).items[id];
+    if ("c" in GLOB.pers.params){
+	var id =  GLOB.pers.params.c;
+	var c = m.get("comment", {ID: GLOB.pers.params.c}).items[id];
 	$.concierge.trigger({type: "select_thread", value: c.ID_location});
     }
 };
-
+})(NB);
 

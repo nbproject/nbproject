@@ -31,35 +31,25 @@ HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
 HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
 
-
-
 SERVER_USERNAME = $(shell python -c 'from  $(SRCDIR).settings import SERVER_USERNAME;print SERVER_USERNAME')
 NB_SERVERNAME  	= $(shell python -c 'from  $(SRCDIR).settings import NB_SERVERNAME;print NB_SERVERNAME')
 NB_HTTP_PORT  	= $(shell python -c 'from  $(SRCDIR).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
 
-HOST_PROD	= sacha.csail.mit.edu
-ROOT_PROD	= /sachacsail
 NB		= nb
-NB_ARCHIVE	= nb.tgz
 NB_ARCHIVE	= nb_stats_`date`_.tgz
-HOME_PROD	= $(ROOT_PROD)/var/local/home/sacha
-CONFDIR_PROD	= $(HOME_PROD)/$(NB)/conf
-DEFAULT_FILE	= defaults.json
-DEFAULT_PROD	= defaults.json.prod
 COMPILED_DIR = content/compiled
 API_ROOT	= content/modules
 API_DEST	= $(COMPILED_DIR)/api.js
-#API_FILES	= Module.js NB.js auth.js dom.js rpc.js observer.js mvc.js dev/models.js 
 API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
 APIDEV_ROOT	= content/modules
-APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
 APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
+APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
 BUILDTRAIL_DEST = $(COMPILED_DIR)/buildTrail.js
 BUILDTRAIL_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildTrail.js
 BUILDEMBED_DEST =  $(COMPILED_DIR)/buildEmbed.js
 BUILDEMBED_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildEmbed.js
-
-
+DESKTOP_FILES=  content/modules/jquery/1.5.2/jquery.min.js content/modules/jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js content/modules/dev/ui.concierge1.js content/modules/dev/ui.view5.js content/modules/dev/ui.perspective5.js content/compiled/apidev.js content/ui/admin/conf.js content/ui/admin/conf_local.js content/modules/dev/pers2.js content/modules/dev/files.js content/ui/admin/step21.js content/ui/admin/launch.js 
+DESKTOP_DEST	=  $(COMPILED_DIR)/desktop_combined.js
 
 
 compat: api
@@ -120,32 +110,17 @@ migratedb:
 	sed -e 's|@@OLD_DB@@|$(OLD_DB)|g' -e 's|@@NEW_DB@@|$(NEW_DB)|g' $(MIGRATEDBSKEL)   > $(MIGRATEDBFILE)
 	chmod u+x $(MIGRATEDBFILE)
 
-
 newstats: 	
 	./stats nb2_notes
 	unison -batch -ui text  nb_stats2
 
-
 clean:
 	- find . -name '*~' | xargs rm
 	- find . -name '*.pyc' | xargs rm 
-
+	- rm content/compiled/*
 
 tgz: 
 	(cd ~ ; tar cz $(NB) > $(NB_ARCHIVE) )
-
-
-prod: 	tgz
-	if test -e $(HOME_PROD); then (echo '$(HOME_PROD) mounted, continuing...') ;else (echo 'mounting $(ROOT_PROD)';sshfs $(HOST_PROD):/ $(ROOT_PROD)) fi
-	if test -e $(HOME_PROD); then (echo 'copying...';cp ~/$(NB_ARCHIVE) $(HOME_PROD);echo 'done !') ;else echo 'ERROR: $(HOME_PROD) not mounted'; fi
-	ssh $(HOST_PROD) 'tar zxf $(NB_ARCHIVE)'
-	echo "You can kill the current daemon and run a new one now: sudo nohup ./runserver "
-
-
-api:
-	mkdir -p $(COMPILED_DIR)  	
-	echo '' > $(API_DEST)
-	for i in $(API_FILES); do cat $(API_ROOT)/$$i >> $(API_DEST) ; done
 
 apidev: 
 	mkdir -p $(COMPILED_DIR)
@@ -154,6 +129,7 @@ apidev:
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
 	for i in $(BUILDTRAIL_FILES); do cat $$i >> $(BUILDTRAIL_DEST) ; done
 	for i in $(BUILDEMBED_FILES); do cat $$i >> $(BUILDEMBED_DEST) ; done
+	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 
 #for some reason, the following doesn't perform Ok when in makefile, but OK when executed from shell...
@@ -168,23 +144,3 @@ prereqs_common:
 prereqs_django:
 	apt-get install apache2 python-psycopg2 libapache2-mod-wsgi
 
-
-prereqs_twisted: 
-	apt-get install python-twisted python-pygresql
-
-startapp: #reminder for what links to create when creating a new django app
-	echo 'ln -s ../../src/annotations3.py annotations.py'
-	echo 'ln -s ../../src/utils_response.py .' 
-	echo 'ln -s ../../src/utils_format.py .'
-	echo 'ln -s ../../src/constants.py .'
-	echo 'ln -s ../../src/utils_auth.py .'
-	echo 'ln -s ../../src/db_django.py db.py'
-	echo 'ln -s ../../src/registry.py .'
-	echo ''
-	echo ''
-
-static2template: #reminder for how to change a static page into a template. 
-	sed -i 's|href="../|href="/content/|' your_file
-	sed -i 's|src="../|src="/content/|' your_file
-	echo 'change manually other links to abolute links typicall pers???.css and pers???.js need to be replaced by /content/ui/classic/pers???...'
-	echo 'close script tags with a </script> instead of />'

@@ -14,21 +14,16 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.auth", 0.1);
-    Module.require("NB.pers", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
-
-NB.pers.init = function(){
-    NB.pers._selectTimerID =  null;
-    NB.pers.grade2litt = {4: "A", 3: "B", 2: "C", 1: "D", 0: "F"};
-    NB.pers.id_author_readahead = null;
-    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
+(function(GLOB){
+    if (NB$){
+	var $ = NB$;
+    }
+    
+GLOB.pers.init = function(){
+    GLOB.pers._selectTimerID =  null;
+    GLOB.pers.grade2litt = {4: "A", 3: "B", 2: "C", 1: "D", 0: "F"};
+    GLOB.pers.id_author_readahead = null;
+    GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
 	    $.concierge.addConstants(p.value);
 	});
     $.mods.declare({
@@ -51,7 +46,7 @@ NB.pers.init = function(){
 				   content: function($div){
 		    $.mods.ready("spreadsheetview", function(){
 			    $div.spreadsheetview();
-			    $div.spreadsheetview("set_model",NB.pers.store );
+			    $div.spreadsheetview("set_model",GLOB.pers.store );
 			});
 		}
 	    };
@@ -59,15 +54,15 @@ NB.pers.init = function(){
 				    content: function($div){
 		    $.mods.ready("notepaneview", function(){
 			    $div.notepaneView();
-			    $div.notepaneView("set_model",NB.pers.store );
+			    $div.notepaneView("set_model",GLOB.pers.store );
 			});
 		}
 	    }; 
 	    var docview	= {priority: 1, min_width: 800, desired_width: 50,  min_height: 300, desired_height: 30, 
 			   content: function($div){
 		    $.mods.ready("docview", function(){
-			    $div.docView({img_server: NB.conf.servers.img});
-			    $div.docView("set_model",NB.pers.store );			    
+			    $div.docView({img_server: GLOB.conf.servers.img});
+			    $div.docView("set_model",GLOB.pers.store );			    
 			});
 		}
 	    };
@@ -75,23 +70,23 @@ NB.pers.init = function(){
 				    content: function($div){
 		    $.mods.ready("editorview", function(){
 			    $div.editorview({allowStaffOnly: false, allowAnonymous: false});
-			    $div.editorview("set_model",NB.pers.store );			    
+			    $div.editorview("set_model",GLOB.pers.store );			    
 			});
 		}
 	    };
-	    var self = NB.pers;
+	    var self = GLOB.pers;
 	    $pers.perspective({
 		    height: function(){return $vp.height() - $pers.offset().top;}, 
 			listens: {
 			successful_login: function(evt){
-			    NB.auth.set_cookie("ckey", evt.value);
+			    GLOB.auth.set_cookie("ckey", evt.value);
 			    document.location ="http://"+document.location.host+document.location.pathname;
 			    $.I("Welcome !");
 			}, 
 			selection: function(evt){
 			    var v = evt.value;
 			    var sel = v.sel;
-			    var m = NB.pers.store;
+			    var m = GLOB.pers.store;
 			    var id_source = v.files[sel[1]-1].id ;
 			    var id_author = v.users[sel[0]-1].id ;			   
 			    var L =  m.meta.loadednotes;
@@ -135,15 +130,15 @@ NB.pers.init = function(){
 			    }
 			    if (id_author in L[id_source]){//use cached values
 				f_trigger = function(){
-				    NB.pers.collection.items = L[id_source][id_author].items;
-				    NB.pers.collection.index= L[id_source][id_author].index;
-				    NB.pers.collection.meta = {id_user: id_author, id_source: id_source};
+				    GLOB.pers.collection.items = L[id_source][id_author].items;
+				    GLOB.pers.collection.index= L[id_source][id_author].index;
+				    GLOB.pers.collection.meta = {id_user: id_author, id_source: id_source};
 				    $.concierge.trigger({type:"collection", value: 1});	
-				    if (id_next_author != null && NB.id_author_readahead==null){
-					NB.id_author_readahead = id_next_author;
-					NB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
+				    if (id_next_author != null && GLOB.id_author_readahead==null){
+					GLOB.id_author_readahead = id_next_author;
+					GLOB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
 						//mark readahead available again and load data silently	
-						NB.id_author_readahead = null;
+						GLOB.id_author_readahead = null;
 						f_on_data(P3, id_next_author);
 					    });
 				    }
@@ -153,17 +148,17 @@ NB.pers.init = function(){
 			    else{
 				f_trigger = function(){
 				    var P2 =  {query: "auth_admin", id_source:id_source , id_author:id_author };
-				    NB.pers.call("getMyNotes", P2, function(P){
-					    //var m = NB.pers.store;
+				    GLOB.pers.call("getMyNotes", P2, function(P){
+					    //var m = GLOB.pers.store;
 					    f_on_data(P, id_author);
-					    NB.pers.collection.items = 	L[id_source][id_author].items;
-					    NB.pers.collection.index= 	L[id_source][id_author].index;
-					    NB.pers.collection.meta = {id_user: id_author, id_source: id_source};
+					    GLOB.pers.collection.items = 	L[id_source][id_author].items;
+					    GLOB.pers.collection.index= 	L[id_source][id_author].index;
+					    GLOB.pers.collection.meta = {id_user: id_author, id_source: id_source};
 					    $.concierge.trigger({type:"collection", value: 1});	
-					    if (id_next_author != null && NB.id_author_readahead==null){
-						NB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
+					    if (id_next_author != null && GLOB.id_author_readahead==null){
+						GLOB.pers.call("getMyNotes", {query: "auth_admin", id_source:id_source , id_author:id_next_author}, function(P3){
 							//mark readahead available again and load data silently
-							NB.id_author_readahead = null;
+							GLOB.id_author_readahead = null;
 							f_on_data(P3, id_next_author);
 						    });
 					    }
@@ -180,36 +175,36 @@ NB.pers.init = function(){
 		});
 	});
     $.concierge.addComponents({	
-	    get_collection:		function(P, cb){return NB.pers.collection;},
+	    get_collection:		function(P, cb){return GLOB.pers.collection;},
 		set_grade_assignment: function(P,cb){
-		NB.pers.call("set_grade_assignment", P, cb);
+		GLOB.pers.call("set_grade_assignment", P, cb);
 	    },
-		grade2litt: function(P,cb){return NB.pers.grade2litt[P]}, 
+		grade2litt: function(P,cb){return GLOB.pers.grade2litt[P]}, 
 		splash_notepaneview: function(P,cb){
 		return "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> <div id='splash-welcome'>Welcome... </div><br/><i>Using the keyboard shortcuts below will likely speed up your grading task by a lot...</i><br/> <ul id='splash-list-instructions'> <li>Use the <b>arrow keys</b> to navigate between cells and display the comments for the selected assignment</li><li>Use the <b>&#60;</b> and <b>&#62;</b> keys to move between threads within the selected assignment</li><li>Use the <b>A,B,C,D,F</b> keys to let to assign the corresponding grade to the selected assignment </li></ul> </div>";
 	    }, 
 		splash_docview: function(P,cb){
 		return  "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> Select an assignment to see a preview of the material here</div>";
 	    }, 
-	note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
-		note_editor:	function(P, cb){NB.pers.call("editNote", P, cb);},
+	note_creator:	function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+		note_editor:	function(P, cb){GLOB.pers.call("editNote", P, cb);},
 
 		});
     
     //get data: 
     var P2 =  {};
-    if ("id_ensemble" in NB.pers.params){
-	P2["id_ensemble"] = NB.pers.params.id_ensemble;
+    if ("id_ensemble" in GLOB.pers.params){
+	P2["id_ensemble"] = GLOB.pers.params.id_ensemble;
     }
-    NB.pers.call("get_stats_ensemble", P2,  NB.pers.createStore );
+    GLOB.pers.call("get_stats_ensemble", P2,  GLOB.pers.createStore );
 };
 
 
     
-NB.pers.createStore = function(payload){
-    var m = new NB.models.Store();
+GLOB.pers.createStore = function(payload){
+    var m = new GLOB.models.Store();
     m.meta = {loadednotes:{}};
-    NB.pers.store = m;  
+    GLOB.pers.store = m;  
     $.concierge.addConstants({res: 288, scale: 25});
     m.create(payload, {
 	    ensemble:	{pFieldName: "ensembles"}, 
@@ -224,15 +219,15 @@ NB.pers.createStore = function(payload){
 	    	mark: {}, 
 		draft: {},
 	});
-    //    NB.pers.sequence = payload.sequence;
-    $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
+    //    GLOB.pers.sequence = payload.sequence;
+    $.concierge.setHistoryHelper(function(payload, cb){GLOB.pers.call("log_history", payload, cb);}, 120000);
     $.concierge.trigger({type:"spreadsheet", value: 1});
 
     document.title = $.E(m.get("ensemble", {}).first().name + " spreadsheet");
-    NB.pers.collection = {items: [], index: {}};
+    GLOB.pers.collection = {items: [], index: {}};
 };
 
-NB.pers.find_next_author = function(v){
+GLOB.pers.find_next_author = function(v){
     var self		= this;
     var sel		= v.sel;
     var m		= self.store;
@@ -254,3 +249,5 @@ NB.pers.find_next_author = function(v){
     }
     return id_author_next;
 };
+
+})(NB);

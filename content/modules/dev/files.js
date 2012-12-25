@@ -15,20 +15,20 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-try{    
-    Module.require("NB", 0.1);
-    Module.createNamespace("NB.files", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
 
-NB.files.currentEnsemble = 0;
-NB.files.currentFolder=0;
-NB.files.model = null;
-NB.files.labelfields = {file: "title", folder: "name"};
-NB.files.set_model = function(model){
-    NB.files.model = model;
+(function(GLOB){
+    //require auth
+    if (NB$){
+	var $ = NB$;
+    }
+    GLOB.files = {};
+
+GLOB.files.currentEnsemble = 0;
+GLOB.files.currentFolder=0;
+GLOB.files.model = null;
+GLOB.files.labelfields = {file: "title", folder: "name"};
+GLOB.files.set_model = function(model){
+    GLOB.files.model = model;
     var $util_window = $.concierge.get_component("get_util_window")();
     $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>\
 <tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'>No</input> </td></tr> \
@@ -40,12 +40,12 @@ NB.files.set_model = function(model){
 };
 
 
-NB.files.addFile = function(id_ensemble, id_folder){
-    NB.files.currentEnsemble = id_ensemble;
-    NB.files.currentFolder = id_folder;
-    var foldername = (id_folder == null ) ? "": NB.files.model.o.folder[NB.files.currentFolder].name;
-    $("#add_file_ensemble").html("<option id_ensemble='"+NB.files.currentEnsemble+"'>"+NB.pers.store.o.ensemble[NB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
-    $("#add_file_folder").html("<option id_folder='"+NB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
+GLOB.files.addFile = function(id_ensemble, id_folder){
+    GLOB.files.currentEnsemble = id_ensemble;
+    GLOB.files.currentFolder = id_folder;
+    var foldername = (id_folder == null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
+    $("#add_file_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
+    $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
 
     $('#add_file_dialog').dialog({
 	    title: "Add a PDF File...", 
@@ -55,7 +55,7 @@ NB.files.addFile = function(id_ensemble, id_folder){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("source_id_getter")({}, NB.files.proceedUpload);
+			$.concierge.get_component("source_id_getter")({}, GLOB.files.proceedUpload);
 			$.I("Uploading in progress...");
 		    }
 	    }
@@ -63,34 +63,34 @@ NB.files.addFile = function(id_ensemble, id_folder){
     $('#add_file_dialog').dialog("open");
 };
 
-NB.files.proceedUpload = function(payload){
+GLOB.files.proceedUpload = function(payload){
     var form = $("#file_upload_form")[0];
     // we need a way to pass the id_ensemble and id_folder: we do it in the URL
-    var folder_fragment = (NB.files.currentFolder == null) ? "" : "&id_folder="+NB.files.currentFolder;
-    var newauth = ("ckey" in NB.conf.userinfo) ? "&ckey="+NB.conf.userinfo.ckey : ""; 
-    form.setAttribute("action", NB.conf.servers.upload+"/pdf3/upload?id_ensemble="+NB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
+    var folder_fragment = (GLOB.files.currentFolder == null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+    var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
+    form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
     form.submit();
     //$.I("File added to remote repository");    
     $('#add_file_dialog').dialog("destroy");
     //SACHA TODO: Fix this when we setup connectionIds
     window.setTimeout(function(){
 	    //NOTE (important !) 
-	    $.I("NB is processing your file... You should receive an email once your file is available on NB."); 
+	    $.I("NB is processing your file... You should receive an email once your file is available on GLOB."); 
 	    var payload_objects = {types:["files"],  id: payload.id_source};
-	    if ("id_ensemble" in NB.pers.params){
-		payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
+	    if ("id_ensemble" in GLOB.pers.params){
+		payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
 	    }
-	    NB.pers.call("getObjects", payload_objects, function(p){
-		    NB.pers.store.add("file", p.files);
+	    GLOB.pers.call("getObjects", payload_objects, function(p){
+		    GLOB.pers.store.add("file", p.files);
 		} );
 	}, 3000);
 };
 
 
 
-NB.files.update_file = function(id){
+GLOB.files.update_file = function(id){
     var $filename = $("#update_file_name");
-    $filename.html(NB.files.model.o.file[id].title);
+    $filename.html(GLOB.files.model.o.file[id].title);
     $('#update_file_dialog').dialog({
 	    title: "Update a PDF File...", 
 		width: 390,
@@ -100,8 +100,8 @@ NB.files.update_file = function(id){
 		},
 		    "Ok": function() { 
 			var form = $("#file_update_form")[0];
-			var newauth = ("ckey" in NB.conf.userinfo) ? "&ckey="+NB.conf.userinfo.ckey : ""; 
-			form.setAttribute("action", NB.conf.servers.upload+"/pdf3/upload/update?id_source="+ id+newauth);
+			var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
+			form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload/update?id_source="+ id+newauth);
 			form.submit();
 			$.I("Updating in progress...");
 			$(this).dialog("destroy");  
@@ -111,11 +111,11 @@ NB.files.update_file = function(id){
     $('#update_file_dialog').dialog("open");
 };
 
-NB.files.proceedUpdate = function(payload){
+GLOB.files.proceedUpdate = function(payload){
     var form = $("#file_upload_form")[0];
     // we need a way to pass the id_ensemble and id_folder: we do it in the URL
-    var folder_fragment = (NB.files.currentFolder == null) ? "" : "&id_folder="+NB.files.currentFolder;
-    form.setAttribute("action", NB.conf.servers.upload+"/pdf3/upload?id_ensemble="+NB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment);
+    var folder_fragment = (GLOB.files.currentFolder == null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+    form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment);
     form.submit();
     //$.I("File updateed to remote repository");    
     $('#update_file_dialog').dialog("destroy");
@@ -124,11 +124,11 @@ NB.files.proceedUpdate = function(payload){
 	    //NOTE (important !) 
 	    $.I("NB is processing your file... You should receive an email once your file has been updated."); 
 	    var payload_objects = {types:["files"],  id: payload.id_source};
-	    if ("id_ensemble" in NB.pers.params){
-		payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
+	    if ("id_ensemble" in GLOB.pers.params){
+		payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
 	    }
-	    NB.pers.call("getObjects", payload_objects, function(p){
-		    NB.pers.store.add("file", p.files);
+	    GLOB.pers.call("getObjects", payload_objects, function(p){
+		    GLOB.pers.store.add("file", p.files);
 		} );
 	}, 3000);
 };
@@ -136,9 +136,9 @@ NB.files.proceedUpdate = function(payload){
 
 
 
-NB.files.inviteUsers = function(id_ensemble){
-    NB.files.currentEnsemble = id_ensemble;
-    $("#invite_users_ensemble").html("<option id_ensemble='"+NB.files.currentEnsemble+"'>"+NB.pers.store.o.ensemble[NB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
+GLOB.files.inviteUsers = function(id_ensemble){
+    GLOB.files.currentEnsemble = id_ensemble;
+    $("#invite_users_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     $('#invite_users_dialog').dialog({
 	    title: "Send an invitation...", 
 		width: 550,
@@ -160,7 +160,7 @@ NB.files.inviteUsers = function(id_ensemble){
 
 
 
-NB.files.addEnsemble = function(){
+GLOB.files.addEnsemble = function(){
     //defaults: 
     $("input[name=allow_staffonly][value=1]")[0].checked="true";
     $("input[name=allow_anonymous][value=1]")[0].checked="true";
@@ -175,7 +175,7 @@ NB.files.addEnsemble = function(){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value==1, allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value==1, allow_guest: $("input[name=allow_guest]:checked")[0].value==1,  allow_download: $("input[name=allow_download]:checked")[0].value==1, use_invitekey: $("input[name=use_invitekey]:checked")[0].value==1 }, function(p){NB.files.model.add("ensemble", p);$.I("Class created !");} );
+			$.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value==1, allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value==1, allow_guest: $("input[name=allow_guest]:checked")[0].value==1,  allow_download: $("input[name=allow_download]:checked")[0].value==1, use_invitekey: $("input[name=use_invitekey]:checked")[0].value==1 }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
 			$(this).dialog("destroy");
 		    }
 	    }
@@ -187,13 +187,13 @@ NB.files.addEnsemble = function(){
 
 
 
-NB.files.addFolder = function(id_ensemble, id_folder){
-    NB.files.currentEnsemble = id_ensemble;
-    NB.files.currentFolder = id_folder;
-    var foldername = (id_folder == null ) ? "": NB.files.model.o.folder[NB.files.currentFolder].name;
-    $("#add_folder_ensemble").html("<option id_ensemble='"+NB.files.currentEnsemble+"'>"+NB.pers.store.o.ensemble[NB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
-    //    $("#add_file_folder").html("<option id_folder='"+NB.files.currentFolder+"'>"+NB.pers.store.o.folder[NB.files.currentFolder].name+"</option>").attr("disabled", "disabled");
-    $("#add_folder_folder").html("<option id_folder='"+NB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
+GLOB.files.addFolder = function(id_ensemble, id_folder){
+    GLOB.files.currentEnsemble = id_ensemble;
+    GLOB.files.currentFolder = id_folder;
+    var foldername = (id_folder == null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
+    $("#add_folder_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
+    //    $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+GLOB.pers.store.o.folder[GLOB.files.currentFolder].name+"</option>").attr("disabled", "disabled");
+    $("#add_folder_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
 
     $('#add_folder_dialog').dialog({
 	    title: "Add a Folder...", 
@@ -203,7 +203,7 @@ NB.files.addFolder = function(id_ensemble, id_folder){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("add_folder")({id_parent: id_folder, id_ensemble: id_ensemble, name: $("#add_folder_name")[0].value}, function(p){NB.files.model.add("folder", p);$.I("folder added");} );
+			$.concierge.get_component("add_folder")({id_parent: id_folder, id_ensemble: id_ensemble, name: $("#add_folder_name")[0].value}, function(p){GLOB.files.model.add("folder", p);$.I("folder added");} );
 			$(this).dialog("destroy");
 		    }
 	    }
@@ -211,8 +211,8 @@ NB.files.addFolder = function(id_ensemble, id_folder){
     $('#add_folder_dialog').dialog("open");
 };
 
-NB.files.edit_assignment = function(id){
-    var f =  NB.files.model.o.file[id]
+GLOB.files.edit_assignment = function(id){
+    var f =  GLOB.files.model.o.file[id]
     //controls: 
     var assignment_ref = f.assignment ? "1" : "0";
     var checkboxes = $("input[name=is_assignment]");
@@ -243,7 +243,7 @@ NB.files.edit_assignment = function(id){
 		    var due_datetime = v_date == "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
 		    
 		    $('#due_date')[0].value
-		    $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value=="1", due:due_datetime}, function(p){NB.files.model.add("file", p.files);$.I("Changes Saved");} );
+		    $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value=="1", due:due_datetime}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
 		    $(this).dialog("destroy");
 		}
 	    }
@@ -253,10 +253,10 @@ NB.files.edit_assignment = function(id){
     $('#due_time').calendricalTime({usa: true,  isoTime: true, two_digit_mdh: true, meridiemUpperCase: true});
 }
     
-NB.files.rename_file = function(id, item_type){
+GLOB.files.rename_file = function(id, item_type){
     var $filename = $("#rename_file_name");
-    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
-    $filename[0].value =  o[NB.files.labelfields[item_type]];
+    var o =  (item_type==="file")? GLOB.files.model.o.file[id] : GLOB.files.model.o.folder[id];
+    $filename[0].value =  o[GLOB.files.labelfields[item_type]];
     $('#rename_file_dialog').dialog({
 	    title: "Rename "+item_type+"...", 
 		width: 390,
@@ -265,7 +265,7 @@ NB.files.rename_file = function(id, item_type){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){NB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
+			$.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
 			$(this).dialog("destroy");
 		    }
 	    }
@@ -276,15 +276,15 @@ NB.files.rename_file = function(id, item_type){
 
 
 
-NB.files.delete_file = function(id, item_type){
-    var m = NB.pers.store;
+GLOB.files.delete_file = function(id, item_type){
+    var m = GLOB.pers.store;
     if (item_type==="folder" && (!m.get("file", {id_folder: id}).is_empty() || !m.get("folder", {id_parent: id}).is_empty())){
 	alert("This folder isn't empty. You can only delete folders that are empty.");
 	return;
     }
     var $filename = $("#delete_"+item_type+"_name");
-    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
-    $filename.text( o[NB.files.labelfields[item_type]]);
+    var o =  (item_type==="file")? GLOB.files.model.o.file[id] : GLOB.files.model.o.folder[id];
+    $filename.text( o[GLOB.files.labelfields[item_type]]);
     $('#delete_'+item_type+'_dialog').dialog({
 	    title: "Delete "+item_type+"...", 
 		width: 390,
@@ -293,7 +293,7 @@ NB.files.delete_file = function(id, item_type){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("delete_file")({id: id, item_type: item_type}, function(P){NB.files.model.remove(item_type, P["id"]);$.I(item_type+" deleted");} );
+			$.concierge.get_component("delete_file")({id: id, item_type: item_type}, function(P){GLOB.files.model.remove(item_type, P["id"]);$.I(item_type+" deleted");} );
 			$(this).dialog("destroy");
 		    }
 	    }
@@ -301,8 +301,8 @@ NB.files.delete_file = function(id, item_type){
     $('#delete_'+item_type+'_dialog').dialog("open");
 };
 
-NB.files.__abspath = function(id_folder){
-    var m = NB.files.model;
+GLOB.files.__abspath = function(id_folder){
+    var m = GLOB.files.model;
     var f = m.o.folder[id_folder];
     var id_parent = f.id_parent;
     var s = f.name;
@@ -312,13 +312,13 @@ NB.files.__abspath = function(id_folder){
 	s = p.name + "/" + s;
 	id_parent = p.id_parent;
     }
-    s = NB.files.model.o.ensemble[f.id_ensemble].name + "/" + s; 
+    s = GLOB.files.model.o.ensemble[f.id_ensemble].name + "/" + s; 
     return s;
 };
 
-NB.files.__isDirOrParent = function(id_a,id_b){
+GLOB.files.__isDirOrParent = function(id_a,id_b){
     //returns true is a == b or is a is a parent of b
-    var folders = NB.files.model.o.folder;
+    var folders = GLOB.files.model.o.folder;
     var d = folders[id_b];
     while (d.id_parent !== null){
 	if (d.ID === id_a){
@@ -329,25 +329,25 @@ NB.files.__isDirOrParent = function(id_a,id_b){
     return id_a === d.ID;
 };
 
-NB.files.__generate_folders = function(id_ensemble, id_sel, id_exclude){
-    var subfolders  = NB.files.model.get("folder", {id_ensemble:id_ensemble }); 
+GLOB.files.__generate_folders = function(id_ensemble, id_sel, id_exclude){
+    var subfolders  = GLOB.files.model.get("folder", {id_ensemble:id_ensemble }); 
     var sel_str = (id_sel==null) ? " selected='selected' ": " ";
-    var s="<option "+sel_str+" id_item='0'>"+NB.files.model.o.ensemble[id_ensemble].name+"</option>";
+    var s="<option "+sel_str+" id_item='0'>"+GLOB.files.model.o.ensemble[id_ensemble].name+"</option>";
     for (var i in subfolders.items){ 
-	if (id_exclude === undefined || (!NB.files.__isDirOrParent(parseInt(id_exclude), parseInt(i)))){
+	if (id_exclude === undefined || (!GLOB.files.__isDirOrParent(parseInt(id_exclude), parseInt(i)))){
 	    sel_str = (i==id_sel ) ? " selected='selected' ": " ";
-	    s+="<option "+sel_str+" id_item='"+i+"'>"+NB.files.__abspath(i)+"</option>";
+	    s+="<option "+sel_str+" id_item='"+i+"'>"+GLOB.files.__abspath(i)+"</option>";
 	}
     }
     return s;
 };
 
-NB.files.move_file = function(id, item_type){  
+GLOB.files.move_file = function(id, item_type){  
     var $filename = $("#move_file_name");
-    var o =  (item_type==="file")? NB.files.model.o.file[id] : NB.files.model.o.folder[id];
-    $filename.text( o[NB.files.labelfields[item_type]]);
+    var o =  (item_type==="file")? GLOB.files.model.o.file[id] : GLOB.files.model.o.folder[id];
+    $filename.text( o[GLOB.files.labelfields[item_type]]);
     $select = $("#move_file_select");
-    $select.html(NB.files.__generate_folders(o.id_ensemble,o.id_folder||o.id_parent, (item_type==="file")?undefined:id));
+    $select.html(GLOB.files.__generate_folders(o.id_ensemble,o.id_folder||o.id_parent, (item_type==="file")?undefined:id));
     $('#move_file_dialog').dialog({
 	    title: "Move "+item_type+"...", 
 		width: 390,
@@ -356,7 +356,7 @@ NB.files.move_file = function(id, item_type){
 		    $(this).dialog("close");  
 		},
 		    "Ok": function() { 
-			$.concierge.get_component("move_file")({id: id, item_type: item_type, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){NB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type + " moved");} );
+			$.concierge.get_component("move_file")({id: id, item_type: item_type, dest:  parseInt($select.children(":selected").attr("id_item"))||null}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type + " moved");} );
 			$(this).dialog("destroy");
 		    }
 	    }
@@ -364,3 +364,4 @@ NB.files.move_file = function(id, item_type){
     $('#move_file_dialog').dialog("open");
 };
 
+})(NB);

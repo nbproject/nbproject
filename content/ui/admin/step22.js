@@ -15,22 +15,18 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.auth", 0.1);
-    Module.require("NB.pers", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
-
-NB.pers.init = function(){
+(function(GLOB){
+    if (NB$){
+	var $ = NB$;
+    }
+    
+GLOB.pers.init = function(){
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches==null || matches.length != 2){
 	alert("Can't open file b/c URL pathname doesn't have an integer: "+document.location.pathname);
     }
-    NB.pers.id_source =  matches[1];
-    NB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
+    GLOB.pers.id_source =  matches[1];
+    GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
 	    $.concierge.addConstants(p.value);
 	});
     $.mods.declare({
@@ -52,8 +48,8 @@ NB.pers.init = function(){
 		    var docview		=  {priority: 1, min_width: 950, desired_width: 50, 
 					    content: function($div){
 			    $.mods.ready("docview", function(){
-				    $div.docView({img_server: NB.conf.servers.img});
-				    $div.docView("set_model",NB.pers.store );
+				    $div.docView({img_server: GLOB.conf.servers.img});
+				    $div.docView("set_model",GLOB.pers.store );
 				});
 			}
 		    };
@@ -61,7 +57,7 @@ NB.pers.init = function(){
 					    content: function($div){
 			    $.mods.ready("notepaneview", function(){
 				    $div.notepaneView();
-				    $div.notepaneView("set_model",NB.pers.store );
+				    $div.notepaneView("set_model",GLOB.pers.store );
 				});
 			}
 		    }; 
@@ -69,17 +65,17 @@ NB.pers.init = function(){
 					   content: function($div){
 			    $.mods.ready("threadview", function(){
 				    $div.threadview();
-				    $div.threadview("set_model",NB.pers.store );			    
+				    $div.threadview("set_model",GLOB.pers.store );			    
 				});
 			}
 		    };
 		    var editorview	=  {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
 					   content: function($div){
 			    $.mods.ready("editorview", function(){
-				    var m = NB.pers.store;
+				    var m = GLOB.pers.store;
 				    var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];				    
 				    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
-				    $div.editorview("set_model",NB.pers.store );			    
+				    $div.editorview("set_model",GLOB.pers.store );			    
 				});
 			}
 		    };
@@ -91,7 +87,7 @@ NB.pers.init = function(){
 				    $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
 				}, 
 				    successful_login: function(evt){
-				    NB.auth.set_cookie("ckey", evt.value);
+				    GLOB.auth.set_cookie("ckey", evt.value);
 				    document.location ="http://"+document.location.host+document.location.pathname;
 				    $.I("Welcome !");
 				},
@@ -114,21 +110,21 @@ NB.pers.init = function(){
     
     //get data: 
     var payload_objects = {types: ["ensembles", "folders", "files"]};
-    if ("id_ensemble" in NB.pers.params){
-	payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
+    if ("id_ensemble" in GLOB.pers.params){
+	payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
     }
-    NB.pers.call("getGuestFileInfo", {id_source: NB.pers.id_source}, NB.pers.createStore, NB.pers.on_fileinfo_error );
+    GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
     $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2, });
     $.concierge.addComponents({
-	    notes_loader:	function(P, cb){NB.pers.call("getNotes", P, cb);}, 
-		note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
-		note_editor:	function(P, cb){NB.pers.call("editNote", P, cb);},
+	    notes_loader:	function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+		note_creator:	function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+		note_editor:	function(P, cb){GLOB.pers.call("editNote", P, cb);},
 		});   
 };
     
-NB.pers.createStore = function(payload){
-    NB.pers.store = new NB.models.Store();
-    NB.pers.store.create(payload, {
+GLOB.pers.createStore = function(payload){
+    GLOB.pers.store = new GLOB.models.Store();
+    GLOB.pers.store.create(payload, {
 	    ensemble:	{pFieldName: "ensembles"}, 
 		file:	{pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
 		folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
@@ -142,7 +138,7 @@ NB.pers.createStore = function(payload){
 	});
     //here we override the callback so that we can get new notes.
     var cb2 = function(P2){	
-	var m = NB.pers.store;
+	var m = GLOB.pers.store;
 	m.add("comment", P2["comments"]);
 	m.add("location", P2["locations"]);
 	var msg="";
@@ -159,30 +155,30 @@ NB.pers.createStore = function(payload){
 	}
     };
     $.concierge.setHistoryHelper(function(_payload, cb){
-	    _payload["__return"] = {type:"newNotesOnFile", a:{id_source: NB.pers.id_source}};
-	    NB.pers.call("log_history", _payload, cb);
+	    _payload["__return"] = {type:"newNotesOnFile", a:{id_source: GLOB.pers.id_source}};
+	    GLOB.pers.call("log_history", _payload, cb);
 	}, 120000, cb2);    
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches==null || matches.length != 2){
 	alert("Can't open file b/c URL pathname doesn't with an integer: "+document.location.pathname);
     }
-    var id_source =  NB.pers.id_source;
+    var id_source =  GLOB.pers.id_source;
     $.concierge.trigger({type:"file", value: id_source});
-    var f = NB.pers.store.o.file[id_source];
+    var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title + " ("+f.numpages +" pages)");
     $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
-	    var m = NB.pers.store;
+	    var m = GLOB.pers.store;
 	    m.add("seen", P["seen"]);
 	    m.add("comment", P["comments"]);
 	    m.add("location", P["locations"]);
 	    m.add("link", P["links"]);
 	    m.add("threadmark", P["threadmarks"]);
 	    //now check if need to move to a given annotation: 
-	    if ("c" in NB.pers.params){
+	    if ("c" in GLOB.pers.params){
 		window.setTimeout(function(){
-			var id =  NB.pers.params.c;
+			var id =  GLOB.pers.params.c;
 			var c = m.get("comment", {ID: id}).items[id];
-			if ("reply" in NB.pers.params){
+			if ("reply" in GLOB.pers.params){
 			    $.concierge.trigger({type: "reply_thread", value: c.ID});
 			}			
 			$.concierge.trigger({type: "select_thread", value: c.ID_location});
@@ -190,9 +186,9 @@ NB.pers.createStore = function(payload){
 
 		    }, 300);
 	    }
-	    else if ("p" in NB.pers.params){
+	    else if ("p" in GLOB.pers.params){
 		window.setTimeout(function(){
-			var page = NB.pers.params.p;
+			var page = GLOB.pers.params.p;
 			$.concierge.trigger({type: "page", value: page});
 		    }, 300);
 	    }
@@ -204,7 +200,7 @@ NB.pers.createStore = function(payload){
 	});
 };
 
-NB.pers.on_fileinfo_error = function(P){
+GLOB.pers.on_fileinfo_error = function(P){
     //    console.log("fileinfo error", P);
     $("#login-window").hide();
     var me = $.concierge.get_component("get_userinfo")();
@@ -217,8 +213,10 @@ NB.pers.on_fileinfo_error = function(P){
 	loginmenu = "Would you like to  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
     }
     $("<div><div id=\"splash-welcome\">Welcome to NB !</div> <br/>You're currently logged in as <b>"+$.E(name)+"</b>, which doesn't grant you sufficient privileges to see this page. <br/><br/>"+loginmenu+"</div>").dialog({title: "Access Restricted...", closeOnEscape: false,   open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }, width: 600, buttons: {"Take me back to NB's home page": function(){
-		    NB.auth.delete_cookie("userinfo");
-		    NB.auth.delete_cookie("ckey");
+		    GLOB.auth.delete_cookie("userinfo");
+		    GLOB.auth.delete_cookie("ckey");
 		    document.location.pathname = "/logout?next=/"} 
 	    }}); 
 }
+
+})(NB);

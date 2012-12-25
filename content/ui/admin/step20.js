@@ -1,7 +1,6 @@
 /*
  * step20.js: 
  * Requires the following modules:
- *		Module
  *		NB
  *		NB.auth
  *		jquery
@@ -15,17 +14,16 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.auth", 0.1);
-    Module.require("NB.pers", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
 
-NB.pers.init = function(){
-    //NB.pers.admin=true;
+(function(GLOB){
+    if (NB$){
+	var $ = NB$;
+    }
+    
+
+
+GLOB.pers.init = function(){
+    //GLOB.pers.admin=true;
     $.mods.declare({
 		treeview: {js: ["/content/modules/dev/ui.treeview6.js"],css: [] },
 		filesview:  {js: ["/content/modules/dev/ui.filesview3.js","/content/modules/calendrical/jquery.calendrical.js" ],css: ["/content/modules/calendrical/calendrical.css"] },
@@ -41,24 +39,24 @@ NB.pers.init = function(){
 		    var treeview	=  {priority: 1, min_width: 100, desired_width: 20, 
 					    content: function($div){
 			    $.mods.ready("treeview", function(){
-			    $div.treeView({admin:NB.pers.admin});
-			    $div.treeView("set_model",NB.pers.store );
+			    $div.treeView({admin:GLOB.pers.admin});
+			    $div.treeView("set_model",GLOB.pers.store );
 				});
 			}
 		    };
 		    var filesview	=  {priority: 1, min_width: 700, desired_width: 80,  
 					    content: function($div){
 			    $.mods.ready("filesview", function(){
-				    $div.filesView({img_server: NB.conf.servers.img,  admin: NB.pers.admin});
-				    $div.filesView("set_model",NB.pers.store );
+				    $div.filesView({img_server: GLOB.conf.servers.img,  admin: GLOB.pers.admin});
+				    $div.filesView("set_model",GLOB.pers.store );
 				});
 			}
 		    }; 
 		    var homeview	=  {priority: 1, min_width: 700, desired_width: 80,  
 			content: function($div){
 			    $.mods.ready("homeview", function(){
-				    $div.homeView({img_server: NB.conf.servers.img,  admin: NB.pers.admin});
-				    $div.homeView("set_model",NB.pers.store );
+				    $div.homeView({img_server: GLOB.conf.servers.img,  admin: GLOB.pers.admin});
+				    $div.homeView("set_model",GLOB.pers.store );
 				});
 			}
 		    }; 
@@ -82,14 +80,14 @@ NB.pers.init = function(){
 				    $.L("closeview: ", evt, this.l.element[0].id);
 				}, 
 				    successful_login: function(evt){
-				    NB.auth.set_cookie("ckey", evt.value);
+				    GLOB.auth.set_cookie("ckey", evt.value);
 				    document.location ="http://"+document.location.host+document.location.pathname;
 				    $.I("Welcome !");
 				},
 				    ensemble: function(evt){
 				    $.L("loading stats for ensemble"+evt.value);
 				    $.concierge.get_component("get_file_stats")({"id_ensemble": evt.value}, function(P2){
-					    NB.pers.store.add("file_stats", P2["file_stats"]);
+					    GLOB.pers.store.add("file_stats", P2["file_stats"]);
 					    $.L("stats loaded !");
 					});
 				}
@@ -105,43 +103,43 @@ NB.pers.init = function(){
     
     //get data: 
     var payload_objects = {types: ["ensembles", "folders", "files"]};
-    if ("id_ensemble" in NB.pers.params){
-	payload_objects["payload"]= {id_ensemble: NB.pers.params.id_ensemble};
+    if ("id_ensemble" in GLOB.pers.params){
+	payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
     }
-    NB.pers.call("getObjects",payload_objects, NB.pers.createStore);
+    GLOB.pers.call("getObjects",payload_objects, GLOB.pers.createStore);
     $.concierge.addComponents({
-	    add_file_menu:		function(P, cb){NB.files.addFile(P.id_ensemble, P.id_folder);},
-		source_id_getter:	function(P, cb){NB.pers.call("request_source_id", P, cb);}, 
-		add_folder_menu:	function(P, cb){NB.files.addFolder(P.id_ensemble, P.id_folder);}, 
-		add_folder:		function(P, cb){NB.pers.call("add_folder", P, cb)}, 		
-		rename_file_menu:	function(P, cb){NB.files.rename_file(P.id);},
-		rename_file:		function(P, cb){NB.pers.call("rename_file", P, cb)},
-		delete_file_menu:	function(P, cb){NB.files.delete_file(P.id)},
-		delete_file:		function(P, cb){NB.pers.call("delete_file", P, cb)},
-		move_file_menu:		function(P, cb){NB.files.move_file(P.id);},
-		move_file:		function(P, cb){NB.pers.call("move_file", P, cb);},
-		update_file_menu:	function(P, cb){NB.files.update_file(P.id)},		
-		add_ensemble_menu:	function(P, cb){NB.files.addEnsemble();}, 
-		add_ensemble:		function(P, cb){NB.pers.call("add_ensemble", P, cb)}, 	
-		invite_users_menu:	function(P, cb){NB.files.inviteUsers(P.id_ensemble);}, 
-		invite_users:		function(P, cb){NB.pers.call("sendInvites", P, cb)},
-		assignment_file_menu:	function(P, cb){NB.files.edit_assignment(P.id)},
-		edit_assignment:	function(P, cb){NB.pers.call("edit_assignment", P, cb)},
+	    add_file_menu:		function(P, cb){GLOB.files.addFile(P.id_ensemble, P.id_folder);},
+		source_id_getter:	function(P, cb){GLOB.pers.call("request_source_id", P, cb);}, 
+		add_folder_menu:	function(P, cb){GLOB.files.addFolder(P.id_ensemble, P.id_folder);}, 
+		add_folder:		function(P, cb){GLOB.pers.call("add_folder", P, cb)}, 		
+		rename_file_menu:	function(P, cb){GLOB.files.rename_file(P.id);},
+		rename_file:		function(P, cb){GLOB.pers.call("rename_file", P, cb)},
+		delete_file_menu:	function(P, cb){GLOB.files.delete_file(P.id)},
+		delete_file:		function(P, cb){GLOB.pers.call("delete_file", P, cb)},
+		move_file_menu:		function(P, cb){GLOB.files.move_file(P.id);},
+		move_file:		function(P, cb){GLOB.pers.call("move_file", P, cb);},
+		update_file_menu:	function(P, cb){GLOB.files.update_file(P.id)},		
+		add_ensemble_menu:	function(P, cb){GLOB.files.addEnsemble();}, 
+		add_ensemble:		function(P, cb){GLOB.pers.call("add_ensemble", P, cb)}, 	
+		invite_users_menu:	function(P, cb){GLOB.files.inviteUsers(P.id_ensemble);}, 
+		invite_users:		function(P, cb){GLOB.pers.call("sendInvites", P, cb)},
+		assignment_file_menu:	function(P, cb){GLOB.files.edit_assignment(P.id)},
+		edit_assignment:	function(P, cb){GLOB.pers.call("edit_assignment", P, cb)},
 
 	});
     
     $.concierge.addComponents({
-	    notes_loader:	function(P, cb){NB.pers.call("getNotes", P, cb);}, 
-		note_creator:	function(P, cb){NB.pers.call("saveNote", P, cb);},
-		note_editor:	function(P, cb){NB.pers.call("editNote", P, cb);},
+	    notes_loader:	function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+		note_creator:	function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+		note_editor:	function(P, cb){GLOB.pers.call("editNote", P, cb);},
 		});   
 };
 
 
     
-NB.pers.createStore = function(payload){
-    NB.pers.store = new NB.models.Store();
-    NB.pers.store.create(payload, {
+GLOB.pers.createStore = function(payload){
+    GLOB.pers.store = new GLOB.models.Store();
+    GLOB.pers.store.create(payload, {
 	    ensemble:	{pFieldName: "ensembles"}, 
 		file:	{pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
 		folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
@@ -153,9 +151,9 @@ NB.pers.createStore = function(payload){
 		draft: {},
 	    seen:{references: {id_location: "location"}}
 	});
-    $.concierge.setHistoryHelper(function(payload, cb){NB.pers.call("log_history", payload, cb);}, 120000);
-    NB.files.set_model(NB.pers.store);
+    $.concierge.setHistoryHelper(function(payload, cb){GLOB.pers.call("log_history", payload, cb);}, 120000);
+    GLOB.files.set_model(GLOB.pers.store);
     $.concierge.trigger({type:"admin_init", value: 0});
 };
 
-
+})(NB);
