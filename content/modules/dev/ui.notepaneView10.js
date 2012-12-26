@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _f_location_seen: function(id_location){
@@ -53,6 +53,7 @@
         $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
         _defaultHandler: function(evt){
         var self    = this;
+        var sel, container, delta_top, delta_bottom, h, H, scrollby;
         switch (evt.type){
         case "note_hover": 
             $("div.location-lens[id_item="+evt.value+"]", self.element).addClass("hovered");
@@ -73,15 +74,15 @@
             self._render();
             }
             $("div.location-lens", self.element).removeClass("selected");
-            var sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
-            var container = $("div.notepaneView-pages", self.element);
+            sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
+            container = $("div.notepaneView-pages", self.element);
             if (sel.length>0){
-            var scrollby;
-            var h = sel.height() ;
-            var H = container.height();
-            var delta_top = sel.offset().top - container.offset().top;
-            var delta_bottom = delta_top + h - H;
-            if (delta_top > 0){ //we're not too high
+
+                h = sel.height() ;
+                H = container.height();
+                delta_top = sel.offset().top - container.offset().top;
+                delta_bottom = delta_top + h - H;
+                if (delta_top > 0){ //we're not too high
                 if (delta_bottom > 0) {//but we're too low... recenter
                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
                 container.stop(true).animate({scrollTop: '+=' + scrollby  + 'px'}, 300);     
@@ -99,7 +100,7 @@
         case "selection": 
             var msg;
             var v = evt.value;
-            var sel = v.sel;
+             sel = v.sel;
             var m = self._model;
             var id_source = v.files[sel[1]-1].id ;
             var id_author = v.users[sel[0]-1].id ;
@@ -109,7 +110,7 @@
             else{
             msg = "<div class='no-notes'>No comments have been made.</div>";
             }
-            $pane = $("div.notepaneView-pages", self.element).html(msg);
+            var $pane = $("div.notepaneView-pages", self.element).html(msg);
             /*
               $("div.notepaneView-header",self.element).empty();
             */
@@ -154,7 +155,7 @@
             if (o.type === 1) {
             type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
             }
-            else if (o.type ==2){
+            else if (o.type === 2){
             type_info = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
             }            
             var author_info =  " <span class='author'>"+o.fullname+"</span> ";
@@ -162,12 +163,12 @@
             replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
             //            var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
             var optionmenu ="";
-            body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+            body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
             return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
         }
         else{
             replymenu =  " <a class = 'replymenu-mini' href='javascript:void(0)'>Reply</a> ";
-            body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" :$.E($.ellipsis(o.body, 50));
+            body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" :$.E($.ellipsis(o.body, 50));
             return "<div class='note-abridgedlens'  id_item='"+o.ID+"' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><div class='lensmenu'>"+ replymenu+"</div><span class='abridged'>"+body+"</span></div>"; //"
                                                         }
         },
@@ -189,7 +190,7 @@
             };
             var root = m.get("comment", {ID_location: l.ID, id_parent: null}).first();
             var loc_lens = $("<div class='location-lens' id_item='"+l.ID+"'/>");
-            loc_lens.append(this._fill_tree(root))
+            loc_lens.append(this._fill_tree(root));
             $("a.replymenu, a.replymenu-mini", loc_lens).click(f_reply);
             return loc_lens;
         }, 
@@ -282,7 +283,7 @@
             
             var p = this._page;
             var p_after = p; 
-            var p_before = p
+            var p_before = p;
             this._render_one(p);        
             //estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
             var container =     $("div.notepaneView-pages", this.element);        
@@ -383,7 +384,7 @@
         keydown: null,
         collection: null, 
         selection: null, 
-        proxy_keydown: null,
+        proxy_keydown: null
         }            
     };
     })(jQuery);

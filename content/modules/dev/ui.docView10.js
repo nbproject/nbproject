@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -42,6 +42,7 @@
         var self    = this;
         var id_collection    = self._id_collection;
         var model    = self._model;    
+        var h, H, i, page, scrollby, delta_top, delta_bottom;
         /*
          * From now on, we assume the event is directed to this view ! 
          */ 
@@ -98,11 +99,10 @@
         var sel = $("div.selection[id_item="+evt.value+"]", self.element).addClass("selected");
         if (sel.length>0){
             self._in_page_transition =  true; //prevent animation
-            var scrollby;
-            var h = sel.height() ;
-            var H = self.element.height();
-            var delta_top = sel.offset().top - self.element.offset().top;
-            var delta_bottom = delta_top + h - H;
+            h = sel.height() ;
+            H = self.element.height();
+            delta_top = sel.offset().top - self.element.offset().top;
+            delta_bottom = delta_top + h - H;
             if (delta_top > 0){ //we're not too high
             if (delta_bottom > 0) {//but we're too low... recenter
                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
@@ -118,13 +118,13 @@
         break;
         case "doc_scroll_down": 
         self._in_page_transition =  true; //prevent animation
-        var H = self.element.height();
+        H = self.element.height();
         self.element.stop(true).animate({scrollTop: '+=' + H/2  + 'px'}, 200);     
         self._in_page_transition =  false;
         break;
         case "doc_scroll_up": 
         self._in_page_transition =  true; //prevent animation
-        var H = self.element.height();
+        H = self.element.height();
         self.element.stop(true).animate({scrollTop: '-=' + H/2  + 'px'}, 200);     
         self._in_page_transition =  false;
         break;
@@ -153,7 +153,7 @@
                 window.clearTimeout(timerID);
                 self._scrollTimerID =  null;
             }
-            if (self._in_page_transition==false){
+            if (self._in_page_transition === false){
                 timerID = window.setTimeout(function(){
                     var $elt = $( evt.currentTarget);
                     var st = $elt.scrollTop();
@@ -163,9 +163,8 @@
                     var p = $("div.material[page="+pbar+"]", self.element);
                     var next_p;
                     var cond = p.offset().top < 0;
-                    var C = {true: {moveto: "next"}, false: { moveto: "prev"}};
                     while (p.offset().top<0 === cond){
-                    next_p =  p[C[cond].moveto]();
+                        next_p =  p[cond ? "next": "prev"]();
                     if (next_p[0].hasAttribute("page")){
                         p = next_p;
                     }
@@ -206,10 +205,10 @@
         }
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
-
-        if (action === "add" && items_fieldname=="location"){
+                var D, page, pages, i;
+        if (action === "add" && items_fieldname === "location"){
             var id_collection    = this._id_collection; 
-            var page        = this._page;
+            page        = this._page;
             if (page === null || id_collection === null ){
             //initial rendering: Let's render the first page. We don't check the id_collection here since other documents will most likely have their page variable already set. 
             this._page =  1;
@@ -219,10 +218,10 @@
             }
             else{
             //send signal to redraw pages that needs to be redrawn: 
-            var D        = payload.diff;
-            var pages    = this._pages;
+            D        = payload.diff;
+            pages    = this._pages;
             var do_render_now = false;
-            for (var i in D){
+            for (i in D){
                 if (D[i].id_collection === id_collection){
                 delete pages[D[i].page];
                 if (page === D[i].page){ 
@@ -236,9 +235,8 @@
             }
         }
         else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
-            var D        = payload.diff;
+            D        = payload.diff;
             var pages_done    = {};
-            var i, page;
             for (i in D){
             page = D[i].page;
             if (! (page in pages_done)){
@@ -269,7 +267,7 @@
         var w2 = self.element.width();
         //        var pbar = Math.ceil((st+0.01)/(self._h+self._v_margin));
         //        var current_page = self._page;
-        if (self._in_page_transition==false){
+        if (self._in_page_transition === false){
             self._in_page_transition =  true;
             var divOffset = self.element.offset().top;
             var imgOffset =     $("div.material[page="+self._page+"]", self.element).offset().top;
@@ -298,14 +296,15 @@
         self._collection = $.concierge.get_component("get_collection")();
         self._pageinfo = [];
         var items = self._collection.items;
-        var location, file, width0, height0, zoom, res, scale, candidate_scale, desired_scale, resols, pageinfo;
+        var location, file, width0, height0, zoom, res, scale, candidate_scale, desired_scale, resols, pageinfo, style;
         var RESOLUTIONS = $.concierge.get_constant("RESOLUTIONS");
+        var f_sort = function(a,b){return a-b;};
         for (var i=0;i<items.length;i++){
-            pageinfo    = {}
+            pageinfo    = {};
             location    = model.o.location[items[i]];
             file    = model.o.file[location.id_source];
-            width0    = file.rotation==90 || file.rotation==270 ? file.h : file.w;
-            height0    = file.rotation==90 || file.rotation==270 ? file.w : file.h;
+            width0    = file.rotation === 90 || file.rotation === 270 ? file.h : file.w;
+            height0    = file.rotation === 90 || file.rotation === 270 ? file.w : file.h;
             zoom    = $.concierge.get_state("zoom");
             if (self.___best_fit){
             zoom =  (this.element.width()+0.0)/(1.1 * width0);
@@ -316,9 +315,9 @@
             desired_scale = zoom * scale0;
             resols    = [];
             for (scale in RESOLUTIONS[res]){
-            resols.push(parseInt(scale));
+                resols.push(parseInt(scale, 10));
             }
-            resols.sort(function(a,b){return a-b;});
+            resols.sort(f_sort);
             candidate_scale = resols[resols.length-1];
             for (var j=resols.length-1;j>-1;j--){
             if (resols[j]<desired_scale){
@@ -332,8 +331,8 @@
             delete self._pages[i+1];
             pageinfo.resolution = res0;
             pageinfo.scale = scale;
-            var w = parseInt((width0*scale)/scale0); //page width
-            var h = parseInt((height0*scale)/scale0);
+            var w = parseInt((width0*scale)/scale0, 10); //page width
+            var h = parseInt((height0*scale)/scale0, 10);
             pageinfo.w = w;
             pageinfo.h = h;
             pageinfo.zoom = zoom;
@@ -364,7 +363,7 @@
                 $.concierge.trigger({type: "page_peek", value:numpage});
                 }
             });
-        self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top")) );
+        self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top"), 10), 10);
         if (self._page ==null){
             self._page=1;
         }
@@ -375,12 +374,12 @@
         /*
          * this is where we implement the caching strategy we want...
          */
-        if (this._collection.items.length==0){
-            $("div.splash", self.element).show();
+        if (this._collection.items.length === 0){
+            $("div.splash", this.element).show();
             return;
         }
         else{
-            $("div.splash", self.element).hide();
+            $("div.splash", this.element).hide();
         }
 
         var p = this._page;
@@ -431,7 +430,7 @@
         var t,l,w,h, ID, o, sel_contents;
         var s = ($.concierge.get_constant("res")*self._pageinfo[page-1].scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
         var file = m.o.file[location.id_source];
-        var fudge = (file.rotation==90 || file.rotation==270 ? file.h : file.w)/612.0;
+        var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
         s=s*fudge; //BUG_226: for compatibility with old UI, but needs to be removed !!!
         contents="";
         var me =  $.concierge.get_component("get_userinfo")();

@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -56,7 +56,7 @@
         this._id_folder        = evt.value;
         break;
         case "ensemble": 
-        this._id_ensemble    = evt.value==0 ? null : evt.value;
+        this._id_ensemble    = evt.value === 0 ? null : evt.value;
         this._id_folder        = null;
         break;
         case "home": 
@@ -100,7 +100,7 @@
         var $list = $("#filesView-pending-list", self.element).empty();
         var f_question_sort = function(o1,o2){
             return o2.id-o1.id;
-        }
+        };
         var id_ensemble = self._id_ensemble;
         var  query_params = {};
         var viewall_url = "/collage?q=pending";
@@ -152,7 +152,7 @@
         var $list = $("#filesView-question-list", self.element).empty();
         var f_location_sort = function(o1,o2){
             return m.get("question",{location_id: o2.id}).length() - m.get("question",{location_id: o1.id}).length();
-        }
+        };
         var id_ensemble = self._id_ensemble;
         var  query_params = {};
         var viewall_url = "/collage?q=questions";
@@ -192,9 +192,9 @@
         var body, comment_link, reply_link, ensemble_info, parity, lens;
         body = $.E(c.body).replace(/\n/g, " ");
         comment_link = "/c/"+c.id;
-        reply_link = q==undefined ? "" : "<a target='_blank' href='/r/"+c.id+"'><button>Reply</button></a>";
+        reply_link = q === undefined ? "" : "<a target='_blank' href='/r/"+c.id+"'><button>Reply</button></a>";
         ensemble_info = id_ensemble === null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-        parity = (!(i % 2)) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
+        parity = ((i % 2) === 1) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
         scalefactor = 0.6334;
         //scalefactor = 0.4798
@@ -203,7 +203,7 @@
             
         inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(Number(i)+1)+"' src2='"+self.options.img_server+"/pdf/cache2/288/33/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
         link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>";
-        numvotes = q==undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
+        numvotes = q === undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
         doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='snippet-pagenumber pagenumbertop'>"+link+numvotes+reply_link+"  </div>"+inner+"</div>";
         lens = $("<div "+parity+">"+doc+"<div class='filesView-question-body'><ul><li>"+body+"</li></ul></div> </div>");
         $("div.snippet-innermaterial", lens).draggable();
@@ -238,34 +238,34 @@
         else{
             var $tbody = $("#filesView-file-list", self.element);
             //remove download header for users is not in admin mode and download isn't allowed. 
-            if (self._admin==false && model.o.ensemble[id_ensemble].allow_download==false){
+            if (self._admin === false && model.o.ensemble[id_ensemble].allow_download === false){
             $("#th_download").remove();
             }
             //first files: 
-            //            var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
             var elts = model.get("file", {id_ensemble: id_ensemble, id_folder: id_folder});
             var name = (id_folder==null) ?  model.o.ensemble[id_ensemble].name : model.o.folder[id_folder].name;
             $("#filesView-files-header-name").text($.E(name));
             var items = elts.items;
-            for (var i in items){
+            var i;
+            for (i in items){
             $tbody.append(self._filelens(items[i]));
             }
             //now folders: 
             elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
             items = elts.items;
-            for (var i in items){
+            for (i in items){
             $tbody.append(self._folderlens(items[i]));
             }
-            if ($tbody.children().length==0){
+            if ($tbody.children().length === 0){
             $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
             }
             $("table.tablesorter", self.element).trigger("update"); 
-            //.trigger("sorton", this.options.sort_list);
             var f_context = function(action, el, pos){            
             switch (action){
             case "open": 
             $.concierge.get_component("file_open")({id: el.attr("id_item")});
-            //console.log("open", el);
+            break;
+            case "foo":
             break;
             default: 
                 $.concierge.get_component(action+"_file_menu")({item_type: el.attr("item_type"), id: el.attr("id_item")});
@@ -274,7 +274,7 @@
             };
             var f_leftcontext = function(action, el, pos){
             f_context(action, el.parent().parent(), pos);
-            }
+            };
             $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
             $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
             $("#contextmenu_filesview").bind("beforeShow", function(event, el){
@@ -399,8 +399,8 @@
     listens: {
         folder:null, 
         ensemble: null, 
-        home: null,
+        home: null
     }, 
-    admin: false, 
+    admin: false
     };
 })(jQuery);

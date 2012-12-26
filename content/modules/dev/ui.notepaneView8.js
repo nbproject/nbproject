@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _f_location_seen: function(id_location){
@@ -45,12 +45,12 @@
         self._filters        = {me: false, star: false, question: false};
         self.QUESTION        = null;
         self.STAR        = null;
-        self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>\
-<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a>\
-<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a>\
-<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' style='margin-top: -3px'/>      </span><div class='filter-count'>...</div></a></div>\
-<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>\
-</div><div class='notepaneView-pages'/>");
+        self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>"+
+                                                     "<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> "+
+                                                     "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a>"+
+                                                     "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' style='margin-top: -3px'/>      </span><div class='filter-count'>...</div></a></div>"+
+                                                     "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
+                                                     "</div><div class='notepaneView-pages'/>");
         $.mods.declare({
                 contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
         $.mods.ready("contextmenu", function(){});
@@ -58,15 +58,16 @@
         _defaultHandler: function(evt){
         var self=this;
         if (self._id_source ===  $.concierge.get_state("file")){
+            var sel, container, delta_top, delta_bottom, o, h, H, scrollby;
             switch (evt.type){
             case "page":
             if (self._page !== evt.value){
             self._page =  evt.value;            
             self._render();
-            var scrollby;
-            var container = $("div.notepaneView-pages", self.element);
-            var sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
-            var delta_top = sel.offset().top - container.offset().top;
+
+            container = $("div.notepaneView-pages", self.element);
+            sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
+            delta_top = sel.offset().top - container.offset().top;
             container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
             }
             break;
@@ -86,23 +87,23 @@
             $("div.location-lens[id_item="+evt.value+"]", self.element).removeClass("hovered");        
             break;
             case "warn_page_change": 
-            var o = self._model.o.location[evt.value];
+            o = self._model.o.location[evt.value];
             var page_summary;
             if (o.page > self._page){
             self._render_one(o.page);
             page_summary = o.page;
             }
             else{
-            page_summary = self._page
+                page_summary = self._page;
             }
-            var sel = $("div.location-pagesummary[page="+page_summary+"]", self.element).addClass("selected");
-            var container = $("div.notepaneView-pages", self.element);
+            sel = $("div.location-pagesummary[page="+page_summary+"]", self.element).addClass("selected");
+            container = $("div.notepaneView-pages", self.element);
             if (sel.length>0){
-            var scrollby;
-            var h = sel.height() ;
-            var H = container.height();
-            var delta_top = sel.offset().top - container.offset().top;
-            var delta_bottom = delta_top + h - H;
+
+            h = sel.height() ;
+            H = container.height();
+            delta_top = sel.offset().top - container.offset().top;
+            delta_bottom = delta_top + h - H;
             if (delta_top > 0){ //selected note is not too high
                 if (delta_bottom > 0) {//but it's too low... scroll down
                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
@@ -121,21 +122,21 @@
             window.clearTimeout(self._seenTimerID);
             }
             self._seenTimerID = window.setTimeout(self._f_location_seen(evt.value), 1000);
-            var o = self._model.o.location[evt.value];
+            o = self._model.o.location[evt.value];
             if (o.page !==  self._page){
             self._page =  o.page;
             self._render();
             }
             $("div.location-lens[id_item="+self._id_location+"]", self.element).removeClass("selected");
             self._id_location = evt.value;
-            var sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
-            var container = $("div.notepaneView-pages", self.element);
+            sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
+            container = $("div.notepaneView-pages", self.element);
             if (sel.length>0){
-            var scrollby;
-            var h = sel.height() ;
-            var H = container.height();
-            var delta_top = sel.offset().top - container.offset().top;
-            var delta_bottom = delta_top + h - H;
+            
+            h = sel.height() ;
+            H = container.height();
+            delta_top = sel.offset().top - container.offset().top;
+            delta_bottom = delta_top + h - H;
             if (delta_top > 0){ //selected note is not too high
                 if (delta_bottom > 0) {//but it's too low... scroll down
                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
@@ -223,7 +224,7 @@
         var lf_star    = numstar > 0 ? "<ins class='locationflag'><div class='nbicon staricon-hicontrast' title='This thread has been starred'/></ins>" : "";
         var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
         var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
-        var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
+        var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
         return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
         }, 
         _keydown: function(event){
@@ -294,7 +295,7 @@
         var f = this._model.o.file[ this._id_source];
         var p = this._page;
         var p_after = p; 
-        var p_before = p
+        var p_before = p;
         this._render_one(p);        
         this._update_filters();
         //estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
@@ -343,7 +344,7 @@
             $pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
             }
             $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
-            if (self._id_location in locs.items && locs.items[self._id_location].page==page){//highlight selection
+            if (self._id_location in locs.items && locs.items[self._id_location].page === page){//highlight selection
             $("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
             }
             self._pages[page] = true;           
@@ -393,9 +394,10 @@
         update: function(action, payload, items_fieldname){
         var self = this;
         var m = self._model;
-        if (action === "add" && items_fieldname=="location"){
-            var id_source    = self._id_source; 
-            var page        = self._page;
+        var i, D, loc, pages_done, id_source, page, pages, pages_to_render;
+        if (action === "add" && items_fieldname === "location"){
+            id_source    = self._id_source; 
+            page        = self._page;
             if (page === null || id_source === null ){
             //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
             self._page =  1;
@@ -406,23 +408,22 @@
             }
             else{
             //send signal to redraw pages that needs to be redrawn: 
-            var D        = payload.diff;
-            var pages    = self._pages;
+            D        = payload.diff;
+            pages    = self._pages;
             pages_to_render = {};
-            for (var i in D){
+            for (i in D){
                 if (D[i].id_source === id_source){
                 delete pages[D[i].page];
                 pages_to_render[[D[i].page]] = null;
                 }
             }
-            for (var i in pages_to_render){
+            for (i in pages_to_render){
                 self._render_one(i);
             }
             }
         }
-        else if (action=="add" && items_fieldname=="seen" && self._rendered){
-            var D        = payload.diff;
-            var i, loc;
+        else if (action === "add" && items_fieldname === "seen" && self._rendered){
+            D        = payload.diff;
             var locs_done = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].id_location}).first();
@@ -433,9 +434,9 @@
             }           
         }
         else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
-            var D        = payload.diff;
-            var pages_done    = {};
-            var i, page;
+            D        = payload.diff;
+            pages_done    = {};
+
             for (i in D){
             page = D[i].page;
             if (! (page in pages_done)){
@@ -445,10 +446,10 @@
             }
             }
         }
-        else if (action=="add" && items_fieldname=="threadmark" && self._rendered){
-            var D = payload.diff;
-            var i, loc, page;
-            var pages_done    = {};
+        else if (action === "add" && items_fieldname === "threadmark" && self._rendered){
+            D = payload.diff;
+            
+            pages_done    = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].location_id}).first();
             if (loc!= null){

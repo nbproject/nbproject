@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true confirm:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -49,7 +49,7 @@
         var question_button = $("button.mark-toggle[action=question]", self.element).click(function(event){
             //var comment_id = event.target.getAttribute("arg")=="remove" ? null : self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
             var comment_id = self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
-            var active =  event.target.getAttribute("arg")!="remove";
+            var active =  event.target.getAttribute("arg") !== "remove";
             $.concierge.get_component("mark_thread")({active: active, comment_id: comment_id, id_location: self._location, type: self._QUESTION}, function(p){                
                 self._model.add("threadmark", p.threadmarks);
                 var i, tm;
@@ -68,14 +68,14 @@
                 contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
         $.mods.ready("threadview1", function(){});
         $.mods.ready("contextmenu", function(){self._ready = true;if (self._doDelayedRender){self._render();}});
-        $("body").append("<ul id='contextmenu_threadview' class='contextMenu'> \
-<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li> \
-<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li> \
- <li class='context question separator'><a href='#question'>Request a reply</a></li> \
- <li class='context noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> \
- <li class='context star'><a href='#star'>Mark as favorite</a></li> \
- <li class='context nostar'><a href='#nostar'>Remove from favorites</a></li> \
-  <li class='context delete separator'><a href='#delete'>Delete</a></li></ul>");                   
+        $("body").append("<ul id='contextmenu_threadview' class='contextMenu'> "+
+                         "<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li>"+
+                         "<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li>"+
+                         "<li class='context question separator'><a href='#question'>Request a reply</a></li> "+
+                         "<li class='context noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> "+
+                         "<li class='context star'><a href='#star'>Mark as favorite</a></li> "+
+                         "<li class='context nostar'><a href='#nostar'>Remove from favorites</a></li> "+
+                         "<li class='context delete separator'><a href='#delete'>Delete</a></li></ul>");                   
         },
         _defaultHandler: function(evt){
         if (this._file ===  $.concierge.get_state("file")){
@@ -83,6 +83,8 @@
             case "select_thread":
             this._location =  evt.value;
             this._render();
+            break;
+            case "foo":
             break;
             }    
         }    
@@ -113,7 +115,7 @@
         var replymenu        = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
-        var body        = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
+        var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
         return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info, me_info, question_info, type_info, creation_info,"</div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
@@ -238,7 +240,7 @@
             $("li", this).show();
 
             //edit and delete: 
-            if ((!(c.id_author === self._me.id)) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
+            if ((c.id_author !== self._me.id) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
                 $("li.context.edit, li.context.delete", this).hide();
             }        
             //star and question: 
@@ -271,7 +273,7 @@
         return true;
         }, 
         update: function(action, payload, items_fieldname){
-        if ((action === "add"|| action === "remove") && (items_fieldname=="comment" || items_fieldname=="threadmark") && this._location){
+        if ((action === "add"|| action === "remove") && (items_fieldname ==="comment" || items_fieldname ==="threadmark") && this._location){
             this._render();
         }
         }
@@ -281,7 +283,7 @@
     $.ui.threadview.prototype.options = {
     loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
     listens: {
-        select_thread: null, 
+        select_thread: null
     }
     };
 })(jQuery);

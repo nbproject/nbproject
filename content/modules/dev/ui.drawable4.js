@@ -9,7 +9,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 
 (function($) {
     var V_OBJ = {
@@ -22,7 +22,7 @@
         this._helper =  helper;
     },
     destroy: function() {
-        if(!this.element.data('drawable')) return;
+            if(!this.element.data('drawable')){return;}
         this.element.removeData("drawable").unbind(".drawable").removeClass("ui-drawable");
         $("div.ui-drawable-helper", this.element).remove();
         this._mouseDestroy();
@@ -96,7 +96,7 @@
     model: null
     };
     $.extend($.ui.drawable, {
-        eventPrefix: "drag",
+        eventPrefix: "drag"
         });
 
 })(jQuery);
