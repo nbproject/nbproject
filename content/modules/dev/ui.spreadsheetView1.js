@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -28,7 +28,7 @@
         var scrollby;
         var container = self.element;
         //vertical scrolling: 
-        var h = sel.height()
+        var h = sel.height();
         var H = container.height();
         var delta_top = sel.offset().top - container.offset().top;
         var delta_bottom = delta_top + h - H;
@@ -43,7 +43,7 @@
             container.stop(true).animate({scrollTop: '+=' + scrollby + 'px'}, 300);     
         }
         //horizontal scrolling: 
-        var w = sel.width()
+        var w = sel.width();
         var W = container.width();
         var delta_left = sel.offset().left - container.offset().left;
         var delta_right = delta_left + w - W;
@@ -76,7 +76,7 @@
                       "move_right": 39, 
                       "move_up": 38, 
                       "move_down": 40};
-            var grading_codes = {"grade_A": 65, "grade_B": 66, "grade_C": 67, "grade_D": 68, "grade_F": 70, "grade_A" : 97, "grade_B": 98, "grade_C": 99, "grade_D": 100, "grade_F": 102};
+            var grading_codes = {"grade_A" : 97, "grade_B": 98, "grade_C": 99, "grade_D": 100, "grade_F": 102};
             if (evt.value in moving_codes){
             self._keydown({keyCode: moving_codes[evt.value], charCode: 0});
             }
@@ -87,9 +87,9 @@
         }
         },
         update: function(action, payload, items_fieldname){
-        if (action === "add" && items_fieldname=="grade" && this._rendered){
+        if (action === "add" && items_fieldname === "grade" && this._rendered){
             $.L("TODO re_render");
-            this._render()
+            this._render();
         }
         },
         set_model: function(model, init_event){
@@ -140,7 +140,7 @@
             var id_user = self._users[self._selection[0]-1].id;
             var id_source =  self._files[self._selection[1]-1].id;
             $.concierge.get_component("set_grade_assignment")({grade: grade_codes[code], id_user: id_user, id_source: id_source}, function(P){                
-                self._model.add("grade", P.grades)
+                    self._model.add("grade", P.grades);
                 $.I("grade added");
                 //                self._render()
             });
@@ -180,7 +180,7 @@
         };
         var f_sort_file = function(o1, o2){
             return o1.id - o2.id;
-        }
+        };
         //        self._users = m.get("user", {admin: false, guest: false}).sort(f_sort_user);
         //SACHA: Showing both admin and non-admin users. TODO: Have a switch to show/hide admins. 
         self._users = m.get("user", {guest: false}).sort(f_sort_user);        
@@ -210,7 +210,7 @@
                 s.push("<td>"+lens_stat+" "+lens_grade+"</td>");        
             */
             //TODO remove var declarations
-            s.push("<td>"+self._lens(j,i)+"</td>")
+                s.push("<td>"+self._lens(j,i)+"</td>");
             }
             s.push("</tr>");
             
@@ -224,7 +224,7 @@
             var _sel = [tr.rowIndex, td.cellIndex];
             $.concierge.trigger({type:"selection", value: {sel: _sel, users: self._users, files: self._files}});
             }
-        }
+        };
         $("td", contents).click(f_cell_click);
         $("tr:eq("+self._selection[0]+")",contents).children("td:eq("+self._selection[1]+")").addClass("selected");
         self._rendered = true;

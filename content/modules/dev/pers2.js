@@ -15,7 +15,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global unescape:true NB:true NB$:true jQuery:true */
 (function(GLOB){
     //require auth
     if (NB$){
@@ -44,7 +44,7 @@
     GLOB.pers.call = function(fctname, dict, callback, errback){
     if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id === 0) {
         // we haven't received a reply yet so put this function to wait for a while
-        GLOB.debug("waiting until we get a connection id...")
+        GLOB.debug("waiting until we get a connection id...");
         window.setTimeout(function(){
             GLOB.pers.call(fctname, dict, callback, errback);
         }, GLOB.pers.connection_T);
@@ -78,7 +78,7 @@
         $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:GLOB.pers.logout()'>Log out</a></li></ul></li></ul>");
         var $util_window = $.concierge.get_component("get_util_window")();
         $("#register_user_dialog, #login_user_dialog").remove();    
-        $util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
+        $util_window.append("<div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if($(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
         if (init_ui){
         $("#login_user_password").keypress(function(e) {if(e.keyCode === 13 && this.value.length>0) {
                 $.L("using shortcut");
@@ -99,7 +99,7 @@
         //    $("ul.sf-menu").superfish();
     }
     GLOB.pers.params = GLOB.dom.getParams();
-    }
+    };
 
     GLOB.pers.preinit = function(init_ui){
     if (init_ui === undefined){
@@ -131,7 +131,7 @@
         var me = $.concierge.get_component("get_userinfo")();
         var file = m.o.file[loc.id_source];
         var page = loc.page;
-        var f_sort_down = function(o1, o2){return o1.top-o2.top};    
+        var f_sort_down = function(o1, o2){return o1.top-o2.top;};    
         var TYPE_STAR = $.concierge.get_constant("STAR");
         var TYPE_QUESTION = $.concierge.get_constant("QUESTION");
         var new_id = null;    
@@ -202,11 +202,11 @@
                     err("passwords don't match: please retype them");
                     return;
                 }
-                if ($("#register_user_firstname")[0].value.length==0){
+                if ($("#register_user_firstname")[0].value.length === 0){
                     err("Please enter your firstname");
                     return;
                 }
-                if ($("#register_user_lastname")[0].value.length==0){
+                if ($("#register_user_lastname")[0].value.length === 0){
                     err("Please enter your lastname");
                     return;
                 }
@@ -274,7 +274,7 @@
         $util_window = $("<div class='util_windows' style='display:none'/>");
         }
         $("body").append($util_window);
-        return $util_window
+        return $util_window;
     }, 
     register_user: function(P, cb, eb){
         GLOB.pers.call("register_user", P, cb, eb);
@@ -318,21 +318,21 @@
     pretty_print_timedelta: function(P,cb){
         var d = new Date(P.t);
         var now = new Date();
-        var delta_s = parseInt((now-d)/1000);    
+        var delta_s = parseInt((now-d)/1000, 10);    
         var s = "";
         if (delta_s<3600){       
-        s += (parseInt(delta_s/60) + " minutes ago");
+            s += (parseInt(delta_s/60, 10) + " minutes ago");
         }
         else if (delta_s < 3600*24){
-        s += (parseInt(delta_s/3600) + " hours ago");
+            s += (parseInt(delta_s/3600, 10) + " hours ago");
         }
         else{
-        s += (parseInt(delta_s/(3600*24)) + " days ago");
+            s += (parseInt(delta_s/(3600*24), 10) + " days ago");
         }
         return s;
     }, 
     get_login_dialog_markup: function(P,cb){
-        return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname=="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
+        return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
     }
     };
 })(NB);

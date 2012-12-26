@@ -11,6 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
+/*global jQuery:true*/
 
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
@@ -51,15 +52,16 @@
         $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
         _defaultHandler: function(evt){
         var self    = this;
+        var sel, container, delta_top, delta_bottom, o, h, H, scrollby;
         switch (evt.type){
         case "page":
         if (self._page !== evt.value){
             self._page =  evt.value;            
             self._render();
-            var scrollby;
-            var container = $("div.notepaneView-pages", self.element);
-            var sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
-            var delta_top = sel.offset().top - container.offset().top;
+
+            container = $("div.notepaneView-pages", self.element);
+            sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
+            delta_top = sel.offset().top - container.offset().top;
             container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
         }
         break;
@@ -75,21 +77,21 @@
             window.clearTimeout(self._seenTimerID);
         }
         self._seenTimerID = window.setTimeout(self._f_location_seen(self._id_location), 1000);
-        var o = self._model.o.location[evt.value];
+        o = self._model.o.location[evt.value];
         if (self._location === null || o.ID !== self._location.ID){
             self._location = o;
             self._page =  self._collection.index[o.ID]+1;
             self._render();
         }
         $("div.location-lens", self.element).removeClass("selected");
-        var sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
-        var container = $("div.notepaneView-pages", self.element);
+        sel = $("div.location-lens[id_item="+evt.value+"]",self.element).addClass("selected");
+        container = $("div.notepaneView-pages", self.element);
         if (sel.length>0){
-            var scrollby;
-            var h = sel.height() ;
-            var H = container.height();
-            var delta_top = sel.offset().top - container.offset().top;
-            var delta_bottom = delta_top + h - H;
+        
+            h = sel.height() ;
+            H = container.height();
+            delta_top = sel.offset().top - container.offset().top;
+            delta_bottom = delta_top + h - H;
             if (delta_top > 0){ //we're not too high
             if (delta_bottom > 0) {//but we're too low... recenter
                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
@@ -118,7 +120,7 @@
         var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
         var bold_cl    = numnew > 0 ? "location-bold" : "";
         var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
-        var body = root.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,200));
+        var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,200));
         return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
         }, 
         _keydown: function(event){
@@ -169,7 +171,7 @@
         var items = this._collection.items;
         var p = this._page;
         var p_after = p; 
-        var p_before = p
+        var p_before = p;
         this._render_one(p);        
         //estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
         var container =     $("div.notepaneView-pages", this.element);        
@@ -253,9 +255,10 @@
         }
         }, 
         update: function(action, payload, items_fieldname){
-        if (action === "add" && items_fieldname=="location"){
+        var i, D, loc, pages_done, id_source, page, pages, pages_to_render;
+        if (action === "add" && items_fieldname === "location"){
             var id_collection    = this._id_collection; 
-            var page        = this._page;
+            page        = this._page;
             if (page === null || id_collection === null ){
             //initial rendering: Let's render the first page. We don't check the id_collection here since other documents will most likely have their page variable already set. 
             this._page =  1;
@@ -266,10 +269,10 @@
             }
             else{
             //send signal to redraw pages that needs to be redrawn: 
-            var D        = payload.diff;
-            var pages    = this._pages;
+            D        = payload.diff;
+            pages    = this._pages;
             var do_render_now = false;
-            for (var i in D){
+            for (i in D){
                 delete pages[D[i].page];
                 if (page === D[i].page){ 
                 do_render_now = true;
@@ -281,10 +284,10 @@
             }
             }
         }
-        else if (action=="add" && items_fieldname=="seen" && this._rendered){
-            var D        = payload.diff;
+        else if (action === "add" && items_fieldname === "seen" && this._rendered){
+            D        = payload.diff;
             var m        = this._model;
-            var i, loc;
+            
             var locs_done = {};
             for (i in D){
             loc = m.get("location", {ID: D[i].id_location}).first();
@@ -295,9 +298,9 @@
             }           
         }
         else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
-            var D        = payload.diff;
-            var pages_done    = {};
-            var i, page;
+            D        = payload.diff;
+            pages_done    = {};
+            
             for (i in D){
             page = D[i].page;
             if (! (page in pages_done)){
@@ -318,7 +321,7 @@
         note_hover: null, 
         note_out: null, 
         select_thread: null, 
-        keydown: null,
+        keydown: null
     }            
     };
 })(jQuery);

@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global YT:true jQuery:true console:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -151,7 +151,7 @@
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
 
-        if (action === "add" && items_fieldname=="location"){
+        if (action === "add" && items_fieldname === "location"){
             var id_source    = this._id_source; 
             var page        = this._page;
             if (page === null || id_source === null ){
@@ -177,10 +177,7 @@
         //        self._generate_contents();
         },
         _update_best_fit_zoom: function(){        
-        //best zoom: when the page fits in width with a 10% margin on the side
-        var file =  this._model.o.file[$.concierge.get_state("file")];
-        var w = file.rotation==90 || file.rotation==270 ? file.h : file.w;
-        this.___best_fit_zoom =  (this.element.width()+0.0)/(1.1 * w);
+                console.warn("TODO!");
         }, 
         close: function(){
         var id =  this._id_source;
@@ -201,7 +198,7 @@
         var t,l,w,h, ID, locs, o;
         var s = ($.concierge.get_constant("res")*self._scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
         var file = model.o.file[id_source];
-        var fudge = (file.rotation==90 || file.rotation==270 ? file.h : file.w)/612.0;
+        var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
         s=s*fudge; //for compatibility with old UI, but needs to be changed !!!
         for (var p=1;p<=numpages;p++){            
             contents="";
@@ -246,7 +243,7 @@
         var style    = "width: "+w+"px;height: "+h+"px";    
         contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_controls'> <b><a href='#' id='docview_button_play'>Play</a></b> <b><a href='#'  id='docview_button_pause'>Pause</a></b></div>";
         $("div.contents", self.element).html(contents);
-        $("#docview_drawingarea").drawable({model: self._model})
+        $("#docview_drawingarea").drawable({model: self._model});
         $("#docview_button_play").click(function(evt){
             self._player.playVideo();
             });
@@ -263,7 +260,7 @@
                 $.concierge.trigger({type: "page_peek", value:numpage});
                 }
             });
-        self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top")) );
+        self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top"), 10), 10 );
         self._player = new YT.Player('youtube_player', {
             height: '390',
             width: '640',
@@ -298,7 +295,7 @@
         var t,l,w,h, ID, locs, o, sel_contents;
         var s = ($.concierge.get_constant("res")*self._scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
         var file = model.o.file[id_source];
-        var fudge = (file.rotation==90 || file.rotation==270 ? file.h : file.w)/612.0;
+        var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
         s=s*fudge; //BUG_226: for compatibility with old UI, but needs to be removed !!!
         contents="";
         locs = model.get("location", {id_source: id_source, page: page}).sort(self.options.loc_sort_fct);
@@ -332,7 +329,7 @@
                 $.concierge.trigger({type:"select_thread", value: evt.currentTarget.getAttribute("id_item")});
                 });
         var sel = model.o.location[self._id_location];
-        if (sel && sel.page==page){//highlight selection
+        if (sel && sel.page === page){//highlight selection
             $("div.selection[id_item="+self._id_location+"]",self.element).addClass("selected");
         }
         }
@@ -351,7 +348,7 @@
         global_editor: null, 
         select_thread: null,
         drawable_start: null,
-        editor_saving: null,
+        editor_saving: null
     }            
     };
 })(jQuery);

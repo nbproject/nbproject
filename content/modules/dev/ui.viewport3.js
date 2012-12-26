@@ -10,6 +10,8 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
+/*global jQuery:true*/
+
 (function($) {
     //cf bug 83 need mapping href -> tab index (tabs doesn't use the DOM order after tab dragged)
     $.extend($.ui.tabs.prototype, {
@@ -49,7 +51,7 @@ License
     vp2v: {},
     v2vp: {}, 
     labels:{}, 
-    closable:{},
+    closable:{}
     };
     var VP_OBJ = {
     temp_tab:  $("<div style='display:none'/>"),
@@ -101,7 +103,7 @@ License
         if (self.options.maxAppendTo){
             var ph = $("#VP_PLACEHOLDER");
             var vp_elt = self.element[0];
-            if (ph.length==0){//maximize
+            if (ph.length === 0){//maximize
             $(vp_elt).after("<div id='VP_PLACEHOLDER'/>");
             vp_elt.parentNode.removeChild(vp_elt);
             $(self.options.maxAppendTo).append(vp_elt);
@@ -116,7 +118,7 @@ License
         $(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');
         };
         var f_out =  function(event){
-        $(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');;
+        $(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');
         };
         var f_menu =  function(event){
         $("div.vp-menu", self.element).toggleClass("hidden");
@@ -149,7 +151,7 @@ License
         _M.labels[id_view] = label;
         _M.vp2v[id_viewport][id_view]=true;
         _M.v2vp[id_view] = id_viewport;
-        _M.closable[id_view] = (closable=="true");
+        _M.closable[id_view] = (closable ==="true");
     },
     _moveView: function(id_view,  id_viewport){ 
         var id_viewport_old =  _M.v2vp[id_view];
@@ -239,7 +241,7 @@ License
                 $.L("[start] evt=" ,event, ", ui=", ui, ", this=", this );
                 $vp_src    = $(ui.item[0].parentNode.parentNode);
                 var href =  $(ui.item).children("a:first").attr("href");
-                index_src=$vp_src.tabs('get_index', href)
+                index_src=$vp_src.tabs('get_index', href);
                     }, 
                 forceHelperSize: false,
                 helper: 'clone',

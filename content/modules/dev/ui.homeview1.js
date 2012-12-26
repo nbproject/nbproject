@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -82,21 +82,22 @@
         var id_folder = self._id_folder;
         var model = self._model; 
         var $tbody = $("tbody", self.element).empty();
+        var i;
         //remove download header for users is not in admin mode and download isn't allowed. 
-        if (self._admin==false && model.o.ensemble[id_ensemble].allow_download==false){
+        if (self._admin === false && model.o.ensemble[id_ensemble].allow_download === false){
             $("#th_download").remove();
         }
         //first files: 
         var elts = (id_folder==null) ? model.get("file", {id_ensemble: id_ensemble, id_folder: null}) :  model.get("file", {id_folder: id_folder});
-        for (var i in elts.items){
+        for (i in elts.items){
             $tbody.append(self._filelens(elts.items[i]));
         }
         //now folders: 
         elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
-        for (var i in elts.items){
+        for (i in elts.items){
             $tbody.append(self._folderlens(elts.items[i]));
         }
-        if ($tbody.children().length==0){
+        if ($tbody.children().length === 0){
             $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
         }
         $("table.tablesorter", self.element).trigger("update"); 
@@ -105,7 +106,8 @@
             switch (action){
             case "open": 
             $.concierge.get_component("file_open")({id: el.attr("id_item")});
-            //console.log("open", el);
+            break;
+            case "foo": 
             break;
             default: 
             $.concierge.get_component(action+"_file_menu")({id: el.attr("id_item")});
@@ -114,7 +116,7 @@
         };
         var f_leftcontext = function(action, el, pos){
             f_context(action, el.parent().parent(), pos);
-        }
+        };
         $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
         $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
         /*
@@ -145,10 +147,6 @@
 
         },
         _update: function(){
-        /*
-          var self = this;
-          self.element.append("<p>_update request</p>");
-        */
         }, 
         update: function(action, payload, items_fieldname){
         if (action === "add" || action === "remove"){
