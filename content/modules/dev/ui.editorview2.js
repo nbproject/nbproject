@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -21,7 +21,7 @@
         self._allowStaffOnly = O.allowStaffOnly;
         self._allowAnonymous = O.allowAnonymous;
         $.mods.declare({
-            editorview1: {js: [], css: ["/content/modules/dev/ui.editorview1.css"]}, 
+            editorview1: {js: [], css: ["/content/modules/dev/ui.editorview1.css"]}
                 });
         $.mods.ready("editorview1", function(){});
         },
@@ -30,6 +30,7 @@
         var model        = self._model;
         var me            = $.concierge.get_component("get_userinfo")();
         var guest_msg    = "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
+        var id_item, draft, drafts;
         switch (evt.type){
         case "new_thread":
             if (me.guest === 1){
@@ -44,10 +45,10 @@
             //TODO: delete previous draft if empty
             //TODO: if existting draft, sync its content w/ its model
             //now create new draft: 
-            var id_item        = (new Date()).getTime();
-            var draft        = {};
+            id_item        = (new Date()).getTime();
+            draft        = {};
             draft[id_item]        = id_item;
-            var drafts            = {};
+            drafts            = {};
             drafts[id_item]        = draft;
             self._doEdit        = false;
             self._inReplyTo        = 0 ;
@@ -67,10 +68,10 @@
             $.I("Only one editor at a time is allowed for now...");
             return;
             }
-            var id_item        = (new Date()).getTime();
-            var draft        = {};
+            id_item        = (new Date()).getTime();
+            draft        = {};
             draft[id_item]        = id_item;
-            var drafts            = {};
+            drafts            = {};
             drafts[id_item]        = draft;
             self._doEdit        = false;
             self._inReplyTo        = evt.value;
@@ -86,10 +87,10 @@
             $.I("Only one editor at a time is allowed for now...");
             return;
             }
-            var id_item        = (new Date()).getTime();
-            var draft        = {};
+            id_item        = (new Date()).getTime();
+            draft        = {};
             draft[id_item]        = id_item;
-            var drafts            = {};
+            drafts            = {};
             drafts[id_item]        = draft;
             self._doEdit        = true;
             self._inReplyTo        = 0 ;
@@ -131,7 +132,7 @@
             if (self._sel){
             self._sel.remove();
             }            
-        }
+        };
         var staffoption    = self._allowStaffOnly ? "<tr><td><input type='radio' name='vis_"+id_item+"' value='2'/></td><td>Instructors and TAs</td></tr>" : " ";
         var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></span>": " ";
         var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span> ";
@@ -150,14 +151,14 @@
         self.element.append(contents);
         $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
         var $textarea = $("textarea", self.element).keypress(function(e){
-            if(e.keyCode === 27 && this.value.length==0){
+            if(e.keyCode === 27 && this.value.length === 0){
                 f_cleanup();
             }
             }).width(self.element.width()-15);     
         $textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height()-30);
         var f_sel = function(evt, ui){
             $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
-        }
+        };
         
         var f_discard = function(evt){
             f_cleanup();
@@ -171,7 +172,7 @@
             }
             else{
             var id_comment; for (id_comment in payload["comments"]){break;}
-            id_loc = model.o.comment[id_comment]["ID_location"];
+            var id_loc = model.o.comment[id_comment]["ID_location"];
             if (id_loc in model.o.location){
                 var locs = {};
                 locs[id_loc] = model.o.location[id_loc];
@@ -194,11 +195,11 @@
             if (!(self._note)){ //new note, local or global
             var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
             var file = model.o.file[self._file];
-            var fudge = (file.rotation==90 || file.rotation==270 ? file.h : file.w)/612.0;
+            var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
             s_inv = s_inv/fudge;
             msg.id_ensemble = model.o.file[self._file].ID_ensemble;
-            msg.top = self._sel ? s_inv*parseInt(self._sel.css("top")):0;
-            msg.left= self._sel ? s_inv*parseInt(self._sel.css("left")):0;
+            msg.top = self._sel ? s_inv*parseInt(self._sel.css("top"), 10):0;
+            msg.left= self._sel ? s_inv*parseInt(self._sel.css("left"), 10):0;
             msg.w =  self._sel ? s_inv*self._sel.width():0;
             msg.h =  self._sel ? s_inv*self._sel.height():0;
             msg.x0= 0;
@@ -266,7 +267,7 @@
     listens: {
         new_thread: null, 
         reply_thread: null, 
-        edit_thread: null,
+        edit_thread: null
     },
     id_source: null, 
     note: null, 

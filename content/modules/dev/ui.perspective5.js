@@ -23,6 +23,7 @@
  In your JS: 
  $("#pers1").perspective();
 */
+/*global alert:true jQuery:true*/
 (function($) {
     var P_OBJ = {
     SEP_TOTAL_SIZE: 5,
@@ -56,7 +57,7 @@
         frac: "_frac_desired_width", 
         alloc: "_allocated_width", 
         des: "_desired_width", 
-        mem: "_memorized_width", 
+        mem: "_memorized_width"
         }, 
         height: {
         dir: "_height", 
@@ -66,7 +67,7 @@
         frac: "_frac_desired_height", 
         alloc: "_allocated_height", 
         des: "_desired_height", 
-        mem:  "_memorized_height", 
+        mem:  "_memorized_height"
         }
     }, 
     PROPAGATE_PARAMS : {
@@ -91,7 +92,7 @@
         if ($sep.length===0){
         return;
         }    
-        if ($sep.length!=1){
+        if ($sep.length !== 1){
         alert("There are "+ $sep.length +" separators in here... There should be at most 1"); 
         return;
         }
@@ -118,21 +119,21 @@
         var $next = $sep.next();
         var size1, margin, o_css ; //size1: desired size of prev
         var v = self.ORIENTATIONS[$sep.attr("orientation")];
-        size1 = ($sep.attr("end")) ?  $p[v.dim]()-parseInt($sep.attr("end"))-self.SEP_TOTAL_SIZE : $prev[v.dim]();
+        size1 = ($sep.attr("end")) ?  $p[v.dim]()-parseInt($sep.attr("end"), 10)-self.SEP_TOTAL_SIZE : $prev[v.dim]();
         margin = self.SEP_TOTAL_SIZE + Number(size1);
         o_css            = {};
-        o_css[v.dim2]        = $p[v.dim2]()+"px"
+        o_css[v.dim2]        = $p[v.dim2]()+"px";
         o_css[v.dim]        = size1+"px";
         $sep.prev().css(o_css);
         o_css            = {};        
         o_css["margin-"+v.dir]    =  margin + "px";
-        o_css[v.dim2]        = $p[v.dim2]()+"px"
+        o_css[v.dim2]        = $p[v.dim2]()+"px";
         o_css[v.dim]        = ($p[v.dim]()-margin)+"px";
         $sep.next().css(o_css);        
         o_css            = {};        
         o_css[v.dir]        = size1 + "px";
         o_css[v.dim2]        = $p[v.dim2]()+"px";
-        o_css[v.dim]        = self.SEP_INSIDE_SIZE+"px"
+        o_css[v.dim]        = self.SEP_INSIDE_SIZE+"px";
         o_css["cursor"]        = v.cursor;
         o_css["border-"+v.dir]    = "thin solid #FEFCFB";
         $sep.css(o_css);    
@@ -154,7 +155,7 @@
             axis: v.axis, 
             stop: function(event, ui){
             var VD    = self._views_data;
-            var x1 = parseInt(this.style[v.dir]);
+            var x1 = parseInt(this.style[v.dir], 10);
             var $elt = $(this);
             var $prev = $elt.prev();
             var $next = $elt.next(); 
@@ -229,7 +230,7 @@
         newprefix    = prefix+self.PREFIXES[v];
         id        = elt_id + newprefix;
         if ("data" in views[v]){//found a leaf
-            if (views[v].data.priority === 1 && views.orientation==P.orientation1){
+            if (views[v].data.priority === 1 && views.orientation === P.orientation1){
             //here we make the approx that this IS on the critical path
             VD[P.cp][id] = null;               
             }
@@ -240,10 +241,10 @@
         }
         //"max" case (approx): leaves with separator in between
         //TODO: don't ignore transcient windows !
-        if ( views.orientation==P.orientation2 && "data" in views.v1 && "data" in views.v2){                
+        if ( views.orientation === P.orientation2 && "data" in views.v1 && "data" in views.v2){                
         var id1 =  elt_id+prefix+self.PREFIXES.v1;
         var id2 =  elt_id+prefix+self.PREFIXES.v2;
-        if ((VD[P.dim][id1] >  VD[P.dim][id2]) || (id2 in VD._transcient && VD._transcient[id2]==false)){
+        if ((VD[P.dim][id1] >  VD[P.dim][id2]) || (id2 in VD._transcient && VD._transcient[id2] === false)){
             VD[P.cp][id1] = null;
             VD[P.scp][id2] = id1;
         }
@@ -288,36 +289,37 @@
         var req        = 0;
         var total_req_frac    = 0;
         var allocated    = 0;
+        var v;
         if (!(use_memorized)){ //reinit
         VD[P.mem] = {};
         }
-        for (var v in  P1){
+        for (v in  P1){
         if (v in  VD[P.cp] && ((!(v in VD._transcient)) || VD._transcient[v])){ //it's on the critical path
             req+=  VD[P.d_min][v];
         }
         }
         if (req<available){//every P1 widget will get at least min size
         remaining = available-req;
-        for (var v in  P2){ //every P2 widget
+        for (v in  P2){ //every P2 widget
             if ((!(v in VD._transcient)) || VD._transcient[v]){
             req+=  VD[P.d_min][v];
             }
         }    
         if (req<available) {//the P1 widgets will get some extra space, since P1 and P2 already getting their min
             remaining = available-req;
-            for (var v in  P1){
+            for (v in  P1){
             if ((!(v in VD._transcient)) || VD._transcient[v]){
                 total_req_frac+=VD[P.frac][v];
             }
             }
-            for (var v in  P1){
+            for (v in  P1){
             VD[P.alloc][v] =  ((!(v in VD._transcient)) || VD._transcient[v]) ? ((use_memorized && v in VD[P.mem]) ? VD[P.mem][v] : Math.min(VD[P.d_min][v] + Math.floor(remaining*VD[P.frac][v]/total_req_frac),VD[P.des][v]*D/100)) : 0;
             //TODO: we should check that the widget that isn't on the critical path didn't allocate more that the one that's on the critical path. 
             if (v in  VD[P.cp]){
                 allocated+=VD[P.alloc][v];
             }
             }
-            for (var v in  P2){/// and for now, P2 views get their min
+            for (v in  P2){/// and for now, P2 views get their min
             VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ? VD[P.d_min][v]: 0;
             allocated+=VD[P.alloc][v];
             }
@@ -326,12 +328,12 @@
             remaining = available - allocated;
             //now give extra space to P2 widgets (//TODO refactor)
             total_req_frac = 0;
-            for (var v in  P2){
+            for (v in  P2){
                 if ((!(v in VD._transcient)) || VD._transcient[v]){
                 total_req_frac+=VD[P.frac][v];
                 }
             }
-            for (var v in  P2){
+            for (v in  P2){
                 allocated-=VD[P.alloc][v]; //remove current P2 size i.e. minsize 
                 VD[P.alloc][v] =  ((!(v in VD._transcient)) || VD._transcient[v]) ? Math.min(VD[P.d_min][v] + Math.floor(remaining*VD[P.frac][v]/total_req_frac),VD[P.des][v]*D/100) : 0;
                 allocated+=VD[P.alloc][v];                
@@ -340,7 +342,7 @@
         }
         else{ //P2 widgets get less than their min
             req = 0;
-            for (var v in  P2){
+            for (v in  P2){
             if ((!(v in VD._transcient)) || VD._transcient[v]){                                
                 req += VD[P.d_min][v];            
                 VD[P.alloc][v] = Math.floor(remaining*VD[P.d_min][v]/req);
@@ -349,7 +351,7 @@
                 VD[P.alloc][v] = 0;
             }
             }
-            for (var v in  P1){/// and for now, P2 views get their min
+            for (v in  P1){/// and for now, P2 views get their min
             VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ?  ((use_memorized && v in VD[P.mem]) ? VD[P.mem][v] : VD[P.d_min][v]) : 0;
             if (v in  VD[P.cp]){
                 allocated+=VD[P.alloc][v];
@@ -358,7 +360,7 @@
         }        
         }
         else{ //P1 widget gets less than min, and P2 are collapsed
-        for (var v in  P1){
+        for (v in  P1){
             if (v in VD[P.cp]){
             VD[P.alloc][v] =  ((!(v in VD._transcient)) || VD._transcient[v]) ?  ((use_memorized && v in VD[P.mem]) ? VD[P.mem][v] : Math.floor(available*VD[P.d_min][v]/req)): 0;
             }            
@@ -369,7 +371,7 @@
             VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ? VD[P.des][v]: 0;
             }
         }
-        for (var v in  P2){
+        for (v in  P2){
             VD[P.alloc][v] = 0;
         }
         }
@@ -381,6 +383,15 @@
         var did_sep        = false;
         var newprefix, id, $div;
         var key;
+        var f_transcient = function(id, do_transcient){
+            return function(){
+                VD._transcient[id] = do_transcient;
+                self._resize_contents(true);
+                self._adjust(self.element.children("div.separator"));
+                self.element.trigger("resize_perspective", ["xy"]);
+            };
+        };
+
         for (var i in self.PREFIX_KEYS){
         key = self.PREFIX_KEYS[i];     
         newprefix = prefix+self.PREFIXES[key];
@@ -391,19 +402,7 @@
             if ("content" in views[key].data){
             views[key].data.content($div);
             if (id in VD._transcient){
-                $div.bind({minimize: function(){
-                    $.L("minimizing ", id);
-                    VD._transcient[id] = false;
-                    self._resize_contents(true);
-                    self._adjust(self.element.children("div.separator"));
-                    self.element.trigger("resize_perspective", ["xy"]);
-                    }, restore:  function(){
-                    $.L("restore ", id);
-                    VD._transcient[id] = true;
-                    self._resize_contents(true);
-                    self._adjust(self.element.children("div.separator"));
-                    self.element.trigger("resize_perspective", ["xy"]);
-                    }});
+                $div.bind({minimize: f_transcient(id, false), restore:  f_transcient(id, true)});
             }
             }
             else{
@@ -522,8 +521,8 @@
     height: null,
     orientation: null, 
     views: null
-    }
+    };
     $.extend($.ui.perspective, {
-        version: '1.8',
+        version: '1.8'
     });
 })(jQuery);

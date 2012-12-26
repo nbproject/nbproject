@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _init: function() {
@@ -32,6 +32,9 @@
         switch (evt.type){
         case "hello": 
             self.element.append("got a hello event with value:"+evt.value +"<br/>" );
+            break;
+        case "foo": 
+            break;
         }
         },
         set_model: function(model){
@@ -46,7 +49,7 @@
         //build view: 
         var params =  self.options.admin ? {admin: true} : {};
         var ensemble = model.get("ensemble", params).items;
-        data = [];
+        var data = [];
         var subfolders = null;
         var children = null;
         var s_numfiles = null;
@@ -63,7 +66,7 @@
             s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
             data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
         }
-        tree_data = {
+        var tree_data = {
             plugins : [ "themes", "json_data", "ui" ],
             json_data : {data : data}, 
             core: {html_titles: true}

@@ -11,14 +11,14 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true */
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
         $.ui.view.prototype._create.call(this);
         var self = this;
         $.mods.declare({
-            editorview1: {js: [], css: ["/content/modules/dev/ui.editorview1.css"]}, 
+            editorview1: {js: [], css: ["/content/modules/dev/ui.editorview1.css"]}
                 });
         $.mods.ready("editorview1", function(){});
         },
@@ -26,6 +26,8 @@
         if (this._file ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "__YOUR_EVENT_HERE__":
+            break;
+            case "__YOUR_OTHER_EVENT_HERE__":
             break;
             }    
         }    
@@ -45,7 +47,8 @@
     $.widget("ui.editorview",V_OBJ );
     $.ui.editorview.prototype.options = {
     listens: {
-        YOUR_EVENT_HERE: null, 
+            __YOUR_EVENT_HERE__: null, 
+            __YOUR_OTHER_EVENT_HERE__: null 
     }
     };
 })(jQuery);

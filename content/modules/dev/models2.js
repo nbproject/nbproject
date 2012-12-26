@@ -12,7 +12,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global console:true NB:true */
 (function(GLOB){
     //require: mvc;
     GLOB.models = {};
@@ -44,7 +44,7 @@
      */
     var self=this;
     var tabledef, pFieldName, obs;
-    if (schema==undefined){
+    if (schema === undefined){
         schema = {};
         //make up a default schema: just use all the fields from payload
         for (var k in payload){
@@ -53,7 +53,7 @@
     }
     this.schema = schema;
     for (var type_name in schema){
-        if  (type_name.substring(0,2)=="__"){
+        if  (type_name.substring(0,2) === "__"){
         throw new Error("table names can't start w/ '__' , tablename="+type_name); 
         }
         tabledef = schema[type_name];    
@@ -69,7 +69,7 @@
          * this.Ensembles = {123: new Ensemble(payload.channels[123], ...}
          */
         if ("obj_type" in tabledef){//need to apply constructor
-            for (id in payload[pFieldName]){
+            for (var id in payload[pFieldName]){
             this.o[type_name][id] = new tabledef.obj_type(payload[pFieldName][id]);
             }
         }
@@ -95,13 +95,13 @@
 
     GLOB.models.Store.prototype.__get_indexes = function(type_name){
     //PRE: Schema already defined. 
-    var self = this;
-    var indexes = {};
-    var rangeindexes = {};
-    var tabledef = self.schema[type_name];
-    var ref;
+    var self = this, 
+    indexes = {}, 
+    rangeindexes = {}, 
+    tabledef = self.schema[type_name], 
+    ref, i;
     if ("references" in tabledef){
-        for (var i in tabledef.references){
+        for (i in tabledef.references){
         ref =  tabledef.references[i];
         if (ref in self.indexes && type_name in self.indexes[ref]){
             indexes[i] =  self.indexes[ref][type_name];
@@ -110,7 +110,7 @@
     }
     if ("__ref" in tabledef){
         var r=/__in(\d*)$/;
-        for (var i in tabledef.__ref){
+        for (i in tabledef.__ref){
         ref =  tabledef.__ref[i];
         if (ref in self.indexes && type_name in self.indexes[ref]){
             if (r.exec(ref)==null){
@@ -134,7 +134,7 @@
         self.add(type_name, objs);
     }
     else{
-        $.L(type_name, " not found in schema: ", self.schema);
+        console.log(type_name, " not found in schema: ", self.schema);
     }
 
     };
@@ -149,13 +149,13 @@
         var all_indexes = self.__get_indexes(type_name);
         var regular_indexes = all_indexes[0];
         var range_indexes = all_indexes[1];
-        var index,index_info, v_new, v_old, newbin, oldbin, pk, fk;        
+        var index,index_info, v_new, v_old, newbin, oldbin, pk, fk, fieldname;        
         for (pk in objs){
         is_update = pk in this.o[type_name];    
         //now, update existing indexes if any
         if (is_update){
 
-            for (var fieldname in  regular_indexes){
+            for (fieldname in  regular_indexes){
             index = regular_indexes[fieldname];            
             v_new = objs[pk][fieldname];
             v_old = this.o[type_name][pk][fieldname];
@@ -169,7 +169,7 @@
                 index[v_new][pk]=null;
             }
             }
-            for (var fieldname in  range_indexes){
+            for (fieldname in  range_indexes){
             index = range_indexes[fieldname].index;            
             index_info = range_indexes[fieldname].info;
             v_new = objs[pk][fieldname];
@@ -193,7 +193,7 @@
             }
         }
         else{
-            for (var fieldname in  regular_indexes){
+            for (fieldname in  regular_indexes){
             index = regular_indexes[fieldname];            
             fk = objs[pk][fieldname];
             if (!(fk in index)){
@@ -201,7 +201,7 @@
             }
             index[fk][pk] = null;
             }
-            for (var fieldname in  range_indexes){
+            for (fieldname in  range_indexes){
             index = range_indexes[fieldname].index;            
             index_info = range_indexes[fieldname].info;
             fk = objs[pk][fieldname];
@@ -243,7 +243,7 @@
         ids[pkeys] = null;
     }
     var id = null;
-    var objs_deleted = {}, index, val;
+    var objs_deleted = {}, index, val, index_info;
     var bin; //for range index
     for (id in ids){
         if ((type_name in this.o) && (id in this.o[type_name])){
@@ -256,7 +256,7 @@
             val = this.o[type_name][id][fieldname];
             delete(index[val][id]);
         }
-        for (var fieldname in range_indexes){
+        for (fieldname in range_indexes){
             index = range_indexes[fieldname].index;            
             index_info = range_indexes[fieldname].info;
             val = this.o[type_name][id][fieldname];
@@ -272,7 +272,7 @@
         }
         if (did_delete){
         var obs;
-        for (var i in this.observers){
+        for (i in this.observers){
             obs = self.observers[i];
             if (type_name in obs.p){
             obs.o.update("remove", {diff: objs_deleted}, type_name);
@@ -285,9 +285,9 @@
     GLOB.models.Store.prototype.__dropIndexes = function(type_name){
     var self = this;
     var tabledef = self.schema[type_name];
-    var ref;
+    var ref, i;
     if ("references" in tabledef){
-        for (var i in tabledef.references){
+        for (i in tabledef.references){
         ref =  tabledef.references[i];
         if (ref in self.indexes && type_name in self.indexes[ref]){
             delete self.indexes[ref][type_name];
@@ -295,7 +295,7 @@
         }
     }
     if ("__ref" in tabledef){
-        for (var i in tabledef.__ref){
+        for (i in tabledef.__ref){
         ref =  tabledef.__ref[i];
         if (ref in self.indexes && type_name in self.indexes[ref]){
             delete self.indexes[ref][type_name];
@@ -320,12 +320,11 @@
     var self = this;
     // '__..." is a reserved family of tablenames so we can add indexes on fields that aren't references. 
     
-    if (table.substring(0,2)!="__" && ((!(table in self.o))||(!(o in self.o)))){
+    if (table.substring(0,2) !== "__" && ((!(table in self.o))||(!(o in self.o)))){
         throw new Error("missing table, args="+table+", "+o ); 
-        return;
     }
     
-    if (table.substring(0,2)=="__"){
+    if (table.substring(0,2) === "__"){
         if (!("__ref" in self.schema[o])){
         self.schema[o].__ref = {};
         }    
@@ -472,24 +471,26 @@
     /**
      *  ids: a dictionary (only keys matter, not values), or just a single value
      */    
-    var model = this.model;
-    var output = new GLOB.models.QuerySet(this.model, this.type);
-    var items = this.items;
-    var new_items = output.items;
+    var model = this.model, 
+    output = new GLOB.models.QuerySet(this.model, this.type), 
+    items = this.items, 
+    new_items = output.items, 
+    i;
+    
     if (!(ids instanceof Object)){
         var new_ids = {};
         new_ids[ids] = null;
         ids = new_ids;
     }
     if (field !== undefined){ 
-        for (var i in items){
+        for (i in items){
         if (items[i][field] in ids){
             new_items[i] =items[i];
         }
         }
     }
     else{
-        for (var i in items){
+        for (i in items){
         if (i in ids){
             new_items[i] =items[i];
         }
@@ -526,7 +527,7 @@
         o_old = o;
     }
     if (i==null){ //there was no where clause: return all objects
-        o = self.o[from];
+        o = this.o[from];
     }
     //Now remove objects that have an id in o: 
     var items = this.items;   
@@ -542,18 +543,15 @@
     };
 
     GLOB.models.__intersect = function(o1, o2){
-    if (o1==null) 
-        return o2 || {};
-    if (o2==null)
-        return o1 || {};
+    if (o1==null){ return o2 || {};}
+    if (o2==null){   return o1 || {};}
     var o = {};
     for (var i in o1){
-        if (i in o2)
-        o[i] = null;
+        if (i in o2){o[i] = null;}
     }
-    return o
+    return o;
     };
-
+    
     GLOB.models.Store.prototype.get = function(from, where){
     var self = this;
     var o_old = null;
@@ -593,7 +591,7 @@
         if ( (!(ref in self.indexes)) || (!(from in self.indexes[ref])) ){
             self.__addIndex(ref, from, i);
         }
-        o =  self.indexes[ref][from][v] || {}
+        o =  self.indexes[ref][from][v] || {};
         }
         o = GLOB.models.__intersect(o_old, o);
         o_old = o;

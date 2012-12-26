@@ -10,6 +10,7 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
     _init: function() {

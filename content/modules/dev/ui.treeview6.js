@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -21,7 +21,7 @@
         self._selection = {};
         self._admin    = self.options.admin;
         var header    = self._admin ? "<button action='new_class'>New Class</button>":" <a href='/admin'>Staff Login</a>";
-        header += " <a target='_blank' href='/settings'>Your Settings</a> "
+        header += " <a target='_blank' href='/settings'>Your Settings</a> ";
         self.element.css("overflow-y", "auto").html("<div class='treeView-header'>"+header+"</div><div class='tree'/>");
         $("button[action=new_class]", self.element).click(function(){
             $.concierge.get_component("add_ensemble_menu")();
@@ -40,7 +40,7 @@
             break;
         case "folder": 
             var tree = $("div.jstree");
-            if (self._selection.rel!="folder" || self._selection.id_item !=evt.value){
+            if (self._selection.rel !== "folder" || self._selection.id_item !== evt.value){
             tree.jstree("deselect_all");
             tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
             }           
@@ -62,7 +62,7 @@
         //build view: 
         var params =  self.options.admin ? {admin: true} : {};
         var ensemble = model.get("ensemble", params).items;
-        data = [];
+        var data = [];
         var subfolders = null;
         var children = null;
         var s_numfiles = null;
@@ -81,7 +81,7 @@
             data.push({data:  $.E(ensemble[i].name)+s_numfiles, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
         }
         data.sort(self._f_sort_tree);
-        tree_data = {
+        var tree_data = {
             plugins : [ "themes", "json_data", "ui" ],
             json_data : {data : data}, 
             core: {html_titles: true}
@@ -138,5 +138,5 @@
     },        
     admin: true, 
     "filestats": false
-    }
+    };
 })(jQuery);

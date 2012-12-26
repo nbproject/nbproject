@@ -11,7 +11,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true*/
 (function($) {
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
@@ -27,21 +27,22 @@
         },
         _defaultHandler: function(evt){
         var self = this;
+        var tree;
         // by default we listen to events directed to everyone
         switch (evt.type){
         case "hello": 
             self.element.append("got a hello event with value:"+evt.value +"<br/>" );
             break;
         case "ensemble":
-            var tree = $("div.jstree");
-            if (self._selection.rel!="ensemble" || self._selection.id_item !=evt.value){
+            tree = $("div.jstree");
+            if (self._selection.rel !== "ensemble" || self._selection.id_item !== evt.value){
             tree.jstree("deselect_all");
             tree.jstree("select_node", $("li[rel=ensemble][id_item="+evt.value+"]"));
             }           
             break;
         case "folder": 
-            var tree = $("div.jstree");
-            if (self._selection.rel!="folder" || self._selection.id_item !=evt.value){
+            tree = $("div.jstree");
+            if (self._selection.rel !== "folder" || self._selection.id_item !== evt.value){
             tree.jstree("deselect_all");
             tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
             }           
@@ -55,10 +56,10 @@
         self._render();
         }, 
         _f_sort_tree: function(a,b){
-        if (a.attr.rel=="ensemble" && a.attr.id_item==0){
+        if (a.attr.rel === "ensemble" && a.attr.id_item === 0){
             return -1;
         }
-        if (b.attr.rel=="ensemble" && b.attr.id_item==0){
+        if (b.attr.rel === "ensemble" && b.attr.id_item === 0){
             return 1;
         }
         return a.data>b.data ? 1 : -1;
@@ -69,7 +70,7 @@
         //build view: 
         var params =  self.options.admin ? {admin: true} : {};
         var ensemble = model.get("ensemble", params).items;
-        data = [];
+        var data = [];
         var subfolders = null;
         var children = null;
         var s_numfiles = null;
@@ -89,7 +90,7 @@
         }
         data.push({data: {title: "<b>Home</b>",  icon:"jstree_icon home"}, children: [], attr: {title: "Home",  rel: "ensemble", id_item: 0}});
         data.sort(self._f_sort_tree);
-        tree_data = {
+        var tree_data = {
             plugins : [ "themes", "json_data", "ui" ],
             json_data : {data : data}, 
             core: {html_titles: true}
@@ -146,5 +147,5 @@
     },        
     admin: true, 
     "filestats": false
-    }
+    };
 })(jQuery);

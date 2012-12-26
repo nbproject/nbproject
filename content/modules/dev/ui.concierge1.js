@@ -7,6 +7,7 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 */
+/*global jQuery:true console:true*/
 var NB$ = jQuery.noConflict();
 
 (function($) {   
@@ -136,7 +137,7 @@ var NB$ = jQuery.noConflict();
     }
     this.historyHelper.log[name][id]=now;
     this.historyHelper.latestentrytime = now;
-    }
+    };
     Concierge.prototype.addProviders =  function(id, o){
     var i;
     var x = this.providers;
@@ -217,10 +218,10 @@ var NB$ = jQuery.noConflict();
     }
     };
     $.I = function(msg, do_html, time_ms){
-    if (time_ms==undefined){
+    if (time_ms === undefined){
         time_ms = 5000;
     }
-    if (do_html==undefined){
+    if (do_html === undefined){
         do_html = false;
     }
     var display_fct = do_html ? "html":"text";
@@ -239,6 +240,6 @@ var NB$ = jQuery.noConflict();
         return singular || "";
     }
     return plural || "s";
-    }
+    };
       
 })(NB$);

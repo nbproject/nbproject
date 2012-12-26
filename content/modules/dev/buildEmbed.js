@@ -8,6 +8,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
+/*global jQuery:true $:true NB$:true NB:true alert:true*/
 
 (function(GLOB){
     if (NB$){
@@ -28,7 +29,7 @@
         });
     }; 
     
-    $(function(){
+    jQuery(function(){
         GLOB.pers.params = GLOB.dom.getParams(); 
         GLOB.pers.preinit();
     });

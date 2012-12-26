@@ -8,7 +8,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
+/*global jQuery:true $:true NB$:true  __nb_userinfo:true NB:true*/
 (function(GLOB){
     if (NB$){
     var $ = NB$;
@@ -26,7 +26,7 @@
     if (o.type === 1) {
         type_info =  " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
     }
-    else if (o.type ==2){
+    else if (o.type === 2){
         type_info = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
     }            
     var author_info =  " <span class='author'>"+o.fullname+"</span> ";
@@ -36,7 +36,7 @@
     var optionmenu ="";
     replymenu = "";
 
-    body = o.body.replace(/\s/g, "")=="" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
+    body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
     return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info,me_info, type_info, creation_info,"</div>"].join("");
     };
 
@@ -53,23 +53,16 @@
     
     var loc_lens = function(l){
     var m = GLOB.pers.store;
-    /*
-      var f_reply = function(event){
-      var id_item = $(event.target).closest("div.note-lens, div.note-abridgedlens").attr("id_item");
-      $.concierge.trigger({type: "reply_thread", value: id_item});
-      };
-    */
     var root = m.get("comment", {ID_location: l.ID, id_parent: null}).first();
     var loc_lens = $("<div class='location-lens' id_item='"+l.ID+"'/>");
-    loc_lens.append(_fill_tree(root))
+    loc_lens.append(_fill_tree(root));
     //    $("a.replymenu, a.replymenu-mini", loc_lens).click(f_reply);
     return loc_lens;
     };
 
     var render = function(){
     var m = GLOB.pers.store;
-    var  c, l, $div, link, inner, style, inner_top, sel;
-    //    var s = 0.3747764705882353;
+    var  c, l, $div, link, inner, style, inner_top, sel, $doc;
     var s = 0.6334;
     for (var i in GLOB.pers._comments){
         c = m.o.comment[GLOB.pers._comments[i]];        
@@ -82,8 +75,6 @@
 
         inner = "<div class='innermaterial' style='top: "+inner_top+"px'><div class='selections'>"+sel+"</div><img class='material' page='"+(i+1)+"' src='http://nb.mit.edu/pdf/cache2/288/33/"+l.id_source+"?ckey="+GLOB.conf.userinfo.ckey+"&amp;page="+l.page+"'/></div>";
         $doc = $("<div class='material' page='"+(i+1)+"' style='"+style+"'><div class='pagenumber pagenumbertop'>"+link+"</div>"+inner+"</div>");
-
-        //        $div.append("<img src='http://nb.mit.edu/pdf/cache2/288/33/"+l.id_source+"?ckey="+GLOB.conf.userinfo.ckey+"&amp;page="+l.page+"'/>");
         $div.append($doc);
         $div.append(loc_lens(l));
         $("a[href=nb"+c.ID+"]").hide().after($div);
@@ -126,7 +117,7 @@
         $.L("notes loaded");});
     }; 
     
-    $(function(){
+    jQuery(function(){
         GLOB.pers.params = GLOB.dom.getParams(); 
         GLOB.pers.preinit();
     });
