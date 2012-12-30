@@ -41,13 +41,6 @@
             $.concierge.get_component("invite_users_menu")({id_ensemble: self._id_ensemble});
             });
     
-        $.mods.declare({
-            filesView1: {js: [], css: ["/content/modules/dev/ui.filesview.css"]}, 
-                contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-        $.mods.ready("filesView1", function(){});
-        $.mods.ready("contextmenu", function(){});
-        
-        
         },
         _defaultHandler: function(evt){
         switch (evt.type){
@@ -360,8 +353,7 @@
         var self=this;
         self._model = model;
         model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
-        $.mods.declare({tablesorter: {js: ["/content/modules/tablesorter/jquery.tablesorter.min.js"], css: ["/content/modules/tablesorter/style.css"]}});
-        $.mods.ready("tablesorter", function(){$("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
+        $("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
                     var $n = $(node);
                     if ($n.hasClass("filesview_ftitle")){
                     return node.childNodes[1].innerHTML; 
@@ -369,7 +361,7 @@
                     else{
                     return node.innerHTML;
                     }
-                }  });});
+                }});
 
         },
         update: function(action, payload, items_fieldname){
