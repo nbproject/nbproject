@@ -27,8 +27,8 @@
     </style>
 </head>
 <body>
-    <button onclick="javascript:clearAnnotations()">Clear Annotations</button>
-    <button onclick="javascript:restoreAnnotations()">Restore Annotations</button>
+    <button onclick="javascript:NB.html.clearAnnotations()">Clear Annotations</button>
+    <button onclick="javascript:NB.html.restoreAnnotations()">Restore Annotations</button>
     <div id="globalWrapper">
         <div id="column-content">
             <div id="content">
@@ -165,90 +165,7 @@
         </div>
     </div>
     <script type="text/javascript">
-        var cssApplier;
-        rangy.init();
-
-        // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
-        // the styled element must have an nb-comment-highlight class.
-        cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
-        var comments = [];
-        var tempUid = 0;
-
-        // must be called only on inner-most element
-        var hasConflicts = function (element) {
-            return ($(element).parents(".nb-comment-highlight").length > 0)
-        };
-
-        var drawAnnotation = function (selection, uid) {
-
-            // apply nb-comment-fresh to ranges
-            cssApplier.applyToSelection(selection);
-            selection.removeAllRanges();
-
-            if (!uid) {
-                // create temporary uid
-                var uid = "t-" + (tempUid++).toString(16);
-            }
-
-            // jQuery Treatment
-            $("span.nb-comment-fresh.nb-comment-highlight").removeClass("nb-comment-fresh").wrapInner('<span class="nb-comment-fresh" />');
-            $("span.nb-comment-fresh").addClass("nb-comment-highlight").removeClass("nb-comment-fresh").attr("data-nb-ann", uid).hover(
-                function () {
-                    $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").addClass("prominent");
-                },
-                function () {
-                    $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").removeClass("prominent");
-                })
-            .click(
-                function (event) {
-                    if (!rangy.getSelection().isCollapsed) return;
-
-                    if (hasConflicts(this)) {
-                        var ids = {};
-                        ids[$(this).attr("data-nb-ann")] = true;
-                        $(this).parents(".nb-comment-highlight").each(function () {
-                            ids[$(this).attr("data-nb-ann")] = true;
-                        });
-                        alert(JSON.stringify(ids));
-                    } else {
-                        alert($(this).attr("data-nb-ann"));
-                    }
-                    event.stopPropagation();
-                });
-            return uid;
-        };
-
-        $("#content").mouseup(function (event) {
-            var sel = rangy.getSelection();
-
-            if (sel.isCollapsed) return;
-
-            // must call before applyToRanges, otherwise sel is gone
-            var element = event.target;
-
-            if ($(element).hasClass("nb-comment-highlight")) {
-                element = ($(element).parents("*:not(.nb-comment-highlight)"))[0];
-            }
-
-            comments.push({ target: NB.getElementXPath(element), range: sel.saveCharacterRanges(element) });
-
-            drawAnnotation(sel);
-
-
-        });
-
-        var clearAnnotations = function () {
-            $(".nb-comment-highlight").contents().unwrap();
-        };
-
-        var restoreAnnotations = function () {
-            comments.forEach(function (obj) {
-                var sel = rangy.getSelection();
-                sel.restoreCharacterRanges(NB.getElementsByXPath(document, obj.target)[0], obj.range);
-                drawAnnotation(sel);
-            });
-        };
-
+        NB.html.init();
     </script>
 </body>
 </html>

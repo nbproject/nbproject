@@ -1,7 +1,102 @@
 var NB = {};
 
-//Possible addition to NB.init:
-wgxpath.install();
+NB.comments = {};
+NB.html = {};
+NB.html.tempUid = 0;
+
+NB.html.init = function () {
+    rangy.init();
+
+    // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
+    // the styled element must have an nb-comment-highlight class.
+    NB.html.cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
+
+    // Initialize Hilighting Event
+    $("#content").mouseup(function (event) {
+        var sel = rangy.getSelection();
+
+        if (sel.isCollapsed) return;
+
+        // must call before applyToRanges, otherwise sel is gone
+        var element = event.target;
+
+        if ($(element).hasClass("nb-comment-highlight")) {
+            element = ($(element).parents("*:not(.nb-comment-highlight)"))[0];
+        }
+
+        // create temporary uid
+        var uid = "t-" + (NB.html.tempUid++).toString(16);
+
+        NB.comments[uid] = { id: uid, target: NB.getElementXPath(element), range: sel.saveCharacterRanges(element) };
+
+        NB.html.drawAnnotation(sel, uid);
+    });
+
+    // Bind window resize event to ordering
+    $(window).resize(NB.html.recalculateOrdering);
+
+    //Possible addition to NB.init:
+    // fix IE XPath implementation
+    wgxpath.install();
+}
+
+// must be called only on inner-most element
+NB.html.hasConflicts = function (element) {
+    return ($(element).parents(".nb-comment-highlight").length > 0)
+}
+
+NB.html.drawAnnotation = function (selection, uid) {
+
+    // apply nb-comment-fresh to ranges
+    NB.html.cssApplier.applyToSelection(selection);
+    selection.removeAllRanges();
+
+    // jQuery Treatment
+    $("span.nb-comment-fresh.nb-comment-highlight").removeClass("nb-comment-fresh").wrapInner('<span class="nb-comment-fresh" />');
+    $("span.nb-comment-fresh").addClass("nb-comment-highlight").removeClass("nb-comment-fresh").attr("data-nb-ann", uid).hover(
+        function () {
+            $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").addClass("prominent");
+        },
+        function () {
+            $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").removeClass("prominent");
+        })
+    .click(
+        function (event) {
+            if (!rangy.getSelection().isCollapsed) return;
+
+            if (NB.html.hasConflicts(this)) {
+                var ids = {};
+                ids[$(this).attr("data-nb-ann")] = true;
+                $(this).parents(".nb-comment-highlight").each(function () {
+                    ids[$(this).attr("data-nb-ann")] = true;
+                });
+                alert(JSON.stringify(ids));
+            } else {
+                alert($(this).attr("data-nb-ann"));
+            }
+            event.stopPropagation();
+        });
+    NB.comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
+};
+
+NB.html.recalculateOrdering = function () {
+    for (var uid in NB.comments) {
+        NB.comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
+    }
+}
+
+NB.html.restoreAnnotations = function () {
+    for (var uid in NB.comments) {
+        var sel = rangy.getSelection();
+        var obj = NB.comments[uid];
+        sel.restoreCharacterRanges(NB.getElementsByXPath(document, obj.target)[0], obj.range);
+        NB.html.drawAnnotation(sel, uid);
+    }
+};
+
+NB.html.clearAnnotations = function () {
+    $(".nb-comment-highlight").contents().unwrap();
+};
 
 NB.trim = function (text) {
     return text.replace(/^\s*|\s*$/g, "");
