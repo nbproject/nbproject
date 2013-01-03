@@ -38,7 +38,7 @@ module.exports = function(grunt) {
     };  
     MODS.FILESVIEW = {
         src_js: addPrefix(MODULE_DIR,["tablesorter/jquery.tablesorter.min.js", "calendrical/jquery.calendrical.js", "contextmenu/jquery.contextMenu.js", "dev/ui.filesview4.js"]),
-        src_css:  addPrefix(MODULE_DIR, ["tablesorter/style.css", "calendrical/calendrical.css", "contextmenu/jquery.contextMenu.css"])
+        src_css:  addPrefix(MODULE_DIR, ["tablesorter/style.css", "calendrical/calendrical.css", "contextmenu/jquery.contextMenu.css", "dev/ui.filesview.css"])
     };  
     MODS.DOCVIEW = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView8.js" ]),
@@ -69,9 +69,12 @@ module.exports = function(grunt) {
                        ), 
         dest_js:  DEST_DIR+"buildEmbed.js"
     };
+                           //addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.8.6/themes/base/jquery-ui.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+
+
     TARGETS.DESKTOP = {
         src_js: [].concat(
-                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js", "dev/ui.concierge1.js"]), 
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]), 
                           addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
                           TARGETS.API.src_js,
                           MODS.TREEVIEW.src_js, 
@@ -81,7 +84,8 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR, ["step21.js", "launch.js"])
                           ), 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.8.6/themes/base/jquery-ui.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.TREEVIEW.src_css, 
                            MODS.FILESVIEW.src_css
@@ -90,6 +94,32 @@ module.exports = function(grunt) {
         dest_css:  DEST_DIR+"desktop.css"
         
     };    
+
+
+    TARGETS.PDFVIEWER = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
+                          TARGETS.API.src_js,
+                          MODS.TREEVIEW.src_js, 
+                          MODS.FILESVIEW.src_js,
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/files.js"]), 
+                          addPrefix(UI_DIR, ["step21.js", "launch.js"])
+                          ), 
+        src_css: [].concat( 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.TREEVIEW.src_css, 
+                           MODS.FILESVIEW.src_css
+                            ), 
+        dest_js:  DEST_DIR+"desktop.js",
+        dest_css:  DEST_DIR+"desktop.css"
+        
+    };    
+
+
 
     var JS_TARGETS = {};
     var i, src;
