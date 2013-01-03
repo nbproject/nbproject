@@ -13,6 +13,7 @@
 */
 /*global jQuery:true*/
 (function($) {
+    var $str        = NB$ ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _f_location_seen: function(id_location){
         var self = this;
@@ -45,9 +46,9 @@
         self.QUESTION        = null;
         self.STAR        = null;
         self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>"+
-                                                     "<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a>"+
-                                                     "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a>"+
-                                                     "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:$.concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' style='margin-top: -3px'/>      </span><div class='filter-count'>...</div></a></div>"+
+                                                     "<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a>"+
+                                                     "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a>"+
+                                                     "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' style='margin-top: -3px'/>      </span><div class='filter-count'>...</div></a></div>"+
                                                      "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>"+
                                                      "</div><div class='notepaneView-pages'/>");
         $.mods.declare({

@@ -13,6 +13,7 @@
 */
 /*global jQuery:true*/
 (function($) {
+    var $str        = NB$ ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
         $.ui.view.prototype._create.call(this);
@@ -29,12 +30,12 @@
         var self        = this;
         var model        = self._model;
         var me            = $.concierge.get_component("get_userinfo")();
-        var guest_msg    = "<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
+        var guest_msg    = "<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
         var id_item, draft, drafts;
         switch (evt.type){
         case "new_thread":
             if (me.guest === 1){
-            $.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
+            $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
             return;
             }
             //TMP FIX: only allow one current editor
@@ -60,7 +61,7 @@
             break;
         case "reply_thread": 
             if (me.guest === 1){
-            $.I("<span>You need to <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
+            $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
             return;
             }
             //TMP FIX: only allow one current editor

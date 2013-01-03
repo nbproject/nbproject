@@ -8,11 +8,8 @@
     "test": "grunt qunit"
   },
   "devDependencies": {
-    "grunt": "~0.3.17"
-  }, 
-  "dependencies" : {
-            "grunt-css": "0.3.2"
-
+  },
+  "dependencies": {
+    "grunt-css": "0.3.2"
   }
-
 }
