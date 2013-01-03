@@ -11,8 +11,9 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global jQuery:true*/
+/*global jQuery:true NB$:true */
 (function($) {
+    var $str        = NB$ ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
         $.ui.view.prototype._create.call(this);
@@ -73,7 +74,7 @@
 
         }, 
         _folderlens: function(f){
-        return $("<tr class='filesview_row' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:$.concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td></tr>");
+        return $("<tr class='filesview_row' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td></tr>");
         }, 
         _render: function(){        
         var self=this;

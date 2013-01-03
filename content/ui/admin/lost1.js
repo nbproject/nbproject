@@ -1,13 +1,5 @@
 /*
  * lost.js
- * This module defines the namespace NB.lost
- * It requires the following modules:
- *		Module
- *		NB
- *		NB.auth
- *		NB.rpc
- *		jquery
- *
  *
 Author 
     cf AUTHORS.txt 
@@ -17,33 +9,28 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
+/*global NB$:true  NB:true*/
 
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.auth", 0.1);
-    Module.createNamespace("NB.lost", 0.1);
-}
-catch (e){
-    alert("[inbox] Init Error: "+e);
-}
-
-$(document).ready(function(){
-	//	NB.lost.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){$.concierge.addConstants(p.value)});
-    });
-
-NB.lost.onLostButton = function(){    
-    var cb = function(p){
-    var payload = p.payload;
-	$(".email").text(payload.email);
-
-    if (p.status.errno){
-    	$(".error-msg").show();
+(function(GLOB){
+    //require auth
+    if (NB$){
+    var $ = NB$;
     }
-    else{
-	    $("#form1").hide();
-	    $("#success").show();
-	}
+    GLOB.lost = {};
+    
+    GLOB.lost.onLostButton = function(){    
+        var cb = function(p){
+            var payload = p.payload;
+            $(".email").text(payload.email);
+            
+            if (p.status.errno){
+                $(".error-msg").show();
+            }
+            else{
+                $("#form1").hide();
+                $("#success").show();
+            }
+        };
+        $.post("/pdf4/rpc", {"f": "passwordLost", "cid":0, "a": JSON.stringify({email: $("#email")[0].value})}, cb, "json");
     };
-    $.post("/pdf4/rpc", {"f": "passwordLost", "cid":0, "a": JSON.stringify({email: $("#email")[0].value})}, cb, "json");
-};
-
+})(NB);

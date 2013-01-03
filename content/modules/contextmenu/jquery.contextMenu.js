@@ -14,7 +14,7 @@
 //
 // For details, visit http://creativecommons.org/licenses/by/3.0/us/
 //
-if(jQuery)( function() {
+if(jQuery)( function($) {
 	$.extend($.fn, {
 		
 		contextMenu: function(o, callback) {
@@ -225,4 +225,4 @@ if(jQuery)( function() {
 		}
 		
 	});
-})(jQuery);
+    })(jQuery);

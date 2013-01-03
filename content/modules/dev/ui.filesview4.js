@@ -11,8 +11,9 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global jQuery:true */
+/*global jQuery:true NB$:true */
 (function($) {
+    var $str        = NB$ ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _create: function() {
         $.ui.view.prototype._create.call(this);
@@ -41,13 +42,6 @@
             $.concierge.get_component("invite_users_menu")({id_ensemble: self._id_ensemble});
             });
     
-        $.mods.declare({
-            filesView1: {js: [], css: ["/content/modules/dev/ui.filesview.css"]}, 
-                contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-        $.mods.ready("filesView1", function(){});
-        $.mods.ready("contextmenu", function(){});
-        
-        
         },
         _defaultHandler: function(evt){
         switch (evt.type){
@@ -92,7 +86,7 @@
         }, 
         _folderlens: function(f){
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
-        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:$.concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
+        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
         }, 
         _draw_pending: function(){
         var self = this;
@@ -360,8 +354,7 @@
         var self=this;
         self._model = model;
         model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
-        $.mods.declare({tablesorter: {js: ["/content/modules/tablesorter/jquery.tablesorter.min.js"], css: ["/content/modules/tablesorter/style.css"]}});
-        $.mods.ready("tablesorter", function(){$("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
+        $("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
                     var $n = $(node);
                     if ($n.hasClass("filesview_ftitle")){
                     return node.childNodes[1].innerHTML; 
@@ -369,7 +362,7 @@
                     else{
                     return node.innerHTML;
                     }
-                }  });});
+                }});
 
         },
         update: function(action, payload, items_fieldname){
