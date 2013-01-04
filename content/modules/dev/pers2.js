@@ -45,7 +45,7 @@
     GLOB.pers.call = function(fctname, dict, callback, errback){
     if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id === 0) {
         // we haven't received a reply yet so put this function to wait for a while
-        GLOB.debug("waiting until we get a connection id...");
+        $.L("waiting until we get a connection id...");
         window.setTimeout(function(){
             GLOB.pers.call(fctname, dict, callback, errback);
         }, GLOB.pers.connection_T);
@@ -61,7 +61,7 @@
         if (errback !== undefined){
             errback(x.status, x.payload);
         }
-        GLOB.debug(x.status.msg);
+        $.L(x.status.msg);
         return;
         }
         //     console.log("cb w/ x=", x);

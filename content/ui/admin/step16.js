@@ -28,55 +28,56 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
         $.concierge.addConstants(p.value);
     });
-    $.mods.declare({
-        docview: {
-        js: ["/content/modules/dev/ui.docView8.js",  "/content/modules/dev/ui.drawable4.js"],
-            css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
-            }, 
-        notepaneview: {js: ["/content/modules/dev/ui.notepaneView8.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
-        threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
-        editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] }
-
-    });
     
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("file", "doc_viewer", function(id){
             var pers_id        = "pers_"+id;
             var $vp        = $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-            var docview        =  {priority: 1, min_width: 950, desired_width: 50, 
-                        content: function($div){
-                $.mods.ready("docview", function(){
+            var docview        =  {
+                priority: 1, 
+                min_width: 950, 
+                desired_width: 50, 
+                content: function($div){
                     $div.docView({img_server: GLOB.conf.servers.img});
                     $div.docView("set_model",GLOB.pers.store );
-                });
-            }
+                }
             };
-            var notesview    =  {priority: 1, min_width: 650, desired_width: 35, min_height: 1000, desired_height: 50, 
-                        content: function($div){
-                $.mods.ready("notepaneview", function(){
+            var notesview    =  {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35, 
+                min_height: 1000, 
+                desired_height: 50, 
+                content: function($div){
                     $div.notepaneView();
                     $div.notepaneView("set_model",GLOB.pers.store );
-                });
-            }
+                }
             }; 
-            var threadview    = {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, 
-                       content: function($div){
-                $.mods.ready("threadview", function(){
+            var threadview    = {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35,  
+                min_height: 1000, 
+                desired_height: 50, 
+                content: function($div){
                     $div.threadview();
                     $div.threadview("set_model",GLOB.pers.store );                
-                });
-            }
+                }
             };
-            var editorview    =  {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
-                       content: function($div){
-                $.mods.ready("editorview", function(){
+            var editorview    =  {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35,  
+                min_height: 1000, 
+                desired_height: 50, 
+                transcient: true,  
+                content: function($div){
                     var m = GLOB.pers.store;
                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
                     $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
                     $div.editorview("set_model",GLOB.pers.store );                
-                });
-            }
+                }
             };
             $pers.perspective({
                 height: function(){return $vp.height() - $pers.offset().top;}, 
@@ -161,7 +162,7 @@ GLOB.pers.createStore = function(payload){
     if (matches==null || matches.length !== 2){
     alert("Can't open file b/c URL pathname doesn't with an integer: "+document.location.pathname);
     }
-    var id_source =  GLOB.pers.id_source;
+    var id_source =  parseInt(GLOB.pers.id_source, 10);
     $.concierge.trigger({type:"file", value: id_source});
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title + " ("+f.numpages +" pages)");

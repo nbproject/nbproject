@@ -241,7 +241,7 @@
                 }
             }
             if (do_render_now){
-                this._render();//re-render now if al least one note on active page
+                this._render();//re-render now if at least one note on active page
             }
             }
         }

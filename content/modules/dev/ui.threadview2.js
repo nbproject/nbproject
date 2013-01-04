@@ -63,11 +63,10 @@
         //splash screen: 
         $("div.threadview-pane", self.element).append($.concierge.get_component("mini_splashscreen")());        
         $("div.threadview-header", self.element).hide();
-        $.mods.declare({
-            threadview1: {js: [], css: ["/content/modules/dev/ui.threadview1.css"]}, 
-                contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-        $.mods.ready("threadview1", function(){});
-        $.mods.ready("contextmenu", function(){self._ready = true;if (self._doDelayedRender){self._render();}});
+        self._ready = true;
+        if (self._doDelayedRender){
+            self._render();
+        }
         $("body").append("<ul id='contextmenu_threadview' class='contextMenu'> "+
                          "<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li>"+
                          "<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li>"+
