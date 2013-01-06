@@ -45,14 +45,14 @@
          */ 
         switch (evt.type){
         case "page_peek": 
-        this._page =  evt.value;        
+        this._page =  parseInt(evt.value, 10);        
         $("div.material.selected", self.element).removeClass("selected");
         $("div.material[page="+evt.value+"]", self.element).addClass("selected").drawable({model: model});
         self._render();
         //self._scroll_to_page();
         break;
         case "page": //same as page_peek with scrolling in addition
-        this._page =  evt.value;        
+        this._page =  parseInt(evt.value, 10);        
         $("div.material.selected", self.element).removeClass("selected");
         $("div.material[page="+evt.value+"]", self.element).addClass("selected").drawable({model: model});
         self._render();
