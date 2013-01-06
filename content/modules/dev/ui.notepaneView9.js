@@ -55,10 +55,9 @@
         var sel, container, delta_top, delta_bottom, o, h, H, scrollby;
         switch (evt.type){
         case "page":
-        if (self._page !== evt.value){
-            self._page =  evt.value;            
+            if (self._page !== parseInt(evt.value, 10)){
+                self._page =  parseInt(evt.value, 10);            
             self._render();
-
             container = $("div.notepaneView-pages", self.element);
             sel = $("div.notepaneView-comments[page="+evt.value+"]",self.element);
             delta_top = sel.offset().top - container.offset().top;

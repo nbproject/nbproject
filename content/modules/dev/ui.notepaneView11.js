@@ -60,8 +60,8 @@
         if (self._id_source ===  $.concierge.get_state("file")){
             switch (evt.type){
             case "page":
-            if (self._page !== evt.value){
-                self._page =  evt.value;            
+                if (self._page !== parseInt(evt.value, 10)){
+                    self._page =  parseInt(evt.value, 10);         
                 self._render();
             }
             break;
