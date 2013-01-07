@@ -91,7 +91,7 @@
         _lens: function(o){
         var self        = this;
         var m            = self._model;
-        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty() || o.id_author === self._me.id) ? "" : "note-bold";
+        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty()===false || o.id_author === self._me.id) ? "" : "note-bold";
         var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
         var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
         var question_info_me    = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;

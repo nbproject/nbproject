@@ -497,7 +497,7 @@ def getPublicCommentsByFile(id_source):
 
     
 def getSeenByFile(id_source, uid):
-    names = {"id": None, "id_location": "comment.location_id"}
+    names = {"id": "comment.id", "id_location": "comment.location_id"}
     locations = M.Location.objects.filter(source__id=id_source)
     comments = M.Comment.objects.filter(location__in=locations)
     seen = M.CommentSeen.objects.select_related("comment").filter(comment__in=comments).filter(user__id=uid)
