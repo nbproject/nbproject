@@ -46,9 +46,6 @@
         self._location = null; //selected location (might not be on current page)
 
         self.element.addClass("notepaneView").append("<div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
-               $.mods.declare({        
-                contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-        $.mods.ready("contextmenu", function(){});
         $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
         _defaultHandler: function(evt){
         var self    = this;

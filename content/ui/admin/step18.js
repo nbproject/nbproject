@@ -32,49 +32,50 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
         $.concierge.addConstants(p.value);
     });
-    $.mods.declare({
-        docview: {
-        js: ["/content/modules/dev/ui.docView9.js",  "/content/modules/dev/ui.drawable4.js"],
-            css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
-            }, 
-        notepaneview: {js: ["/content/modules/dev/ui.notepaneView9.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
-        threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
-        editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] }
-
-        });
-    
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("collection", "collection_viewer", function(id){
         var pers_id        = "pers_"+id;
         var $vp        = $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
         var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-        var docview        =  {priority: 1, min_width: 650, desired_width: 35, 
-                    content: function($div){
-            $.mods.ready("docview", function(){
+        var docview        =  {
+            priority: 1, 
+            min_width: 650, 
+            desired_width: 35, 
+            content: function($div){
                 $div.docView({img_server: GLOB.conf.servers.img});
                 $div.docView("set_model",GLOB.pers.store );
-            });
-        }
+            }
         };
-        var notesview    =  {priority: 1, min_width: 950, desired_width: 50, min_height: 1000, desired_height: 50, 
-                    content: function($div){
-            $.mods.ready("notepaneview", function(){
+        var notesview    =  {
+            priority: 1, 
+            min_width: 950, 
+            desired_width: 50, 
+            min_height: 1000, 
+            desired_height: 50, 
+            content: function($div){
                 $div.notepaneView();
                 $div.notepaneView("set_model",GLOB.pers.store );
-            });
-        }
+            }
         }; 
-        var threadview    = {priority: 1, min_width: 950, desired_width: 50,  min_height: 1000, desired_height: 50, 
-                   content: function($div){
-            $.mods.ready("threadview", function(){
+        var threadview    = {
+            priority: 1, 
+            min_width: 950, 
+            desired_width: 50,  
+            min_height: 1000, 
+            desired_height: 50, 
+            content: function($div){
                 $div.threadview();
                 $div.threadview("set_model",GLOB.pers.store );                
-            });
-        }
+            }
         };
-        var editorview    =  {priority: 1, min_width: 950, desired_width: 50,  min_height: 1000, desired_height: 50, transcient: true,  
-                    content: function($div){
-            $.mods.ready("editorview", function(){
+        var editorview    =  {
+            priority: 1, 
+            min_width: 950, 
+            desired_width: 50,  
+            min_height: 1000, 
+            desired_height: 50, 
+            transcient: true,  
+            content: function($div){
                 /* TODO: this needs to be done at comment creation time since we can have notes spanning several ensembles */
                 /*
                   var m = GLOB.pers.store;
@@ -84,8 +85,7 @@ GLOB.pers.init = function(){
                 //temporary fix: restrict all
                 $div.editorview({allowStaffOnly: false, allowAnonymous: false});
                 $div.editorview("set_model",GLOB.pers.store );                
-            });
-        }
+            }
         };
         $pers.perspective({
             height: function(){return $vp.height() - $pers.offset().top;}, 
