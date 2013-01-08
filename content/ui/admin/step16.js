@@ -28,6 +28,13 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
         $.concierge.addConstants(p.value);
     });
+    $.concierge.addListeners(GLOB.pers, {
+            successful_login: function(evt){
+                GLOB.auth.set_cookie("ckey", evt.value);
+                document.location ="http://"+document.location.host+document.location.pathname;
+                $.I("Welcome !");
+            }
+        }, "globalPersObject");
     
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("file", "doc_viewer", function(id){
@@ -91,12 +98,7 @@ GLOB.pers.init = function(){
                     delete($.concierge.features.doc_viewer[id]);
                     }
                     $.L("closeview: ", evt, this.l.element[0].id);
-                }, 
-                    successful_login: function(evt){
-                    GLOB.auth.set_cookie("ckey", evt.value);
-                    document.location ="http://"+document.location.host+document.location.pathname;
-                    $.I("Welcome !");
-                }
+                }                    
                 }, 
                 views: {
                     v1:{ data: docview }, 

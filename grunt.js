@@ -96,23 +96,35 @@ module.exports = function(grunt) {
     };
     TARGETS.TRAIL = {
         src_js: [].concat(
-                       addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js",  "dev/ui.concierge1.js"]), 
-                       TARGETS.API.src_js,
-                       addPrefix(UI_DIR,["conf.js"]), 
-                       addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildTrail.js"])
-                       ), 
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js",  "dev/ui.concierge1.js"]), 
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildTrail.js"])
+                          ), 
         dest_js:  DEST_DIR+"buildTrail.js"
     };
     TARGETS.EMBED = {
         src_js: [].concat(
-                       addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js", "dev/ui.concierge1.js"]), 
-                       TARGETS.API.src_js,
-                       addPrefix(UI_DIR,["conf.js"]), 
-                       addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildEmbed.js"])
-                       ), 
-        dest_js:  DEST_DIR+"buildEmbed.js"
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
+                          MODS.NOTEPANEVIEW_DOC.src_js,
+                          MODS.THREADVIEW.src_js,
+                          MODS.EDITORVIEW.src_js,
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildEmbed.js"])
+                          ), 
+        dest_js:  DEST_DIR+"buildEmbed.js", 
+        src_css: [].concat( 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css", "dev/buildEmbed.css"]), 
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.NOTEPANEVIEW_DOC.src_css, 
+                           MODS.THREADVIEW.src_css, 
+                           MODS.EDITORVIEW.src_css
+                            ),
+        dest_css:  DEST_DIR+"buildEmbed.css"
+                           
     };
-                           //addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.8.6/themes/base/jquery-ui.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
 
 
     TARGETS.DESKTOP = {
@@ -166,7 +178,7 @@ module.exports = function(grunt) {
         
     };    
 
-  TARGETS.COLLAGE = {
+    TARGETS.COLLAGE = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]), 
                           addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
@@ -230,13 +242,13 @@ module.exports = function(grunt) {
                 lint: {
                 files: ['grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js']
                     },
-            qunit: {
+                qunit: {
                 files: ['templates/web/*.html']
-            },
-            concat: JS_TARGETS,
+                    },
+                concat: JS_TARGETS,
                 csslint: CSS_TARGETS, 
                 cssmin: CSS_TARGETS, 
-            min: {
+                min: {
                 dist: {
                     src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
                         dest: 'dist/<%= pkg.name %>.min.js'

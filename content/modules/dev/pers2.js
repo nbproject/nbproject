@@ -21,7 +21,9 @@
     if (NB$){
     var $ = NB$;
     }
-    GLOB.pers = {};
+    GLOB.pers = {
+        currentScript: document.currentScript
+    };
     var $str        = NB$ ? "NB$" : "jQuery";
 
     /* trick for browsers that don't support document.activeElement 
@@ -100,6 +102,14 @@
         //    $("ul.sf-menu").superfish();
     }
     GLOB.pers.params = GLOB.dom.getParams();
+    };
+
+    GLOB.pers.add_css = function(url){
+        var o = document.createElement("link");
+        o.type = "text/css";
+        o.href = url;
+        o.rel = "stylesheet";
+        document.getElementsByTagName("head")[0].appendChild(o);
     };
 
     GLOB.pers.preinit = function(init_ui){
@@ -256,6 +266,8 @@
                 $.concierge.get_component("login_user")(payload , function(p){
                     if (p.ckey !== null){
                         $.concierge.trigger({type:"successful_login", value: p.ckey});
+                        $dlg.find("div.form_errors").empty();
+                        $dlg.dialog("destroy");  
                     }
                     else{
                         err("email or password doesn't match. Please try again");
