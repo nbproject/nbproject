@@ -75,9 +75,9 @@
 
 
     GLOB.pers.__authenticate = function(init_ui){
-    var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: 1}; 
+    var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: true}; 
     var $login_contents;
-    if (uinfo.guest !== 0){
+    if (uinfo.guest === true){
         $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
         var $util_window = $.concierge.get_component("get_util_window")();
         $("#register_user_dialog, #login_user_dialog").remove();    
@@ -90,7 +90,7 @@
     }
     else{
         var screenname = uinfo.firstname === null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
-        $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
+        $login_contents = $("<ul class='sf-menu'><li><a id='login-name' title='"+$.E(uinfo.email)+"' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
         $("#login-window").remove();
@@ -298,7 +298,7 @@
     }, 
     mini_splashscreen: function(P,cb){
         var widget;
-        if (GLOB.conf.userinfo.guest !== 0){ //splashscreen for non-registered user
+        if (GLOB.conf.userinfo.guest){ //splashscreen for non-registered user
         widget =  "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"minisplashscreen ui-corner-all\">  <div id=\"splash-welcome\">Welcome to NB !</div><div id=\"nb-def\">...a forum on top of every PDF.</div> <ul id=\"splash-list-instructions\"> <li>Use your mouse or the <span class=\"ui-icon ui-icon-circle-triangle-w\"></span> and <span class=\"ui-icon ui-icon-circle-triangle-e\"></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class=\"ui-icon ui-icon-circle-triangle-n\"></span> and  <span class=\"ui-icon ui-icon-circle-triangle-s\"></span> keys to scroll up and down the document.</li> <li>New user ? <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a> now...</li> </ul>  <a target=\"_blank\" href=\"/help\">More help...</a>  </div>       ";
         }
         else{ //splashscreen for registered user
