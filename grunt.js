@@ -228,7 +228,7 @@ module.exports = function(grunt) {
     for (i in CSS_TARGETS){
         ALL_TARGETS[i+"_css"] = CSS_TARGETS[i];
     }
-    console.log(JSON.stringify(CSS_TARGETS));
+    //    console.log(JSON.stringify(CSS_TARGETS));
     // Project configuration.
     grunt.initConfig({
             pkg: '<json:package.json>',

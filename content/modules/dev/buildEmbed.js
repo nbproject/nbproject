@@ -11,33 +11,170 @@
 /*global jQuery:true $:true NB$:true NB:true alert:true*/
 
 (function(GLOB){
-    if (NB$){
-    var $ = NB$;
-    }
-    GLOB.pers.init = function(){
-    /*
-    //userinfo will be determined later. 
-    if (__nb_userinfo){
-        GLOB.conf.userinfo=__nb_userinfo;
-    }
-    */
-    GLOB.pers.connection_id = 1;
     
-    var cur =  GLOB.pers.currentScript;
-    var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
-    var server_url = server_info[1]+"://"+server_info[2];
-    GLOB.pers.add_css(server_url+"/content/compiled/buildEmbed.css");
+    if (NB$){
+        var $ = NB$;
+    }
+    var $str        = NB$ ? "NB$" : "jQuery";
 
-    GLOB.conf.servers.rpc=GLOB.pers.server_url;
-    $("body").append("<div id='nb_sidebar' class='nb_inactive'><div id='nb_controls' class='nb_inactive'><button id='nb_loginbutton'>Log in to NB</button></div></div>");
-    $("#nb_loginbutton").click(function(){
-            $.concierge.get_component("login_user_menu")();
-        });
+
+    var $vp;
+    var id_ensemble = null;  //SACHA TODO: replace this by user's real id_ensemble
+
+    var f_after_successful_login = function(){        
+        $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
+        //TODO: get id_ensemble from cookie or localStorage if available. 
+        $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
+        $.concierge.addComponents({
+                notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+                    note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+                    note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
+            });   
+    GLOB.pers.call(
+                   "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href}, 
+                   function(payload){
+                       //TODO: refactor (same as in step16.js:createStore)
+                       GLOB.pers.store = new GLOB.models.Store();
+                       GLOB.pers.store.create(payload, {
+                               ensemble:    {pFieldName: "ensembles"}, 
+                                   file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
+                                   folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
+                                   comment:{references: {id_location: "location"}},
+                                   location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
+                                   link: {pFieldName: "links"}, 
+                                   mark: {}, 
+                                   threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
+                                   draft: {},
+                                   seen:{references: {id_location: "location"}}
+                           });
+                           
+                       //TODO: Take something else than first id_source
+                       var id_source = GLOB.pers.id_source = NB.pers.store.get("file").first().ID;
+                       $.concierge.setHistoryHelper(function(_payload, cb){
+                               _payload["__return"] = {type:"newNotesOnFile", a:{id_source: GLOB.pers.id_source}};
+                               GLOB.pers.call("log_history", _payload, cb);
+                           }, 120000,  function(P2){    
+                               //here we override the callback so that we can get new notes.
+                                   
+                               var m = GLOB.pers.store;
+                               m.add("comment", P2["comments"]);
+                               m.add("location", P2["locations"]);
+                               var msg="";
+                               var l,c;
+                               for (var i in P2["comments"]){
+                                   c = m.o.comment[i];
+                                   l = m.o.location[c.ID_location];
+                                   if (c.id_author !==  $.concierge.get_component("get_userinfo")().id){    //do nothing if I'm the author:         
+                                       msg+="<a href='javascript:"+$str+".concierge.trigger({type: \"select_thread\", value:\""+l.ID+"\"})'>New comment on page "+l.page+"</a><br/>";
+                                   }
+                               }
+                               if (msg !== ""){
+                                   $.I(msg, true);
+                               }
+                           });    
+                       $.concierge.trigger({type:"file", value: id_source});
+                       var f = GLOB.pers.store.o.file[id_source];
+                       $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
+                               var m = GLOB.pers.store;
+                               m.add("seen", P["seen"]);
+                               m.add("comment", P["comments"]);
+                               m.add("location", P["locations"]);
+                               m.add("link", P["links"]);
+                               m.add("threadmark", P["threadmarks"]);
+                               //now check if need to move to a given annotation: 
+                               if ("c" in GLOB.pers.params){
+                                   window.setTimeout(function(){
+                                           var id =  GLOB.pers.params.c;
+                                           var c = m.get("comment", {ID: id}).items[id];
+                                           if ("reply" in GLOB.pers.params){
+                                               $.concierge.trigger({type: "reply_thread", value: c.ID});
+                                           }            
+                                           $.concierge.trigger({type: "select_thread", value: c.ID_location});
+
+
+                                       }, 300);
+                               }
+                               else if ("p" in GLOB.pers.params){
+                                   window.setTimeout(function(){
+                                           var page = GLOB.pers.params.p;
+                                           $.concierge.trigger({type: "page", value: page});
+                                       }, 300);
+                               }
+                               else{
+                                   window.setTimeout(function(){
+                                           $.concierge.trigger({type: "page", value: 1});
+                                       }, 300);
+                               }
+                           });
+
+
+                        
+                   }, 
+                   function(P){
+                       //TODO: refactor (same as in step16.js:on_fileinfo_error)
+                       $("#login-window").hide();
+                       var me = $.concierge.get_component("get_userinfo")();
+                       var name = "a guest";
+                       var loginmenu = "";
+                       if (!(me.guest)){
+                           name = (me.firstname !== null && me.lastname !== null) ?  me.firstname + " " + me.lastname + " (" +me.email + ") ": me.email;
+                       }
+                       else{
+                           loginmenu = "Would you like to  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
+                       }
+                       $("<div><div id=\"splash-welcome\">Welcome to NB !</div> <br/>You're currently logged in as <b>"+$.E(name)+"</b>, which doesn't grant you sufficient privileges to see this page. <br/><br/>"+loginmenu+"</div>").dialog({title: "Access Restricted...", closeOnEscape: false,   open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }, width: 600, buttons: {"Take me back to NB's home page": function(){
+                                       GLOB.auth.delete_cookie("userinfo");
+                                       GLOB.auth.delete_cookie("ckey");
+                                       document.location.pathname = "/logout?next=/";}
+                               }}); 
+                   });
+    
+    var id=4156;  //SACHA TODO: replace this by file's real id
+    var pers_id        = "pers_"+id;
+};
+    GLOB.pers.init = function(){
+        /*
+        //userinfo will be determined later. 
+        if (__nb_userinfo){
+        GLOB.conf.userinfo=__nb_userinfo;
+        }
+        */
+        GLOB.pers.connection_id = 1;
+
+        //add our CSS
+        var cur =  GLOB.pers.currentScript;
+        var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
+        var server_url = server_info[1]+"://"+server_info[2];
+        GLOB.pers.add_css(server_url+"/content/compiled/buildEmbed.css");
+
+        //register for some events: 
+        $.concierge.addListeners(GLOB.pers, {
+                successful_login: function(evt){
+                    GLOB.auth.set_cookie("ckey", evt.value);
+                    $.L("Welcome TO NB !");
+                    f_after_successful_login();
+                    
+                    
+                }
+            }, "globalPersObject");
+        
+        //tell who to make rpc requests to
+        GLOB.conf.servers.rpc=GLOB.pers.server_url;
+
+        $("body").append("<div class='nb_sidebar' class='nb_inactive'></div>");
+        $("#nb_loginbutton").click(function(){
+                $.concierge.get_component("login_user_menu")();
+            });
+
+        //if authenticated already, let's proceed: 
+        if (GLOB.conf.userinfo){
+            f_after_successful_login();
+        }
     }; 
     
     jQuery(function(){
-        GLOB.pers.params = GLOB.dom.getParams(); 
-        GLOB.pers.preinit();
-    });
+            GLOB.pers.params = GLOB.dom.getParams(); 
+            GLOB.pers.preinit();
+        });
 
-})(NB);
+    })(NB);

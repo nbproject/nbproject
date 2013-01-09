@@ -20,19 +20,20 @@
     if (NB$){
     var $ = NB$;
     }
-    
+    var $str        = NB$ ? "NB$" : "jQuery";
+
 
 GLOB.pers.init = function(){
     //GLOB.pers.admin=true;
     //Extra menus: 
     if (!(GLOB.conf.userinfo.guest)){
-    $("#menu_settings").after("<li><a href='javascript:$.concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+    $("#menu_settings").after("<li><a href='javascript:"+$str+".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
     }
 
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("admin_init", "admin_viewer", function(id){
             var pers_id        = "pers_"+id;
-            var $vp        = $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
+            var $vp        = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
             var treeview    =  {
                 priority: 1, 

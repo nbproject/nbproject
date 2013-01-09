@@ -1,7 +1,13 @@
-#nb_sidebar{
+.nb_sidebar{
 right: 0px;
 top: 0px;
+position: fixed;
+
 } 
+
+.nb_sidebar.nb_inactive{
+
+}
 
 div.nb_controls_inactive{
 position: absolute;

@@ -18,7 +18,8 @@
     if (NB$){
     var $ = NB$;
     }
-    
+    var $str        = NB$ ? "NB$" : "jQuery";
+
 GLOB.pers.init = function(){
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches==null || matches.length !== 2){
@@ -31,7 +32,7 @@ GLOB.pers.init = function(){
     $.concierge.addListeners(GLOB.pers, {
             successful_login: function(evt){
                 GLOB.auth.set_cookie("ckey", evt.value);
-                document.location ="http://"+document.location.host+document.location.pathname;
+                document.location = document.location.protocol+"//"+document.location.host+document.location.pathname;
                 $.I("Welcome !");
             }
         }, "globalPersObject");
@@ -39,7 +40,7 @@ GLOB.pers.init = function(){
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("file", "doc_viewer", function(id){
             var pers_id        = "pers_"+id;
-            var $vp        = $("<div class='dummy-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
+            var $vp        = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
             var docview        =  {
                 priority: 1, 
@@ -149,7 +150,7 @@ GLOB.pers.createStore = function(payload){
         c = m.o.comment[i];
         l = m.o.location[c.ID_location];
         if (c.id_author !==  $.concierge.get_component("get_userinfo")().id){    //do nothing if I'm the author:         
-        msg+="<a href='javascript:$.concierge.trigger({type: \"select_thread\", value:\""+l.ID+"\"})'>New comment on page "+l.page+"</a><br/>";
+        msg+="<a href='javascript:"+$str+".concierge.trigger({type: \"select_thread\", value:\""+l.ID+"\"})'>New comment on page "+l.page+"</a><br/>";
         }
     }
     if (msg !== ""){
@@ -212,7 +213,7 @@ GLOB.pers.on_fileinfo_error = function(P){
     name = (me.firstname !== null && me.lastname !== null) ?  me.firstname + " " + me.lastname + " (" +me.email + ") ": me.email;
     }
     else{
-    loginmenu = "Would you like to  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
+    loginmenu = "Would you like to  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
     }
     $("<div><div id=\"splash-welcome\">Welcome to NB !</div> <br/>You're currently logged in as <b>"+$.E(name)+"</b>, which doesn't grant you sufficient privileges to see this page. <br/><br/>"+loginmenu+"</div>").dialog({title: "Access Restricted...", closeOnEscape: false,   open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }, width: 600, buttons: {"Take me back to NB's home page": function(){
             GLOB.auth.delete_cookie("userinfo");

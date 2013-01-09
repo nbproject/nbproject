@@ -4,13 +4,13 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-html, body, div.viewport, .dummy-viewport, .outerview {
+.nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
 padding:0;
 margin: 0;
 overflow: hidden;
 }
 
-html, body, div.dummy-viewport, div.viewport{
+.nb_fullscreen, .nb_fullscreen>body, div.nb-viewport, div.viewport{
 width: 100%;
 height: 100%;
 font-family: Tahoma, Helvetica,arial, sans-serif;
