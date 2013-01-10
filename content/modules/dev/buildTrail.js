@@ -10,7 +10,7 @@
 */
 /*global jQuery:true $:true NB$:true  __nb_userinfo:true NB:true*/
 (function(GLOB){
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
     GLOB.build = {};

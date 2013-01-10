@@ -18,7 +18,7 @@
 
 (function(GLOB){
     //require auth
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
     GLOB.files = {};

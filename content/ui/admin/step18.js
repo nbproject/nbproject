@@ -18,7 +18,7 @@
 /*global NB:true NB$:true */
 
 (function(GLOB){
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
     

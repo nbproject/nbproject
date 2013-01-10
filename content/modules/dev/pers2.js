@@ -18,13 +18,13 @@
 /*global unescape:true NB:true NB$:true jQuery:true */
 (function(GLOB){
     //require auth
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
     GLOB.pers = {
         currentScript: document.currentScript
     };
-    var $str        = NB$ ? "NB$" : "jQuery";
+    var $str        = "NB$" in window ? "NB$" : "jQuery";
 
     /* trick for browsers that don't support document.activeElement 
        adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html

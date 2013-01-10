@@ -13,7 +13,7 @@
 */
 /*global jQuery:true NB$:true*/
 (function($) {
-    var $str        = NB$ ? "NB$" : "jQuery";
+    var $str        = "NB$" in window ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
             _create: function() {
                 $.ui.view.prototype._create.call(this);

@@ -10,7 +10,7 @@
 */
 
 (function(GLOB){
-    if (NB$){
+    if ("NB$" in window){
 	var $ = NB$;
     };
     GLOB.dom = {};

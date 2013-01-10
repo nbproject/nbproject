@@ -20,7 +20,7 @@
 /*global NB:true NB$:true */
 (function(GLOB){
     //require auth
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
 

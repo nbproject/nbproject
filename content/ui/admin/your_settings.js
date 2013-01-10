@@ -13,7 +13,7 @@
 
 (function(GLOB){
     //require auth
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
 NB.pers.init = function(){

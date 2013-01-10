@@ -17,10 +17,10 @@
 /*global NB$:true NB:true*/
 
 (function(GLOB){
-    if (NB$){
+    if ("NB$" in window){
     var $ = NB$;
     }
-    var $str        = NB$ ? "NB$" : "jQuery";
+    var $str        = "NB$" in window ? "NB$" : "jQuery";
 
 
 GLOB.pers.init = function(){
