@@ -1,29 +1,31 @@
-var  NB = {};
-
+/*global NB:true NB$:true $:true rangy:true alert:true wgxpath:true jQuery:true getElementCSSSelector:true */
 (function(GLOB){
     
     if ("NB$" in window){
         var $ = NB$;
     }
+
     var $str        = "NB$" in window ? "NB$" : "jQuery";
+    var comments = {};
+    var tempUid = 0;
+    var cssApplier = null;
 
-
-    GLOB.comments = {};
     GLOB.html = {};
-    GLOB.html.tempUid = 0;
 
     GLOB.html.init = function () {
         rangy.init();
 
         // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
         // the styled element must have an nb-comment-highlight class.
-        GLOB.html.cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
+        cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
 
         // Initialize Hilighting Event
         $("#content").mouseup(function (event) {
                 var sel = rangy.getSelection();
 
-                if (sel.isCollapsed) return;
+                if (sel.isCollapsed){
+                    return;
+                }
 
                 // must call before applyToRanges, otherwise sel is gone
                 var element = event.target;
@@ -33,30 +35,30 @@ var  NB = {};
                 }
 
                 // create temporary uid
-                var uid = "t-" + (GLOB.html.tempUid++).toString(16);
+                var uid = "t-" + (tempUid++).toString(16);
 
-                GLOB.comments[uid] = { id: uid, target: GLOB.getElementXPath(element), range: sel.saveCharacterRanges(element) };
+                comments[uid] = { id: uid, target: getElementXPath(element), range: sel.saveCharacterRanges(element) };
 
-                GLOB.html.drawAnnotation(sel, uid);
+                drawAnnotation(sel, uid);
             });
 
         // Bind window resize event to ordering
-        $(window).resize(GLOB.html.recalculateOrdering);
+        $(window).resize(recalculateOrdering);
 
-        //Possible addition to GLOB.init:
+        //Possible addition to init:
         // fix IE XPath implementation
         wgxpath.install();
-    }
+    };
 
     // must be called only on inner-most element
-    GLOB.html.hasConflicts = function (element) {
-        return ($(element).parents(".nb-comment-highlight").length > 0)
-    }
+    var hasConflicts = function (element) {
+        return ($(element).parents(".nb-comment-highlight").length > 0);
+    };
 
-    GLOB.html.drawAnnotation = function (selection, uid) {
+    var drawAnnotation = function (selection, uid) {
 
         // apply nb-comment-fresh to ranges
-        GLOB.html.cssApplier.applyToSelection(selection);
+        cssApplier.applyToSelection(selection);
         selection.removeAllRanges();
 
         // jQuery Treatment
@@ -70,9 +72,9 @@ var  NB = {};
                                                                                                                                    })
         .click(
                function (event) {
-                   if (!rangy.getSelection().isCollapsed) return;
+                   if (!rangy.getSelection().isCollapsed){ return;}
 
-                   if (GLOB.html.hasConflicts(this)) {
+                   if (hasConflicts(this)) {
                        var ids = {};
                        ids[$(this).attr("data-nb-ann")] = true;
                        $(this).parents(".nb-comment-highlight").each(function () {
@@ -84,21 +86,21 @@ var  NB = {};
                    }
                    event.stopPropagation();
                });
-        GLOB.comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
+        comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
     };
 
-    GLOB.html.recalculateOrdering = function () {
-        for (var uid in GLOB.comments) {
-            GLOB.comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
+    var recalculateOrdering = function () {
+        for (var uid in comments) {
+            comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
         }
-    }
+    };
 
     GLOB.html.restoreAnnotations = function () {
-        for (var uid in GLOB.comments) {
+        for (var uid in comments) {
             var sel = rangy.getSelection();
-            var obj = GLOB.comments[uid];
-            sel.restoreCharacterRanges(GLOB.getElementsByXPath(document, obj.target)[0], obj.range);
-            GLOB.html.drawAnnotation(sel, uid);
+            var obj = comments[uid];
+            sel.restoreCharacterRanges(getElementsByXPath(document, obj.target)[0], obj.range);
+            drawAnnotation(sel, uid);
         }
     };
 
@@ -106,17 +108,17 @@ var  NB = {};
         $(".nb-comment-highlight").contents().unwrap();
     };
 
-    GLOB.trim = function (text) {
+    var trim = function (text) {
         return text.replace(/^\s*|\s*$/g, "");
-    }
+    };
 
-    GLOB.trimLeft = function (text) {
+    var trimLeft = function (text) {
         return text.replace(/^\s+/, "");
-    }
+    };
 
-    GLOB.trimRight = function (text) {
+    var trimRight = function (text) {
         return text.replace(/\s+$/, "");
-    }
+    };
 
     // ************************************************************************************************
     // XPath
@@ -124,26 +126,30 @@ var  NB = {};
     /**
      * Gets an XPath for an element which describes its hierarchical location.
      */
-    GLOB.getElementXPath = function (element) {
-        if (element && element.id)
+    var getElementXPath = function (element) {
+        if (element && element.id){
             return '//*[@id="' + element.id + '"]';
-        else
-            return GLOB.getElementTreeXPath(element);
+        }
+        else{
+            return getElementTreeXPath(element);
+        }
     };
 
-    GLOB.getElementTreeXPath = function (element) {
+    var getElementTreeXPath = function (element) {
         var paths = [];
 
         // Use nodeName (instead of localName) so namespace prefix is included (if any).
-        for (; element && element.nodeType == 1; element = element.parentNode) {
+        for (; element && element.nodeType === 1; element = element.parentNode) {
             var index = 0;
             for (var sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
                 // Ignore document type declaration.
-                if (sibling.nodeType == Node.DOCUMENT_TYPE_NODE)
+                if (sibling.nodeType === Node.DOCUMENT_TYPE_NODE){
                     continue;
+                }
 
-                if (sibling.nodeName == element.nodeName)
+                if (sibling.nodeName === element.nodeName){
                     ++index;
+                }
             }
 
             var tagName = element.nodeName.toLowerCase();
@@ -154,22 +160,22 @@ var  NB = {};
         return paths.length ? "/" + paths.join("/") : null;
     };
 
-    GLOB.getElementCSSPath = function (element) {
+    var getElementCSSPath = function (element) {
         var paths = [];
 
-        for (; element && element.nodeType == 1; element = element.parentNode) {
-            var selector = GLOB.getElementCSSSelector(element);
+        for (; element && element.nodeType === 1; element = element.parentNode) {
+            var selector = getElementCSSSelector(element);
             paths.splice(0, 0, selector);
         }
 
         return paths.length ? paths.join(" ") : null;
     };
-
-    GLOB.cssToXPath = function (rule) {
-        var regElement = /^([#.]?)([a-z0-9\\*_-]*)((\|)([a-z0-9\\*_-]*))?/i;
+    
+    var cssToXPath = function (rule) {
+        var regElement = /^([#.]?)([a-z0-9\\*_\-]*)((\|)([a-z0-9\\*_\-]*))?/i;
         var regAttr1 = /^\[([^\]]*)\]/i;
-        var regAttr2 = /^\[\s*([^~=\s]+)\s*(~?=)\s*"([^"]+)"\s*\]/i;
-    var regPseudo = /^:([a-z_-])+/i;
+        var regAttr2 = /^\[\s*([^~=\s]+)\s*(~?=)\s*"([^"]+)"\s*\]/i; //";
+    var regPseudo = /^:([a-z_\-])+/i;
     var regCombinator = /^(\s*[>+\s])?/i;
     var regComma = /^\s*,/i;
 
@@ -177,40 +183,40 @@ var  NB = {};
     var parts = ["//", "*"];
     var lastRule = null;
 
-    while (rule.length && rule != lastRule) {
+    while (rule.length && rule !== lastRule) {
         lastRule = rule;
 
         // Trim leading whitespace
-        rule = GLOB.trim(rule);
-        if (!rule.length)
-            break;
+        rule = trim(rule);
+        if (!rule.length){
+            break;}
 
         // Match the element identifier
         var m = regElement.exec(rule);
         if (m) {
             if (!m[1]) {
                 // XXXjoe Namespace ignored for now
-                if (m[5])
-                    parts[index] = m[5];
-                else
-                    parts[index] = m[2];
+                if (m[5]){
+                    parts[index] = m[5];}
+                else{
+                    parts[index] = m[2];}
             }
-            else if (m[1] == '#')
-                parts.push("[@id='" + m[2] + "']");
-            else if (m[1] == '.')
+            else if (m[1] === '#'){
+                parts.push("[@id='" + m[2] + "']");}
+            else if (m[1] === '.'){
                 parts.push("[contains(concat(' ',normalize-space(@class),' '), ' " + m[2] + " ')]");
-
+            }
             rule = rule.substr(m[0].length);
         }
 
         // Match attribute selectors
         m = regAttr2.exec(rule);
         if (m) {
-            if (m[2] == "~=")
-                parts.push("[contains(@" + m[1] + ", '" + m[3] + "')]");
-            else
+            if (m[2] === "~="){
+                parts.push("[contains(@" + m[1] + ", '" + m[3] + "')]");}
+            else{
                 parts.push("[@" + m[1] + "='" + m[3] + "']");
-
+            }
             rule = rule.substr(m[0].length);
         }
         else {
@@ -231,13 +237,13 @@ var  NB = {};
         // Match combinators
         m = regCombinator.exec(rule);
         if (m && m[0].length) {
-            if (m[0].indexOf(">") != -1)
-                parts.push("/");
-            else if (m[0].indexOf("+") != -1)
-                parts.push("/following-sibling::");
-            else
+            if (m[0].indexOf(">") !== -1){
+                parts.push("/");}
+            else if (m[0].indexOf("+") !== -1){
+                parts.push("/following-sibling::");}
+            else{
                 parts.push("//");
-
+            }
             index = parts.length;
             parts.push("*");
             rule = rule.substr(m[0].length);
@@ -255,18 +261,18 @@ var  NB = {};
     return xpath;
     };
 
-GLOB.getElementsBySelector = function (doc, css) {
-    var xpath = GLOB.cssToXPath(css);
-    return GLOB.getElementsByXPath(doc, xpath);
+var getElementsBySelector = function (doc, css) {
+    var xpath = cssToXPath(css);
+    return getElementsByXPath(doc, xpath);
 };
 
-GLOB.getElementsByXPath = function (doc, xpath) {
+var getElementsByXPath = function (doc, xpath) {
     var nodes = [];
 
     try {
         var result = doc.evaluate(xpath, doc, null, XPathResult.ANY_TYPE, null);
-        for (var item = result.iterateNext() ; item; item = result.iterateNext())
-            nodes.push(item);
+        for (var item = result.iterateNext() ; item; item = result.iterateNext()){
+            nodes.push(item);}
     }
     catch (exc) {
         // Invalid xpath expressions make their way here sometimes.  If that happens,
@@ -276,10 +282,11 @@ GLOB.getElementsByXPath = function (doc, xpath) {
     return nodes;
 };
 
-GLOB.getRuleMatchingElements = function (rule, doc) {
+var getRuleMatchingElements = function (rule, doc) {
     var css = rule.selectorText;
-    var xpath = GLOB.cssToXPath(css);
-    return GLOB.getElementsByXPath(doc, xpath);
+    var xpath = cssToXPath(css);
+    return getElementsByXPath(doc, xpath);
 };
+        jQuery(function(){NB.html.init();});
 
 })(NB);

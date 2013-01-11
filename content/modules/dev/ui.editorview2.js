@@ -190,19 +190,31 @@
                     }
                     var component_name;
                     if (!(self._note)){ //new note, local or global
-                        var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
                         var file = model.o.file[self._file];
-                        var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
-                        s_inv = s_inv/fudge;
-                        msg.id_ensemble = model.o.file[self._file].ID_ensemble;
-                        msg.top = self._sel ? s_inv*parseInt(self._sel.css("top"), 10):0;
-                        msg.left= self._sel ? s_inv*parseInt(self._sel.css("left"), 10):0;
-                        msg.w =  self._sel ? s_inv*self._sel.width():0;
-                        msg.h =  self._sel ? s_inv*self._sel.height():0;
-                        msg.x0= 0;
-                        msg.y0= 0;
-                        msg.page= self._sel ? self._sel.parent().attr("page"):0;
+                        msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
+                        if (self._sel.isHtml5){
+                            msg.top = 0;
+                            msg.left= 0;
+                            msg.w = 0;
+                            msg.h = 0;
+                            msg.x0= 0;
+                            msg.y0= 0;
+                            msg.page= 1;
+                            msg.html5range = self._sel.range;
+                        }
+                        else{
+                            var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
+                            var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
+                            s_inv = s_inv/fudge;
+                            msg.top = self._sel ? s_inv*parseInt(self._sel.css("top"), 10):0;
+                            msg.left= self._sel ? s_inv*parseInt(self._sel.css("left"), 10):0;
+                            msg.w =  self._sel ? s_inv*self._sel.width():0;
+                            msg.h =  self._sel ? s_inv*self._sel.height():0;
+                            msg.x0= 0;
+                            msg.y0= 0;
+                            msg.page= self._sel ? self._sel.parent().attr("page"):0;
+                        }
                         component_name =  "note_creator";
                     }
                     else{ //reply or edit
@@ -227,9 +239,6 @@
                     self._sel.addClass("ui-drawable-selection").removeClass("ui-drawable-helper").appendTo(p).draggable({drag: f_sel, containment: 'parent' });
                     //animate transition so user understands that the editor is connected to the selection
                     self._sel.effect("transfer",{to: self.element} , 500);
-            
-                    //var y0 = parseInt(self._sel.css("top"))+self._sel.height();
-                    //            self.element.addClass("floating-editor").mousedown(function(evt){evt.stopPropagation()}).css({"top":y0+"px", "left": self._sel.css("left")});
                 }        
                 self.element.addClass("editor");
 

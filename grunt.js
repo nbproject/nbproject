@@ -28,6 +28,7 @@ module.exports = function(grunt) {
     };
     var MODULE_DIR = "content/modules/";
     var UI_DIR = "content/ui/admin/";
+    var UITEST_DIR = "content/ui/test/";
     var DEST_DIR = "content/compiled/";
 
     /* MODS are modules that serve as building blocks, without being built themselves */
@@ -83,6 +84,10 @@ module.exports = function(grunt) {
     MODS.EDITORVIEW = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.editorview2.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.editorview1.css"])
+    };
+    MODS.RANGY = {
+        src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-cssclassapplier.js", "rangy-textrange.js", "termfix.js" ]),
+        src_css:  []
     };
 
 
@@ -203,7 +208,23 @@ module.exports = function(grunt) {
         dest_js:  DEST_DIR+"collage.js",
         dest_css:  DEST_DIR+"collage.css"
         
-    };    
+    }; 
+    
+    TARGETS.NBHTML = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "dev/ui.concierge1.js"]), 
+                          TARGETS.API.src_js,
+                          MODS.RANGY.src_js, 
+                          addPrefix(MODULE_DIR, ["wgxpath/wgxpath.install.js"]),
+                          addPrefix(MODULE_DIR+"wgxpath/",["termfix.js" ]),
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/nb-additions.js"])
+                          ), 
+        src_css: [], 
+        dest_js:  DEST_DIR+"nbhtml.js",
+        dest_css:  DEST_DIR+"nbhtml.css"        
+    };  
 
 
     var JS_TARGETS = {};

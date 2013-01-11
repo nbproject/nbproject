@@ -164,6 +164,15 @@ class Location(models.Model):                                                   
     def __unicode__(self):
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
+class HTML5Location(models.Model):
+    location              = OneToOneField(Location)
+    path1                 = CharField(max_length=2048,blank=True, null=True)
+    path2                 = CharField(max_length=2048,blank=True, null=True)
+    offset1               = IntegerField()
+    offset2               = IntegerField()
+
+
+    
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
     location            = ForeignKey(Location)                                  # old: id_location integer

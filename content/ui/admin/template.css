@@ -45,6 +45,7 @@ top: 5px;
 right: 20px;
 color: #404040;
 font-weight: bold;
+z-index: 3;
 }
 
 #login-window a{

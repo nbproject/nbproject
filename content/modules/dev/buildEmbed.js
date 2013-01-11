@@ -21,8 +21,9 @@
     var $vp;
     var id_ensemble = null;  //SACHA TODO: replace this by user's real id_ensemble
 
-    var f_after_successful_login = function(){        
+    var f_after_successful_login = function(){    
         $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
+        $("#login-window").appendTo(".ui-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
@@ -73,6 +74,71 @@
                                }
                            });    
                        $.concierge.trigger({type:"file", value: id_source});
+
+                       //let's create perspective here: 
+                       var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
+ var notesview    =  {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35, 
+                min_height: 1000, 
+                desired_height: 50, 
+                content: function($div){
+                    $div.notepaneView();
+                    $div.notepaneView("set_model",GLOB.pers.store );
+                }
+            }; 
+            var threadview    = {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35,  
+                min_height: 1000, 
+                desired_height: 50, 
+                content: function($div){
+                    $div.threadview();
+                    $div.threadview("set_model",GLOB.pers.store );                
+                }
+            };
+            var editorview    =  {
+                priority: 1, 
+                min_width: 650, 
+                desired_width: 35,  
+                min_height: 1000, 
+                desired_height: 50, 
+                transcient: true,  
+                content: function($div){
+                    var m = GLOB.pers.store;
+                    var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
+                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
+                    $div.editorview("set_model",GLOB.pers.store );                
+                }
+            };
+
+            $pers.perspective({
+                height: function(){return $vp.height() - $pers.offset().top;}, 
+                listens: {
+                page_peek: function(evt){
+                    //need to add 1 value for uniqueness
+                    $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
+                }, 
+                    close_view: function(evt){
+                    if (evt.value === this.l.element[0].id){
+                    delete($.concierge.features.doc_viewer[id]);
+                    }
+                    $.L("closeview: ", evt, this.l.element[0].id);
+                }                    
+                }, 
+                views: {
+                        v1:{data: notesview}, 
+                        v2:{children: 
+                            {v1: { data: threadview}, v2: {data: editorview}, orientation: "horizontal"}},  
+                            orientation: "horizontal"
+                            }
+                });
+
+            //end of perspective creation code
+
+
                        var f = GLOB.pers.store.o.file[id_source];
                        $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
                                var m = GLOB.pers.store;

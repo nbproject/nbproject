@@ -2,8 +2,15 @@
 right: 0px;
 top: 0px;
 position: fixed;
-
+bottom: 0px;
+width: 400px;
+z-index: 2;
+background-color: #ffffff;
 } 
+
+body{
+margin-right: 405px;
+}
 
 .nb_sidebar.nb_inactive{
 
