@@ -327,7 +327,7 @@ def getNotes(payload, req):
         if auth.canReadFile(uid, id_source, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
+            output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -353,7 +353,7 @@ def saveNote(payload, req):
             tm.location_id=a.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"] = annotations.getLocation(a.location_id)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(a.location_id)
     retval["comments"] = annotations.getComment(a.id, uid)
     retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
@@ -439,7 +439,8 @@ def markNote(payload, req):
     else: 
         annotations.markNote(uid, payload);        
         comments = annotations.getComment(id_comment,uid)
-        p = {"locations":annotations.getLocation(comments[int(id_comment)]["ID_location"]), "marks": annotations.getMark(uid, payload), "comments": comments}
+        locs, h5locs = annotations.getLocation(comments[int(id_comment)]["ID_location"])
+        p = {"locations":locs, "html5locations": h5locs, "marks": annotations.getMark(uid, payload), "comments": comments}
         return UR.prepare_response(p)
 
 def approveNote(payload, req):
@@ -577,7 +578,7 @@ def get_location_info(payload, req):
     uid = UR.getUserId(req);
     #SACHA TODO: check I'm allowed to know this
     retval={}
-    retval["locations"] = annotations.getLocation(id)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(id)
     if "org" in payload:
         annotations.logDirectURL(uid, id, payload["org"])
     return UR.prepare_response(retval)
@@ -592,7 +593,7 @@ def get_comment_info(payload, req):
     id_location = comments[id]["ID_location"]
     retval["comments"] = {id: {"ID": id, "ID_location": id_location}} #share only what's needed
     #print retval["comments"]
-    retval["locations"] = annotations.getLocation( id_location)
+    retval["locations"] , retval["html5locations"] = annotations.getLocation( id_location)
     if "org" in payload:
         annotations.logDirectURL(uid, id, payload["org"])
     return UR.prepare_response(retval)

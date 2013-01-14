@@ -42,6 +42,7 @@
                                    folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
                                    comment:{references: {id_location: "location"}},
                                    location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
+                                   html5location:{references: {id_location: "location"}}, 
                                    link: {pFieldName: "links"}, 
                                    mark: {}, 
                                    threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
@@ -60,6 +61,7 @@
                                var m = GLOB.pers.store;
                                m.add("comment", P2["comments"]);
                                m.add("location", P2["locations"]);
+                               m.add("html5location", P2["html5locations"]);
                                var msg="";
                                var l,c;
                                for (var i in P2["comments"]){
@@ -115,7 +117,7 @@
             };
 
             $pers.perspective({
-                height: function(){return $vp.height() - $pers.offset().top;}, 
+                    height: function(){return $vp.height() - $pers.offset().top - $vp.offset().top;}, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
                 listens: {
                 page_peek: function(evt){
                     //need to add 1 value for uniqueness
@@ -145,6 +147,7 @@
                                m.add("seen", P["seen"]);
                                m.add("comment", P["comments"]);
                                m.add("location", P["locations"]);
+                               m.add("html5location", P["html5locations"]);
                                m.add("link", P["links"]);
                                m.add("threadmark", P["threadmarks"]);
                                //now check if need to move to a given annotation: 

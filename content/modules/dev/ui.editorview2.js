@@ -50,6 +50,7 @@
                     self._doEdit        = false;
                     self._inReplyTo        = 0 ;
                     self._selection        = evt.value.selection;
+                    self._html5range    = evt.value.html5range; 
                     self._sel        = null;
                     self._note        = null;
                     model.add("draft", drafts);
@@ -193,7 +194,7 @@
                         var file = model.o.file[self._file];
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
-                        if (self._sel.isHtml5){
+                        if (self._html5range){
                             msg.top = 0;
                             msg.left= 0;
                             msg.w = 0;
@@ -201,7 +202,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= 1;
-                            msg.html5range = self._sel.range;
+                            msg.html5range = self._html5range;
                         }
                         else{
                             var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);

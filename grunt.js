@@ -116,8 +116,11 @@ module.exports = function(grunt) {
                           MODS.THREADVIEW.src_js,
                           MODS.EDITORVIEW.src_js,
                           TARGETS.API.src_js,
+                          MODS.RANGY.src_js, 
+                          addPrefix(MODULE_DIR, ["wgxpath/wgxpath.install.js"]),
+                          addPrefix(MODULE_DIR+"wgxpath/",["termfix.js" ]),
                           addPrefix(UI_DIR,["conf.js"]), 
-                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildEmbed.js"])
+                          addPrefix(MODULE_DIR, ["dev/pers2.js","dev/docviewHtml5.js", "dev/buildEmbed.js"])
                           ), 
         dest_js:  DEST_DIR+"buildEmbed.js", 
         src_css: [].concat( 
