@@ -1,12 +1,10 @@
 Installation Procedure: 
 
 1-Dependencies: 
-On a typical debian-like (ubuntu etc...) distribution, NB requires the following packages: (note that packages in square brackets are optional)
+On a typical debian-like (ubuntu etc...) distribution, NB requires the following base packages: (note that packages in square brackets are optional)
    * python (>= 2.6)
    * postgresql (>= 8.4)
    * imagemagick
-   * [pdfedit]
-   * [unison]
    * postgresql-plpython-8.4
    * python-pypdf
    * mupdf-tools (for pdfdraw)
@@ -32,14 +30,20 @@ Then, NB can be deplyed as a django app, which requires the following:
     * django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
       - download the zip and unzip
       - sudo python setup.py install
+    * nodejs: Download the tarball from http://nodejs.org/, untar, and follow instructions in README.md (i.e. ./configure, make, sudo make install)
+    * grunt: sudo npm install -g grunt
+    * npm install #in order to install specific grunt modules, such as grunt-css
+
+
+
 
 
 -> make django 
 -> edit values in apps/settings_credentials.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
 -> make django       #make Apache aware of Django framework
--> make apidev          #Since there is alot of js, this improves performance 
--> [optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same databse, for consistency.  
+-> grunt             #Compiles js and css.  
+-> [optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
 
 2- Database Initialization: 
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')

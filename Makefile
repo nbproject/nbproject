@@ -15,6 +15,7 @@ MIGRATEDBFILE	= conf/migratedb.sh
 MIGRATEDBSKEL	= conf/migratedb.sh.skel
 OLD_DB		= notabene
 NEW_DB		= nb3
+CONF_LOCAL		= content/ui/admin/conf_local.js
 SETTINGSFILE	= $(SRCDIR)/settings.py
 DBNAME		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["NAME"]')
 DBUSER		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["USER"]')
@@ -37,30 +38,14 @@ NB_HTTP_PORT  	= $(shell python -c 'from  $(SRCDIR).settings import NB_HTTP_PORT
 
 NB		= nb
 NB_ARCHIVE	= nb_stats_`date`_.tgz
-COMPILED_DIR = content/compiled
-API_ROOT	= content/modules
-API_DEST	= $(COMPILED_DIR)/api.js
-API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
-APIDEV_ROOT	= content/modules
-APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
-APIDEV_FILES	= NB.js auth.js dom.js mvc.js dev/models2.js 
-BUILDTRAIL_DEST = $(COMPILED_DIR)/buildTrail.js
-BUILDTRAIL_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildTrail.js
-BUILDEMBED_DEST =  $(COMPILED_DIR)/buildEmbed.js
-BUILDEMBED_FILES= content/modules/jquery/1.5.2/jquery.min.js content/modules/jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js content/modules/dev/ui.concierge1.js content/compiled/apidev.js content/ui/admin/conf.js content/modules/dev/pers2.js content/modules/dev/buildEmbed.js
-DESKTOP_FILES=  content/modules/jquery/1.5.2/jquery.min.js content/modules/jquery_ui/jquery-ui-1.8.6/ui/minified/jquery-ui.min.js content/modules/dev/ui.concierge1.js content/modules/dev/ui.view5.js content/modules/dev/ui.perspective5.js content/compiled/apidev.js content/ui/admin/conf.js content/ui/admin/conf_local.js content/modules/dev/pers2.js content/modules/dev/files.js content/ui/admin/step21.js content/ui/admin/launch.js 
-DESKTOP_DEST	=  $(COMPILED_DIR)/desktop_combined.js
 
-
-compat: api
-	(rm content/compat/*; cd src; python compat.py dir ../ ../templates/web ../content/compat/)
 
 check_settings: 
 	echo ''
 	echo '********************************************************************************************'
 	echo '* Please edit your DB connections parameters in $(SRCDIR)/settings_credentials.py, if needed *'
 	echo '********************************************************************************************'
-	echo ''	
+	echo '' 
 	$(shell python -c 'import $(SRCDIR).settings')
 
 
@@ -92,6 +77,8 @@ django: check_settings
 	sed 's|@@SRC_DIR@@|$(PREFIXDIR)/$(SRCDIR)|g' $(WSGISKEL)   > $(WSGIFILE)
 	sed -e 's|@@NB_DIR@@|$(PWD)|g' -e 's|@@SRCDIR@@|$(SRCDIR)|g'  -e 's|@@NB_CRON_EMAIL@@|$(CRON_EMAIL)|g' $(CRONSKEL) > $(CRONFILE)
 	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' -e 's|NB_STATICURL|$(NB_STATICURL)|g' -e 's|NB_STATIC_MEDIA_DIR|$(NB_STATIC_MEDIA_DIR)|g' $(APACHESKEL)   > $(APACHEFILE)
+	touch $(CONF_LOCAL)
+	if [ -s $(CONF_LOCAL) ]; then echo "local conf exists and not empty"; else echo "//your local conf here" >> $(CONF_LOCAL) ;  fi
 	echo ''
 	echo '--------- Apache configuration file ------------'
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'
@@ -139,7 +126,7 @@ check_prereqs:
 	done
 
 prereqs_common:
-	apt-get install python postgresql imagemagick pdfedit postgresql-plpython-8.4 python-pypdf context
+	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context
 
 prereqs_django:
 	apt-get install apache2 python-psycopg2 libapache2-mod-wsgi
