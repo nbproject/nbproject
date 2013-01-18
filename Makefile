@@ -1,7 +1,5 @@
 #use the following to configure the 'nb3' server: 
 SRCDIR		= apps
-
-PREREQS		= postgresql imagemagick 
 PWD		= $(shell pwd)
 PREFIXDIR	= $(PWD)
 WSGIDIR		= $(SRCDIR)/apache
@@ -146,38 +144,5 @@ apidev:
 	echo '' > $(APIDEV_DEST)
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
 
-
-
-
-#for some reason, the following doesn't perform Ok when in makefile, but OK when executed from shell...
-check_prereqs: 
-	for l in $(PREREQS); do \
-		if [ $$l != `dpkg -l $$l | grep '^ii' | sed 's|^ii  \(\S*\).*|\1|'` ] ; then echo "$$l seems to be missing"; exit 1; else echo "$$l OK..."; fi; \
-	done
-
-prereqs_common:
-	apt-get install python postgresql imagemagick pdfedit postgresql-plpython-8.4 python-pypdf context
-
-prereqs_django:
-	apt-get install apache2 python-psycopg2 libapache2-mod-wsgi
-
-
-prereqs_twisted: 
-	apt-get install python-twisted python-pygresql
-
-startapp: #reminder for what links to create when creating a new django app
-	echo 'ln -s ../../src/annotations3.py annotations.py'
-	echo 'ln -s ../../src/utils_response.py .' 
-	echo 'ln -s ../../src/utils_format.py .'
-	echo 'ln -s ../../src/constants.py .'
-	echo 'ln -s ../../src/utils_auth.py .'
-	echo 'ln -s ../../src/db_django.py db.py'
-	echo 'ln -s ../../src/registry.py .'
-	echo ''
-	echo ''
-
-static2template: #reminder for how to change a static page into a template. 
-	sed -i 's|href="../|href="/content/|' your_file
-	sed -i 's|src="../|src="/content/|' your_file
-	echo 'change manually other links to abolute links typicall pers???.css and pers???.js need to be replaced by /content/ui/classic/pers???...'
-	echo 'close script tags with a </script> instead of />'
+prereqs
+	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools
