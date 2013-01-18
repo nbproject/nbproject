@@ -1,7 +1,5 @@
 #use the following to configure the 'nb3' server: 
 SRCDIR		= apps
-
-PREREQS		= postgresql imagemagick 
 PWD		= $(shell pwd)
 PREFIXDIR	= $(PWD)
 WSGIDIR		= $(SRCDIR)/apache
@@ -119,15 +117,5 @@ apidev:
 	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 
-#for some reason, the following doesn't perform Ok when in makefile, but OK when executed from shell...
-check_prereqs: 
-	for l in $(PREREQS); do \
-		if [ $$l != `dpkg -l $$l | grep '^ii' | sed 's|^ii  \(\S*\).*|\1|'` ] ; then echo "$$l seems to be missing"; exit 1; else echo "$$l OK..."; fi; \
-	done
-
-prereqs_common:
-	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context
-
-prereqs_django:
-	apt-get install apache2 python-psycopg2 libapache2-mod-wsgi
-
+prereqs
+	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools
