@@ -22,7 +22,7 @@
                                                    end: obj.offset2
                                                }
                                            }]);
-            drawAnnotation(sel, lid);
+            drawAnnotation(sel, obj);
         }
     };
 
@@ -34,6 +34,21 @@
         $.concierge.addListeners(GLOB.html,{
                 page: function(evt){
                     _render();
+                }, 
+                note_hover: function(event){
+                    //console.warn("TODO", event);
+                    $(".nb-comment-highlight[id_item="+event.value+"]").addClass("hovered");
+                }, 
+                note_out: function(event){
+                    //console.warn("TODO", event);
+                    $(".nb-comment-highlight[id_item="+event.value+"]").removeClass("hovered");
+                }, 
+                visibility: function(event){
+                    console.warn("TODO", event);
+                },
+                select_thread: function(event){
+                    $(".nb-comment-highlight.selected").removeClass("selected");
+                    $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
                 }
             }, 
             GLOB.html.id);
@@ -85,7 +100,8 @@
         return ($(element).parents(".nb-comment-highlight").length > 0);
     };
 
-    var drawAnnotation = function (selection, uid) {
+    var drawAnnotation = function (selection, loc) {
+        var uid = loc.id_location;
 
         // apply nb-comment-fresh to ranges
         cssApplier.applyToSelection(selection);
@@ -93,35 +109,29 @@
 
         // jQuery Treatment
         $("span.nb-comment-fresh.nb-comment-highlight").removeClass("nb-comment-fresh").wrapInner('<span class="nb-comment-fresh" />');
-        $("span.nb-comment-fresh").addClass("nb-comment-highlight").removeClass("nb-comment-fresh").attr("data-nb-ann", uid).hover(
-                                                                                                                                   function () {
-                                                                                                                                       $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").addClass("prominent");
-                                                                                                                                   },
-                                                                                                                                   function () {
-                                                                                                                                       $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").removeClass("prominent");
-                                                                                                                                   })
-        .click(
+        $("span.nb-comment-fresh").addClass("nb-comment-highlight").removeClass("nb-comment-fresh").attr("id_item", uid).hover(
+                                                                                                                               function(){$.concierge.trigger({type:"note_hover", value: uid});}, 
+                                                                                                                               function(){$.concierge.trigger({type:"note_out", value: uid});}).click(
                function (event) {
                    if (!rangy.getSelection().isCollapsed){ return;}
 
                    if (hasConflicts(this)) {
                        var ids = {};
-                       ids[$(this).attr("data-nb-ann")] = true;
+                       ids[$(this).attr("id_item")] = true;
                        $(this).parents(".nb-comment-highlight").each(function () {
-                               ids[$(this).attr("data-nb-ann")] = true;
+                               ids[$(this).attr("id_item")] = true;
                            });
                        alert(JSON.stringify(ids));
                    } else {
-                       alert($(this).attr("data-nb-ann"));
+                       $.concierge.trigger({type:"select_thread", value: uid});
                    }
                    event.stopPropagation();
                });
-        //comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
     };
 
     var recalculateOrdering = function () {
         for (var uid in comments) {
-            comments[uid].docPosition = $("span.nb-comment-highlight[data-nb-ann=" + uid + "]").first().offset();
+            comments[uid].docPosition = $("span.nb-comment-highlight[id_item=" + uid + "]").first().offset();
         }
     };
 
@@ -146,7 +156,7 @@
                                                    end: obj.offset2
                                                }
                                            }]);
-            drawAnnotation(sel, lid);
+            drawAnnotation(sel, obj);
         }
     };
     

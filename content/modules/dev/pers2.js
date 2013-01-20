@@ -22,7 +22,8 @@
     var $ = NB$;
     }
     GLOB.pers = {
-        currentScript: document.currentScript
+        currentScript: document.currentScript, 
+        embedded: false
     };
     var $str        = "NB$" in window ? "NB$" : "jQuery";
 
@@ -128,9 +129,15 @@
         logout: function(p,cb){
             GLOB.auth.delete_cookie("userinfo");
             GLOB.auth.delete_cookie("ckey");
-            document.location.pathname ="/logout";
+            if (GLOB.pers.embedded){
+                document.location = document.location; //simply reload
+            }
+            else{
+                document.location.pathname ="/logout";
+            }
+
         },
-    location_closestpage:  function(p, cb){ 
+        location_closestpage:  function(p, cb){ 
         /* given a location and id (in payload) returns "closest" location id found on a different page: 
            - if "direction" is "down": "closest" is the location at the top-most position of the next page which has a location
            - if "direction" is "up": "closest" is the location at the bottom-most position of the previous page which has a location

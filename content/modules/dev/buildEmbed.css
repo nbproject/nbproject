@@ -23,16 +23,20 @@ position: absolute;
 
 /* HTML5 comments */
   .nb-comment-highlight {
-            color: #222;
+          /*  color: #222;*/      
             background-color: rgba(255, 204, 1, .2);
             /*border-radius: 3px;*/
             padding: 2px 0 2px 0;
         }
         
-        .nb-comment-highlight.prominent {
+        .nb-comment-highlight.hovered {
+      border: thin solid rgba(128,128,128,.2);
+
             background-color: rgba(1, 99, 255, 0.2);
         }
 
-        .nb-comment-highlight.activated {
+        .nb-comment-highlight.selected {
+      border: thin solid rgba(128,128,128,.3);
+
             background-color: rgba(1, 99, 255, 0.3);
         }

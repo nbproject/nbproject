@@ -8,7 +8,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global jQuery:true $:true NB$:true NB:true alert:true*/
+/*global jQuery:true $:true NB$:true NB:true alert:true escape:false*/
 
 (function(GLOB){
     
@@ -79,68 +79,68 @@
 
                        //let's create perspective here: 
                        var $pers        = $("<div id='pers_"+id_source+"'/>").appendTo($vp);
- var notesview    =  {
-                priority: 1, 
-                min_width: 650, 
-                desired_width: 35, 
-                min_height: 1000, 
-                desired_height: 50, 
-                content: function($div){
-                    $div.notepaneView();
-                    $div.notepaneView("set_model",GLOB.pers.store );
-                }
-            }; 
-            var threadview    = {
-                priority: 1, 
-                min_width: 650, 
-                desired_width: 35,  
-                min_height: 1000, 
-                desired_height: 50, 
-                content: function($div){
-                    $div.threadview();
-                    $div.threadview("set_model",GLOB.pers.store );                
-                }
-            };
-            var editorview    =  {
-                priority: 1, 
-                min_width: 650, 
-                desired_width: 35,  
-                min_height: 1000, 
-                desired_height: 50, 
-                transcient: true,  
-                content: function($div){
-                    var m = GLOB.pers.store;
-                    var ensemble = m.o.ensemble[m.o.file[id_source].id_ensemble];                    
-                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
-                    $div.editorview("set_model",GLOB.pers.store );                
-                }
-            };
-
-            $pers.perspective({
-                    height: function(){return $vp.height() - $pers.offset().top - $vp.offset().top;}, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
-                listens: {
-                page_peek: function(evt){
-                    //need to add 1 value for uniqueness
-                    $.concierge.logHistory("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
-                }, 
-                    close_view: function(evt){
-                    if (evt.value === this.l.element[0].id){
-                    delete($.concierge.features.doc_viewer[id_source]);
-                    }
-                    $.L("closeview: ", evt, this.l.element[0].id);
-                }                    
-                }, 
-                views: {
-                        v1:{data: notesview}, 
-                        v2:{children: 
-                            {v1: { data: threadview}, v2: {data: editorview}, orientation: "horizontal"}},  
-                            orientation: "horizontal"
-                            }
-                });
-
-            //end of perspective creation code
-
-
+                       var notesview    =  {
+                           priority: 1, 
+                           min_width: 650, 
+                           desired_width: 35, 
+                           min_height: 1000, 
+                           desired_height: 50, 
+                           content: function($div){
+                               $div.notepaneView();
+                               $div.notepaneView("set_model",GLOB.pers.store );
+                           }
+                       }; 
+                       var threadview    = {
+                           priority: 1, 
+                           min_width: 650, 
+                           desired_width: 35,  
+                           min_height: 1000, 
+                           desired_height: 50, 
+                           content: function($div){
+                               $div.threadview();
+                               $div.threadview("set_model",GLOB.pers.store );                
+                           }
+                       };
+                       var editorview    =  {
+                           priority: 1, 
+                           min_width: 650, 
+                           desired_width: 35,  
+                           min_height: 1000, 
+                           desired_height: 50, 
+                           transcient: true,  
+                           content: function($div){
+                               var m = GLOB.pers.store;
+                               var ensemble = m.o.ensemble[m.o.file[id_source].id_ensemble];                    
+                               $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
+                               $div.editorview("set_model",GLOB.pers.store );                
+                           }
+                       };
+                       
+                       $pers.perspective({
+                               height: function(){return $vp.height() - $pers.offset().top - $vp.offset().top;}, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
+                                   listens: {
+                                   page_peek: function(evt){
+                                       //need to add 1 value for uniqueness
+                                       $.concierge.logHistory("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
+                                   }, 
+                                       close_view: function(evt){
+                                       if (evt.value === this.l.element[0].id){
+                                           delete($.concierge.features.doc_viewer[id_source]);
+                                       }
+                                       $.L("closeview: ", evt, this.l.element[0].id);
+                                   }                    
+                               }, 
+                                   views: {
+                                   v1:{data: notesview}, 
+                                       v2:{children: 
+                                       {v1: { data: threadview}, v2: {data: editorview}, orientation: "horizontal"}},  
+                                       orientation: "horizontal"
+                                       }
+                           });
+                       
+                       //end of perspective creation code
+                       
+                       
                        var f = GLOB.pers.store.o.file[id_source];
                        $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
                                var m = GLOB.pers.store;
@@ -159,7 +159,7 @@
                                                $.concierge.trigger({type: "reply_thread", value: c.ID});
                                            }            
                                            $.concierge.trigger({type: "select_thread", value: c.ID_location});
-
+                                           
 
                                        }, 300);
                                }
@@ -175,11 +175,13 @@
                                        }, 300);
                                }
                            });
-
-
-                        
-                   }, 
+                       
+                       
+                       
+                   },
                    function(P){
+                       $(".ui-widget-header").append("<button onclick='"+$str+".concierge.get_component(\"login_user_menu\")()' id='#login_to_nb'>Login to NB</button>");
+                       /*
                        //TODO: refactor (same as in step16.js:on_fileinfo_error)
                        $("#login-window").hide();
                        var me = $.concierge.get_component("get_userinfo")();
@@ -196,6 +198,7 @@
                                        GLOB.auth.delete_cookie("ckey");
                                        document.location.pathname = "/logout?next=/";}
                                }}); 
+                       */
                    });
     
         //    var id=4156;  //SACHA TODO: replace this by file's real id
@@ -209,7 +212,7 @@
         }
         */
         GLOB.pers.connection_id = 1;
-
+        GLOB.pers.embedded = true;
         //add our CSS
         var cur =  GLOB.pers.currentScript;
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
@@ -220,6 +223,7 @@
         $.concierge.addListeners(GLOB.pers, {
                 successful_login: function(evt){
                     GLOB.auth.set_cookie("ckey", evt.value.ckey);
+                    GLOB.auth.set_cookie("userinfo", escape(JSON.stringify(evt.value)));
                     GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
                     $("#splash-welcome").parent().dialog("destroy");
