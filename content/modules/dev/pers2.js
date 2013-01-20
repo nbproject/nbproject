@@ -265,7 +265,7 @@
                 };
                 $.concierge.get_component("login_user")(payload , function(p){
                     if (p.ckey !== null){
-                        $.concierge.trigger({type:"successful_login", value: p.ckey});
+                        $.concierge.trigger({type:"successful_login", value: p});
                         $dlg.find("div.form_errors").empty();
                         $dlg.dialog("destroy");  
                     }

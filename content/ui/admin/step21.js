@@ -64,7 +64,7 @@ GLOB.pers.init = function(){
                         $.I("Thanks for your feedback !");});
                 }, 
                     successful_login: function(evt){
-                    GLOB.auth.set_cookie("ckey", evt.value);
+                    GLOB.auth.set_cookie("ckey", evt.value.ckey);
                     document.location ="http://"+document.location.host+document.location.pathname;
                     $.I("Welcome !");
                 },

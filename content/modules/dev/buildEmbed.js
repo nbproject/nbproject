@@ -78,7 +78,7 @@
                        $.concierge.trigger({type:"file", value: id_source});
 
                        //let's create perspective here: 
-                       var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
+                       var $pers        = $("<div id='pers_"+id_source+"'/>").appendTo($vp);
  var notesview    =  {
                 priority: 1, 
                 min_width: 650, 
@@ -110,7 +110,7 @@
                 transcient: true,  
                 content: function($div){
                     var m = GLOB.pers.store;
-                    var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
+                    var ensemble = m.o.ensemble[m.o.file[id_source].id_ensemble];                    
                     $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
                     $div.editorview("set_model",GLOB.pers.store );                
                 }
@@ -121,11 +121,11 @@
                 listens: {
                 page_peek: function(evt){
                     //need to add 1 value for uniqueness
-                    $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
+                    $.concierge.logHistory("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
                 }, 
                     close_view: function(evt){
                     if (evt.value === this.l.element[0].id){
-                    delete($.concierge.features.doc_viewer[id]);
+                    delete($.concierge.features.doc_viewer[id_source]);
                     }
                     $.L("closeview: ", evt, this.l.element[0].id);
                 }                    
@@ -198,8 +198,8 @@
                                }}); 
                    });
     
-    var id=4156;  //SACHA TODO: replace this by file's real id
-    var pers_id        = "pers_"+id;
+        //    var id=4156;  //SACHA TODO: replace this by file's real id
+        //        var pers_id        = "pers_embedded";//+id;
 };
     GLOB.pers.init = function(){
         /*
@@ -219,8 +219,10 @@
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
                 successful_login: function(evt){
-                    GLOB.auth.set_cookie("ckey", evt.value);
+                    GLOB.auth.set_cookie("ckey", evt.value.ckey);
+                    GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
+                    $("#splash-welcome").parent().dialog("destroy");
                     f_after_successful_login();
                     
                     

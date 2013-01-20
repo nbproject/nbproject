@@ -88,7 +88,7 @@ GLOB.pers.init = function(){
                     $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
                 }, 
                     successful_login: function(evt){
-                    GLOB.auth.set_cookie("ckey", evt.value);
+                    GLOB.auth.set_cookie("ckey", evt.value.ckey);
                     document.location ="http://"+document.location.host+document.location.pathname;
                     $.I("Welcome !");
                 },

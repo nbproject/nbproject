@@ -81,7 +81,7 @@ GLOB.pers.init = function(){
             height: function(){return $vp.height() - $pers.offset().top;}, 
             listens: {
             successful_login: function(evt){
-                GLOB.auth.set_cookie("ckey", evt.value);
+                GLOB.auth.set_cookie("ckey", evt.value.ckey);
                 document.location ="http://"+document.location.host+document.location.pathname;
                 $.I("Welcome !");
             }, 

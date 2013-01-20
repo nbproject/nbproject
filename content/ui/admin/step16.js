@@ -31,7 +31,7 @@ GLOB.pers.init = function(){
     });
     $.concierge.addListeners(GLOB.pers, {
             successful_login: function(evt){
-                GLOB.auth.set_cookie("ckey", evt.value);
+                GLOB.auth.set_cookie("ckey", evt.value.ckey);
                 document.location = document.location.protocol+"//"+document.location.host+document.location.pathname;
                 $.I("Welcome !");
             }
