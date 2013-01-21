@@ -29,9 +29,8 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
       - sudo python setup.py install
    * nodejs: Download the tarball from http://nodejs.org/, untar, and follow instructions in README.md (i.e. ./configure, make, sudo make install)
    * grunt: sudo npm install -g grunt
-   * npm install #in order to install specific grunt modules, such as grunt-css
-
--> make django 
+-> npm install #in order to install specific grunt modules, such as grunt-css, execSync
+-> make django #create configuration files. 
 -> edit values in apps/settings_credentials.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
 -> make django       #make Apache aware of Django framework

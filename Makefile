@@ -90,6 +90,8 @@ django: check_settings
 	echo ''
 	echo '--------- End of make messages -----------------'
 	echo ''
+	echo 'Replacing grunt-css with our customized version'
+	cp lib/grunt-css.js node_modules/grunt-css/tasks/ 
 
 migratedb: 
 	sed -e 's|@@OLD_DB@@|$(OLD_DB)|g' -e 's|@@NEW_DB@@|$(NEW_DB)|g' $(MIGRATEDBSKEL)   > $(MIGRATEDBFILE)

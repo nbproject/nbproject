@@ -15,14 +15,22 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global unescape:true NB:true NB$:true jQuery:true */
+/*global unescape:true NB:true NB$:true jQuery:true alert:false*/
 (function(GLOB){
     //require auth
     if ("NB$" in window){
     var $ = NB$;
+    }    
+    // it would be great to use document.currentScript, but it only seems to be supported 
+    // on firefox for now, so we match by filename. 
+    var scriptname = "_NB.js";
+    var nb_script = jQuery("script[src$='"+scriptname+"']");
+    if (nb_script.length!==1){
+        alert("Error: Couldn't find (unique) NB script, i.e ending in : "+ scriptname); 
+        return;
     }
     GLOB.pers = {
-        currentScript: document.currentScript, 
+        currentScript: nb_script[0],
         embedded: false
     };
     var $str        = "NB$" in window ? "NB$" : "jQuery";
@@ -43,7 +51,7 @@
     GLOB.pers.connection_id = 0;
     GLOB.pers.first_connection = true;
     GLOB.pers.connection_T = 1000;  // in msec
-    var server_info =  document.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);    
+    var server_info =  GLOB.pers.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);    
     GLOB.pers.server_url = server_info[1]+"://"+server_info[2];
     GLOB.pers.call = function(fctname, dict, callback, errback){
     if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id === 0) {

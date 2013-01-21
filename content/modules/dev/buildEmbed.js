@@ -51,6 +51,11 @@
                            });
                            
                        //TODO: Take something else than first id_source
+                       var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
+                       if (source === null){
+                           alert("The URL for this page ("+document.location.href+") isn't registered on NB.");
+                           return;
+                       }
                        var id_source = GLOB.pers.id_source = NB.pers.store.get("file").first().ID;
                        $.concierge.setHistoryHelper(function(_payload, cb){
                                _payload["__return"] = {type:"newNotesOnFile", a:{id_source: GLOB.pers.id_source}};
@@ -117,7 +122,9 @@
                        };
                        
                        $pers.perspective({
-                               height: function(){return $vp.height() - $pers.offset().top - $vp.offset().top;}, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
+                               height: function(){
+                                   return $vp.height() - ($pers.offset().top - $vp.offset().top);
+                               }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
                                    listens: {
                                    page_peek: function(evt){
                                        //need to add 1 value for uniqueness
@@ -217,7 +224,7 @@
         var cur =  GLOB.pers.currentScript;
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
         var server_url = server_info[1]+"://"+server_info[2];
-        GLOB.pers.add_css(server_url+"/content/compiled/buildEmbed.css");
+        GLOB.pers.add_css(server_url+"/content/compiled/embed_NB.css");
 
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {

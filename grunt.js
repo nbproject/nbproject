@@ -1,5 +1,11 @@
-/*global module:false console:true*/
+/*global module:false console:true require:false*/
 module.exports = function(grunt) {
+    var execSync = require('execSync');
+    var servername = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
+    var serverport = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
+    if (serverport !== "80"){
+        servername += ":"+serverport;
+    }
     var addPrefix = function(prefix, names){
         /*
          * given a prefix and an array, returns a new array where each element 
@@ -97,7 +103,7 @@ module.exports = function(grunt) {
     var TARGETS = {};
     TARGETS.API =  {
         src_js: addPrefix(MODULE_DIR, ["NB.js", "auth.js",  "dom.js", "mvc.js", "dev/models2.js"]), 
-        dest_js: DEST_DIR+"apidev.js"
+        dest_js: DEST_DIR+"apidev_NB.js"
     };
     TARGETS.TRAIL = {
         src_js: [].concat(
@@ -106,7 +112,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR,["conf.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildTrail.js"])
                           ), 
-        dest_js:  DEST_DIR+"buildTrail.js"
+        dest_js:  DEST_DIR+"buildTrail_NB.js"
     };
     TARGETS.EMBED = {
         src_js: [].concat(
@@ -122,7 +128,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR,["conf.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers2.js","dev/docviewHtml5.js", "dev/buildEmbed.js"])
                           ), 
-        dest_js:  DEST_DIR+"buildEmbed.js", 
+        dest_js:  DEST_DIR+"embed_NB.js", 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css", "dev/buildEmbed.css"]), 
                            addPrefix(UI_DIR, ["template.css"]),
@@ -130,8 +136,8 @@ module.exports = function(grunt) {
                            MODS.THREADVIEW.src_css, 
                            MODS.EDITORVIEW.src_css
                             ),
-        dest_css:  DEST_DIR+"buildEmbed.css"
-                           
+        dest_css:  DEST_DIR+"embed_NB.css",
+        servername: servername
     };
 
 
@@ -153,7 +159,7 @@ module.exports = function(grunt) {
                            MODS.TREEVIEW.src_css, 
                            MODS.FILESVIEW.src_css
                             ), 
-        dest_js:  DEST_DIR+"desktop.js",
+        dest_js:  DEST_DIR+"desktop_NB.js",
         dest_css:  DEST_DIR+"desktop.css"
         
     };    
@@ -181,7 +187,7 @@ module.exports = function(grunt) {
                            MODS.THREADVIEW.src_css, 
                            MODS.EDITORVIEW.src_css
                             ), 
-        dest_js:  DEST_DIR+"pdfviewer.js",
+        dest_js:  DEST_DIR+"pdfviewer_NB.js",
         dest_css:  DEST_DIR+"pdfviewer.css"
         
     };    
@@ -208,7 +214,7 @@ module.exports = function(grunt) {
                            MODS.THREADVIEW.src_css, 
                            MODS.EDITORVIEW.src_css
                             ), 
-        dest_js:  DEST_DIR+"collage.js",
+        dest_js:  DEST_DIR+"collage_NB.js",
         dest_css:  DEST_DIR+"collage.css"
         
     }; 
@@ -225,7 +231,7 @@ module.exports = function(grunt) {
                           addPrefix(MODULE_DIR, ["dev/nb-additions.js"])
                           ), 
         src_css: [], 
-        dest_js:  DEST_DIR+"nbhtml.js",
+        dest_js:  DEST_DIR+"nbhtml_NB.js",
         dest_css:  DEST_DIR+"nbhtml.css"        
     };  
 
@@ -242,7 +248,10 @@ module.exports = function(grunt) {
     for (i in TARGETS){
         src = unique(TARGETS[i].src_css);
         if (src.length){
-            CSS_TARGETS[i] = {src: src, dest: TARGETS[i].dest_css};
+            CSS_TARGETS[i] = {src: src, dest: TARGETS[i].dest_css };
+        }
+        if (TARGETS[i].servername){
+            CSS_TARGETS[i].servername = "http://"+TARGETS[i].servername+"/";
         }
     }
     var ALL_TARGETS = {};
