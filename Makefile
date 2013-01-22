@@ -144,5 +144,5 @@ apidev:
 	echo '' > $(APIDEV_DEST)
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
 
-prereqs
+prereqs:
 	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools
