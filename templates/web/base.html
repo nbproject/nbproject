@@ -1,3 +1,8 @@
+<!--
+   Author: cf AUTHORS.txt 
+   License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
 {% block doctype %}<!DOCTYPE HTML>{% endblock %}
 {% block roottag %}<html>{% endblock %}
   <head>
@@ -6,7 +11,9 @@
     <link href='http://fonts.googleapis.com/css?family=Knewave|Nobile:400,400italic' rel='stylesheet' type='text/css'/>
     <link rel="stylesheet" type="text/css" href="/content/ui/classic/base.css" />
     {% block css %}{% endblock %}
+    {% block jquery %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    {% endblock %}
     {% block js %}{% endblock %}
     <style> {% block style %}{% endblock %}</style>
     {% block scripts %}{% endblock %}

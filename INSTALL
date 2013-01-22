@@ -33,7 +33,9 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
 -> make django #create configuration files. 
 -> edit values in apps/settings_credentials.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
--> make django       #make Apache aware of Django framework
+-> make django       #one more time...
+   #If you're deploying a production environmant, use the cmds given in output 
+   #to configure the cron jobs (cf 4) and apache. 
 -> grunt             #Compiles js and css.  
 -> [optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
 

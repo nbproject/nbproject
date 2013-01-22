@@ -219,20 +219,16 @@ module.exports = function(grunt) {
         
     }; 
     
-    TARGETS.NBHTML = {
+    TARGETS.LOGOUT = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "dev/ui.concierge1.js"]), 
                           TARGETS.API.src_js,
-                          MODS.RANGY.src_js, 
-                          addPrefix(MODULE_DIR, ["wgxpath/wgxpath.install.js"]),
-                          addPrefix(MODULE_DIR+"wgxpath/",["termfix.js" ]),
-                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(UI_DIR,["conf.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
-                          addPrefix(MODULE_DIR, ["dev/nb-additions.js"])
+                          addPrefix(UI_DIR,["logout.js"]) 
                           ), 
         src_css: [], 
-        dest_js:  DEST_DIR+"nbhtml_NB.js",
-        dest_css:  DEST_DIR+"nbhtml.css"        
+        dest_js:  DEST_DIR+"logout_NB.js"
     };  
 
 

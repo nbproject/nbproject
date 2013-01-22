@@ -9,7 +9,7 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 */
-/*global NB:true*/
+/*global NB:true  NB$:true $:true*/
 
 (function(GLOB){
     GLOB.pers.init = function(){
@@ -18,4 +18,10 @@
             document.location ="http://"+document.location.host+nextpage;
         }
     };
+    var myJquery = NB$ || $;
+    myJquery(function(){
+            GLOB.pers.params = GLOB.dom.getParams();  
+            GLOB.pers.admin=false; 
+            GLOB.pers.preinit(false);
+        });    
 })(NB);
