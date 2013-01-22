@@ -63,6 +63,11 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView9.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView5.css"])
     };  
+    MODS.DOCVIEW_SPREADSHEET = {
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView10.js" ]),
+        src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView5.css"])
+    };  
+    
     MODS.NOTEPANEVIEW_DOC = {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js, 
@@ -79,6 +84,15 @@ module.exports = function(grunt) {
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.notepaneView6.css"]))
     };
+    MODS.NOTEPANEVIEW_SPREADSHEET = {
+        src_js: [].concat(
+                          MODS.CONTEXTMENU.src_js, 
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView10.js"])),
+        src_css: [].concat(
+                           MODS.CONTEXTMENU.src_css, 
+                           addPrefix(MODULE_DIR, ["dev/ui.notepaneView6.css"]))
+    };
+
     MODS.THREADVIEW = {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js, 
@@ -95,7 +109,10 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-cssclassapplier.js", "rangy-textrange.js", "termfix.js" ]),
         src_css:  []
     };
-
+    MODS.SPREADSHEETVIEW = {
+        src_js: addPrefix(MODULE_DIR,["dev/ui.spreadsheetView1.js" ]),
+        src_css:  addPrefix(MODULE_DIR, ["dev/ui.spreadsheetView1.css"])
+    };
 
 
 
@@ -245,7 +262,35 @@ module.exports = function(grunt) {
                           ), 
         src_css: [], 
         dest_js:  DEST_DIR+"logout_NB.js"
-    };  
+    }; 
+
+    TARGETS.SPREADSHEET = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
+                          TARGETS.API.src_js,
+                          MODS.SPREADSHEETVIEW.src_js,
+                          MODS.NOTEPANEVIEW_SPREADSHEET.src_js,
+                          MODS.DOCVIEW_SPREADSHEET.src_js, 
+
+                          MODS.EDITORVIEW.src_js,
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
+                          addPrefix(UI_DIR, ["step19.js", "launch.js"])
+                          ), 
+        src_css: [].concat( 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.DOCVIEW_SPREADSHEET.src_css, 
+                           MODS.NOTEPANEVIEW_SPREADSHEET.src_css, 
+                           MODS.EDITORVIEW.src_css
+                            ), 
+        dest_js:  DEST_DIR+"spreadsheet_NB.js",
+        dest_css:  DEST_DIR+"spreadsheet.css"
+        
+    }; 
+    
 
 
     var JS_TARGETS = {};
