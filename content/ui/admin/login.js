@@ -17,7 +17,7 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 */
-/*global NB:true NB$:true */
+/*global $:true NB$:true NB:true $:true */
 (function(GLOB){
     //require auth
     if ("NB$" in window){
@@ -51,5 +51,16 @@ GLOB.pers.init = function(){
     $("#login_user_password").keypress(function(e) {if(e.keyCode === 13 && this.value.length>0) {
         $.L("using shortcut");
         $("#auth_submit").click();}});   
+
 };
+
+(function(){
+    var myJquery = NB$ || $;
+    myJquery(function(){
+            GLOB.pers.params = GLOB.dom.getParams();  
+            GLOB.pers.admin=false; 
+            GLOB.pers.preinit(false);
+        });
+})();
+
 })(NB);

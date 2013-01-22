@@ -105,6 +105,7 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR, ["NB.js", "auth.js",  "dom.js", "mvc.js", "dev/models2.js"]), 
         dest_js: DEST_DIR+"apidev_NB.js"
     };
+
     TARGETS.TRAIL = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js",  "dev/ui.concierge1.js"]), 
@@ -164,6 +165,21 @@ module.exports = function(grunt) {
         
     };    
 
+    TARGETS.LOGIN = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "dev/ui.concierge1.js"]), 
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
+                          addPrefix(UI_DIR, ["login.js"])
+                          ),
+        src_css: [].concat(
+                           addPrefix(UI_DIR, ["template.css"])
+                            ), 
+        dest_js:  DEST_DIR+"login_NB.js",
+        dest_css:  DEST_DIR+"login.css"
+        
+    };    
 
     TARGETS.PDFVIEWER = {
         src_js: [].concat(
