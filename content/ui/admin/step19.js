@@ -28,53 +28,53 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
         $.concierge.addConstants(p.value);
     });
-    $.mods.declare({
-        spreadsheetview: {
-        js: ["/content/modules/dev/ui.spreadsheetView1.js"],
-            css: [ "/content/modules/dev/ui.spreadsheetView1.css" ]
-            }, 
-        notepaneview: {js: ["/content/modules/dev/ui.notepaneView10.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
-        editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] },
-        docview: {js: ["/content/modules/dev/ui.docView10.js", "/content/modules/dev/ui.drawable4.js"],
-            css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ] }
-        });
-    
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("spreadsheet", "spreadsheet_viewer", function(id){
         var pers_id        = "pers_"+id;
         var $vp        = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
         var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-        var spreadsheetview = {priority: 1, min_width: 1000, desired_width: 60, 
-                   content: function($div){
-            $.mods.ready("spreadsheetview", function(){
+        var spreadsheetview = {
+            priority: 1, 
+            min_width: 1000, 
+            desired_width: 60, 
+            content: function($div){
                 $div.spreadsheetview();
                 $div.spreadsheetview("set_model",GLOB.pers.store );
-            });
-        }
+            }
         };
-        var notesview    =  {priority: 1, min_width: 800, desired_width:50 , min_height: 800, desired_height: 70, 
-                    content: function($div){
-            $.mods.ready("notepaneview", function(){
+        var notesview =  {
+            priority: 1, 
+            min_width: 800, 
+            desired_width:50 , 
+            min_height: 800, 
+            desired_height: 70, 
+            content: function($div){
                 $div.notepaneView();
                 $div.notepaneView("set_model",GLOB.pers.store );
-            });
-        }
+            }
         }; 
-        var docview    = {priority: 1, min_width: 800, desired_width: 50,  min_height: 300, desired_height: 30, 
-               content: function($div){
-            $.mods.ready("docview", function(){
+        var docview    = {
+            priority: 1, 
+            min_width: 800, 
+            desired_width: 50,  
+            min_height: 300, 
+            desired_height: 30, 
+            content: function($div){
                 $div.docView({img_server: GLOB.conf.servers.img});
                 $div.docView("set_model",GLOB.pers.store );                
-            });
-        }
+            }
         };
-        var editorview    =  {priority: 1, min_width: 950, desired_width: 50,  min_height: 1000, desired_height: 50, transcient: true,  
-                    content: function($div){
-            $.mods.ready("editorview", function(){
+        var editorview    =  {
+            priority: 1, 
+            min_width: 950, 
+            desired_width: 50,  
+            min_height: 1000, 
+            desired_height: 50, 
+            transcient: true,  
+            content: function($div){
                 $div.editorview({allowStaffOnly: false, allowAnonymous: false});
                 $div.editorview("set_model",GLOB.pers.store );                
-            });
-        }
+            }
         };
         var self = GLOB.pers;
         $pers.perspective({
@@ -145,7 +145,7 @@ GLOB.pers.init = function(){
                         });
                     }
                 };
-                self._selectTimerID =  window.setTimeout(f_trigger, 10);
+                self._selectTimerID =  window.setTimeout(f_trigger, 1000);
                 }
                 else{
                 f_trigger = function(){

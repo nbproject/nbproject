@@ -152,7 +152,7 @@ ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.html"
 YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
-SPREADSHEET_TEMPLATE = "web/desktop12.xhtml"
+SPREADSHEET_TEMPLATE = "web/spreadsheet.html"
 
 
 
