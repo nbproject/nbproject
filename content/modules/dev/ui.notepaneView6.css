@@ -44,8 +44,7 @@ font-size: medium;
 background-color: #e0e0e0;
 border: thin solid #f0f0f0;
 color: #707070;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
+border-radius: 5px;
 cursor: pointer;
 }
 
@@ -140,8 +139,7 @@ margin-right: 0px;
 margin-left: 3px;
 font-family: monospace;
 display: inline-block;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
+border-radius: 3px;
 padding: 2px;
 text-decoration: none;
 float: left;
@@ -267,8 +265,7 @@ color: #ffffff;
 }
 
 div.notepaneView span.empty_comment{
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     background-color: #F0F0F0;
     border: thin solid #A0A0A0;
     color: #A0A0A0;
@@ -298,8 +295,7 @@ div.filter-controls > a.filter{
 margin-right: 10px;
 padding: 0px;
 border: thin solid #808080;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
+border-radius: 3px;
 display: inline-block;
 
 }

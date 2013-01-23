@@ -17,9 +17,7 @@ margin: 10px 0px 10px 0px !important;
 padding: 0px 0px 5px 0px !important;
 background-color: #FFFFFF;
 border: thin solid #E0E0E0;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
-
+border-radius: 5px;
 }
 
  div.location-lens.selected{
@@ -57,8 +55,6 @@ div.location-header{
     cursor: pointer;
     width: 100%;
     background-color: #d0d0d0;
--moz-border-radius-topleft: 5px;
--moz-border-radius-topright: 5px;
 border-top-left-radius: 5px;
 border-top-right-radius: 5px;
 
