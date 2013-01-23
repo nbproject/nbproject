@@ -45,7 +45,7 @@
 	background-color: transparent;
 }
 
-.contextMenu li.separator {
+.contextMenu li.menu-separator {
 	border-top: solid 1px #CCC;
 }
 
