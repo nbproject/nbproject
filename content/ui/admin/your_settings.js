@@ -9,7 +9,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global NB$:true NB:true*/
+/*global NB$:true NB:true $:true*/
 
 (function(GLOB){
     //require auth
@@ -100,5 +100,15 @@ NB.pers.settings_menu = function(){
     $("#your_email").text(u.email);
 
 };
+
+(function(){
+    var myJquery = NB$ || $;
+    myJquery(function(){
+            GLOB.pers.params = GLOB.dom.getParams();  
+            GLOB.pers.admin=false; 
+            GLOB.pers.preinit(false);
+        });
+
+})();
 
 })(NB);

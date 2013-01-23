@@ -6,29 +6,10 @@
 {% extends "web/base.html" %}
 {% block title %}Your NB Settings{% endblock %}
 {% block css %}
-<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/ui.perspective.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/ui.viewport.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/dev/ui.view.css" rel="stylesheet" />
-    <link type="text/css" href="/content/ui/admin/template.css" rel="stylesheet" />
-    <link type="text/css" href="/content/ui/admin/your_settings.css" rel="stylesheet" />
+    <link type="text/css" href="/content/compiled/settings.css" rel="stylesheet" />
 {% endblock %}
 {% block js %}   
-    <script type="text/javascript" src="/content/modules/head.js/head099.min.js"></script> 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-    <script>
-      head.js(
-      "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js", 
-      "/content/modules/dev/mods2.js", 
-      "/content/modules/dev/ui.view4.js", 
-      "/content/modules/dev/ui.perspective5.js", 
-      "/content/compiled/apidev.js", 
-      "/content/ui/admin/conf.js", 
-      "/content/modules/dev/pers2.js", 
-      "/content/ui/admin/your_settings.js", 
-      function(){$(function(){NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
-      );
-    </script>
+<script type="text/javascript" src="/content/compiled/settings_NB.js"></script>
 {% endblock %}
 {% block content %}
 

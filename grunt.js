@@ -292,6 +292,21 @@ module.exports = function(grunt) {
     }; 
     
 
+    TARGETS.SETTINGS = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]),
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/ui.view4.js", "dev/ui.perspective5.js"]),
+                          addPrefix(UI_DIR,["your_settings.js"])
+                          ), 
+        src_css: [].concat(
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "dev/ui.view.css"]),
+                           addPrefix(UI_DIR, ["template.css", "your_settings.css"])
+                           ),
+        dest_js:  DEST_DIR+"settings_NB.js",
+	dest_css: DEST_DIR+"settings.css"
+    };
 
     var JS_TARGETS = {};
     var i, src;
