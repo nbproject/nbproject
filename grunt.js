@@ -262,7 +262,19 @@ module.exports = function(grunt) {
                           ), 
         src_css: [], 
         dest_js:  DEST_DIR+"logout_NB.js"
-    }; 
+    };
+
+    TARGETS.PASSWORD = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "dev/ui.concierge1.js"]), 
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
+                          addPrefix(UI_DIR,["password_reminder.js"]) 
+                          ), 
+        src_css: [], 
+        dest_js:  DEST_DIR+"password_reminder_NB.js"
+    };
 
     TARGETS.SPREADSHEET = {
         src_js: [].concat(
