@@ -294,10 +294,11 @@ module.exports = function(grunt) {
 
     TARGETS.SETTINGS = {
         src_js: [].concat(
-                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]),
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge1.js"]),                         
+                          addPrefix(MODULE_DIR, ["dev/ui.view5.js", "dev/ui.perspective5.js"]),
                           TARGETS.API.src_js,
                           addPrefix(UI_DIR,["conf.js"]), 
-                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/ui.view4.js", "dev/ui.perspective5.js"]),
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
                           addPrefix(UI_DIR,["your_settings.js"])
                           ), 
         src_css: [].concat(
