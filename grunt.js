@@ -148,7 +148,7 @@ module.exports = function(grunt) {
                           ), 
         dest_js:  DEST_DIR+"embed_NB.js", 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css", "dev/buildEmbed.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css", "dev/buildEmbed.css"]), 
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.NOTEPANEVIEW_DOC.src_css, 
                            MODS.THREADVIEW.src_css, 
@@ -171,7 +171,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR, ["step21.js", "launch.js"])
                           ), 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
 
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.TREEVIEW.src_css, 
@@ -213,7 +213,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR, ["step16.js", "launch.js"])
                           ), 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.DOCVIEW.src_css, 
                            MODS.NOTEPANEVIEW_DOC.src_css, 
@@ -239,7 +239,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR, ["step18.js", "launch.js"])
                           ), 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
 
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.DOCVIEW_COLLAGE.src_css, 
@@ -291,7 +291,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR, ["step19.js", "launch.js"])
                           ), 
         src_css: [].concat( 
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
 
                            addPrefix(UI_DIR, ["template.css"]),
                            MODS.DOCVIEW_SPREADSHEET.src_css, 

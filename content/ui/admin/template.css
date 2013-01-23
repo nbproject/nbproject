@@ -41,7 +41,7 @@ display: none;
 
 #login-window{
 position: absolute;
-top: 5px;
+top: 1px;
 right: 20px;
 color: #404040;
 font-weight: bold;
