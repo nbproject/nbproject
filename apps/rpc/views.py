@@ -567,7 +567,7 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
+                output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
         elif R["type"] == "newPending":
             #for now, we retrieve all the pending stuff. 
             output = annotations.getPending(uid, payload)

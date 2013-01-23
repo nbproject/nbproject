@@ -338,7 +338,11 @@ def getLocation(id):
     """Returns an "enriched" location"""    
     o = M.Comment.objects.select_related("location").filter(location__id=id, parent__id=None, deleted=False)
     loc_dict = UR.qs2dict(o, __NAMES["location_v_comment2"], "ID")
-    h5l = o[0].location.html5location if len(o) else None
+    h5l = None
+    try: 
+        h5l = o[0].location.html5location if len(o) else None
+    except M.HTML5Location.DoesNotExist: 
+        pass
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
 #    retval = {}
 #    retval["location"] = loc_dict
