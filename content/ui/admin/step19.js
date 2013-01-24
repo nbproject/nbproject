@@ -25,6 +25,7 @@ GLOB.pers.init = function(){
     GLOB.pers._selectTimerID =  null;
     GLOB.pers.grade2litt = {4: "A", 3: "B", 2: "C", 1: "D", 0: "F"};
     GLOB.pers.id_author_readahead = null;
+    GLOB.pers.collection = {items: [], index: {}};
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"]},function(p){
         $.concierge.addConstants(p.value);
     });
@@ -60,8 +61,13 @@ GLOB.pers.init = function(){
             min_height: 300, 
             desired_height: 30, 
             content: function($div){
-                $div.docView({img_server: GLOB.conf.servers.img});
-                $div.docView("set_model",GLOB.pers.store );                
+                $div.docView({img_server: GLOB.conf.servers.img});                        
+                $div.docView("set_model",GLOB.pers.store );
+                /*
+                window.setTimeout(function(){
+                        $div.docView("set_model",GLOB.pers.store );
+                    }, 5000);
+                */
             }
         };
         var editorview    =  {
@@ -145,7 +151,7 @@ GLOB.pers.init = function(){
                         });
                     }
                 };
-                self._selectTimerID =  window.setTimeout(f_trigger, 1000);
+                self._selectTimerID =  window.setTimeout(f_trigger);
                 }
                 else{
                 f_trigger = function(){
@@ -226,7 +232,6 @@ GLOB.pers.createStore = function(payload){
     $.concierge.trigger({type:"spreadsheet", value: 1});
 
     document.title = $.E(m.get("ensemble", {}).first().name + " spreadsheet");
-    GLOB.pers.collection = {items: [], index: {}};
 };
 
 GLOB.pers.find_next_author = function(v){

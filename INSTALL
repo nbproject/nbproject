@@ -45,7 +45,9 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * Back to the regular user: 
    * 	  createdb -U nbadmin -h localhost notabene
    *	  cd apps
-   *	  ./manage.py syncdb   #to actually create the tables. 
+   *	  ./manage.py syncdb base  #to actually create the tables. 
+   *      ./manage.py sqlcustom base | ./manage.py dbshell #to create custom views - note: this might have been syncdb, but there's no harm in making sure
+   *
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/8.4/main/pg_hba.conf 
           o host    notabene       nbadmin       127.0.0.1/0     password

@@ -324,7 +324,7 @@ def properties_ensemble_users(req, id):
     return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations})
 
 def spreadsheet(req):
-    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),))
+    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")
 
 def fbchannel(req):
     import datetime
