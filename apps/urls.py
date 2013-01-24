@@ -96,6 +96,13 @@ urlpatterns += patterns('',
 
 )
 
+#embedded NB to annotate HTML: 
+urlpatterns += patterns('', 
+    (r'^embed_NB.js$', 'django.views.static.serve',
+     {'document_root':  abspath("%s/../content/" % (ROOTDIR, )), "path":"compiled/embed_NB.js" })
+
+     ) 
+
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
 urlpatterns += patterns('', 
     (r'^content/(?P<path>.*)$', 'django.views.static.serve',
