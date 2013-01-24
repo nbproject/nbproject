@@ -272,7 +272,6 @@ module.exports = function(grunt) {
                           MODS.SPREADSHEETVIEW.src_js,
                           MODS.NOTEPANEVIEW_SPREADSHEET.src_js,
                           MODS.DOCVIEW_SPREADSHEET.src_js, 
-
                           MODS.EDITORVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
@@ -280,10 +279,10 @@ module.exports = function(grunt) {
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "superfish-1.4.8/css/superfish.css", "ui.view.css"]), 
-
                            addPrefix(UI_DIR, ["template.css"]),
-                           MODS.DOCVIEW_SPREADSHEET.src_css, 
+                           MODS.SPREADSHEETVIEW.src_css,
                            MODS.NOTEPANEVIEW_SPREADSHEET.src_css, 
+                           MODS.DOCVIEW_SPREADSHEET.src_css, 
                            MODS.EDITORVIEW.src_css
                             ), 
         dest_js:  DEST_DIR+"spreadsheet_NB.js",
