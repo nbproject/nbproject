@@ -70,11 +70,11 @@
         $("body").append("<ul id='contextmenu_threadview' class='contextMenu'> "+
                          "<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li>"+
                          "<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li>"+
-                         "<li class='context question separator'><a href='#question'>Request a reply</a></li> "+
-                         "<li class='context noquestion separator'><a href='#noquestion'>Remove 'reply requested'</a></li> "+
+                         "<li class='context question menu-separator'><a href='#question'>Request a reply</a></li> "+
+                         "<li class='context noquestion menu-separator'><a href='#noquestion'>Remove 'reply requested'</a></li> "+
                          "<li class='context star'><a href='#star'>Mark as favorite</a></li> "+
                          "<li class='context nostar'><a href='#nostar'>Remove from favorites</a></li> "+
-                         "<li class='context delete separator'><a href='#delete'>Delete</a></li></ul>");                   
+                         "<li class='context delete menu-separator'><a href='#delete'>Delete</a></li></ul>");                   
         },
         _defaultHandler: function(evt){
         if (this._file ===  $.concierge.get_state("file")){

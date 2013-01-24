@@ -8,9 +8,9 @@
 	padding: 0px;
 	margin: 0px;
 	display: none;
-	//SACHA
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-size: 11px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, .25);
 }
 
 .contextMenu li {
@@ -31,7 +31,8 @@
 	background-color: #eeeeee;
 }
 
-.contextMenu li.hover a {
+.contextMenu li.hover a,
+.contextMenu li.hover {
 	color: #FFF;
 	background-color: #3399FF;
 }
@@ -45,22 +46,7 @@
 	background-color: transparent;
 }
 
-.contextMenu li.separator {
+.contextMenu li.menu-separator {
 	border-top: solid 1px #CCC;
 }
-
-/*
-	adding Icons
-	
-	You can add icons to the context menu by adding
-	classes to the respective li element(s)
-
-
-.contextMenu li.edit a { background-image: url(images/page_white_edit.png); }
-.contextMenu li.cut a { background-image: url(images/cut.png); }
-.contextMenu li.copy a { background-image: url(images/page_white_copy.png); }
-.contextMenu li.paste a { background-image: url(images/page_white_paste.png); }
-.contextMenu li.delete a { background-image: url(images/page_white_delete.png); }
-.contextMenu li.quit a { background-image: url(images/door.png); }
- */
 

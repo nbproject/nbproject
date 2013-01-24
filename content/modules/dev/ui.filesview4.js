@@ -25,7 +25,7 @@
         self._me        = $.concierge.get_component("get_userinfo")();
         self._menu_items    = $();
         self._menu_items_reg    = $("<ul id='contextmenu_filesview' class='contextMenu'/>");
-        self._menu_items_admin    = $("<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>");
+        self._menu_items_admin    = $("<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>");
         self._scrollTimerID =  null;
         //self._firstrender = true;
         self._defaultopen = null;
@@ -216,7 +216,7 @@
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
 
-        var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete separator'><a href='#delete'>Delete</a></li></ul>" : "";
+        var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>" : "";
         self._menu_items.remove();
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
         $("body").append(self._menu_items);

@@ -87,7 +87,7 @@
     var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: true}; 
     var $login_contents;
     if (uinfo.guest){
-        $login_contents = $("<ul class='sf-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
+        $login_contents = $("<ul class='dropdown-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
         var $util_window = $.concierge.get_component("get_util_window")();
         $("#register_user_dialog, #login_user_dialog").remove();    
         $util_window.append("<div id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
@@ -99,7 +99,7 @@
     }
     else{
         var screenname = uinfo.firstname === null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
-        $login_contents = $("<ul class='sf-menu'><li><a id='login-name' title='"+$.E(uinfo.email)+"' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
+        $login_contents = $("<ul class='dropdown-menu'><li><a id='login-name' title='"+$.E(uinfo.email)+"' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){
         $("#login-window").remove();
@@ -107,8 +107,6 @@
         $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
         $login_window.append($login_contents);
         $("body").append($login_window);
-
-        //    $("ul.sf-menu").superfish();
     }
     GLOB.pers.params = GLOB.dom.getParams();
     };
