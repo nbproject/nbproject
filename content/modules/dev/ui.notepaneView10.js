@@ -146,7 +146,7 @@
         var replymenu, body;
         if (o.id_author === meta.id_user){
             var bold_cl = m.get("seen", {id: o.ID}).is_empty() ? "" : "note-bold";
-            var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
+            var admin_info = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class'>&nbsp;</div> ": " ";
             var me_info = (o.id_author === this._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
             var type_info = "";
             if (o.type === 1) {
