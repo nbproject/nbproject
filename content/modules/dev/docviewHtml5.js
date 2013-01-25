@@ -53,7 +53,7 @@
         // the styled element must have an nb-comment-highlight class.
         cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
 
-        // Initialize Hilighting Event
+        // Initialize Highlighting Event
         $("#content").mouseup(function (event) {
                 var sel = rangy.getSelection();
 
@@ -97,21 +97,27 @@
 
         GLOB.pers.store.register({
             update: function (action, payload, items_fieldname) {
-                console.log("Update for fieldname: " + items_fieldname + " and action: " + action);
-                if (action === "add" && items_fieldname === "html5location") {
+                var key;
+console.log({action: action, payload: payload, field: items_fieldname});
+                if (action === "remove" && items_fieldname === "draft") {
                     $(".nb-comment-highlight.nb-placeholder").contents().unwrap();
+                }
 
-                    for (var key in payload.diff) {
+                if (action === "remove" && items_fieldname === "comment") {
+                    for (key in payload.diff) {
+                        $(".nb-comment-highlight[id_item=" + payload.diff[key].ID_location + "]").contents().unwrap();
+                    }
+                }
+
+                if (action === "add" && items_fieldname === "html5location") {
+                    for (key in payload.diff) {
                         if (payload.diff.hasOwnProperty(key)) {
                             restore(payload.diff[key]);
                         }
                     }
+                }
 
-                }
-                else if (action === "remove" && items_fieldname === "html5location") {
-                   // $(".nb-comment-hilight[id_item="++"]").contents().unwrap();
-                }
-        }}, {html5location: null});
+        }}, {html5location: null, draft: null, comment: null});
 
         // fix IE XPath implementation
         wgxpath.install();
