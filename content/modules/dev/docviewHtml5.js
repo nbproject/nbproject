@@ -9,7 +9,7 @@
     var tempUid = 0;
     var cssApplier = null;
 
-    var restore = function(loc){
+    var restore = function(loc) {
         var sel = rangy.getSelection();
         sel.restoreCharacterRanges(getElementsByXPath(document, loc.path1)[0], 
                                    [{backward: loc.path2 === "true",
@@ -19,6 +19,24 @@
                                            }
                                        }]);
         placeAnnotation(sel, loc);
+    };
+
+    var restoreBatch = function(object, callback) {
+        var start = (new Date()).getTime();
+        var current;
+
+        for (var key in object) {
+            current = (new Date()).getTime();
+            if (current - start > 150) {
+                window.setTimeout(restoreBatch, 100, object, callback);
+                return;
+            }
+
+            restore(object[key]);
+            delete object[key];
+        }
+
+        callback();
     };
 
     GLOB.html = {
@@ -98,7 +116,6 @@
         GLOB.pers.store.register({
             update: function (action, payload, items_fieldname) {
                 var key;
-console.log({action: action, payload: payload, field: items_fieldname});
                 if (action === "remove" && items_fieldname === "draft") {
                     $(".nb-comment-highlight.nb-placeholder").contents().unwrap();
                 }
@@ -110,11 +127,7 @@ console.log({action: action, payload: payload, field: items_fieldname});
                 }
 
                 if (action === "add" && items_fieldname === "html5location") {
-                    for (key in payload.diff) {
-                        if (payload.diff.hasOwnProperty(key)) {
-                            restore(payload.diff[key]);
-                        }
-                    }
+                    restoreBatch($.extend(true, {}, payload.diff), function(){ });
                 }
 
         }}, {html5location: null, draft: null, location: null});
