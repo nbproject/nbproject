@@ -6,24 +6,19 @@
     }
 
     var $str        = "NB$" in window ? "NB$" : "jQuery";
-    var comments = {};
     var tempUid = 0;
     var cssApplier = null;
 
-    var _render = function(){
-        var locs =  NB.pers.store.o.html5location; 
-        for (var lid in locs) {
-            var sel = rangy.getSelection();
-            var obj = locs[lid];
-            sel.restoreCharacterRanges(getElementsByXPath(document, obj.path1)[0], 
-                                       [{backward: obj.path2 === "true",
-                                                   range: {
-                                                   start: obj.offset1,
-                                                   end: obj.offset2
-                                               }
-                                           }]);
-            drawAnnotation(sel, obj);
-        }
+    var restore = function(loc){
+        var sel = rangy.getSelection();
+        sel.restoreCharacterRanges(getElementsByXPath(document, loc.path1)[0], 
+                                   [{backward: loc.path2 === "true",
+                                               range: {
+                                               start: loc.offset1,
+                                               end: loc.offset2
+                                           }
+                                       }]);
+        placeAnnotation(sel, loc);
     };
 
     GLOB.html = {
@@ -33,14 +28,12 @@
     GLOB.html.init = function () {
         $.concierge.addListeners(GLOB.html,{
                 page: function(evt){
-                    _render();
+                   // _render();
                 }, 
                 note_hover: function(event){
-                    //console.warn("TODO", event);
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("hovered");
                 }, 
                 note_out: function(event){
-                    //console.warn("TODO", event);
                     $(".nb-comment-highlight[id_item="+event.value+"]").removeClass("hovered");
                 }, 
                 visibility: function(event){
@@ -49,6 +42,7 @@
                 select_thread: function(event){
                     $(".nb-comment-highlight.selected").removeClass("selected");
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
+                    $("body").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
                 }
             }, 
             GLOB.html.id);
@@ -67,6 +61,10 @@
                     return;
                 }
 
+                if (sel.containsNode($(".nb_sidebar")[0], true)) {
+                    return;
+                }
+
                 // must call before applyToRanges, otherwise sel is gone
                 var element = event.target;
 
@@ -76,21 +74,45 @@
 
                 // create temporary uid
                 var uid = "t-" + (tempUid++).toString(16);
-                var newcomment = comments[uid] = { id: uid, target: getElementXPath(element), range: sel.saveCharacterRanges(element) };
+                var range = sel.saveCharacterRanges(element);
 
-                drawAnnotation(sel, uid);
-                $.concierge.trigger({type: "new_thread", value: {html5range:{
-                                path1: newcomment.target,
-                                    path2: newcomment.range[0].backward,
-                                    offset1: newcomment.range[0].range.start, 
-                                    offset2: newcomment.range[0].range.end
-                            }}});
+                var target = getElementXPath(element);
+//                var global = sel.saveCharacterRanges($("body")[0]);
+//                var charcount = Math.min(global.start, global.end);
+
+                insertPlaceholderAnnotation(sel, uid);
+                $.concierge.trigger({
+                    type: "new_thread",
+                    value: {
+                        html5range:{
+                            path1: target,
+                            path2: range[0].backward,
+                            offset1: range[0].range.start, 
+                            offset2: range[0].range.end
+                        }
+                    }
+                });
+
             });
 
-        // Bind window resize event to ordering
-        $(window).resize(recalculateOrdering);
+        GLOB.pers.store.register({
+            update: function (action, payload, items_fieldname) {
+                console.log("Update for fieldname: " + items_fieldname + " and action: " + action);
+                if (action === "add" && items_fieldname === "html5location") {
+                    $(".nb-comment-highlight.nb-placeholder").contents().unwrap();
 
-        //Possible addition to init:
+                    for (var key in payload.diff) {
+                        if (payload.diff.hasOwnProperty(key)) {
+                            restore(payload.diff[key]);
+                        }
+                    }
+
+                }
+                else if (action === "remove" && items_fieldname === "html5location") {
+                   // $(".nb-comment-hilight[id_item="++"]").contents().unwrap();
+                }
+        }}, {html5location: null});
+
         // fix IE XPath implementation
         wgxpath.install();
     };
@@ -100,7 +122,9 @@
         return ($(element).parents(".nb-comment-highlight").length > 0);
     };
 
-    var drawAnnotation = function (selection, loc) {
+    // TODO: refactor such that there is more code re-use between placeAnnotation
+    // on the one hand, and insert/activatePlaceholderAnnotation on the other.
+    var placeAnnotation = function (selection, loc) {
         var uid = loc.id_location;
 
         // apply nb-comment-fresh to ranges
@@ -109,57 +133,44 @@
 
         // jQuery Treatment
         $("span.nb-comment-fresh.nb-comment-highlight").removeClass("nb-comment-fresh").wrapInner('<span class="nb-comment-fresh" />');
-        $("span.nb-comment-fresh").addClass("nb-comment-highlight").removeClass("nb-comment-fresh").attr("id_item", uid).hover(
-                                                                                                                               function(){$.concierge.trigger({type:"note_hover", value: uid});}, 
-                                                                                                                               function(){$.concierge.trigger({type:"note_out", value: uid});}).click(
-               function (event) {
-                   if (!rangy.getSelection().isCollapsed){ return;}
+        $("span.nb-comment-fresh")
+            .addClass("nb-comment-highlight")
+            .removeClass("nb-comment-fresh")
+            .attr("id_item", uid)
+            .hover(
+                function(){$.concierge.trigger({type:"note_hover", value: uid});},
+                function(){$.concierge.trigger({type:"note_out", value: uid});})
+            .click(
+                function (event) {
+                    if (!rangy.getSelection().isCollapsed){ return;}
 
-                   if (hasConflicts(this)) {
-                       var ids = {};
-                       ids[$(this).attr("id_item")] = true;
-                       $(this).parents(".nb-comment-highlight").each(function () {
-                               ids[$(this).attr("id_item")] = true;
-                           });
-                       alert(JSON.stringify(ids));
-                   } else {
-                       $.concierge.trigger({type:"select_thread", value: uid});
-                   }
-                   event.stopPropagation();
-               });
+                    if (hasConflicts(this)) {
+                        var ids = {};
+                        ids[$(this).attr("id_item")] = true;
+                        $(this).parents(".nb-comment-highlight").each(function () {
+                                ids[$(this).attr("id_item")] = true;
+                            });
+                        alert(JSON.stringify(ids));
+                    } else {
+                        $.concierge.trigger({type:"select_thread", value: uid});
+                    }
+                    event.stopPropagation();
+            });
     };
 
-    var recalculateOrdering = function () {
-        for (var uid in comments) {
-            comments[uid].docPosition = $("span.nb-comment-highlight[id_item=" + uid + "]").first().offset();
-        }
+    var insertPlaceholderAnnotation = function (selection) {
+        // apply nb-comment-fresh to ranges
+        cssApplier.applyToSelection(selection);
+        selection.removeAllRanges();
+
+        // jQuery Treatment
+        $("span.nb-comment-fresh.nb-comment-highlight").removeClass("nb-comment-fresh").wrapInner('<span class="nb-comment-fresh" />');
+        $("span.nb-comment-fresh")
+            .addClass("nb-comment-highlight")
+            .addClass("nb-placeholder")
+            .removeClass("nb-comment-fresh");
     };
 
-    GLOB.html.restoreAnnotations = function () {
-        for (var uid in comments) {
-            var sel = rangy.getSelection();
-            var obj = comments[uid];
-            sel.restoreCharacterRanges(getElementsByXPath(document, obj.target)[0], obj.range);
-            drawAnnotation(sel, uid);
-        }
-    };
-
-    GLOB.html.restoreNBAnnotations = function(){
-        var locs =  NB.pers.store.o.html5location; 
-        for (var lid in locs) {
-            var sel = rangy.getSelection();
-            var obj = locs[lid];
-            sel.restoreCharacterRanges(getElementsByXPath(document, obj.path1)[0], 
-                                       [{backward: obj.path2 === "true",
-                                                   range: {
-                                                   start: obj.offset1,
-                                                   end: obj.offset2
-                                               }
-                                           }]);
-            drawAnnotation(sel, obj);
-        }
-    };
-    
     GLOB.html.clearAnnotations = function () {
         $(".nb-comment-highlight").contents().unwrap();
     };

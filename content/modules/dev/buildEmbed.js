@@ -31,11 +31,11 @@
                     note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
                     note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
             });   
+    GLOB.pers.store = new GLOB.models.Store();
     GLOB.pers.call(
                    "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href}, 
                    function(payload){
                        //TODO: refactor (same as in step16.js:createStore)
-                       GLOB.pers.store = new GLOB.models.Store();
                        GLOB.pers.store.create(payload, {
                                ensemble:    {pFieldName: "ensembles"}, 
                                    file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 

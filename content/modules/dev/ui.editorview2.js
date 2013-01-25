@@ -164,6 +164,11 @@
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
                     model.add("threadmark", payload["threadmarks"]);
+
+                    if ("html5locations" in payload){
+                        model.add("html5location", payload["html5locations"]);
+                    }
+
                     //important to add location even when edit or reply since it can change styling (if adding private comment etc...)
                     if ("locations" in payload){
                         model.add("location", payload["locations"]);
