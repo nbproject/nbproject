@@ -103,9 +103,9 @@ console.log({action: action, payload: payload, field: items_fieldname});
                     $(".nb-comment-highlight.nb-placeholder").contents().unwrap();
                 }
 
-                if (action === "remove" && items_fieldname === "comment") {
+                if (action === "remove" && items_fieldname === "location") {
                     for (key in payload.diff) {
-                        $(".nb-comment-highlight[id_item=" + payload.diff[key].ID_location + "]").contents().unwrap();
+                        $(".nb-comment-highlight[id_item=" + key + "]").contents().unwrap();
                     }
                 }
 
@@ -117,7 +117,7 @@ console.log({action: action, payload: payload, field: items_fieldname});
                     }
                 }
 
-        }}, {html5location: null, draft: null, comment: null});
+        }}, {html5location: null, draft: null, location: null});
 
         // fix IE XPath implementation
         wgxpath.install();

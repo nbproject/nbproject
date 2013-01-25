@@ -171,14 +171,15 @@
             $.I("Note #"+p.id_comment+" has been deleted");
             var c = model.o.comment[p.id_comment];
             model.remove("comment", p.id_comment);
+
             if (c.id_parent === null){
-            model.remove("location", c.ID_location);
-            }
-            else{
-            //we force an update of locations in case some styling needs to be changed. 
-            var locs = {};
-            locs[c.ID_location] = model.o.location[c.ID_location];
-            model.add("location", locs);
+                model.remove("location", c.ID_location);
+                // model.remove("html5location", c.ID_location); FIXME: This is not working, but it should.
+            } else {
+                //we force an update of locations in case some styling needs to be changed. 
+                var locs = {};
+                locs[c.ID_location] = model.o.location[c.ID_location];
+                model.add("location", locs);
             }
         };
         var f_context = function(action, el, pos){
