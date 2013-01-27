@@ -223,7 +223,9 @@ REDIRECT_URL = "http://nb.mit.edu"
 #OPENID SSO: 
 OPENID_CREATE_USERS             = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
-OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+#OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+OPENID_SSO_SERVER_URL = 'https://www.edx.org/openid/provider/login'
+
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
 OPENID_USE_AS_ADMIN_LOGIN       = False

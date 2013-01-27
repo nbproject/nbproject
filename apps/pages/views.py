@@ -363,6 +363,16 @@ def openid_index(request):
     return HttpResponse('\n'.join(s))
 
 
+def facebooksample(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
+def debug(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
+
+
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')
