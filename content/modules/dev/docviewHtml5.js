@@ -6,8 +6,8 @@
     }
 
     var $str        = "NB$" in window ? "NB$" : "jQuery";
-    var tempUid = 0;
     var cssApplier = null;
+    var lastClicked = {set: [], clicked: null};
 
     var restore = function(loc) {
         var sel = rangy.getSelection();
@@ -28,7 +28,7 @@
         for (var key in object) {
             current = (new Date()).getTime();
             if (current - start > 150) {
-                window.setTimeout(restoreBatch, 100, object, callback);
+                window.setTimeout(restoreBatch, 10, object, callback);
                 return;
             }
 
@@ -90,15 +90,13 @@
                     element = ($(element).parents("*:not(.nb-comment-highlight)"))[0];
                 }
 
-                // create temporary uid
-                var uid = "t-" + (tempUid++).toString(16);
                 var range = sel.saveCharacterRanges(element);
 
                 var target = getElementXPath(element);
 //                var global = sel.saveCharacterRanges($("body")[0]);
 //                var charcount = Math.min(global.start, global.end);
 
-                insertPlaceholderAnnotation(sel, uid);
+                insertPlaceholderAnnotation(sel);
                 $.concierge.trigger({
                     type: "new_thread",
                     value: {
@@ -164,14 +162,28 @@
                     if (!rangy.getSelection().isCollapsed){ return;}
 
                     if (hasConflicts(this)) {
-                        var ids = {};
-                        ids[$(this).attr("id_item")] = true;
+                        var ids = [];
+                        var id = 0;
+
+                        ids.push($(this).attr("id_item"));
+
                         $(this).parents(".nb-comment-highlight").each(function () {
-                                ids[$(this).attr("id_item")] = true;
-                            });
-                        alert(JSON.stringify(ids));
+                                ids.push($(this).attr("id_item"));
+                        });
+
+                        if ($(lastClicked.set).not(ids).length === 0 && $(ids).not(lastClicked.set).length === 0) {
+                            for (id = 0; id < ids.length; id++) {
+                                if (ids[id] === lastClicked.clicked) { break; }
+                            }
+                            id = (id + 1) % ids.length;
+                        }
+
+                        $.concierge.trigger({type:"select_thread", value: ids[id]});
+                        lastClicked = {set: ids, clicked: ids[id]};
+
                     } else {
                         $.concierge.trigger({type:"select_thread", value: uid});
+                        lastClicked = {set: [uid], clicked: uid};
                     }
                     event.stopPropagation();
             });
