@@ -75,7 +75,7 @@ GLOB.files.proceedUpload = function(payload){
     //SACHA TODO: Fix this when we setup connectionIds
     window.setTimeout(function(){
         //NOTE (important !) 
-        $.I("NB is processing your file... You should receive an email once your file is available on GLOB."); 
+        $.I("NB is processing your file... You should receive an email once your file is available on NB."); 
         var payload_objects = {types:["files"],  id: payload.id_source};
         if ("id_ensemble" in GLOB.pers.params){
         payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
