@@ -1,0 +1,123 @@
+{% extends "web/base.html" %}
+{% block title %}NB FAQ{% endblock %}
+{% block css %}
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
+{% endblock %}
+{% block style %}
+span.ui-icon {
+display: inline-block;
+} 
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script src="/content/modules/faq.js"></script>
+{% endblock %}
+{% block content %}
+<h1>Frequently Asked Questions For Students</h1>
+<b> <p id="login2" class="clickable"> Login </p> </b>
+	<ul>
+	<li> <span id="login2q1" class="clickable2"> How do I change my password? </span> </li>
+	<li> <span id="login2q2" class="clickable2"> I'm logged in as 'Sandbox User.' Is that normal? </span> </li>
+	<li> <span id="login2q3" class="clickable2"> Is there a way to recover my password if I forgot it? </span> </li>
+	</ul>
+<b> <p id="member" class="clickable"> Memberships </p> </b>
+	<ul>
+	<li> <span id="memberq1" class="clickable2"> How do I get access to contents from a class on NB? </span> </li>
+	<li> <span id="memberq2" class="clickable2"> Can I remove myself from a class? </span> </li>
+	</ul>
+<b> <p id="trouble" class="clickable"> Troubleshooting </p> </b>
+	<ul>
+	<li> <span id="troubleq1" class="clickable2"> How can I get help with an NB-related question? </span> </li>
+	<li> <span id="troubleq2" class="clickable2"> Nothing shows up on the main screen and none of the links work? </span> </li>
+	<li> <span id="troubleq3" class="clickable2"> I have a question. Who can I ask? </span> </li> 
+	</ul>
+<b> <p id="misc" class="clickable"> Miscellaneous </p> </b>
+	<ul>
+	<li> <span id="miscq1" class="clickable2"> What does NB stand for? </span> </li>
+	<li> <span id="miscq2" class="clickable2"> Is a tutorial available? </span> </li>
+	<li> <span id="miscq3" class="clickable2"> Is there any way to merge accounts in NB? </span> </li>
+	<li> <span id="miscq4" class="clickable2"> Is there any way to delete an NB account? </span> </li>
+	<li> <span id="miscq5" class="clickable2"> How can I see all my notes? </span> </li> 
+	<li> <span id="miscq6" class="clickable2"> I like/dislike such and such feature - I'd like a new feature to be implemented. Does anyone care? </span> </li> 
+	<li> <span id="miscq7" class="clickable2"> Is my information secure? What gets stored where? What about privacy? </span> </li>
+	</ul> 
+
+
+
+
+
+
+<b> <h2 id="login2A"> Login <span style="font-size: small; font-weight: normal" class="backToTop">Back To Top</span> </h2> </b>
+	<ul>
+	<li> <b> <span id="login2q1A"> Q: How do I change my password? </span> </b> </li>
+		<i> A: Once you're logged in, click on you name on the top-right of the screen, and select the menu "Settings". 
+		For more detail, please watch the following: </i>
+		<p> <iframe src="http://player.vimeo.com/video/56057334" width="500" height="245" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+	<li> <b> <span id="login2q2A"> Q: I'm logged in as 'Sandbox User.' Is that normal? </span> </b> </li>
+		<i> A: 'Sandbox User' is a special user used to let people get a quick look at what an annotated PDF looks like in NB. But in order to really use NB, you need to be logged in as yourself. So logout by chooing "Log out" from the top right menu, or visiting the /logout URL (e.g. <a class="link" href="http://nb.mit.edu/logout">nb.mit.edu/logout</a> if you're using the <a class="link" href="http://nb.mit.edu">nb.mit.edu</a> server for instance), and re-login as yourself. </i>
+	<li> <b> <span id="login2q3A"> Q: Is there a way to recover my password if I forgot it? </span> </b> </li>
+		<i> A: You can ask for a password reminder near the login box. </i>
+	</ul>
+<b> <h2 id="memberA"> Memberships <span style="font-size: small; font-weight: normal" class="backToTop">Back To Top</span> </h2> </b>
+	<ul>
+	<li> <b> <span id="memberq1A"> Q: How do I get access to contents from a class on NB? </span> </b> </li>
+		<i> A: It depends on that class settings:
+		<ul>
+		<li> If the class is "by invitation only", you need to contact to the class administrator (i.e. the instructor or the TA in most cases) and ask them for an invitation. </li>
+		<li> If the class provides a "subscribe link", you just need to enter that "subscribe link" on your browser and confirm that you want to be part of that class on NB. </li>
+		<li> If the class material is viewable by the whole world you don't even need an account on NB: You just need to visit the URL of any of that class (it looks like http://[SERVER_NAME]/f/[SOME_NUMBER], for example <a class="link" href="http://ocw.csail.mit.edu/f/1">http://ocw.csail.mit.edu/f/1</a>) </li>
+		</ul> </i> 
+		For more detail, please watch the following: 
+		<p> <iframe src="http://player.vimeo.com/video/56370907" width="500" height="237" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+	<li> <b> <span id="memberq2A"> Q: Can I remove myself from a class? </span> </b> </li>
+		<i> A: Not currently: see <a class="link" href="https://github.com/nbproject/nbproject/issues/13">https://github.com/nbproject/nbproject/issues/13</a> If you need to be removed from a class in the meantime, please contact us directly using the email that's registered in NB and telling us the class you need to be removed from. </i>
+	</ul>
+<b> <h2 id="troubleA"> Troubleshooting <span style="font-size: small; font-weight: normal" class="backToTop">Back To Top</span> </h2> </b>
+	<ul>
+	<li> <b> <span id="troubleq1A"> Q: How can I get help with an NB-related question? </span> </b> </li>
+		<i> A: 
+		<ol>
+		<li> First check if your question is on this FAQ. </li>
+		<li> Not there ? Visit our <a href="http://nbproject.vanillaforums.com/categories/users">forum</a> </li> 
+		<li> As a last resort, you can contact us by filling this <a href="https://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">form</a>. We don't have the infrastructure to have a support team, so please be patient. </li> 
+		</ol> </i> 
+	<li> <b> <span id="troubleq2A"> Q: Nothing shows up on the main screen and none of the links work? </span> </b> </li>
+		<i> A: Are you a compatible browser ? Currently NB works with the following browsers:
+		<ul>
+		<li> Firefox </li> 
+		<li> Safari </li>
+		<li> Chrome </li>
+		<li> Internet Explorer 9 or more recent. If you're using on of these browser and that NB doesn't work, please visit our <a href="http://nbproject.vanillaforums.com/categories/users">forum</a>. </li>
+		</ul> </i> 
+	<li> <b> <span id="troubleq3A"> Q: I have a question. Who can I ask? </span> </b> </li> 
+		<i> A: You can email Sacha: sacha (at) csail (dot) mit (dot) edu. </i>
+	</ul>
+<b> <h2 id="miscA"> Miscellaneous <span style="font-size: small; font-weight: normal" class="backToTop">Back To Top</span> </h2> </b>
+	<ul>
+	<li> <b> <span id="miscq1A"> Q: What does NB stand for? </span> </b> </li>
+		<i> A: Nota Bene </i>
+	<li> <b> <span id="miscq2A"> Q: Is a tutorial available? </span> </b> </li>
+		<i> A: Yes, please watch the following video: </i>
+		<p> <iframe src="http://player.vimeo.com/video/56376563" width="500" height="375" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+	<li> <b> <span id="miscq3A"> Q: Is there any way to merge accounts in NB? </span> </b> </li>
+		<i> A: Theres currently no way to merge accounts, but a request has been added to our github site <a class="link" href="https://github.com/nbproject/nbproject/issues/62">here</a> so that this feature can be added in the future. In the meantime, select the account you would like to use to host or access all your NB sites. Send this account an invitation (or ask the instructor to do so) for all classes it does not currently have access to. </i>
+	<li> <b> <span id="miscq4A"> Q: Is there any way to delete an NB account? </span> </b> </li>
+		<i> A: A request for this feature has been added to our github: <a class="link" href="https://github.com/nbproject/nbproject/issues/12">https://github.com/nbproject/nbproject/issues/12</a> and will hopefully be available soon. </i>
+	<li> <b> <span id="miscq5A"> Q: How can I see all my notes? </span> </b> </li> 
+		<i> A: Try our <a class="link" href='/collage/?q=auth'>Collage Interface</a> (this may be slow if you have a lot of notes). </i>
+	<li> <b> <span id="miscq6A"> Q: I like/dislike such and such feature - I'd like a new feature to be implemented. Does anyone care? </span> </b> </li> 
+		<i> A: We DO care a lot about your impressions and your feedback will tremendously help. Please send your comments to  Sacha: sacha (at) csail (dot) mit (dot) edu. </i>
+	<li> <b> <span id="miscq7A"> Q: Is my information secure? What gets stored where? What about privacy? </span> </b> </li>
+      		<i> A: <ul>
+		<li> NB stores your annotations on a SQL database located on campus. </li>
+		<li> There are 3 visiblility settings for your notes:
+	  		<ul>
+	    		<li> <b>The Entire Class</b>, meaning that those notes can be seen by both students and staff. </li>
+	    		<li> <b>Staff only</b>, meaning those notes can be seen by the staff. Note that some NB sites might not allow <b>Staff Only</b> notes.</li>
+	    		<li> <b>Myself only</b> notes are private:  Staff and other students can't see them </li>
+	  		</ul>
+		</li>
+      		</ul> </i>
+	</ul>
+
+      {% endblock %}
