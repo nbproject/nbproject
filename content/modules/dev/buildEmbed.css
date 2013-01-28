@@ -34,3 +34,16 @@ position: absolute;
 .nb-comment-highlight.selected {
 	background-color: rgba(1, 99, 255, 0.3);
 }
+
+.nb_iframe{
+    width: 70%; 
+    height: 500px; 
+    position: fixed; 
+    top: 10%; 
+    left: 10%; 
+    z-index: 2;
+}
+
+.nb_iframe.nb_hidden{
+    display: none;
+}

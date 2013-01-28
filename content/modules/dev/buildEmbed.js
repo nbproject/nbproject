@@ -8,7 +8,7 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global jQuery:true $:true NB$:true NB:true alert:true escape:false*/
+/*global jQuery:true $:true NB$:true NB:true alert:true escape:false console:false*/
 
 (function(GLOB){
     
@@ -17,9 +17,10 @@
     }
     var $str        = "NB$" in window ? "NB$" : "jQuery";
 
-
+    
     var $vp;
     var id_ensemble = null;  //SACHA TODO: replace this by user's real id_ensemble
+    GLOB.pers.iframe_id = "nb_iframe";
 
     var f_after_successful_login = function(){    
         $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
@@ -31,8 +32,8 @@
                     note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
                     note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
             });   
-    GLOB.pers.store = new GLOB.models.Store();
-    GLOB.pers.call(
+        GLOB.pers.store = new GLOB.models.Store();
+        GLOB.pers.call(
                    "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href}, 
                    function(payload){
                        //TODO: refactor (same as in step16.js:createStore)
@@ -187,37 +188,16 @@
                        
                    },
                    function(P){
-                       $(".ui-widget-header").append("<button onclick='"+$str+".concierge.get_component(\"login_user_menu\")()' id='#login_to_nb'>Login to NB</button>");
-                       /*
-                       //TODO: refactor (same as in step16.js:on_fileinfo_error)
-                       $("#login-window").hide();
-                       var me = $.concierge.get_component("get_userinfo")();
-                       var name = "a guest";
-                       var loginmenu = "";
-                       if (!(me.guest)){
-                           name = (me.firstname !== null && me.lastname !== null) ?  me.firstname + " " + me.lastname + " (" +me.email + ") ": me.email;
-                       }
-                       else{
-                           loginmenu = "Would you like to  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
-                       }
-                       $("<div><div id=\"splash-welcome\">Welcome to NB !</div> <br/>You're currently logged in as <b>"+$.E(name)+"</b>, which doesn't grant you sufficient privileges to see this page. <br/><br/>"+loginmenu+"</div>").dialog({title: "Access Restricted...", closeOnEscape: false,   open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }, width: 600, buttons: {"Take me back to NB's home page": function(){
-                                       GLOB.auth.delete_cookie("userinfo");
-                                       GLOB.auth.delete_cookie("ckey");
-                                       document.location.pathname = "/logout?next=/";}
-                               }}); 
-                       */
-                   });
-    
-        //    var id=4156;  //SACHA TODO: replace this by file's real id
-        //        var pers_id        = "pers_embedded";//+id;
+                       $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
+                       $("#login_to_nb").click(function(evt){
+                               //console.log("opening iframe");
+                               //$("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+                               $.concierge.get_component("login_user_menu")();
+                               
+                       });
+                   });    
 };
     GLOB.pers.init = function(){
-        /*
-        //userinfo will be determined later. 
-        if (__nb_userinfo){
-        GLOB.conf.userinfo=__nb_userinfo;
-        }
-        */
         GLOB.pers.connection_id = 1;
         GLOB.pers.embedded = true;
         //add our CSS
@@ -225,6 +205,7 @@
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
         var server_url = server_info[1]+"://"+server_info[2];
         GLOB.pers.add_css(server_url+"/content/compiled/embed_NB.css");
+        GLOB.pers.openid_url=server_url+"/openid/login";
 
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
@@ -243,7 +224,8 @@
         //tell who to make rpc requests to
         GLOB.conf.servers.rpc=GLOB.pers.server_url;
 
-        $("body").append("<div class='nb_sidebar' class='nb_inactive'></div>");
+        $("body").append("<div class='nb_sidebar' class='nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
+        
         $("#nb_loginbutton").click(function(){
                 $.concierge.get_component("login_user_menu")();
             });
