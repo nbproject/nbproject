@@ -238,6 +238,7 @@ def get_file_stats(uid, payload):
 from base_v_comment vc left join (select distinct comment_id from base_commentseen where user_id = ?) as s on s.comment_id=vc.id , base_membership m 
 where 
 m.user_id = ? and m.ensemble_id = vc.ensemble_id and ((vc.type>2 or ( vc.type>1 and m.admin=true)) or vc.author_id=?) 
+and (m.section_id is null or vc.section_id = m.section_id or vc.section_id is null) 
 and vc.ensemble_id=? 
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
