@@ -116,7 +116,7 @@ def index(req):
     return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
    
 def collage(req): 
-    return __serve_page(req, settings.COLLAGE_TEMPLATE)
+    return __serve_page(req, settings.COLLAGE_TEMPLATE, mimetype="text/html")
 
 def admin(req): 
     return HttpResponseRedirect("/")    #no more admin
