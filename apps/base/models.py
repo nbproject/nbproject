@@ -78,16 +78,6 @@ class Folder(models.Model):                                                     
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
-### TODO: Would be nice to remember the invite text and when it was sent. 
-class Invite(models.Model):                                                     # old: invite
-    key                 = CharField(max_length=255)                             # old: id
-    user                = ForeignKey(User)                                      # old: id_user
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
-    admin               = BooleanField(default=False)                           # old: admin integer
-    ctime               = DateTimeField(null=True, default=datetime.now())
-    def __unicode__(self):
-        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
-
 class Section(models.Model):
     name                = CharField(max_length=255)
     ensemble            = ForeignKey(Ensemble)
@@ -95,6 +85,19 @@ class Section(models.Model):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
     
+### TODO: Would be nice to remember the invite text and when it was sent. 
+class Invite(models.Model):                                                     # old: invite
+    key                 = CharField(max_length=255)                             # old: id
+    user                = ForeignKey(User)                                      # old: id_user
+    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
+    admin               = BooleanField(default=False)                           # old: admin integer
+    ctime               = DateTimeField(null=True, default=datetime.now())
+    section             = ForeignKey(Section, null=True)
+
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
+
+
 ### TODO: port id_grader functionality (i.e. class sections)
 class Membership(models.Model):                                                 # old: membership
     user                = ForeignKey(User)                                      # old: id_user

@@ -237,6 +237,7 @@ def confirm_invite(req):
     else: 
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
     m.admin = invite.admin
+    m.section = invite.section
     m.save()
     if invite.user.valid == False:
         invite.user.valid=True
