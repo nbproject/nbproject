@@ -200,13 +200,14 @@
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
                         if (self._html5range){
-                            msg.top = 0;
+                            msg.top = self._html5range.apparent_height;
                             msg.left= 0;
                             msg.w = 0;
                             msg.h = 0;
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= 1;
+                            delete self._html5range.apparent_height;
                             msg.html5range = self._html5range;
                         }
                         else{

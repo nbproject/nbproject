@@ -104,7 +104,8 @@
                             path1: target,
                             path2: range[0].backward,
                             offset1: range[0].characterRange.start, 
-                            offset2: range[0].characterRange.end
+                            offset2: range[0].characterRange.end,
+                            apparent_height: Math.round($(".nb-placeholder").offset().top / $(document).height() * 100000)
                         }
                     }
                 });
