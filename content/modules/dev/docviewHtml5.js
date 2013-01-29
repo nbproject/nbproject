@@ -13,7 +13,7 @@
         var sel = rangy.getSelection();
         sel.restoreCharacterRanges(getElementsByXPath(document, loc.path1)[0], 
                                    [{backward: loc.path2 === "true",
-                                               range: {
+                                               characterRange: {
                                                start: loc.offset1,
                                                end: loc.offset2
                                            }
@@ -94,7 +94,7 @@
 
                 var target = getElementXPath(element);
 //                var global = sel.saveCharacterRanges($("body")[0]);
-//                var charcount = Math.min(global.start, global.end);
+//                var charcount = Math.min(global.characterRange.start, global.characterRange.end);
 
                 insertPlaceholderAnnotation(sel);
                 $.concierge.trigger({
@@ -103,8 +103,8 @@
                         html5range:{
                             path1: target,
                             path2: range[0].backward,
-                            offset1: range[0].range.start, 
-                            offset2: range[0].range.end
+                            offset1: range[0].characterRange.start, 
+                            offset2: range[0].characterRange.end
                         }
                     }
                 });
