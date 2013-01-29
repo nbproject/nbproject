@@ -43,7 +43,9 @@ GLOB.pers.init = function(){
             desired_width: 35, 
             content: function($div){
                 $div.docView({img_server: GLOB.conf.servers.img});
-                $div.docView("set_model",GLOB.pers.store );
+                window.setTimeout(function(){
+                        $div.docView("set_model",GLOB.pers.store );
+                    }, 5000);
             }
         };
         var notesview    =  {
