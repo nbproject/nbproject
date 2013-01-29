@@ -17,8 +17,7 @@ import models as M
 import constants as CST
 import utils_response as UR #, utils_format as UF
 from django.template import Template
-
-
+from django.core.exceptions import ValidationError
 
 #SINGLETONS:
 
@@ -835,7 +834,7 @@ def markActivity(cid):
         session.lastactivity = datetime.datetime.now()
         session.save()
         return session, previous_activity    
-    except M.Session.DoesNotExist: 
+    except M.Session.DoesNotExist, ValidationError: 
         pass     
     return None, None    
 
