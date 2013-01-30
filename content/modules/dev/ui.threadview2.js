@@ -34,7 +34,7 @@
           alert("todo");
           });
         */
-        self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'> <div class='nbicon questionicon' style='margin-top: -3px'/><button class='mark-toggle' arg='add' action='question'>+</button><span class='n_question'>...</span><button class='mark-toggle' arg='remove' action='question'>-</button> <span id='thread_request_reply'>replies requested</span>  <!--<button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' style='margin-top: -3px'/><span class='n_star'>...</span><span id='thread_mark_favorite'>Mark as Favorite.</span></button>--></div></div><div class='threadview-pane'/>");
+        self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'> <div class='nbicon questionicon' /><button class='mark-toggle' arg='add' action='question'>+</button><span class='n_question'>...</span><button class='mark-toggle' arg='remove' action='question'>-</button> <span id='thread_request_reply'>replies requested</span>  <!--<button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' /><span class='n_star'>...</span><span id='thread_mark_favorite'>Mark as Favorite.</span></button>--></div></div><div class='threadview-pane'/>");
         var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
             var comment_id = self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
             $.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._STAR}, function(p){                
@@ -100,7 +100,7 @@
         var tms_me        = tms.intersect( self._me.id, "user_id");
         var tms_me_label    = tms_me.is_empty() ? "" : ", including mine"; 
         var tms_me_class    = tms_me.is_empty() ? "" : "active";
-        var question_info    = tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' style='margin-top: -3px;'/> "+tms.length()+" </div>";
+        var question_info    = tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' /> "+tms.length()+" </div>";
 
         var type_info        = "";
         if (o.type === 1) {
