@@ -128,6 +128,9 @@ border-bottom: thin solid #A0A0A0;
 padding: 3px 5px 5px 3px;
 }
 
+div.threadview-filter-controls .nbicon {
+margin-bottom: -4px;
+}
 
 button.mark-toggle.active{
 border-bottom: 5px solid #ffff00;

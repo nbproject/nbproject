@@ -260,24 +260,30 @@ padding-top: 4px;
 div.filter-controls > a.filter{
 margin-right: 10px;
 padding: 0px;
-border: thin solid #808080;
-border-radius: 3px;
+border: thin solid #A0A0A0;
 display: inline-block;
-
+overflow: hidden;
+text-decoration: none;
+height: 19px;
 }
 
 div.filter-controls > a.filter.active{
-border-bottom-width: 5px;
-border-bottom-color: #ffff00;
-display: inline; /*HACK: needed in order to remain inside header;*/
+border-color: #70A0F0;
 }
 
 div.filter-controls  a.filter span{
-background-color: #909090;
+background-color: #A0A0A0;
 color: #f0f0f0;
-padding-left: 5px;
-padding-right: 5px;
+padding: 5px;
 font-size: medium;
+}
+
+div.filter-controls .nbicon {
+margin-bottom: -4px;
+}
+
+div.filter-controls a.filter.active span {
+background-color: #70A0F0;
 }
 
 div.filter-controls  div.filter-count{
@@ -286,9 +292,8 @@ background-color: #f0f0f0;
 color: #707070;
 min-width: 1.5em;
 display: inline-block;
-padding-left: 5px;
-margin-right: 1px;
-font-size: medium;
+padding: 2px;
+text-align: center;
 }
 
 div.notepaneView-header{
