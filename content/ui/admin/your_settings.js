@@ -35,14 +35,28 @@ NB.pers.createStore = function(payload){
 
 NB.pers.validateNewPassword = function(event){
     var savebutton =  $("#save_button");
-    if ($("#new_password1")[0].value === $("#new_password2")[0].value){
-    savebutton.removeAttr("disabled");
-    $("#newpassword_msg").text("Passwords match"); 
+    var passwd1 = $("#new_password1")[0].value;
+    var passwd2 = $("#new_password2")[0].value;
+
+    if (passwd1.indexOf("/") !== -1 || passwd2.indexOf("/") !== -1){
+        savebutton.attr("disabled", "disabled");
+        $("#newpassword_msg").text("Your password can't contain the following character(s): /"); 
+        return;
+    }
+
+    if (passwd1 === "" || passwd2 === ""){
+        savebutton.attr("disabled", "disabled");
+        $("#newpassword_msg").text(""); 
+        return;
+    }
+
+    if (passwd1 === passwd2){
+        savebutton.removeAttr("disabled");
+        $("#newpassword_msg").text("Passwords match"); 
     }
     else{
-    savebutton.attr("disabled", "disabled");
-    $("#newpassword_msg").html("<span style='color: #FF0000;'>Passwords don't match...</span>"); 
-
+        savebutton.attr("disabled", "disabled");
+        $("#newpassword_msg").html("<span style='color: #FF0000;'>Passwords don't match...</span>"); 
     }
 };
 
