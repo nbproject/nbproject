@@ -254,45 +254,43 @@ margin: 10px;
 /*filters*/
 div.filter-controls{
 float: right;
-padding-top: 4px;
+padding-top: 1px;
 }
 
 div.filter-controls > a.filter{
 margin-right: 10px;
 padding: 0px;
-border: thin solid #A0A0A0;
 display: inline-block;
 overflow: hidden;
 text-decoration: none;
-height: 19px;
+height: 23px;
+border-radius: 4px;
+background-color: #F8F8F8;
+color: #707070;
 }
 
 div.filter-controls > a.filter.active{
-border-color: #70A0F0;
+background-color: #70A0F0;
+color: #FCFCFC;
+}
+
+div.filter-controls > a.filter.active .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
 }
 
 div.filter-controls  a.filter span{
-background-color: #A0A0A0;
-color: #f0f0f0;
-padding: 5px;
-font-size: medium;
+padding: 5px 0 5px 5px;
+font-weight: bold;
 }
 
 div.filter-controls .nbicon {
 margin-bottom: -4px;
 }
 
-div.filter-controls a.filter.active span {
-background-color: #70A0F0;
-}
-
 div.filter-controls  div.filter-count{
 font-weight: bold;
-background-color: #f0f0f0;
-color: #707070;
-min-width: 1.5em;
 display: inline-block;
-padding: 2px;
+padding: 5px 10px;
 text-align: center;
 }
 

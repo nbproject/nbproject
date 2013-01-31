@@ -61,17 +61,21 @@ color: #a0a0a0;
 }
 
 div.threadview div.stat-count{
-    -moz-border-radius: 3px 3px 3px 3px;
-    -webkit-border-radius: 3px 3px 3px 3px;
-    background-color: #909090;
+    background-color: #EEE;
     color: #F0F0F0;
     display: inline-block;
-    font-size: medium;
-    padding: 3px;
+    padding: 1px 8px 1px 0;
+    font-weight: bold;
+    vertical-align: bottom;
+}
+
+div.threadview div.stat-count .nbicon {
+    margin-top: -2px;
+    vertical-align: bottom;
 }
 
 div.threadview div.stat-count.active{
-border-bottom: 5px solid #ffff00;
+background-color: #70A0F0;
 }
 
 div.threadview div.lensmenu{
@@ -138,10 +142,13 @@ border-bottom: 5px solid #ffff00;
 
 
 .contextMenu li.context{
-background-image: url("/content/data/icons/png/default_theme.png");
+background-image: url("/content/data/icons/png/theme_dark.png");
 background-repeat: no-repeat;
 }
 
+.contextMenu li.hover.context{
+background-image: url("/content/data/icons/png/theme_light.png");
+}
 
 .contextMenu li.context.reply{
     background-position: -300px 0px;
@@ -173,6 +180,6 @@ background-repeat: no-repeat;
 }
 
 .contextMenu li.context.delete{
-    background-position: -340px 0px;
+    background-position: -339px 1px;
 }
 

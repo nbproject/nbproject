@@ -84,7 +84,7 @@ z-index:100;
 /*Beginning of standard icon theme */
 
 .nbicon{
-background-image: url("/content/data/icons/png/default_theme.png");
+background-image: url("/content/data/icons/png/theme_dark.png");
  background-repeat: no-repeat;
 display: inline-block;
 margin: 0;
