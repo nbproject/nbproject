@@ -126,21 +126,25 @@ background-color: #000044;
     background-position: -140px 0;
 }
 
-.staricon{
+.staricon,
+.staricon-hicontrast{
     background-position: -160px 0;
 }
 
-.questionicon{
+.questionicon,
+.questionicon-hicontrast{
     background-position: -180px 0;
 }
 
+/*
+Removed because new icon set is high-contrast.
 .staricon-hicontrast{
     background-position: -200px 0;
 }
 
 .questionicon-hicontrast{
     background-position: -220px 0;
-}
+}*/
 
 .no-staricon{
     background-position: -240px 0;
