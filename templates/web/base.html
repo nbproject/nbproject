@@ -1,12 +1,18 @@
 {% block doctype %}<!DOCTYPE HTML>{% endblock %}
 {% block roottag %}<html>{% endblock %}
   <head>
+<!--
+   Author: cf AUTHORS.txt 
+   License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+
     <title>{% block title %}{% endblock %}</title>
     {% block contenttype %}<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>{% endblock %}
     <link href='http://fonts.googleapis.com/css?family=Knewave|Nobile:400,400italic' rel='stylesheet' type='text/css'/>
     <link rel="stylesheet" type="text/css" href="/content/ui/classic/base.css" />
     {% block css %}{% endblock %}
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<!--    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script> -->
     {% block js %}{% endblock %}
     <style> {% block style %}{% endblock %}</style>
     {% block scripts %}{% endblock %}
@@ -19,7 +25,7 @@
 	<nav class="main" id="mainnav" mainnav_select="{% block mainnav_select %}home{% endblock %}" >
 	  <ul>
 	    <li><a id="mainnav-about" href="/about">About</a></li>
-	    <li><a id="mainnav-tut" href="/tutorial">Tutorial</a></li>
+	    <li><a id="mainnav-tut" href="/faq">FAQ</a></li>
 	    <li><a id="mininav-forums" href="http://nbproject.vanillaforums.com/">Project Forums</a></li>
 	    <li><a id="mainnav-contact" href="http://spreadsheets.google.com/viewform?hl=en&amp;formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA">Contact Us</a></li>
 	  </ul>

@@ -65,15 +65,16 @@ urlpatterns += patterns('django.views.generic.simple',
                         (r'^tutorial/$',                           'direct_to_template', {'template': 'web/help.html'}),
                         (r'^contact/$',                           'direct_to_template', {'template': 'web/contact.html'}),
                         (r'^faq/$',                           'direct_to_template', {'template': 'web/faq.html'}),
+                        (r'^faq_student/$',                           'direct_to_template', {'template': 'web/faq_student.html'}),
+                        (r'^faq_instructor/$',                           'direct_to_template', {'template': 'web/faq_professor.html'}),
                         (r'^disclaimer/$',                           'direct_to_template', {'template': 'web/disclaimer.html'}),
 
                         (r'^password_reminder/$',                           'direct_to_template', {'template': 'web/password_reminder.html'}),
                         (r'^terms_public_site/$',                           'direct_to_template', {'template': 'web/terms_public_site.html'}),
                         (r'^robots.txt/$',                           'direct_to_template', {'template': 'web/robots.txt'}),
                          (r'^staff_benefits/$',                           'direct_to_template', {'template': 'web/staff_benefits.html'}),
-                         (r'^welcome$',                           'direct_to_template', {'template': 'web/welcome2.html'}),
-                        (r'^welcome_old$',                           'direct_to_template', {'template': 'web/welcome.html'}),
-                         (r'^login$',                           'direct_to_template', {'template': 'web/login2.html'}),
+                         (r'^welcome$',                           'direct_to_template', {'template': 'web/welcome.html'}),
+                         (r'^login$',                           'direct_to_template', {'template': 'web/login.html'}),
                          (r'^newsite_thanks$',                           'direct_to_template', {'template': 'web/newsite_thanks.html'}),
                             (r'^subscribe_thanks$',                           'direct_to_template', {'template': 'web/subscribe_thanks.html'}),
                         (r'^notallowed$',                           'direct_to_template', {'template': 'web/notallowed.html'}),
@@ -96,6 +97,13 @@ urlpatterns += patterns('',
 
 
 )
+
+#embedded NB to annotate HTML: 
+urlpatterns += patterns('', 
+    (r'^embed_NB.js$', 'django.views.static.serve',
+     {'document_root':  abspath("%s/../content/" % (ROOTDIR, )), "path":"compiled/embed_NB.js" })
+
+     ) 
 
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
 urlpatterns += patterns('', 

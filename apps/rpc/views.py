@@ -32,6 +32,7 @@ __EXPORTS = [
     "getStats",
     "getMyNotes", 
     "getGuestFileInfo", 
+    "getHTML5Info",
     "markNote", 
     "request_source_id",
     "log_history",
@@ -190,7 +191,7 @@ def login_user(P,req):
     if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:  
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
-    return UR.prepare_response({"ckey": user.confkey}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
+    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
 
 #def on_register_session(payload): 
 #    req = payload["req"]
@@ -261,6 +262,22 @@ def getGuestFileInfo(payload, req):
             return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
     return UR.prepare_response(output)
 
+def getHTML5Info(payload, req):
+    if "url" not in payload: 
+        return UR.prepare_response({}, 1, "missing url !")
+    url = payload["url"]
+    #TODO: use optional argument id_ensemble to disambiguate if provided. 
+    sources_info = M.HTML5Info.objects.filter(url=url)
+    ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
+    output = {
+         "files": UR.qs2dict(ownerships, annotations.__NAMES["files2"] , "ID"),
+         "ensembles": UR.qs2dict(ownerships, annotations.__NAMES["ensembles2"] , "ID") ,
+         "folders": UR.qs2dict(ownerships, annotations.__NAMES["folders2"] , "ID") ,
+         }    
+    for i in output["ensembles"]: 
+        if  not (output["ensembles"][i]["allow_guest"] or  auth.isMember(UR.getUserId(req), i)): 
+            return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
+    return UR.prepare_response(output)
 
 
 def getObjects(payload, req):
@@ -310,7 +327,7 @@ def getNotes(payload, req):
         if auth.canReadFile(uid, id_source, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
+            output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -336,7 +353,7 @@ def saveNote(payload, req):
             tm.location_id=a.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"] = annotations.getLocation(a.location_id)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(a.location_id)
     retval["comments"] = annotations.getComment(a.id, uid)
     retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
@@ -422,7 +439,8 @@ def markNote(payload, req):
     else: 
         annotations.markNote(uid, payload);        
         comments = annotations.getComment(id_comment,uid)
-        p = {"locations":annotations.getLocation(comments[int(id_comment)]["ID_location"]), "marks": annotations.getMark(uid, payload), "comments": comments}
+        locs, h5locs = annotations.getLocation(comments[int(id_comment)]["ID_location"])
+        p = {"locations":locs, "html5locations": h5locs, "marks": annotations.getMark(uid, payload), "comments": comments}
         return UR.prepare_response(p)
 
 def approveNote(payload, req):
@@ -549,7 +567,7 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
+                output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
         elif R["type"] == "newPending":
             #for now, we retrieve all the pending stuff. 
             output = annotations.getPending(uid, payload)
@@ -560,7 +578,7 @@ def get_location_info(payload, req):
     uid = UR.getUserId(req);
     #SACHA TODO: check I'm allowed to know this
     retval={}
-    retval["locations"] = annotations.getLocation(id)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(id)
     if "org" in payload:
         annotations.logDirectURL(uid, id, payload["org"])
     return UR.prepare_response(retval)
@@ -575,7 +593,7 @@ def get_comment_info(payload, req):
     id_location = comments[id]["ID_location"]
     retval["comments"] = {id: {"ID": id, "ID_location": id_location}} #share only what's needed
     #print retval["comments"]
-    retval["locations"] = annotations.getLocation( id_location)
+    retval["locations"] , retval["html5locations"] = annotations.getLocation( id_location)
     if "org" in payload:
         annotations.logDirectURL(uid, id, payload["org"])
     return UR.prepare_response(retval)

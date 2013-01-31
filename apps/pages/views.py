@@ -113,10 +113,10 @@ def __serve_page_old(req, tpl, allow_guest=False):
     return r
 
 def index(req): 
-    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome")
+    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
    
 def collage(req): 
-    return __serve_page(req, settings.COLLAGE_TEMPLATE)
+    return __serve_page(req, settings.COLLAGE_TEMPLATE, mimetype="text/html")
 
 def admin(req): 
     return HttpResponseRedirect("/")    #no more admin
@@ -138,7 +138,10 @@ def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
     if source.type==M.Source.TYPE_YOUTUBE: 
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
-    return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest)
+    elif source.type==M.Source.TYPE_HTML5:
+        return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
+    else:
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
     
 
 def your_settings(req): 
@@ -234,6 +237,7 @@ def confirm_invite(req):
     else: 
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
     m.admin = invite.admin
+    m.section = invite.section
     m.save()
     if invite.user.valid == False:
         invite.user.valid=True
@@ -321,7 +325,7 @@ def properties_ensemble_users(req, id):
     return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations})
 
 def spreadsheet(req):
-    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),))
+    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")
 
 def fbchannel(req):
     import datetime
@@ -358,6 +362,16 @@ def openid_index(request):
     s.append('</p>')
     s.append('<p><a href="/private">This requires authentication</a></p>')
     return HttpResponse('\n'.join(s))
+
+
+def facebooksample(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
+def debug(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
 
 
 @login_required

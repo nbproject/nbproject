@@ -142,17 +142,17 @@ IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
 LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
-DESKTOP_TEMPLATE= "web/desktop14.xhtml"
-COLLAGE_TEMPLATE= "web/desktop11.xhtml"
+DESKTOP_TEMPLATE= "web/desktop.html"
+COLLAGE_TEMPLATE= "web/desktop11.html"
 ADMIN_TEMPLATE  = "web/desktop9.xhtml"
 FEEDBACK_TEMPLATE = "web/feedback1.xhtml"
 FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
-SOURCE_TEMPLATE = "web/source1.xhtml"
+SOURCE_TEMPLATE = "web/source1.html"
 YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
-SPREADSHEET_TEMPLATE = "web/desktop12.xhtml"
+SPREADSHEET_TEMPLATE = "web/spreadsheet.html"
 
 
 
@@ -223,7 +223,9 @@ REDIRECT_URL = "http://nb.mit.edu"
 #OPENID SSO: 
 OPENID_CREATE_USERS             = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
-OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+#OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+OPENID_SSO_SERVER_URL = 'https://www.edx.org/openid/provider/login'
+
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
 OPENID_USE_AS_ADMIN_LOGIN       = False

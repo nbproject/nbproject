@@ -7,8 +7,7 @@ div.view > .panel{
 min-height: 32px;
 border: thin solid #D0D0D0;
 margin: 5px;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
+border-radius: 5px;
 background-color: #E6E6E6;
 }
 
@@ -27,6 +26,7 @@ border: thin solid #ffc0a0 !important;
 }
 
 div.ui-view-popup{
+user-select: none;
 -moz-user-select:none;
 -webkit-user-select:none;
 background-color:#AACCFF;

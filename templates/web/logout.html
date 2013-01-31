@@ -1,22 +1,8 @@
 {% extends "web/base.html" %}
 {% block title %}You are logged out{% endblock %}
-{% block css %}
-
-{% endblock %}
-
+{% block css %}{% endblock %}
 {% block js %}   
-<script type="text/javascript" src="/content/modules/head.js/head099.min.js"></script> 
-<script>
-      head.js(
-      "/content/modules/dev/mods2.js",
-      "/content/modules/dev/ui.concierge1.js", 
-      "/content/compiled/apidev.js", 
-      "/content/ui/admin/conf.js", 
-      "/content/modules/dev/pers2.js", 
-      "/content/ui/admin/logout.js", 
-      function(){$(function(){NB.pers.params = NB.dom.getParams();  NB.pers.preinit(false);});}
-      );
-    </script>
+<script type="text/javascript" src="/content/compiled/logout_NB.js"></script>
 {% endblock %}
 
 {% block content %}

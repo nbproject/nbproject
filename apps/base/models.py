@@ -78,16 +78,6 @@ class Folder(models.Model):                                                     
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
-### TODO: Would be nice to remember the invite text and when it was sent. 
-class Invite(models.Model):                                                     # old: invite
-    key                 = CharField(max_length=255)                             # old: id
-    user                = ForeignKey(User)                                      # old: id_user
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
-    admin               = BooleanField(default=False)                           # old: admin integer
-    ctime               = DateTimeField(null=True, default=datetime.now())
-    def __unicode__(self):
-        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
-
 class Section(models.Model):
     name                = CharField(max_length=255)
     ensemble            = ForeignKey(Ensemble)
@@ -95,6 +85,19 @@ class Section(models.Model):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
     
+### TODO: Would be nice to remember the invite text and when it was sent. 
+class Invite(models.Model):                                                     # old: invite
+    key                 = CharField(max_length=255)                             # old: id
+    user                = ForeignKey(User)                                      # old: id_user
+    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
+    admin               = BooleanField(default=False)                           # old: admin integer
+    ctime               = DateTimeField(null=True, default=datetime.now())
+    section             = ForeignKey(Section, null=True)
+
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
+
+
 ### TODO: port id_grader functionality (i.e. class sections)
 class Membership(models.Model):                                                 # old: membership
     user                = ForeignKey(User)                                      # old: id_user
@@ -111,7 +114,8 @@ class Source(models.Model):
     TYPE_PDF            = 1
     TYPE_YOUTUBE        = 2
     TYPE_HTML5VIDEO     = 3
-    TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"))     
+    TYPE_HTML5          = 4
+    TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"), (TYPE_HTML5, "HTML5"))     
     title               = CharField(max_length=255, default="untitled")         # old: title text
     submittedby         = ForeignKey(User, blank=True, null=True)               # old: submittedby integer
     numpages            = IntegerField(default=0)
@@ -129,6 +133,14 @@ class YoutubeInfo(models.Model):
     key                 = CharField(max_length=255,blank=True, null=True)
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
+    
+class HTML5Info(models.Model):
+    source              = OneToOneField(Source)
+    url                 = CharField(max_length=2048,blank=True, null=True)
+    def __unicode__(self):
+        return "%s %s: %s" % (self.__class__.__name__,self.id,  self.url)
+    
+
     
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake. 
 class Ownership(models.Model):                                                  # old: ownership
@@ -155,6 +167,15 @@ class Location(models.Model):                                                   
     def __unicode__(self):
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
+class HTML5Location(models.Model):
+    location              = OneToOneField(Location)
+    path1                 = CharField(max_length=2048,blank=True, null=True)
+    path2                 = CharField(max_length=2048,blank=True, null=True)
+    offset1               = IntegerField()
+    offset2               = IntegerField()
+
+
+    
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
     location            = ForeignKey(Location)                                  # old: id_location integer
