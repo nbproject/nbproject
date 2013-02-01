@@ -151,7 +151,8 @@ __NAMES = {
         "h": "source.h",
         "rotation": "source.rotation",
         "assignment": None, 
-        "due": None
+        "due": None, 
+        "filetype": "source.type"
 },
            "ensembles2": {
                           "ID": "ensemble_id",
