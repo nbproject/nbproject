@@ -41,6 +41,7 @@ if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATAB
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = None
+# USE_TZ = True TODO: use when we upgrade to Django 1.4
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html

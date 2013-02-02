@@ -110,7 +110,7 @@
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
         var author_info        = " <span class='author'>"+o.fullname+"</span> ";
-        var creation_info    = " <span class='created'> - "+o.created+"</span> ";
+        var creation_info = " <span class='created'> - " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
         var replymenu        = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
