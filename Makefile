@@ -119,4 +119,5 @@ apidev:
 	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 prereqs:
-	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools
+	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools python-setuptools
+	easy_install pytz
