@@ -60,58 +60,6 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None):
 
     return r
 
-def __serve_page_old(req, tpl, allow_guest=False): 
-    """ 
-    For compatibility purposes. 
-    this function serves the template 'tpl' if we find correct authentication. If we don't, we serve the default login screen"""
-    email = req.COOKIES["email"] if "email" in req.COOKIES else None
-    password = req.COOKIES["password"] if "password" in req.COOKIES else None
-    o = {}
-    template = settings.LOGIN_TEMPLATE
-    invite_key = None
-
-    if "invite_key" in req.GET:
-        invite_key = req.GET["invite_key"]
-    elif "invite_key" in req.COOKIES and "logout" not in req.COOKIES: 
-        invite_key = req.COOKIES["invite_key"]
-        logging.debug("invite_key from cookie %s" % (invite_key, ))
-
-    if invite_key is not None: 
-        #see if we have such a invite_key on file:
-        invite = auth.confirmInvite(invite_key)
-        #logging.debug("invite %s" % (invite, ))
-        if invite is None:
-            return UR.prepare_response({}, 1,  "NOT ALLOWED")      
-        o["EMAIL"]=invite.user.email
-        o["PASSWORD"]=base64.b64encode(invite.user.password)
-        o["FULLNAME"] = invite.user.email
-        o["UID"] = invite.user.id
-        o["INVITE_KEY"] = invite.key
-        template = tpl
-    elif email is not None and password is not None:
-        o["EMAIL"]=email
-        o["FULLNAME"]=email
-        o["PASSWORD"]=password
-        uid = auth.checkPassword(email, password)
-        o["UID"]=str(uid)
-        if uid is not None: 
-            valid_invite_key = auth.get_valid_invite_key(uid)
-            if valid_invite_key is not None:
-                o["INVITE_KEY"] = valid_invite_key
-            template = tpl
-        else: 
-            o["LOGIN_MSG"] = "wrong email/password, please retry!"
-    r = render_to_response(template, {"o": o}, mimetype='application/xhtml+xml')
-    if "INVITE_KEY" in o: 
-        r.set_cookie("invite_key", o["INVITE_KEY"], 1e6)
-        r.set_cookie("screenname", o["EMAIL"], 1e6)
-    elif "invite_key" in req.COOKIES: 
-        r.delete_cookie("invite_key")
-    r.set_cookie("uid", o["UID"] if "UID" in o else 0, 1e6) #this is just to inform the client-side app, don't use it for auth. purposes
-    if "logout" in req.COOKIES: 
-        r.delete_cookie("logout")
-    return r
-
 def index(req): 
     return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
    
@@ -124,12 +72,6 @@ def admin(req):
 
 def alpha(req): 
     return __serve_page(req, settings.ALPHA_TEMPLATE)
-
-def feedback(req): 
-    return __serve_page_old(req, settings.FEEDBACK_TEMPLATE)
-
-def feedback_alpha(req): 
-    return __serve_page_old(req, settings.FEEDBACK_ALPHA_TEMPLATE)
 
 def dev_desktop(req, n): 
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
