@@ -175,6 +175,7 @@ div.threadview div.note-lens{
 padding-top: 5px;
 padding-bottom: 5px;
 border: thin solid transparent;
+border-right-width: 5px;
 }
 
 div.threadview span.note-bold{
