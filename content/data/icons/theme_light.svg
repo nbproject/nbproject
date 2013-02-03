@@ -27,8 +27,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6"
-     inkscape:cx="147.13096"
-     inkscape:cy="9.3085145"
+     inkscape:cx="114.06289"
+     inkscape:cy="8.5942288"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -3937,16 +3937,6 @@
        y1="67.436302"
        x2="938.31769"
        y2="91.511803" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient2408"
-       id="linearGradient31206"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.20952335,0,0,0.1490016,595.16741,977.83019)"
-       x1="546.26843"
-       y1="67.731834"
-       x2="545.60425"
-       y2="168.49771" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3558"
@@ -5351,7 +5341,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -6699,9 +6689,9 @@
          y="887.08533"
          style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#666666;stroke-width:0.50000000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Open Sans;-inkscape-font-specification:Open Sans Bold;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline">-</tspan></text>
     <path
+       inkscape:connector-curvature="0"
        style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 84.75,874.61934 c -0.96354,0 -1.75,0.84861 -1.75,1.90625 l 0,11.1875 c 0,1.05764 0.78646,1.90625 1.75,1.90625 l 13.5,0 c 0.96353,0 1.75,-0.84861 1.75,-1.90625 l 0,-11.1875 c 0,-1.05764 -0.78647,-1.90625 -1.75,-1.90625 l -13.5,0 z m 6.65625,2 c 0.16811,1e-5 0.32381,0.0398 0.46875,0.0937 0.14492,0.0541 0.26775,0.12098 0.375,0.21875 0.10724,0.0978 0.18912,0.21769 0.25,0.34375 0.0609,0.12609 0.0937,0.25702 0.0937,0.40625 -1e-5,0.1441 -0.0329,0.2776 -0.0937,0.40625 -0.0609,0.12867 -0.14276,0.24598 -0.25,0.34375 -0.10725,0.0978 -0.23008,0.16472 -0.375,0.21875 -0.14494,0.0541 -0.30064,0.0937 -0.46875,0.0937 -0.16812,10e-6 -0.32383,-0.0398 -0.46875,-0.0937 -0.14493,-0.054 -0.26776,-0.12096 -0.375,-0.21875 -0.10725,-0.0978 -0.18914,-0.21508 -0.25,-0.34375 -0.0609,-0.12865 -0.0937,-0.26215 -0.0937,-0.40625 -1e-5,-0.14923 0.0329,-0.28016 0.0937,-0.40625 0.0609,-0.12606 0.14275,-0.24596 0.25,-0.34375 0.10724,-0.0978 0.23007,-0.16471 0.375,-0.21875 0.14492,-0.054 0.30063,-0.0937 0.46875,-0.0937 z m -3.125,3.25 4.125,0 0,6.625 2.59375,0 0,1.125 -7,0 0,-1.125 2.875,0 0,-5.5 -2.59375,0 0,-1.125 z"
-       id="rect4105"
-       inkscape:connector-curvature="0" />
+       d="m 86.4375,874.61934 c -0.793499,0 -1.4375,0.79412 -1.4375,1.78125 l 0,10.4375 c 0,0.98712 0.644001,1.78125 1.4375,1.78125 l 11.125003,0 c 0.7935,0 1.4375,-0.79413 1.4375,-1.78125 l 0,-10.4375 c 0,-0.98713 -0.644,-1.78125 -1.4375,-1.78125 l -11.125003,0 z m 5.562503,2 c 0.17032,1e-5 0.32346,0.0365 0.46875,0.0937 0.14527,0.0573 0.26728,0.11789 0.375,0.21875 0.1077,0.10088 0.18988,0.24204 0.25,0.375 0.0601,0.13297 0.0937,0.25496 0.0937,0.40625 -1e-5,0.15132 -0.0336,0.30454 -0.0937,0.4375 -0.0601,0.13297 -0.1423,0.24519 -0.25,0.34375 -0.10772,0.0986 -0.22973,0.16145 -0.375,0.21875 -0.14529,0.0573 -0.29843,0.0937 -0.46875,0.0937 -0.17033,10e-6 -0.32097,-0.0364 -0.46875,-0.0937 -0.14779,-0.0573 -0.2673,-0.12016 -0.375,-0.21875 -0.10771,-0.0986 -0.18989,-0.21078 -0.25,-0.34375 -0.0601,-0.13296 -0.0937,-0.28618 -0.0937,-0.4375 -10e-6,-0.15129 0.0336,-0.27328 0.0937,-0.40625 0.0601,-0.13296 0.14229,-0.27412 0.25,-0.375 0.1077,-0.10086 0.22721,-0.16142 0.375,-0.21875 0.14778,-0.0573 0.29842,-0.0936 0.46875,-0.0937 z m -3.000003,3 4.062503,0 0,5.6875 2.1875,0 0,1.3125 -6.500003,0 0,-1.3125 2.406253,0 0,-4.375 -2.156253,0 0,-1.3125 z"
+       id="rect4105" />
   </g>
 </svg>
