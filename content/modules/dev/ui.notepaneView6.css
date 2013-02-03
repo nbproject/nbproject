@@ -91,6 +91,10 @@ div.location-lens.selected{
 	background-color: #70a0f0 !important;
 }
 
+div.location-lens.selected .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
+}
+
 div.location-lens.selected div.location-shortbody-text{
     color: #ffffff;
 }

@@ -94,11 +94,6 @@ width: 18px;
 height: 18px;
 }
 
-.selected .nbicon,
-.active .nbicon {
-background-image: url("/content/data/icons/png/theme_light.png");
-}
-
 .nbicon.dark{
 background-color: #000044;
 }

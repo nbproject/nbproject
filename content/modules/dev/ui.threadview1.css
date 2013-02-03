@@ -87,6 +87,10 @@ div.threadview div.stat-count.active{
 background-color: #70A0F0;
 }
 
+div.threadview div.stat-count.active .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
+}
+
 div.threadview div.lensmenu{
 float: right;
 padding: 5px;
