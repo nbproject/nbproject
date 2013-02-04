@@ -8,25 +8,23 @@ span.ui-icon {
 display: inline-block;
 } 
 {% endblock %}
+{% block js %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script src="/content/modules/faq.js"></script>
+{% endblock %}
 {% block content %}
 <h1>Frequently Asked Questions about NB</h1>
-<ul>
-  <li>What does NB stand for ?<br/><i>Nota Bene</i></li>
-  <li>How can I see all my notes ?<br/><i> Try our <a href='/collage/?q=auth'>Collage Interface</a> (this may be slow if you have a lot of notes)</i></li> 
-  <li>Can NB annotate anything besides PDFs ? <br/><i>Not yet. NB is meant at annotating PDFs. Fortunately, many files can be converted to PDFs nowadays, using commands like <b>Export to PDF</b> or simply <b>Print...</b></i></li>
-  <li>I have a question. Who can I ask ? <br/><i>You can email Sacha: sacha (at) csail (dot) mit (dot) edu</i></li>
-  <li>I like/dislike such and such feature - I'd like a new feature to be implemented. Does anyone care ? <br/><i>We DO care a lot about your impressions and your feedback will tremendously help. Please send your comments to  Sacha: sacha (at) csail (dot) mit (dot) edu</i> </li>
-  <li>Is my information secure ? What gets stored where ? What about privacy ?<br/> <i>
-      <ul>
-	<li>NB stores your annotations on a SQL database located on campus. </li>
-	<li>There are 3 visiblility settings for your notes:
-	  <ul>
-	    <li> <b>The Entire Class</b>, meaning that those notes can be seen by both students and staff. 
-	    <li> <b>Staff only</b>, meaning those notes can be seen by the staff. Note that some NB sites might not allow <b>Staff Only</b> notes.</li>
-	    <li><b>Myself only</b> notes are private:  Staff and other students can't see them </li>
+<br>
+<style>
+.center
+{
+margin-right: auto;
+margin-left: auto;
+width: 100%;
+}
+</style>
+<p style="text-align: center"> <a class="clickable3" style="font-size: xx-large" href="/faq_student"> For Students </a> </p> 
+<p style="text-align: center"> <a class="clickable3" style="font-size: xx-large" href="/faq_instructor"> For Instructors </a> </p>
 
-	  </ul></i>
-	</li>
-      </ul>
 
       {% endblock %}

@@ -4,37 +4,25 @@
  * This module defines the namespace NB.conf
  *
  Author 
- Sacha Zyto (sacha@csail.mit.edu) 
+ cf AUTHORS.txt 
 
  License
- Copyright (c) 2010 Massachusetts Institute of Technology.
+ Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
+/*global  NB:true*/
 
-try{    
-    Module.createNamespace("NB.conf", 0.1);
-}
-catch (e){
-    alert("[conf] Init Error: "+e);
-}
-
-/*
-NB.conf.servers = {
-    rpc: "http://nboeit",
-    img: "http://nboeit", 
-    upload: "http://nboeit", 
-
-};
-*/
-
-NB.conf.servers = {
+(function(GLOB){
+    GLOB.conf = {};
+    GLOB.conf.servers = {
     rpc: "",
     img: "",
-    upload: "",
+    upload: ""
 
-};
+    };
 
-/*************************************************************************************
- * Replace "" (right below) with your invite key if you'd live to be automatically authenticated
- ************************************************************************************/
-NB.conf.identity = "";
+    /*************************************************************************************
+     * Replace "" (right below) with your invite key if you'd live to be automatically authenticated
+     ************************************************************************************/
+    GLOB.conf.identity = "";
+})(NB);

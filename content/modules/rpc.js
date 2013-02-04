@@ -1,38 +1,27 @@
 /**
- * rpc.js: XHR-based rpc for mynet
+ * rpc.js: XHR-based rpc
  *
  * This is a module of useful functions that are
  * compatible with JSAN-type modules.
  * It gathers functions that are useful at the window level, for the windows that have a browser
- * This module defines the namespace NB.rpc
- * It requires the following modules:
- *		Module
- *		NB
- *		NB.dom
 Author 
-    Sacha Zyto (sacha@csail.mit.edu) 
+    cf AUTHORS.txt 
 
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
 
+(function(GLOB){
+    //require: dom
+    GLOB.rpc = {};
 
-try{    
-    Module.require("NB", 0.1);
-    Module.require("NB.dom", 0.1);
-    Module.createNamespace("NB.rpc", 0.1);
-}
-catch (e){
-    alert("[rpc] Init Error: "+e);
-}
+GLOB.rpc.connection_id = 0;
+GLOB.rpc.first_connection = true;
+GLOB.rpc.connection_T = 1000;  // in msec
 
-NB.rpc.connection_id = 0;
-NB.rpc.first_connection = true;
-NB.rpc.connection_T = 1000;  // in msec
-
-NB.rpc.makeCallTree= function(fctname, args){
+GLOB.rpc.makeCallTree= function(fctname, args){
     var doc =document.implementation.createDocument("", "methodCall", null);
     var mc = doc.documentElement;
     var mn = doc.createElement("methodName");
@@ -42,7 +31,7 @@ NB.rpc.makeCallTree= function(fctname, args){
     for (i = 0;i<args.length;i++){
 	arg = args[i];
 	p =  doc.createElement("param");
-	v = NB.rpc.makeArg(doc, arg);
+	v = GLOB.rpc.makeArg(doc, arg);
 	p.appendChild(v);
 	params.appendChild(p);
     }
@@ -52,7 +41,7 @@ NB.rpc.makeCallTree= function(fctname, args){
 };
 
 
-NB.rpc.makeArg = function(doc, arg){
+GLOB.rpc.makeArg = function(doc, arg){
     var v,x, i;
     v =  doc.createElement("value");
     
@@ -84,7 +73,7 @@ NB.rpc.makeArg = function(doc, arg){
 	    var data_node =  doc.createElement("data");
 	    x.appendChild(data_node);
 	    for(i=0;i<arg.length;i++){
-		data_node.appendChild(NB.rpc.makeArg(doc, arg[i]));
+		data_node.appendChild(GLOB.rpc.makeArg(doc, arg[i]));
 	    } 
 	}
 	//	else if (arg instanceof Object){
@@ -96,7 +85,7 @@ NB.rpc.makeArg = function(doc, arg){
 		name_node =  doc.createElement("name");
 		name_node.appendChild(doc.createTextNode(prop));	       
 		member_node.appendChild(name_node);
-		member_node.appendChild(NB.rpc.makeArg(doc, arg[prop]));
+		member_node.appendChild(GLOB.rpc.makeArg(doc, arg[prop]));
 		x.appendChild(member_node);
 	    }
 	}
@@ -110,10 +99,10 @@ NB.rpc.makeArg = function(doc, arg){
 };
 
 
-NB.rpc.xml2js = function(v){ //v is a "value" node
+GLOB.rpc.xml2js = function(v){ //v is a "value" node
     var x, i;
     var retval, child;
-    x = NB.dom.firstElement(v);
+    x = GLOB.dom.firstElement(v);
     if (x.tagName=="string" ||x.tagName=="double" ||x.tagName=="int" ){
 	if (x.firstChild===null){
 	    return null;
@@ -128,11 +117,11 @@ NB.rpc.xml2js = function(v){ //v is a "value" node
     }
     else if  (x.tagName=="array"){
 	retval = [];
-	var data_node_children = NB.dom.firstElement(x).childNodes;
+	var data_node_children = GLOB.dom.firstElement(x).childNodes;
 	for (i=0;i<data_node_children.length;i++){
 	    child = data_node_children[i];
 	    if  (child.nodeType == 1){ //discard text nodes
-		retval.push(NB.rpc.xml2js(child));
+		retval.push(GLOB.rpc.xml2js(child));
 	    }
 	}	
 	return retval;
@@ -146,43 +135,43 @@ NB.rpc.xml2js = function(v){ //v is a "value" node
 	    child = struct_node_children[i];
 	    if  (child.nodeType == 1){ //discard text nodes
 		//now child is a "member" node
-		name_node = NB.dom.firstElement(child);
-		value_node = NB.dom.elementItem(child, 1);
-		retval[name_node.firstChild.nodeValue] = NB.rpc.xml2js(value_node);
+		name_node = GLOB.dom.firstElement(child);
+		value_node = GLOB.dom.elementItem(child, 1);
+		retval[name_node.firstChild.nodeValue] = GLOB.rpc.xml2js(value_node);
 	    }
 	}
 	return retval;
     }
     else{
-	NB.debug("could not deserialize"+x);
+	GLOB.error("could not deserialize", x);
     }
 };
 
 
-NB.rpc.getReply = function(reply){
+GLOB.rpc.getReply = function(reply){
     var param_node = reply.getElementsByTagName("param").item(0);
     if (param_node === null){
 	return {};
     }
-    var v = NB.dom.firstElement(param_node); //= is the "value" node
-    return NB.rpc.xml2js(v);
+    var v = GLOB.dom.firstElement(param_node); //= is the "value" node
+    return GLOB.rpc.xml2js(v);
 };
 
 
-NB.rpc.rpc_json = function(url, fctname,  args, callback, extra_callback_args) {
+GLOB.rpc.rpc_json = function(url, fctname,  args, callback, extra_callback_args) {
     /* About connection ids: 
        we allow the 1st connection to go thought even if its connection_id = 0, since the connection_is will come as a result of that
        If some rpc call are made in between, we put them on a timer, until we get a valid connection id...
     */
-    if ((!NB.rpc.first_connection) && NB.rpc.connection_id == 0) {
+    if ((!GLOB.rpc.first_connection) && GLOB.rpc.connection_id == 0) {
 	// we haven't received a reply yet so put this function to wait for a while
-	NB.debug("waiting until we get a connection id...")
+	GLOB.log("waiting until we get a connection id...")
 	window.setTimeout(function(){
-		NB.rpc.rpc_json(url, fctname, args, callback, extra_callback_args);
-	    }, NB.rpc.connection_T);
+		GLOB.rpc.rpc_json(url, fctname, args, callback, extra_callback_args);
+	    }, GLOB.rpc.connection_T);
 	return;
     }
-    NB.rpc.first_connection = false;
+    GLOB.rpc.first_connection = false;
     var httpRequest = new XMLHttpRequest();
 	try{
 	    if (httpRequest.overrideMimeType) {
@@ -208,19 +197,19 @@ NB.rpc.rpc_json = function(url, fctname,  args, callback, extra_callback_args) {
 		    args_callback.payload = reply.payload;
 		    args_callback.status = reply.status;
 		    if ("CID" in reply.status){
-			NB.rpc.connection_id = reply.status.CID;
+			GLOB.rpc.connection_id = reply.status.CID;
 		    }
 		    args_callback.httpRequest = httpRequest;
 		    args_callback.extra = extra_callback_args;
 		    callback(args_callback); 
 		}
 		else{
-		    NB.debug("Remote server error");
+		    GLOB.error("Remote server error");
 		}
 	    }
 	};
-	args.push(NB.rpc.connection_id);
-	var x = NB.rpc.makeCallTree(fctname, args);
+	args.push(GLOB.rpc.connection_id);
+	var x = GLOB.rpc.makeCallTree(fctname, args);
 	httpRequest.send(x);
     }
     catch(e2){
@@ -233,9 +222,9 @@ NB.rpc.rpc_json = function(url, fctname,  args, callback, extra_callback_args) {
 
 
 /* This is  useful as a standard callback to use for wrappers 
-   NB.MODULENAME.CALL (ex: NB.pdf.call)
+   GLOB.MODULENAME.CALL (ex: GLOB.pdf.call)
 */
-NB.rpc.__callback = function(args){
+GLOB.rpc.__callback = function(args){
     /* args should be a dict that contains
      * - [dict] extra
      *		.cb => the real callback
@@ -249,8 +238,9 @@ NB.rpc.__callback = function(args){
     document.body.style.cursor="auto";
     if (args.status.errno){
 	//just display that there was an error for now
-	NB.debug(args.status.msg);
+	GLOB.error(args.status.msg);
 	return;
     }
     args.extra.cb(args.payload);
 };
+})(NB);

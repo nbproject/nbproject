@@ -41,6 +41,7 @@ if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATAB
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = None
+# USE_TZ = True TODO: use when we upgrade to Django 1.4
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -142,22 +143,17 @@ IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
 LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
-
-DESKTOP_TEMPLATE= "web/desktop14.xhtml"
-
-#COLLAGE_TEMPLATE= "web/collage1_compat.xhtml"
-COLLAGE_TEMPLATE= "web/desktop11.xhtml"
-
-#ADMIN_TEMPLATE  = "web/admin1.xhtml"
+DESKTOP_TEMPLATE= "web/desktop.html"
+COLLAGE_TEMPLATE= "web/desktop11.html"
 ADMIN_TEMPLATE  = "web/desktop9.xhtml"
 FEEDBACK_TEMPLATE = "web/feedback1.xhtml"
 FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
-SOURCE_TEMPLATE = "web/source1.xhtml"
+SOURCE_TEMPLATE = "web/source1.html"
 YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
-SPREADSHEET_TEMPLATE = "web/desktop12.xhtml"
+SPREADSHEET_TEMPLATE = "web/spreadsheet.html"
 
 
 
@@ -185,8 +181,13 @@ SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com"
 #SMTP_REPLY_TO
 #SMTP_SERVER
 #SMTP_USER
+
 #URL of a google form (or similar service) that can be used for user to contact the NB Team: 
-SUPPORT_LINK = "http://spreadsheets.google.com/viewform?hl=en&formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA" 
+SUPPORT_LINK = "http://nbproject.vanillaforums.com" 
+
+#EMAIL to contact he NB Team: 
+NBTEAM_EMAIL = "nb-team@csail.mit.edu"
+
 
 #for db: 
 DEBUG_QUERY = False
@@ -229,6 +230,8 @@ REDIRECT_URL = "http://nb.mit.edu"
 OPENID_CREATE_USERS             = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
 OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+#OPENID_SSO_SERVER_URL = 'https://www.edx.org/openid/provider/login'
+
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
 OPENID_USE_AS_ADMIN_LOGIN       = False

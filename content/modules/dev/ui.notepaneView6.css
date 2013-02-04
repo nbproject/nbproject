@@ -1,14 +1,12 @@
 /*
-Author: Sacha Zyto (sacha@csail.mit.edu) 
-License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
 
 div.notepaneView{
 overflow: hidden;
-//background-color: #E6E6E6 !important;
-//font-size: small;
 }
 
 div.location-lens{
@@ -18,24 +16,19 @@ padding-bottom: 3px;
 cursor: pointer;
 }
 
-
 div.notepaneView div.lens-odd{
 background-color: #f0f0f0;
 }
-
 
 div.notepaneView div.lens-even{
 background-color: #e5e5e5;
 border: thin solid #e0e0e0;
 }
 
-
-
 div.notepaneView span.gradecontainer{
 float: right;
 padding-left: 20px;
 }
-
 
 div.notepaneView span.gradeitem{
 padding: 3px;
@@ -44,20 +37,15 @@ font-size: medium;
 background-color: #e0e0e0;
 border: thin solid #f0f0f0;
 color: #707070;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
+border-radius: 5px;
 cursor: pointer;
 }
-
 
 div.notepaneView span.gradeitem.selected{
 font-weight: bold; 
 background-color: #707070;
 color: #ffe0d0;
 }
-
-
-
 
 div.location-shortbody{
 overflow: hidden;
@@ -68,7 +56,6 @@ div.location-shortbody.replyrequested{
 background-color: #ffa070;
 }
 
-
 div.location-shortbody-ellipsis{
 background-image: url(/content/data/icons/png/fuzzy_border_right_20.png);
 background-repeat: repeat-y;
@@ -78,7 +65,6 @@ height: 25px;
 right: 8px;
 margin-top: -4px;
 }
-
 
 div.location-shortbody-text{
 white-space: nowrap;
@@ -93,17 +79,13 @@ div.location-bold{
 font-weight: bold;
 }
 
-
 div.location-lens.hovered{
 	background-color: #ffffd0 !important;
 }
 
-
 div.location-lens.selected{
 	background-color: #70a0f0 !important;
 }
-
-
 
 div.location-lens.selected div.location-shortbody-text{
     color: #ffffff;
@@ -115,7 +97,6 @@ div.location-pagesummary{
     font-style: italic;
     padding-left: 5px;
     padding-top: 20px;
-//    text-align: center;
 }
 
 div.location-pagesummary.selected{
@@ -127,24 +108,26 @@ div.notepaneView-pages{
 overflow-y: auto;
 }
 
-
-
 div.location-flags{
 float: left;
 min-width: 60px;
+margin-left: 3px;
 }
 
 ins.locationflag{
-width: 12px;
-margin-right: 0px;
-margin-left: 3px;
+font-size: 11px;
 font-family: monospace;
 display: inline-block;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
-padding: 2px;
 text-decoration: none;
-float: left;
+vertical-align: top;
+margin: 0 2px;
+}
+
+ins.lf-numnotes,
+ins.lf-numnewnotes{
+text-align: center;
+border-radius: 3px;
+padding: 1px 3px;
 }
 
 ins.lf-numnotes{
@@ -170,29 +153,20 @@ div.notepaneView div.collectioninfo{
     color: #D0D0D0;
     font-size: medium;
     padding: 9px;
-//    text-align: center;
 }
-
-
-
 
 div.threadview-branch{
 padding-top: 5px;
 padding-left: 10px;
 }
 
-
-
 div.threadview div.note-lens{
-//color: #404040;
 padding-top: 5px;
 padding-bottom: 5px;
 border: thin solid transparent;
-
 }
 
 div.threadview div.note-lens:hover{
-//background-color:  #ffffd0;
 border: thin solid #c0c0c0;
 }
 
@@ -218,7 +192,6 @@ div.location-lens.selected span.author{
 color: #404040;
 }
 
-
 div.threadview div.lensmenu{
 float: right;
 padding: 5px;
@@ -228,7 +201,6 @@ border: thin solid #c0c0c0;
 margin-left: 8px;
 margin-top: -5px;
 }
-
 
 div.threadview div.note-lens:hover div.lensmenu{
 opacity: 1.0;
@@ -251,11 +223,8 @@ font-family: monospace;
 border: thin solid transparent;
 }
 
-
 div.note-abridgedlens:hover {
-
     border: thin solid #d0d0A0;
-
 }
 
 div.location-lens.selected div.note-abridgedlens{
@@ -267,8 +236,7 @@ color: #ffffff;
 }
 
 div.notepaneView span.empty_comment{
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     background-color: #F0F0F0;
     border: thin solid #A0A0A0;
     color: #A0A0A0;
@@ -277,59 +245,54 @@ div.notepaneView span.empty_comment{
     padding: 3px;
 }
 
-
-
-
-
 div.no-notes{
 font-size: x-large;
 color: #c0c0c0;
 margin: 10px;
 }
 
-
 /*filters*/
 div.filter-controls{
 float: right;
-padding-top: 4px;
+padding-top: 1px;
 }
 
 div.filter-controls > a.filter{
 margin-right: 10px;
 padding: 0px;
-border: thin solid #808080;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
 display: inline-block;
-
+overflow: hidden;
+text-decoration: none;
+height: 23px;
+border-radius: 4px;
+background-color: #F8F8F8;
+color: #707070;
 }
 
 div.filter-controls > a.filter.active{
-border-bottom-width: 5px;
-border-bottom-color: #ffff00;
-display: inline; //HACK: needed in order to remain inside header;
+background-color: #70A0F0;
+color: #FCFCFC;
+}
+
+div.filter-controls > a.filter.active .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
 }
 
 div.filter-controls  a.filter span{
-background-color: #909090;
-color: #f0f0f0;
-padding-left: 5px;
-padding-right: 5px;
-font-size: medium;
+padding: 5px 0 5px 5px;
+font-weight: bold;
+}
+
+div.filter-controls .nbicon {
+margin-bottom: -4px;
 }
 
 div.filter-controls  div.filter-count{
 font-weight: bold;
-background-color: #f0f0f0;
-color: #707070;
-min-width: 1.5em;
 display: inline-block;
-padding-left: 5px;
-margin-right: 1px;
-font-size: medium;
-//text-decoration: underline;
+padding: 5px 10px;
+text-align: center;
 }
-
 
 div.notepaneView-header{
 background-color: #c0c0c0;
@@ -352,5 +315,4 @@ span.n_unfiltered{
 font-size: large;
 font-weight: bold;
 }
-
 

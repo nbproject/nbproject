@@ -1,7 +1,5 @@
 #use the following to configure the 'nb3' server: 
 SRCDIR		= apps
-
-PREREQS		= postgresql imagemagick 
 PWD		= $(shell pwd)
 PREFIXDIR	= $(PWD)
 WSGIDIR		= $(SRCDIR)/apache
@@ -15,6 +13,7 @@ MIGRATEDBFILE	= conf/migratedb.sh
 MIGRATEDBSKEL	= conf/migratedb.sh.skel
 OLD_DB		= notabene
 NEW_DB		= nb3
+CONF_LOCAL		= content/ui/admin/conf_local.js
 SETTINGSFILE	= $(SRCDIR)/settings.py
 DBNAME		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["NAME"]')
 DBUSER		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["USER"]')
@@ -31,39 +30,20 @@ HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
 HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
 
-
-
 SERVER_USERNAME = $(shell python -c 'from  $(SRCDIR).settings import SERVER_USERNAME;print SERVER_USERNAME')
 NB_SERVERNAME  	= $(shell python -c 'from  $(SRCDIR).settings import NB_SERVERNAME;print NB_SERVERNAME')
 NB_HTTP_PORT  	= $(shell python -c 'from  $(SRCDIR).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
 
-HOST_PROD	= sacha.csail.mit.edu
-ROOT_PROD	= /sachacsail
 NB		= nb
-NB_ARCHIVE	= nb.tgz
 NB_ARCHIVE	= nb_stats_`date`_.tgz
-HOME_PROD	= $(ROOT_PROD)/var/local/home/sacha
-CONFDIR_PROD	= $(HOME_PROD)/$(NB)/conf
-DEFAULT_FILE	= defaults.json
-DEFAULT_PROD	= defaults.json.prod
-COMPILED_DIR = content/compiled
-API_ROOT	= content/modules
-API_DEST	= $(COMPILED_DIR)/api.js
-#API_FILES	= Module.js NB.js auth.js dom.js rpc.js observer.js mvc.js dev/models.js 
-API_FILES      = Module.js NB.js auth.js dom.js mvc.js dev/models.js
-APIDEV_ROOT	= content/modules
-APIDEV_DEST	= $(COMPILED_DIR)/apidev.js
-APIDEV_FILES	= Module.js NB.js auth.js dom.js mvc.js dev/models2.js 
 
-compat: api
-	(rm content/compat/*; cd src; python compat.py dir ../ ../templates/web ../content/compat/)
 
 check_settings: 
 	echo ''
 	echo '********************************************************************************************'
 	echo '* Please edit your DB connections parameters in $(SRCDIR)/settings_credentials.py, if needed *'
 	echo '********************************************************************************************'
-	echo ''	
+	echo '' 
 	$(shell python -c 'import $(SRCDIR).settings')
 
 
@@ -95,6 +75,8 @@ django: check_settings
 	sed 's|@@SRC_DIR@@|$(PREFIXDIR)/$(SRCDIR)|g' $(WSGISKEL)   > $(WSGIFILE)
 	sed -e 's|@@NB_DIR@@|$(PWD)|g' -e 's|@@SRCDIR@@|$(SRCDIR)|g'  -e 's|@@NB_CRON_EMAIL@@|$(CRON_EMAIL)|g' $(CRONSKEL) > $(CRONFILE)
 	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' -e 's|NB_STATICURL|$(NB_STATICURL)|g' -e 's|NB_STATIC_MEDIA_DIR|$(NB_STATIC_MEDIA_DIR)|g' $(APACHESKEL)   > $(APACHEFILE)
+	touch $(CONF_LOCAL)
+	if [ -s $(CONF_LOCAL) ]; then echo "local conf exists and not empty"; else echo "//your local conf here" >> $(CONF_LOCAL) ;  fi
 	echo ''
 	echo '--------- Apache configuration file ------------'
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'
@@ -108,76 +90,34 @@ django: check_settings
 	echo ''
 	echo '--------- End of make messages -----------------'
 	echo ''
+	echo 'Replacing grunt-css with our customized version'
+	cp lib/grunt-css.js node_modules/grunt-css/tasks/ 
 
 migratedb: 
 	sed -e 's|@@OLD_DB@@|$(OLD_DB)|g' -e 's|@@NEW_DB@@|$(NEW_DB)|g' $(MIGRATEDBSKEL)   > $(MIGRATEDBFILE)
 	chmod u+x $(MIGRATEDBFILE)
 
-
 newstats: 	
 	./stats nb2_notes
 	unison -batch -ui text  nb_stats2
 
-
 clean:
 	- find . -name '*~' | xargs rm
 	- find . -name '*.pyc' | xargs rm 
-
+	- rm content/compiled/*
 
 tgz: 
 	(cd ~ ; tar cz $(NB) > $(NB_ARCHIVE) )
-
-
-prod: 	tgz
-	if test -e $(HOME_PROD); then (echo '$(HOME_PROD) mounted, continuing...') ;else (echo 'mounting $(ROOT_PROD)';sshfs $(HOST_PROD):/ $(ROOT_PROD)) fi
-	if test -e $(HOME_PROD); then (echo 'copying...';cp ~/$(NB_ARCHIVE) $(HOME_PROD);echo 'done !') ;else echo 'ERROR: $(HOME_PROD) not mounted'; fi
-	ssh $(HOST_PROD) 'tar zxf $(NB_ARCHIVE)'
-	echo "You can kill the current daemon and run a new one now: sudo nohup ./runserver "
-
-
-api:
-	mkdir -p $(COMPILED_DIR)  	
-	echo '' > $(API_DEST)
-	for i in $(API_FILES); do cat $(API_ROOT)/$$i >> $(API_DEST) ; done
 
 apidev: 
 	mkdir -p $(COMPILED_DIR)
 	touch content/ui/admin/conf_local.js
 	echo '' > $(APIDEV_DEST)
 	for i in $(APIDEV_FILES); do cat $(APIDEV_ROOT)/$$i >> $(APIDEV_DEST) ; done
+	for i in $(BUILDTRAIL_FILES); do cat $$i >> $(BUILDTRAIL_DEST) ; done
+	for i in $(BUILDEMBED_FILES); do cat $$i >> $(BUILDEMBED_DEST) ; done
+	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
-
-
-
-#for some reason, the following doesn't perform Ok when in makefile, but OK when executed from shell...
-check_prereqs: 
-	for l in $(PREREQS); do \
-		if [ $$l != `dpkg -l $$l | grep '^ii' | sed 's|^ii  \(\S*\).*|\1|'` ] ; then echo "$$l seems to be missing"; exit 1; else echo "$$l OK..."; fi; \
-	done
-
-prereqs_common:
-	apt-get install python postgresql imagemagick pdfedit postgresql-plpython-8.4 python-pypdf context
-
-prereqs_django:
-	apt-get install apache2 python-psycopg2 libapache2-mod-wsgi
-
-
-prereqs_twisted: 
-	apt-get install python-twisted python-pygresql
-
-startapp: #reminder for what links to create when creating a new django app
-	echo 'ln -s ../../src/annotations3.py annotations.py'
-	echo 'ln -s ../../src/utils_response.py .' 
-	echo 'ln -s ../../src/utils_format.py .'
-	echo 'ln -s ../../src/constants.py .'
-	echo 'ln -s ../../src/utils_auth.py .'
-	echo 'ln -s ../../src/db_django.py db.py'
-	echo 'ln -s ../../src/registry.py .'
-	echo ''
-	echo ''
-
-static2template: #reminder for how to change a static page into a template. 
-	sed -i 's|href="../|href="/content/|' your_file
-	sed -i 's|src="../|src="/content/|' your_file
-	echo 'change manually other links to abolute links typicall pers???.css and pers???.js need to be replaced by /content/ui/classic/pers???...'
-	echo 'close script tags with a </script> instead of />'
+prereqs:
+	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools python-setuptools
+	easy_install pytz

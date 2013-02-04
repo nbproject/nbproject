@@ -1,6 +1,6 @@
 /*
-Author: Sacha Zyto (sacha@csail.mit.edu) 
-License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 div.docView{
@@ -21,7 +21,6 @@ padding: 1px 5px 1px 5px;
 
 div.docView div.material.selected{
 border: 2px  solid #5090f0;
-//opacity: 1.0;
 }
 
 div.docView div.material{
@@ -29,7 +28,6 @@ div.docView div.material{
 	position: relative; 
 	border:  2px solid #d0dede;
 	overflow: hidden;
-	//opacity: 0.7;
 }
 
 
@@ -42,7 +40,8 @@ div.docView img.material{
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-webkit-user-drag: none;
-	//width: 100%;
+	user-select: none;
+	user-drag: none;
 }
 
 div.docView div.selection{
@@ -50,20 +49,13 @@ position: absolute;
 border: thin solid #777777;
 opacity: 0.3;
 z-index: 2;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
-
+border-radius: 5px;
 }
-
-
-
-
 
 div.docView div.selection.hovered{
 border-color: #773333;
 background-color: #E5E5B5;
 }
-
 
 div.docView div.selection.selected{
 border-color: #333377;
@@ -71,12 +63,10 @@ background-color: #a5b5e5;
 opacity: 0.4;
 }
 
-
 div.docView div.editor-footer{
 	-moz-user-select: none;
 	-webkit-user-select: none;
-
-
+	user-select: none;
 }
 
 div.docView div.global-editors{
@@ -86,13 +76,10 @@ right: 16px;
 z-index: 3;
 }
 
-
-
 div.docView div.existing_link{
 cursor:pointer;
 position: absolute;
 }
-
 
 div.docView div.existing_link:hover{
 border-bottom: thin solid #3333FF;
@@ -100,13 +87,11 @@ border-bottom: thin solid #3333FF;
 
 div.pagenumber{
 position: absolute; 
-right: 50px; 
-//color:#5090f0;
+right: 50px;
 opacity: 0.5;
 z-index: 1;
 padding: 3px;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
+border-radius: 5px;
 border: thin solid #f0f0f0;
 background-color: #f0f0f0;
 }
@@ -116,11 +101,9 @@ opacity: 1;
 border: thin solid #c0c0c0;
 }
 
-
 div.pagenumberbottom{
 bottom: 0px;
 }
-
 #docview_drawingarea{
 position: absolute; 
 width: 800px;

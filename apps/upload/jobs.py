@@ -5,7 +5,7 @@ Author
     Sacha Zyto <sacha@csail.mit.edu>
 
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
 import sys,os
@@ -288,6 +288,7 @@ def process_next(args=[]):
                      "title": task.source.title, 
                      "submitted": task.submitted, 
                      "support":  settings.SUPPORT_LINK,
+                     "contact_email": settings.NBTEAM_EMAIL,
                      "firstname": task.source.submittedby.firstname
                      }
                 task.delete()

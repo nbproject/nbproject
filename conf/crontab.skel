@@ -1,10 +1,9 @@
 # m h  dom mon dow   command
 MAILTO="@@NB_CRON_EMAIL@@"
-* * * * *  (cd @@NB_DIR@@/@@SRCDIR@@;  python -m base.jobs immediate >> /tmp/log_immediate)
-37 * * * * (cd @@NB_DIR@@/@@SRCDIR@@;  python -m utils_notify watchdog  >> /tmp/log_watchdog)
-1 0 * * *  (cd @@NB_DIR@@/@@SRCDIR@@;  python -m utils_notify digest    >> /tmp/log_digest)
-1 1 * * *  (cd @@NB_DIR@@/@@SRCDIR@@;  python -m utils_stats clients    >> /tmp/log_stats)
-10 * * * * (cd @@NB_DIR@@/@@SRCDIR@@;  python -m processing.jobs latest >> /tmp/log_processing)
+* * * * *  (cd @@NB_DIR@@/@@SRCDIR@@;  python -m 'base.jobs' immediate >> /tmp/log_immediate)
+37 * * * * (cd @@NB_DIR@@/@@SRCDIR@@;  python -m 'base.jobs' watchdog  >> /tmp/log_watchdog)
+1 0 * * *  (cd @@NB_DIR@@/@@SRCDIR@@;  python -m 'base.jobs' digest    >> /tmp/log_digest)
+10 * * * * (cd @@NB_DIR@@/@@SRCDIR@@;  python -m 'processing.jobs' latest >> /tmp/log_processing)
 
 
 

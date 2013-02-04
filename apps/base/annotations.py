@@ -5,7 +5,7 @@ Author
     Sacha Zyto <sacha@csail.mit.edu>
     Peter Wilkins <pwilkins@mit.edu>
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 $Id: annotations.py 122 2011-10-25 17:08:54Z sacha $
@@ -17,8 +17,7 @@ import models as M
 import constants as CST
 import utils_response as UR #, utils_format as UF
 from django.template import Template
-
-
+from django.core.exceptions import ValidationError
 
 #SINGLETONS:
 
@@ -70,7 +69,14 @@ __NAMES = {
         "h": "location.h",
         "body": None,
 },
-                                    
+       "html5location":{
+        "ID": "id", 
+        "id_location": "location_id", 
+        "path1": "path1", 
+        "path2": "path2", 
+        "offset1": "offset1", 
+        "offset2": "offset2"                
+            },                              
     "comment": {                    
         "ID": "id",
         "ID_location": "id_location",
@@ -145,7 +151,8 @@ __NAMES = {
         "h": "source.h",
         "rotation": "source.rotation",
         "assignment": None, 
-        "due": None
+        "due": None, 
+        "filetype": "source.type"
 },
            "ensembles2": {
                           "ID": "ensemble_id",
@@ -231,6 +238,7 @@ def get_file_stats(uid, payload):
 from base_v_comment vc left join (select distinct comment_id from base_commentseen where user_id = ?) as s on s.comment_id=vc.id , base_membership m 
 where 
 m.user_id = ? and m.ensemble_id = vc.ensemble_id and ((vc.type>2 or ( vc.type>1 and m.admin=true)) or vc.author_id=?) 
+and (m.section_id is null or vc.section_id = m.section_id or vc.section_id is null) 
 and vc.ensemble_id=? 
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
@@ -329,9 +337,19 @@ def get_settings(uid, payload):
 
 def getLocation(id):
     """Returns an "enriched" location"""    
-    o = M.Comment.objects.select_related("location").filter(location__id=id, parent__id=None, deleted=False) 
-    return UR.qs2dict(o, __NAMES["location_v_comment2"], "ID")
-
+    o = M.Comment.objects.select_related("location").filter(location__id=id, parent__id=None, deleted=False)
+    loc_dict = UR.qs2dict(o, __NAMES["location_v_comment2"], "ID")
+    h5l = None
+    try: 
+        h5l = o[0].location.html5location if len(o) else None
+    except M.HTML5Location.DoesNotExist: 
+        pass
+    h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
+#    retval = {}
+#    retval["location"] = loc_dict
+#    retval["html5location"] = h5l_dict
+#    return retval
+    return (loc_dict, h5l_dict)
 def getComment(id, uid):
     names = __NAMES["comment2"]
     comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)       
@@ -343,6 +361,7 @@ def getCommentsByFile(id_source, uid, after):
     ensembles_im_admin = M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True))
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
+    html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     membership = M.Membership.objects.get(user__id=uid, ensemble__ownership__source__id=id_source)
     if membership.section is not None:
         comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
@@ -354,6 +373,7 @@ def getCommentsByFile(id_source, uid, after):
         comments = comments.filter(ctime__gt=after)    
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
+    html5locations_dict = UR.qs2dict(html5locations, __NAMES["html5location"], "ID")
     threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
@@ -362,13 +382,14 @@ def getCommentsByFile(id_source, uid, after):
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
-    return locations_dict, comments_dict, threadmarks_dict
+    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
     #return __post_process_comments(o, uid)
 
 def get_comments_collection(uid, P):
     output = {}
     comments_refs = M.Comment.objects.filter(id__in=P["comments"], deleted=False, moderated=False)
     locations= M.Location.objects.filter(comment__in=comments_refs)
+    html5locations = M.HTML5Location.objects.filter(location__in=locations)
     locations_im_admin = locations.filter(ensemble__in= M.Ensemble.objects.filter(membership__in=M.Membership.objects.filter(user__id=uid).filter(admin=True)))                                        
     comments =  M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership,  base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id = base_comment.location_id'}).select_related("location", "author").filter(deleted=False, moderated=False, location__in=locations).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     ensembles = M.Ensemble.objects.filter(location__in=locations)
@@ -379,6 +400,7 @@ def get_comments_collection(uid, P):
     output["files"]=UR.qs2dict(ownerships, __NAMES["files2"] , "ID") 
     output["folders"]=UR.qs2dict(ownerships, __NAMES["folders2"] , "ID") 
     output["locations"] = UR.qs2dict( comments, __NAMES["location_v_comment2"], "ID")
+    output["html5locations"] = UR.qs2dict( html5locations, __NAMES["html5locations"], "ID")    
     comments_dict =  UR.qs2dict( comments, __NAMES["comment2"] , "ID")
     #Anonymous comments
     for k,c in comments_dict.iteritems(): 
@@ -497,7 +519,7 @@ def getPublicCommentsByFile(id_source):
 
     
 def getSeenByFile(id_source, uid):
-    names = {"id": None, "id_location": "comment.location_id"}
+    names = {"id": "comment.id", "id_location": "comment.location_id"}
     locations = M.Location.objects.filter(source__id=id_source)
     comments = M.Comment.objects.filter(location__in=locations)
     seen = M.CommentSeen.objects.select_related("comment").filter(comment__in=comments).filter(user__id=uid)
@@ -565,7 +587,17 @@ def addNote(payload):
         location.h = payload["h"]
         location.page = payload["page"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
-        location.save()        
+        location.save()    
+        #do we need to add an html5 location ?    
+        if "html5range" in payload: 
+                h5range = payload["html5range"]
+                h5l = M.HTML5Location()
+                h5l.path1 =   h5range["path1"]
+                h5l.path2 =   str(h5range["path2"])
+                h5l.offset1 = h5range["offset1"]
+                h5l.offset2 = h5range["offset2"]
+                h5l.location = location  
+                h5l.save()            
     comment = M.Comment()
     if "id_parent" in payload:
         comment.parent = M.Comment.objects.get(pk=payload["id_parent"])
@@ -753,8 +785,12 @@ def markIdle(uid, id_session, o):
         
 def markCommentSeen(uid, id_session, o):    
     for id in o:
-        x = M.CommentSeen(user_id=uid, session_id=id_session, comment_id=id, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
-        x.save()
+        try: 
+            comment_id = int(id)
+            x = M.CommentSeen(user_id=uid, session_id=id_session, comment_id=comment_id, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
+            x.save()
+        except ValueError: 
+            pass
             
 def markPageSeen(uid, id_session, o):    
     for id in o:
@@ -799,7 +835,7 @@ def markActivity(cid):
         session.lastactivity = datetime.datetime.now()
         session.save()
         return session, previous_activity    
-    except M.Session.DoesNotExist: 
+    except M.Session.DoesNotExist, ValidationError: 
         pass     
     return None, None    
 

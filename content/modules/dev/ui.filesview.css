@@ -23,7 +23,7 @@ background-color: #f0f0f0;
 }
 
 button[action=add_file]>ins{
-background-image: url(/content/data/icons/png/default_theme.png);
+background-image: url(/content/data/icons/png/theme_dark.png);
 width: 16px;
 height: 16px;
 }
@@ -69,30 +69,26 @@ background-color: #d7d7d7;
 a.collagelink{
 margin-right: 10px;
 padding: 0px;
-border: thin solid #c0c0c0;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
+display: inline-block;
+overflow: hidden;
+text-decoration: none;
+height: 23px;
+background-color: #EEE;
+color: #707070;
+font-size: 0.9em;
 }
 
 span.collagelink-caption{
-background-color: #909090;
-color: #f0f0f0;
-padding-left: 5px;
-padding-right: 5px;
-
+padding: 5px 0 5px 5px;
+font-weight: bold;
 }
 
 div.collagelink-number{
 font-weight: bold;
-background-color: #f0f0f0;
-color: #707070;
-min-width: 1.5em;
 display: inline-block;
-padding-left: 5px;
-margin-right: 1px;
-text-decoration: underline;
+padding: 5px;
+text-align: center;
 }
-
 
 span.filesView-item-numpage{
 color: #a0a0a0;

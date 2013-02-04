@@ -54,8 +54,10 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None):
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
+
     r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
-    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e9)
+    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
+
     return r
 
 def __serve_page_old(req, tpl, allow_guest=False): 
@@ -101,20 +103,20 @@ def __serve_page_old(req, tpl, allow_guest=False):
             o["LOGIN_MSG"] = "wrong email/password, please retry!"
     r = render_to_response(template, {"o": o}, mimetype='application/xhtml+xml')
     if "INVITE_KEY" in o: 
-        r.set_cookie("invite_key", o["INVITE_KEY"], 1e9)
-        r.set_cookie("screenname", o["EMAIL"], 1e9)
+        r.set_cookie("invite_key", o["INVITE_KEY"], 1e6)
+        r.set_cookie("screenname", o["EMAIL"], 1e6)
     elif "invite_key" in req.COOKIES: 
         r.delete_cookie("invite_key")
-    r.set_cookie("uid", o["UID"] if "UID" in o else 0, 1e9) #this is just to inform the client-side app, don't use it for auth. purposes
+    r.set_cookie("uid", o["UID"] if "UID" in o else 0, 1e6) #this is just to inform the client-side app, don't use it for auth. purposes
     if "logout" in req.COOKIES: 
         r.delete_cookie("logout")
     return r
 
 def index(req): 
-    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome")
+    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
    
 def collage(req): 
-    return __serve_page(req, settings.COLLAGE_TEMPLATE)
+    return __serve_page(req, settings.COLLAGE_TEMPLATE, mimetype="text/html")
 
 def admin(req): 
     return HttpResponseRedirect("/")    #no more admin
@@ -136,11 +138,18 @@ def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
     if source.type==M.Source.TYPE_YOUTUBE: 
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
-    return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest)
+    elif source.type==M.Source.TYPE_HTML5:
+        return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
+    else:
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
     
 
 def your_settings(req): 
-    return __serve_page(req, 'web/your_settings.html')
+    return __serve_page(req, 'web/your_settings.html', mimetype="text/html")
+
+def embedopenid(req): 
+    return __serve_page(req, 'web/embedopenid.html', mimetype="text/html")
+
 
 def draft(req, tplname):
     try:
@@ -168,7 +177,7 @@ def newsite(req):
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
-            p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "http://%s/admin?ckey=%s" %(settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
+            p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
             email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname),
                 render_to_string("email/confirm_newsite", p), 
@@ -232,6 +241,7 @@ def confirm_invite(req):
     else: 
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
     m.admin = invite.admin
+    m.section = invite.section
     m.save()
     if invite.user.valid == False:
         invite.user.valid=True
@@ -319,7 +329,7 @@ def properties_ensemble_users(req, id):
     return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations})
 
 def spreadsheet(req):
-    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),))
+    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")
 
 def fbchannel(req):
     import datetime
@@ -356,6 +366,16 @@ def openid_index(request):
     s.append('</p>')
     s.append('<p><a href="/private">This requires authentication</a></p>')
     return HttpResponse('\n'.join(s))
+
+
+def facebooksample(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
+def debug(request):
+    #without that we we get an error when visiting /openid/login/ (ViewDoesNotExist at /openid/login/)
+    #cf: http://stackoverflow.com/questions/6324799/django-templatesyntaxerror
+    return HttpResponse('Nothing here.')
 
 
 @login_required

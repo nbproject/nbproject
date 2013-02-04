@@ -8,10 +8,10 @@
  *		jquery
  *
 Author 
-    Sacha Zyto (sacha@csail.mit.edu) 
+    cf AUTHORS.txt 
 
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
@@ -110,7 +110,7 @@ NB.homepage.Homepage.prototype.__build_explorer = function(){
 	$(this.explorer.container).addClass("homepanel");
 	this.$main.find("td.explorer").append(this.explorer.container);
     }
-    //    console.debug(this.explorer);
+    //    console.log(this.explorer);
 }
 
 

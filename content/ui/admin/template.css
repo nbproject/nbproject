@@ -1,16 +1,16 @@
 /*
-Author: Sacha Zyto (sacha@csail.mit.edu) 
-License:  Copyright (c) 2010 Massachusetts Institute of Technology.
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-html, body, div.viewport, div.dummy-viewport, div.outerview {
-padding:0px;
-margin: 0px;
+.nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
+padding:0;
+margin: 0;
 overflow: hidden;
 }
 
-html, body, div.dummy-viewport, div.viewport{
+.nb_fullscreen, .nb_fullscreen>body, div.nb-viewport, div.viewport{
 width: 100%;
 height: 100%;
 font-family: Tahoma, Helvetica,arial, sans-serif;
@@ -18,14 +18,14 @@ font-size: small;
 }
 
 
-div.perspective{
+.perspective{
 position: absolute;
 top: 24px;
 width: 100%;
-bottom: 0px;
+bottom: 0;
 }
 
-div.ui-tabs-panel{
+.ui-tabs-panel{
 padding: 0 !important;
 }
 
@@ -35,16 +35,17 @@ padding: 0 !important;
     display: block !important;
 }
 
-div.util_windows{
+.util_windows{
 display: none;
 }
 
 #login-window{
 position: absolute;
-top: 5px;
+top: 1px;
 right: 20px;
 color: #404040;
 font-weight: bold;
+z-index: 3;
 }
 
 #login-window a{
@@ -63,7 +64,7 @@ margin-right: 10px;
 }
 
 
-div.ui-view-popup{
+.ui-view-popup{
 -moz-user-select:none;
 -webkit-user-select:none;
 background-color:#AACCFF;
@@ -82,8 +83,8 @@ z-index:100;
 
 /*Beginning of standard icon theme */
 
-div.nbicon{
-background-image: url("/content/data/icons/png/default_theme.png");
+.nbicon{
+background-image: url("/content/data/icons/png/theme_dark.png");
  background-repeat: no-repeat;
 display: inline-block;
 margin: 0;
@@ -91,90 +92,102 @@ padding: 0;
 text-decoration: none;
 width: 18px;
 height: 18px;
-//position: absolute;
 }
 
-div.nbicon.dark{
+.selected .nbicon,
+.active .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
+}
+
+.nbicon.dark{
 background-color: #000044;
 }
 
-div.foldericon{
-    background-position: -40px 0px;
+.foldericon{
+    background-position: -40px 0;
 }
 
-div.pdficon{
-    background-position: -60px 0px;
+.pdficon{
+    background-position: -60px 0;
 }
 
-div.adminicon{
-    background-position: -80px 0px;
+.html5icon{
+    background-position: -484px 0;
 }
 
-div.privateicon{
-    background-position: -100px 0px;
+.adminicon{
+    background-position: -80px 0;
 }
 
-div.meicon{
-    background-position: -120px 0px;
+.privateicon{
+    background-position: -100px 0;
 }
 
-div.stafficon{
-    background-position: -140px 0px;
+.meicon{
+    background-position: -120px 0;
 }
 
-div.staricon{
-    background-position: -160px 0px;
+.stafficon{
+    background-position: -140px 0;
 }
 
-div.questionicon{
-    background-position: -180px 0px;
+.staricon,
+.staricon-hicontrast{
+    background-position: -160px 0;
 }
 
-div.staricon-hicontrast{
-    background-position: -200px 0px;
+.questionicon,
+.questionicon-hicontrast{
+    background-position: -180px 0;
 }
 
-div.questionicon-hicontrast{
-    background-position: -220px 0px;
+/*
+Removed because new icon set is high-contrast.
+.staricon-hicontrast{
+    background-position: -200px 0;
 }
 
-div.no-staricon{
-    background-position: -240px 0px;
+.questionicon-hicontrast{
+    background-position: -220px 0;
+}*/
+
+.no-staricon{
+    background-position: -240px 0;
 }
 
-div.no-questionicon{
-    background-position: -260px 0px;
+.no-questionicon{
+    background-position: -260px 0;
 }
 
-div.thanksicon{
-    background-position: -280px 0px;
+.thanksicon{
+    background-position: -280px 0;
 }
 
-div.replyicon{
-    background-position: -300px 0px;
+.replyicon{
+    background-position: -300px 0;
 }
 
-div.editicon{
-    background-position: -320px 0px;
+.editicon{
+    background-position: -320px 0;
 }
 
-div.deleteicon{
-    background-position: -340px 0px;
+.deleteicon{
+    background-position: -340px 0;
 }
-div.checkicon{
-    background-position: -360px 0px;
+.checkicon{
+    background-position: -360px 0;
 }
-div.thankscheckicon{
-    background-position: -380px 0px;
-}
-
-div.refuseicon{
-    background-position: -400px 0px;
+.thankscheckicon{
+    background-position: -380px 0;
 }
 
+.refuseicon{
+    background-position: -400px 0;
+}
 
-div.blueadminicon{
-    background-position: -440px 0px;
+
+.blueadminicon{
+    background-position: -440px 0;
 }
 
 
@@ -187,7 +200,7 @@ div.blueadminicon{
     border: 2px solid black;
 }
 
-div.form_errors{
+.form_errors{
 font-weight: bold; 
 color: #a01111;
 }
@@ -195,7 +208,7 @@ color: #a01111;
 
 /* mini-splashscreen (developed using draft framework) */
 
-div.minisplashscreen{
+.minisplashscreen{
 padding: 15px;
 margin: 15px;
 font-family: Tahoma, sans-serif;
@@ -237,12 +250,12 @@ display: inline-block;
 }
 
 
-div.loadingpane{
+.loadingpane{
 margin-top: 50px;
 }
 
 
-div.loadingpane-msg{
+.loadingpane-msg{
 font-size: x-large;
 color: #c0c0c0;
 }

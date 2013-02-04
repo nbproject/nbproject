@@ -1,45 +1,44 @@
 Installation Procedure: 
 
+Note: This assumes that you've downloaded the project from git (for instance fro m https://github.com/nbproject/nbproject ) and that you copied it in a direcory that your the user running the server (e.g www-data). 
+
+
 1-Dependencies: 
-On a typical debian-like (ubuntu etc...) distribution, NB requires the following packages: (note that packages in square brackets are optional)
+On a typical debian-like (ubuntu etc...) distribution, NB requires the following base packages: (note that packages in square brackets are optional)
    * python (>= 2.6)
    * postgresql (>= 8.4)
    * imagemagick
-   * [pdfedit]
-   * [unison]
    * postgresql-plpython-8.4
    * python-pypdf
    * mupdf-tools (for pdfdraw)
    * context (for rich, i.e. annotated pdf generation)
-
-To make sure you have these installed, you can run the following command: 
-sudo make prereqs_common
-
-Then, NB can be deplyed as a django app, which requires the following: 
-- For the apache django version: 
-    * apache (>= 2)
-    * python-psycopg2 
-    * django (>=1.3.1).  
-    * libapache2-mod-wsgi
-    To make sure you have these installed, you can run the following command: 
-    sudo make prereqs_django
-
-    * python-openid (>= 2.2.0)
-    * python-django-openid-auth (for OpenId authentication) 
+   * python-numpy
+   * apache (>= 2)
+   * python-psycopg2 
+   * libapache2-mod-wsgi
+   * python-openid (>= 2.2.0)
+   * python-setuptools (used for 'easy_install pytz' in make prereqs as well)
+   To make sure you have the above packages installed, you can run 'sudo make prereqs'
+   Then, you need to install packages that might not be part of ubuntu (at least in the required version)
+   * django (>=1.3.1): download and follow instructions from https://www.djangoproject.com/download/
+   * python-django-openid-auth (for OpenId authentication) 
        Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package:
        - Download the tarball from https://launchpad.net/django-openid-auth
        - Untar and sudo python setup.py install
-    * django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
+   * django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
       - download the zip and unzip
       - sudo python setup.py install
-
-
--> make django 
+   * nodejs: Download the tarball from http://nodejs.org/, untar, and follow instructions in README.md (i.e. ./configure, make, sudo make install)
+   * grunt: sudo npm install -g grunt
+-> npm install #in order to install specific grunt modules, such as grunt-css, execSync
+-> make django #create configuration files. 
 -> edit values in apps/settings_credentials.py
 -> sudo make create_dirs   #create root folder and some folders below that for nb data
--> make django       #make Apache aware of Django framework
--> make apidev          #Since there is alot of js, this improves performance 
--> edit params in content/ui/classic/conf.js: Tell which server(s) the client should use to fetch various pieces data
+-> make django       #one more time...
+   #If you're deploying a production environmant, use the cmds given in output 
+   #to configure the cron jobs (cf 4) and apache. 
+-> grunt             #Compiles js and css.  
+-> [optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
 
 2- Database Initialization: 
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')
@@ -47,7 +46,9 @@ Then, NB can be deplyed as a django app, which requires the following:
    * Back to the regular user: 
    * 	  createdb -U nbadmin -h localhost notabene
    *	  cd apps
-   *	  ./manage.py syncdb   #to actually create the tables. 
+   *	  ./manage.py syncdb base  #to actually create the tables. 
+   *      ./manage.py sqlcustom base | ./manage.py dbshell #to create custom views - note: this might have been syncdb, but there's no harm in making sure
+   *
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/8.4/main/pg_hba.conf 
           o host    notabene       nbadmin       127.0.0.1/0     password
@@ -63,7 +64,7 @@ Then, NB can be deplyed as a django app, which requires the following:
    - To be able to genereate annotated pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
 
 4- Crontab setup
-   A sample crontab as part of the 'make django'. You just need to add it to your crontab for it to take effect
+   A sample crontab generated as part of the 'make django'. You just need to add it to your crontab for it to take effect
 
 5- Backup 
    - Database:  use the pg_dump command, for instance, if NB was installed on host nb.csail.mit.edu, that the DB belonged to postgres used nbadmin, and that the DB was called notabene, you'd use the following: 
@@ -75,4 +76,5 @@ Then, NB can be deplyed as a django app, which requires the following:
     Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the Django 1.3.1 version so it can be installed from the the Django website
 
 
-Questions: sacha@csail.mit.edu
+Questions: Use our forum at http://nbproject.vanillaforums.com/
+Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above). 

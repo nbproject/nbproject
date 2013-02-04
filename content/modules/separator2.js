@@ -4,10 +4,10 @@
   jquery, jquery-ui
 
 Author 
-    Sacha Zyto (sacha@csail.mit.edu) 
+    cf AUTHORS.txt 
 
 License
-    Copyright (c) 2010 Massachusetts Institute of Technology.
+    Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 
@@ -175,7 +175,7 @@ $(document).ready(function(){
 
 	function propagateSize(src){
 	    // PRE: src has already been adjusted to the correct size
-	    console.debug("propagating size of "+ $(src).attr("id"));
+	    console.log("propagating size of "+ $(src).attr("id"));
 	    var sep,c, F, p,w0, w1,h0, h1, f, prev, next,x ; 
 	    sep = $(src).find("> .vseparator");
 	    if (sep.length > 1){
@@ -269,5 +269,5 @@ $(document).ready(function(){
 
 
 
-	//	console.debug("separator ready");
+	//	console.log("separator ready");
     });
