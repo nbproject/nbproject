@@ -180,8 +180,13 @@ SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com"
 #SMTP_REPLY_TO
 #SMTP_SERVER
 #SMTP_USER
+
 #URL of a google form (or similar service) that can be used for user to contact the NB Team: 
-SUPPORT_LINK = "http://spreadsheets.google.com/viewform?hl=en&formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA" 
+SUPPORT_LINK = "http://nbproject.vanillaforums.com" 
+
+#EMAIL to contact he NB Team: 
+NBTEAM_EMAIL = "nb-team@csail.mit.edu"
+
 
 #for db: 
 DEBUG_QUERY = False
