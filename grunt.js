@@ -305,6 +305,16 @@ module.exports = function(grunt) {
         
     }; 
     
+    TARGETS.EMBEDOPENID = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "dev/ui.concierge1.js"]),                         
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers2.js"]), 
+                          addPrefix(UI_DIR,["embedopenid.js"])
+                          ), 
+        dest_js:  DEST_DIR+"embedopenid_NB.js"
+    };
 
     TARGETS.SETTINGS = {
         src_js: [].concat(

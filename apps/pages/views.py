@@ -89,6 +89,10 @@ def source(req, n, allow_guest=False):
 def your_settings(req): 
     return __serve_page(req, 'web/your_settings.html', mimetype="text/html")
 
+def embedopenid(req): 
+    return __serve_page(req, 'web/embedopenid.html', mimetype="text/html")
+
+
 def draft(req, tplname):
     try:
         r = render_to_response("drafts/%s.html" % tplname, {}, mimetype='application/xhtml+xml')

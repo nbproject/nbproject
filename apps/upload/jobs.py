@@ -288,6 +288,7 @@ def process_next(args=[]):
                      "title": task.source.title, 
                      "submitted": task.submitted, 
                      "support":  settings.SUPPORT_LINK,
+                     "contact_email": settings.NBTEAM_EMAIL,
                      "firstname": task.source.submittedby.firstname
                      }
                 task.delete()
