@@ -86,7 +86,7 @@
     if (__nb_userinfo){
         GLOB.conf.userinfo=__nb_userinfo;
     }
-    GLOB.pers.connection_id = 1;
+    GLOB.pers.connection_id = 0;
     GLOB.conf.servers.rpc=GLOB.pers.server_url;
     GLOB.pers._comments = [];
     $("a").each(function(i, elt){

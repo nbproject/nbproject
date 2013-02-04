@@ -181,8 +181,13 @@ SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com"
 #SMTP_REPLY_TO
 #SMTP_SERVER
 #SMTP_USER
+
 #URL of a google form (or similar service) that can be used for user to contact the NB Team: 
-SUPPORT_LINK = "http://spreadsheets.google.com/viewform?hl=en&formkey=dGJTeEMxdi1oMkpTVENQakNfOGIzSUE6MA" 
+SUPPORT_LINK = "http://nbproject.vanillaforums.com" 
+
+#EMAIL to contact he NB Team: 
+NBTEAM_EMAIL = "nb-team@csail.mit.edu"
+
 
 #for db: 
 DEBUG_QUERY = False
@@ -224,8 +229,8 @@ REDIRECT_URL = "http://nb.mit.edu"
 #OPENID SSO: 
 OPENID_CREATE_USERS             = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
-#OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
-OPENID_SSO_SERVER_URL = 'https://www.edx.org/openid/provider/login'
+OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
+#OPENID_SSO_SERVER_URL = 'https://www.edx.org/openid/provider/login'
 
 LOGIN_URL                       = '/openid/login/'
 LOGIN_REDIRECT_URL              = '/'
