@@ -574,9 +574,20 @@ def getMark(uid, payload):
 def addNote(payload):
     id_location = None
     author =  M.User.objects.get(pk=payload["id_author"])
+    location = None
+    h5l = None
+    parent =  M.Comment.objects.get(pk=payload["id_parent"]) if "id_parent" in payload else None
+
+    #putting this in factor for duplicate detection: 
+    similar_comments = M.Comment.objects.filter(parent=parent, ctime__gt=datetime.datetime.now()-datetime.timedelta(0,10,0), author=author, body=payload["body"]);
+    
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
+        #refuse if similar comment
+        similar_comments = similar_comments.filter(location=location)
+        if similar_comments.count(): 
+            return None
     else:
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
@@ -587,6 +598,12 @@ def addNote(payload):
         location.h = payload["h"]
         location.page = payload["page"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
+
+        #refuse if similar comment
+        similar_comments = similar_comments.filter(location__in=M.Location.objects.filter(source=location.source, ensemble=location.ensemble, y=location.y, x=location.x, w=location.w, h=location.h, page=location.page));
+        if similar_comments.count():
+            return None
+
         location.save()    
         #do we need to add an html5 location ?    
         if "html5range" in payload: 
@@ -599,8 +616,7 @@ def addNote(payload):
                 h5l.location = location  
                 h5l.save()            
     comment = M.Comment()
-    if "id_parent" in payload:
-        comment.parent = M.Comment.objects.get(pk=payload["id_parent"])
+    comment.parent = parent
     comment.location = location
     comment.author = author
     comment.body = payload["body"]

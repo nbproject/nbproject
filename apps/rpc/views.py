@@ -342,6 +342,8 @@ def saveNote(payload, req):
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
+    if a is None: 
+        return UR.prepare_response({}, 2,  "DUPLICATE") 
     tms = {}
     for mark in payload["marks"]:
         tm = M.ThreadMark()
