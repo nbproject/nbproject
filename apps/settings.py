@@ -142,12 +142,9 @@ HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/
 IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
-LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
 DESKTOP_TEMPLATE= "web/desktop.html"
 COLLAGE_TEMPLATE= "web/desktop11.html"
 ADMIN_TEMPLATE  = "web/desktop9.xhtml"
-FEEDBACK_TEMPLATE = "web/feedback1.xhtml"
-FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.html"

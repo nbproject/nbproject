@@ -16,13 +16,20 @@ padding-top: 5px;
 padding-left: 10px;
 }
 
+div.threadview-branch>div.threadview-branch{
+    border-left: 1px solid #DDD;
+}
+
 div.threadview div.lens-odd {
     background-color: #F0F0F0;
 }
 
 div.threadview-pane{
-    padding-right: 30px;
+    padding-right: 8px;
     padding-bottom: 20px;
+    border-width: 0 1px 0 1px;
+    border-style: solid;
+    border-color: #DDD;
 }
 
 
@@ -30,17 +37,17 @@ div.threadview-pane{
 div.threadview div.note-lens{
 padding-top: 5px;
 padding-bottom: 5px;
-border: thin solid #fefefe;
+border: thin solid transparent;
+border-right-width: 5px;
 }
 
 
 div.threadview div.note-lens.replyrequested{
-background-color: #ffa070;
+border-right: 5px solid #ffa070;
 }
 
 div.threadview div.note-lens:hover{
-background-color:  #ffffd0;
-border: thin solid #c0c0c0;
+background-color:  #ffffec;
 }
 
 div.threadview span.note-bold{
@@ -48,7 +55,9 @@ font-weight: bold;
 color: #000000;
 }
 
-
+.authorship-info .nbicon {
+    vertical-align: sub;
+}
 
 div.threadview span.author{
 color: #a0a0a0;
@@ -62,7 +71,7 @@ color: #a0a0a0;
 
 div.threadview div.stat-count{
     background-color: #EEE;
-    color: #F0F0F0;
+    color: #707070;
     display: inline-block;
     padding: 1px 8px 1px 0;
     font-weight: bold;
@@ -75,23 +84,33 @@ div.threadview div.stat-count .nbicon {
 }
 
 div.threadview div.stat-count.active{
-background-color: #70A0F0;
+    background-color: #70A0F0;
+    color: #F0F0F0;
+}
+
+div.threadview div.stat-count.active .nbicon {
+background-image: url("/content/data/icons/png/theme_light.png");
 }
 
 div.threadview div.lensmenu{
 float: right;
 padding: 5px;
-opacity: 0.2;
-background-color: #e0e0e0;
-border: thin solid #c0c0c0;
-margin-left: 8px;
-margin-top: -5px;
+opacity: 0.3;
 }
 
 div.threadview div.note-lens:hover div.lensmenu{
 opacity: 1.0;
 }
 
+div.threadview div.lensmenu a {
+    text-decoration: none;
+    color: #444;
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: bold;
+    margin-left: 2px;
+    margin-right: 2px;
+}
 
 div.note-lens-unabridged{
 color: #a0a0a0;
@@ -123,13 +142,15 @@ button.mark-toggle{
 font-size: large; 
 padding: 0px 5px;
 width: 30px;
+margin: 0 5px;
 }
 
 div.threadview-header{
-background-color: #c0c0c0;
+background-color: #EFEBE7;
 height: 24px;
-border-bottom: thin solid #A0A0A0;
-padding: 3px 5px 5px 3px;
+border-bottom: thin solid #DDD;
+padding: 3px 5px 8px 3px;
+box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2);
 }
 
 div.threadview-filter-controls .nbicon {

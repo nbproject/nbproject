@@ -109,13 +109,13 @@
         else if (o.type === 2){
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
-        var author_info        = " <span class='author'>"+o.fullname+"</span> ";
-        var creation_info = " <span class='created'> - " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
-        var replymenu        = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
-        var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
+        var author_name        = " <span class='author'>"+o.fullname+"</span> ";
+        var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
+        var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
+        var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&sdot;&sdot;&sdot;</div></a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
         var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
-        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span>", author_info,admin_info, me_info, question_info, type_info, creation_info,"</div>"].join("");
+        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div></div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
         _fill_tree: function(m, c){

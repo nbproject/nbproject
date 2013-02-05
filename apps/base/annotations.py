@@ -845,6 +845,8 @@ def page_served(uid, p):
     o.save()
     
 def markActivity(cid):
+    if cid=="0" or cid=="1":
+        return None, None #temporary fix 
     try: 
         session = M.Session.objects.get(ctime=cid)
         previous_activity = session.lastactivity

@@ -9,6 +9,10 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     position: absolute;
 }
 
+.separator:hover{
+    background-color: #CCC;
+}
+
 .pers-container{
     overflow: hidden;
 }
