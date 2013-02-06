@@ -36,6 +36,9 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
     ROTATE_KEY = "/Rotate"
     try: 
         pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+        if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
+            print "PDF file encrypted with non-empty password: %s" % (filename,)
+            return False
         numpages = pdf_object.getNumPages()
         p = pdf_object.getPage(0)
         box = p.trimBox
@@ -53,6 +56,9 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
             h = ht
     except pyPdf.utils.PdfReadError: 
         print "PdfReadError for %s ! Aborting !!!" % (filename,)
+        return False
+    except: 
+        print "Other pdf error for %s ! Aborting !!!" % (filename,)
         return False
     s = M.Source.objects.get(pk=id)
     s.numpages = numpages
@@ -107,6 +113,9 @@ def update_rotation(*t_args):
             if os.path.exists(filename): 
                 try: 
                     pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+                    if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
+                        print "PDF file encrypted with non-empty password: %s" % (filename,)
+                        return False
                     p = pdf_object.getPage(0)
                     if ROTATE_KEY in p: 
                         r = int(p[ROTATE_KEY])
@@ -147,6 +156,9 @@ def update_dims(*t_args):
             if os.path.exists(filename): 
                 try: 
                     pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+                    if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
+                        print "PDF file encrypted with non-empty password: %s" % (filename,)
+                        return False
                     p = pdf_object.getPage(0)
                     box = p.trimBox
                     #h = int(box.getUpperRight_y() - box.getLowerLeft_y())
