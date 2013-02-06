@@ -104,7 +104,7 @@
     if (init_ui){
         $("#login-window").remove();
         var $login_window = $("<div id='login-window'/>");
-        $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='mailto:nb-team@csail.mit.edu?subject=NB%20Inquiry'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
+        $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='/contact'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
         $login_window.append($login_contents);
         $("body").append($login_window);
     }

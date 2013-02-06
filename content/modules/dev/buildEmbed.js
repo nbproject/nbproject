@@ -19,7 +19,7 @@
 
     
     var $vp;
-    var id_ensemble = null;  //SACHA TODO: replace this by user's real id_ensemble
+    var id_ensemble = null;  
     GLOB.pers.iframe_id = "nb_iframe";
 
     var f_after_successful_login = function(){    
@@ -190,22 +190,33 @@
                    function(P){
                        $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
                        $("#login_to_nb").click(function(evt){
-                               //console.log("opening iframe");
-                               //$("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+                               console.log("opening iframe");
+                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
                                $.concierge.get_component("login_user_menu")();
                                
                        });
                    });    
 };
+    GLOB.pers.ckey_from_iframe = null;
+    GLOB.pers.f_poll_iframe = function(){
+        console.log("polling iframe");
+        $("#"+GLOB.pers.iframe_id)[0].contentWindow.postMessage("confkey", "http://localhost:8001");
+        if (GLOB.pers.ckey_from_iframe === null){
+            setTimeout(GLOB.pers.f_poll_iframe, 500);
+        }
+        else{
+            console.log("got ckey - no more polling", GLOB.pers.ckey_from_iframe);
+        }
+    }; 
     GLOB.pers.init = function(){
-        GLOB.pers.connection_id = 1;
+        GLOB.pers.connection_id = 0;
         GLOB.pers.embedded = true;
         //add our CSS
         var cur =  GLOB.pers.currentScript;
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
         var server_url = server_info[1]+"://"+server_info[2];
         GLOB.pers.add_css(server_url+"/content/compiled/embed_NB.css");
-        GLOB.pers.openid_url=server_url+"/openid/login";
+        GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
 
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
@@ -234,6 +245,14 @@
         if (GLOB.conf.userinfo){
             f_after_successful_login();
         }
+
+        window.addEventListener('message', function(e){
+                console.log("got event: ", e);
+                //TODO: clearTimeout
+            }, false);
+
+        
+
     }; 
     
     jQuery(function(){

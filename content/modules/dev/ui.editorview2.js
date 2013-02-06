@@ -115,6 +115,9 @@
                 //TODO: maybe other case to see if we should create selection from draft
 
                 //Now construct the editor. 
+                var timeout_save_button;
+                var timeout_func = function(self) { $("button[action=save]", self.element).removeAttr("disabled"); };
+
                 var answerplease_opt = " ";
                 if(self._doEdit && self._note.ID in model.o.mark){
                     var mark = model.o.mark[self._note.ID];
@@ -123,6 +126,7 @@
                     }
                 }
                 var f_cleanup = function(){
+                    window.clearTimeout(timeout_save_button);
                     self.element.trigger("before_cleanup", true);
                     self.element.trigger("minimize");
                     self.element.empty();
@@ -157,7 +161,7 @@
                 var f_sel = function(evt, ui){
                     $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
                 };
-        
+
                 var f_discard = function(evt){
                     f_cleanup();
                 };
@@ -185,6 +189,9 @@
                     f_cleanup();
                 };
                 var f_save = function(evt){
+                    $("button[action=save]", self.element).attr("disabled", "disabled");
+                    timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
+
                     var msg = {
                         type: $("input[name=vis_"+id_item+"]:checked", self.element)[0].value,
                         body:  $("textarea", self.element)[0].value,            
@@ -192,7 +199,7 @@
                         marks: {}
                     };
                     if ($("input[value=question]:checked", self.element).length){
-                        msg.marks.question =true;
+                        msg.marks.question = true;
                     }
                     var component_name;
                     if (!(self._note)){ //new note, local or global
@@ -210,7 +217,7 @@
                             delete self._html5range.apparent_height;
                             msg.html5range = self._html5range;
                         }
-                        else{
+                        else {
                             var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
                             var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
                             s_inv = s_inv/fudge;
