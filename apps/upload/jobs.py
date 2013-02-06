@@ -58,7 +58,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
         print "PdfReadError for %s ! Aborting !!!" % (filename,)
         return False
     except: 
-        print "Other pdf error for %s ! Aborting !!!" % (filename,)
+        print "OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
         return False
     s = M.Source.objects.get(pk=id)
     s.numpages = numpages
@@ -125,7 +125,7 @@ def update_rotation(*t_args):
                 except pyPdf.utils.PdfReadError: 
                     print "\nPdfReadError for %s - Skipping" % (filename,)
                 except: 
-                    print "\nOTHER ERROR for %s - Skipping" % (filename, )
+                    print "\nOTHER ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
             else: 
                 print "\n%s not in repository" %(filename, )
 
