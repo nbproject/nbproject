@@ -34,12 +34,17 @@
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
                     }
-                    //TMP FIX: only allow one current editor
+
+                    // only allow one current editor if draft is not empty
                     if (self.element.children().length){
-                        $.I("Only one editor at a time is allowed for now...");
-                        return;
-                    }            
-                    //TODO: delete previous draft if empty
+                        if ($("textarea", self.element).val().length > 0) {
+                            $.I("You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.");
+                            return;
+                        } else {
+                            $("button[action=discard]", self.element).click(); // HACK: get f_discard to work from our scope.
+                        }
+                    }
+
                     //TODO: if existting draft, sync its content w/ its model
                     //now create new draft: 
                     id_item        = (new Date()).getTime();
@@ -61,11 +66,17 @@
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
                     }
-                    //TMP FIX: only allow one current editor
+
+                    // only allow one current editor if draft is not empty
                     if (self.element.children().length){
-                        $.I("Only one editor at a time is allowed for now...");
-                        return;
+                        if ($("textarea", self.element).val().length > 0) {
+                            $.I("You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.");
+                            return;
+                        } else {
+                            $("button[action=discard]", self.element).click(); // HACK: get f_discard to work from our scope.
+                        }
                     }
+
                     id_item        = (new Date()).getTime();
                     draft        = {};
                     draft[id_item]        = id_item;
@@ -80,11 +91,17 @@
                     self._render(id_item);    
                     break;
                 case "edit_thread": 
-                    //TMP FIX: only allow one current editor
+
+                    // only allow one current editor if draft is not empty
                     if (self.element.children().length){
-                        $.I("Only one editor at a time is allowed for now...");
-                        return;
+                        if ($("textarea", self.element).val().length > 0) {
+                            $.I("You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.");
+                            return;
+                        } else {
+                            $("button[action=discard]", self.element).click(); // HACK: get f_discard to work from our scope.
+                        }
                     }
+
                     id_item        = (new Date()).getTime();
                     draft        = {};
                     draft[id_item]        = id_item;
