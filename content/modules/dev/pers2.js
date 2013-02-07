@@ -98,7 +98,7 @@
         }
     }
     else{
-        var screenname = uinfo.firstname === null ? uinfo.email: $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
+        var screenname = uinfo.firstname === null ? $.E(uinfo.email): $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
         $login_contents = $("<ul class='dropdown-menu'><li><a id='login-name' title='"+$.E(uinfo.email)+"' href='#'>"+screenname+"</a><ul><li id='menu_settings'><a target='_blank' href='/settings'>Settings</a></li><li id='menu_logout'><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
     }
     if (init_ui){

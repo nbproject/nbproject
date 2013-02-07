@@ -1,14 +1,11 @@
 """
 annotations.py -  Model queries. 
 
-Author 
-    Sacha Zyto <sacha@csail.mit.edu>
-    Peter Wilkins <pwilkins@mit.edu>
+Author(s) cf AUTHORS.txt 
+
 License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
-
-$Id: annotations.py 122 2011-10-25 17:08:54Z sacha $
 """
 from django.db.models import Q
 from django.db import transaction
@@ -174,11 +171,13 @@ __NAMES = {
             "members":{                       
         "ID": "user_id",
         "id": "user_id",
+        "section_id": None,
         "email": "user.email",
         "firstname": "user.firstname",
         "lastname": "user.lastname", 
         "guest": "user.guest", 
         "admin": None},   
+    
     "assignment_grade": {
               "id": None, 
               "grade": None, 
@@ -257,10 +256,12 @@ def get_stats_ensemble(payload):
     grades = M.AssignmentGrade.objects.filter(source__ownership__ensemble__id=id_ensemble)
     ownerships = M.Ownership.objects.select_related("source", "ensemble", "folder").filter(ensemble__id=id_ensemble, deleted=False)
     memberships = M.Membership.objects.select_related("user").filter(ensemble__id=id_ensemble, deleted=False)    
+    sections = M.Section.objects.filter(membership__in=memberships)
     retval["users"] =  UR.qs2dict(memberships, __NAMES["members"] , "ID")
     retval ["files"] =  UR.qs2dict(ownerships, __NAMES["files2"] , "ID")
     retval["ensembles"] = UR.qs2dict(ownerships, __NAMES["ensembles2"] , "ID") 
     retval["grades"] = UR.qs2dict(grades, __NAMES["assignment_grade"], "id")
+    retval["sections"] = UR.qs2dict(sections)
     return retval
      
 def set_grade_assignment(uid, P):
@@ -364,7 +365,7 @@ def getCommentsByFile(id_source, uid, after):
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
-    membership = M.Membership.objects.get(user__id=uid, ensemble__ownership__source__id=id_source)
+    membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
     if membership.section is not None:
         comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
@@ -871,7 +872,8 @@ def getPending(uid, payload):
     questions = questions.exclude(location__comment__in=unrated_replies_ids)
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
-    
+    locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))
+
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)#extra(select={"pending": "false"})
     my_unresolved = M.ReplyRating.objects.filter(threadmark__in=my_questions, status = M.ReplyRating.TYPE_UNRESOLVED)
@@ -882,6 +884,7 @@ def getPending(uid, payload):
     #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
     recent_replies_ids = list(recent_replies.values_list("id", flat=True))    
     recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
+    recent_locations = recent_locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))
     replied_questions = my_questions.filter(location__in=recent_locations)
     replied_questions = replied_questions.extra(select={"pending": "true"})    
     output = {}    

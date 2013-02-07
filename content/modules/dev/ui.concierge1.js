@@ -229,7 +229,7 @@ var NB$ = jQuery.noConflict();
     popup[display_fct](msg).stop(true).fadeTo("normal", 0.7, function(){$(this).fadeTo(time_ms, 0.7, function(){$(this).fadeTo("normal", 0, function(){$(this).remove();});});});
     };
     $.E = function(s){
-    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return s ? s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : "None";
     };
     $.ellipsis = function(s, n){
     var l = s.length;

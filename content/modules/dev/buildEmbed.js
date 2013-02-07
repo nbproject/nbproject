@@ -21,8 +21,16 @@
     var $vp;
     var id_ensemble = null;  
     GLOB.pers.iframe_id = "nb_iframe";
-
     var f_after_successful_login = function(){    
+        //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
+        //for now, just update user name and email on hover. :
+        var uinfo = GLOB.conf.userinfo;
+        if (!uinfo.guest){
+            var screenname = uinfo.firstname === null ? $.E(uinfo.email): $.E(uinfo.firstname) + " " + $.E(uinfo.lastname);         
+            $("#login-name").text(screenname).attr("title", $.E(uinfo.email));
+        }
+        
+        //now move stuff here it's supposed to be: 
         $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
         $("#login-window").appendTo(".ui-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
@@ -122,7 +130,9 @@
                            }
                        };
                        
-                       $pers.perspective({
+                       //SACHA FIXME: Hack we embed the following into a delay because FF doesn't compute the right window height if we execute this right away
+                       setTimeout(function(){                               
+                          $pers.perspective({
                                height: function(){
                                    return $vp.height() - ($pers.offset().top - $vp.offset().top);
                                }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
@@ -183,15 +193,14 @@
                                        }, 300);
                                }
                            });
-                       
-                       
-                       
+                           }, 1000);
                    },
                    function(P){
                        $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
                        $("#login_to_nb").click(function(evt){
-                               console.log("opening iframe");
-                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+                               //sacha: disable this for now. 
+                               //console.log("opening iframe");
+                               //                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
                                $.concierge.get_component("login_user_menu")();
                                
                        });
@@ -216,7 +225,9 @@
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
         var server_url = server_info[1]+"://"+server_info[2];
         GLOB.pers.add_css(server_url+"/content/compiled/embed_NB.css");
-        GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
+        //GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
+        //sacha: disabled this as well for now. 
+        GLOB.pers.openid_url="";
 
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
@@ -226,6 +237,7 @@
                     GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
                     $("#splash-welcome").parent().dialog("destroy");
+                    
                     f_after_successful_login();
                     
                     

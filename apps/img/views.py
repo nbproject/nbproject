@@ -56,8 +56,15 @@ def serve_doc(req, id_source, annotated=False):
         response["Content-Type"]='application/pdf'
         #the following makes sure that: 
         #- the downloaded file name always ends up w/ '.pdf'
-        #- it conatains the qualif. '_annotated' if it's... er... well.... annotated : )        
-        filename = "%s%s%s" % (M.Source.objects.get(pk=id_source).title.partition(".pdf")[0], qual, ".pdf")        
+        #- it conatains the qualif. '_annotated' if it's... er... well.... annotated : )                
+        #- the filename only contains ascii characters, so that we don't get an UnicodeEncodeError since the 
+        #  filename is part of the response headers and that HTTP response headers can only contain ascii characters. 
+        filename = ""
+        try:
+            filename = M.Source.objects.get(pk=id_source).title.partition(".pdf")[0].encode("ascii").replace(" ", "_")
+        except UnicodeEncodeError: 
+            filename = id_source
+        filename = "%s%s%s" % (filename, qual, ".pdf")        
         response['Content-Disposition'] = "attachment; filename=%s" % (filename, )
         signals.file_downloaded.send("file", req=req, uid=uid, id_source=id_source, annotated=annotated)
         return response
@@ -73,32 +80,47 @@ def serve_grades_spreadsheet(req, id_ensemble):
     files = a["files"]
     stats = a["stats"]
     users = a["users"]
-        
+    sections = a["sections"]
     import xlwt
     wbk = xlwt.Workbook()
     s_wd = wbk.add_sheet("word_count")
     s_ch = wbk.add_sheet("char_count")
     s_cm = wbk.add_sheet("comments_count")
-    file_ids = files.keys()
-    user_ids = users.keys()
+
+    # Default order: file id and user email 
+    file_ids = sorted(files)
+    user_ids = sorted(users, key=lambda o:users[o]["email"]) 
+
     row=0
     col=0
     s_wd.write(row, col, "WORDS")
     s_ch.write(row, col, "CHARACTERS")
     s_cm.write(row, col, "COMMENTS")
     col+=1
+    s_wd.write(row, col, "SECTION")
+    s_ch.write(row, col, "SECTION")
+    s_cm.write(row, col, "SECTION")
+    col+=1
+    val = None
     for f in file_ids: 
-        s_wd.write(row, col, files[f]["title"])
-        s_ch.write(row, col, files[f]["title"])
-        s_cm.write(row, col, files[f]["title"])
+        val = files[f]["title"]
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
         col+=1
     row+=1
     for u in user_ids: 
         col=0
-        s_wd.write(row, col, users[u]["email"])
-        s_ch.write(row, col, users[u]["email"])
-        s_cm.write(row, col, users[u]["email"])
-        col+=1        
+        val = users[u]["email"]
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
+        col+=1
+        val = "" if  users[u]["section_id"] is None else  sections[users[u]["section_id"]]["name"] 
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
+        col+=1
         for f in file_ids: 
             stat_id = "%s_%s" % (u,f)
             s_wd.write(row, col, stats[stat_id]["numwords"] if stat_id in stats else "")
