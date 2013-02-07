@@ -48,7 +48,7 @@ def serve_img(req, res, scale, id_source):
 def serve_doc(req, id_source, annotated=False): 
     serve_dir =  settings.ANNOTATED_DIR if annotated else  settings.REPOSITORY_DIR
     qual = "_annotated" if annotated else  ""
-    uid = UR.getUserId(req);
+    uid = UR.getUserId(req)
     if not auth.canDownloadPDF(uid, id_source): 
         return HttpResponse("Error: You don't have credentials to see file #%s" % (id_source, ))
     try:   
@@ -65,3 +65,53 @@ def serve_doc(req, id_source, annotated=False):
         logging.info("missing "+id_source)
         return HttpResponse("Error - No such file: #%s %s" % (id_source, qual) )
 
+def serve_grades_spreadsheet(req, id_ensemble): 
+    uid = UR.getUserId(req)
+    if not auth.canSeeGrades(uid, id_ensemble):
+        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+    a  = annotations.get_stats_ensemble({"id_ensemble": id_ensemble})    
+    files = a["files"]
+    stats = a["stats"]
+    users = a["users"]
+        
+    import xlwt
+    wbk = xlwt.Workbook()
+    s_wd = wbk.add_sheet("word_count")
+    s_ch = wbk.add_sheet("char_count")
+    s_cm = wbk.add_sheet("comments_count")
+    file_ids = files.keys()
+    user_ids = users.keys()
+    row=0
+    col=0
+    s_wd.write(row, col, "WORDS")
+    s_ch.write(row, col, "CHARACTERS")
+    s_cm.write(row, col, "COMMENTS")
+    col+=1
+    for f in file_ids: 
+        s_wd.write(row, col, files[f]["title"])
+        s_ch.write(row, col, files[f]["title"])
+        s_cm.write(row, col, files[f]["title"])
+        col+=1
+    row+=1
+    for u in user_ids: 
+        col=0
+        s_wd.write(row, col, users[u]["email"])
+        s_ch.write(row, col, users[u]["email"])
+        s_cm.write(row, col, users[u]["email"])
+        col+=1        
+        for f in file_ids: 
+            stat_id = "%s_%s" % (u,f)
+            s_wd.write(row, col, stats[stat_id]["numwords"] if stat_id in stats else "")
+            s_ch.write(row, col, stats[stat_id]["numchars"] if stat_id in stats else "")
+            s_cm.write(row, col, stats[stat_id]["cnt"] if stat_id in stats else "")
+            col+=1
+        row+=1
+    import datetime
+    a = datetime.datetime.now()
+    fn = "stats_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
+    wbk.save("/tmp/%s" %(fn,))
+    response = serve(req, fn,"/tmp/")
+    os.remove("/tmp/%s" %(fn,))
+    response["Content-Type"]='application/vnd.ms-excel'   
+    response['Content-Disposition'] = "attachment; filename=%s" % (fn, )
+    return response

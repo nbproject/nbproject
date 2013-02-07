@@ -17,6 +17,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * python-psycopg2 
    * libapache2-mod-wsgi
    * python-openid (>= 2.2.0)
+   * python-xlwt (used to generate downloadable stats spreadsheet) 
    * python-setuptools (used for 'easy_install pytz' in make prereqs as well)
    To make sure you have the above packages installed, you can run 'sudo make prereqs'
    Then, you need to install packages that might not be part of ubuntu (at least in the required version)

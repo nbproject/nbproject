@@ -50,11 +50,12 @@ urlpatterns = patterns("",
                        (r'^confirm_invite$', 'pages.views.confirm_invite'), 
                        (r'^enteryourname$', 'pages.views.enter_your_name'), 
                        (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
-                         (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
+                       (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
                        (r'^fbchannel$', 'pages.views.fbchannel'),  #TODO: not sure this is needed anymore. 
-                        (r'^spreadsheet$', 'pages.views.spreadsheet'),
-                         (r'^debug', 'pages.views.debug'),
-                        (r'^polls', include(polls.urls)),  
+                       (r'^spreadsheet$', 'pages.views.spreadsheet'),
+                       (r'^spreadsheet/download/(\d+)$', 'img.views.serve_grades_spreadsheet'),
+                       (r'^debug', 'pages.views.debug'),
+                       (r'^polls', include(polls.urls)),  
                        )
 
 urlpatterns += patterns('django.views.generic.simple',
