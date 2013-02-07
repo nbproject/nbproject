@@ -252,7 +252,7 @@ def get_stats_ensemble(payload):
         "numchars": None, 
         "numwords": None
         }
-    from_clause = """(select count(v.id) as cnt,  v.author_id || '_' || v.source_id as record_id, sum(length(c.body)) as numchars, sum(array_length(regexp_split_to_array(body, E'\\s+'), 1)) as numwords from base_v_comment v, base_comment c where v.type>1 and v.ensemble_id=? and v.id=c.id group by v.author_id, v.source_id) as v1"""
+    from_clause = """(select count(v.id) as cnt,  v.author_id || '_' || v.source_id as record_id, sum(length(c.body)) as numchars, sum(array_length(regexp_split_to_array(c.body, E'\\\\s+'), 1)) as numwords from base_v_comment v, base_comment c where v.type>1 and v.ensemble_id=? and v.id=c.id group by v.author_id, v.source_id) as v1"""
     retval={"stats":  db.Db().getIndexedObjects(names, "ID", from_clause, "true" , (id_ensemble,))}
     grades = M.AssignmentGrade.objects.filter(source__ownership__ensemble__id=id_ensemble)
     ownerships = M.Ownership.objects.select_related("source", "ensemble", "folder").filter(ensemble__id=id_ensemble, deleted=False)
