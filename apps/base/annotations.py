@@ -1,14 +1,11 @@
 """
 annotations.py -  Model queries. 
 
-Author 
-    Sacha Zyto <sacha@csail.mit.edu>
-    Peter Wilkins <pwilkins@mit.edu>
+Author(s) cf AUTHORS.txt 
+
 License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
-
-$Id: annotations.py 122 2011-10-25 17:08:54Z sacha $
 """
 from django.db.models import Q
 from django.db import transaction
@@ -174,11 +171,13 @@ __NAMES = {
             "members":{                       
         "ID": "user_id",
         "id": "user_id",
+        "section_id": None,
         "email": "user.email",
         "firstname": "user.firstname",
         "lastname": "user.lastname", 
         "guest": "user.guest", 
         "admin": None},   
+    
     "assignment_grade": {
               "id": None, 
               "grade": None, 
@@ -255,10 +254,12 @@ def get_stats_ensemble(payload):
     grades = M.AssignmentGrade.objects.filter(source__ownership__ensemble__id=id_ensemble)
     ownerships = M.Ownership.objects.select_related("source", "ensemble", "folder").filter(ensemble__id=id_ensemble, deleted=False)
     memberships = M.Membership.objects.select_related("user").filter(ensemble__id=id_ensemble, deleted=False)    
+    sections = M.Section.objects.filter(membership__in=memberships)
     retval["users"] =  UR.qs2dict(memberships, __NAMES["members"] , "ID")
     retval ["files"] =  UR.qs2dict(ownerships, __NAMES["files2"] , "ID")
     retval["ensembles"] = UR.qs2dict(ownerships, __NAMES["ensembles2"] , "ID") 
     retval["grades"] = UR.qs2dict(grades, __NAMES["assignment_grade"], "id")
+    retval["sections"] = UR.qs2dict(sections)
     return retval
      
 def set_grade_assignment(uid, P):
