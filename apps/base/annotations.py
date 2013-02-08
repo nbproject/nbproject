@@ -865,7 +865,7 @@ def getPending(uid, payload):
     questions = M.ThreadMark.objects.filter(location__ensemble__membership__user__id=uid, type=1, active=True).exclude(user__id=uid)
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
-    locations = location.filter(Q(section__membership__user__id=uid)|Q(section=None))
+    locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None))
     all_comments = M.Comment.objects.filter(location__in=locations)
     unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
     
