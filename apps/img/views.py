@@ -79,8 +79,11 @@ def serve_grades_spreadsheet(req, id_ensemble):
     s_wd = wbk.add_sheet("word_count")
     s_ch = wbk.add_sheet("char_count")
     s_cm = wbk.add_sheet("comments_count")
-    file_ids = files.keys()
-    user_ids = users.keys()
+
+    # Default order: file id and user email 
+    file_ids = sorted(files)
+    user_ids = sorted(users, key=lambda o:users[o]["email"]) 
+
     row=0
     col=0
     s_wd.write(row, col, "WORDS")
