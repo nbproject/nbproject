@@ -872,7 +872,7 @@ def getPending(uid, payload):
     questions = questions.exclude(location__comment__in=unrated_replies_ids)
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
-    locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None))
+    locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))
 
     #now items where action required: 
     my_questions =  M.ThreadMark.objects.filter(type=1, active=True, user__id=uid)#extra(select={"pending": "false"})
@@ -884,8 +884,7 @@ def getPending(uid, payload):
     #otherwise we get errors since other aliases are used in subsequent queries, that aren't compatibles with the names we defined in extra()
     recent_replies_ids = list(recent_replies.values_list("id", flat=True))    
     recent_locations = M.Location.objects.filter(comment__in=recent_replies_ids)
-    recent_locations = recent_locations.filter(Q(section__membership__user__id=uid)|Q(section=None))
-
+    recent_locations = recent_locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))
     replied_questions = my_questions.filter(location__in=recent_locations)
     replied_questions = replied_questions.extra(select={"pending": "true"})    
     output = {}    
