@@ -247,9 +247,11 @@ def get_stats_ensemble(payload):
     id_ensemble = payload["id_ensemble"] 
     names = {
         "ID": "record_id",
-        "cnt": None
+        "cnt": None, 
+        "numchars": None, 
+        "numwords": None
         }
-    from_clause = """(select count(id) as cnt,  author_id || '_' || source_id as record_id from base_v_comment where type>1 and ensemble_id=? group by author_id, source_id) as v1"""
+    from_clause = """(select count(v.id) as cnt,  v.author_id || '_' || v.source_id as record_id, sum(length(c.body)) as numchars, sum(array_length(regexp_split_to_array(c.body, E'\\\\s+'), 1)) as numwords from base_v_comment v, base_comment c where v.type>1 and v.ensemble_id=? and v.id=c.id group by v.author_id, v.source_id) as v1"""
     retval={"stats":  db.Db().getIndexedObjects(names, "ID", from_clause, "true" , (id_ensemble,))}
     grades = M.AssignmentGrade.objects.filter(source__ownership__ensemble__id=id_ensemble)
     ownerships = M.Ownership.objects.select_related("source", "ensemble", "folder").filter(ensemble__id=id_ensemble, deleted=False)
@@ -575,9 +577,20 @@ def getMark(uid, payload):
 def addNote(payload):
     id_location = None
     author =  M.User.objects.get(pk=payload["id_author"])
+    location = None
+    h5l = None
+    parent =  M.Comment.objects.get(pk=payload["id_parent"]) if "id_parent" in payload else None
+
+    #putting this in factor for duplicate detection: 
+    similar_comments = M.Comment.objects.filter(parent=parent, ctime__gt=datetime.datetime.now()-datetime.timedelta(0,10,0), author=author, body=payload["body"]);
+    
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
+        #refuse if similar comment
+        similar_comments = similar_comments.filter(location=location)
+        if similar_comments.count(): 
+            return None
     else:
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
@@ -588,6 +601,12 @@ def addNote(payload):
         location.h = payload["h"]
         location.page = payload["page"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
+
+        #refuse if similar comment
+        similar_comments = similar_comments.filter(location__in=M.Location.objects.filter(source=location.source, ensemble=location.ensemble, y=location.y, x=location.x, w=location.w, h=location.h, page=location.page));
+        if similar_comments.count():
+            return None
+
         location.save()    
         #do we need to add an html5 location ?    
         if "html5range" in payload: 
@@ -600,8 +619,7 @@ def addNote(payload):
                 h5l.location = location  
                 h5l.save()            
     comment = M.Comment()
-    if "id_parent" in payload:
-        comment.parent = M.Comment.objects.get(pk=payload["id_parent"])
+    comment.parent = parent
     comment.location = location
     comment.author = author
     comment.body = payload["body"]
@@ -830,6 +848,8 @@ def page_served(uid, p):
     o.save()
     
 def markActivity(cid):
+    if cid=="0" or cid=="1":
+        return None, None #temporary fix 
     try: 
         session = M.Session.objects.get(ctime=cid)
         previous_activity = session.lastactivity

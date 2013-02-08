@@ -86,7 +86,8 @@ module.exports = function(grunt) {
     };
     MODS.NOTEPANEVIEW_SPREADSHEET = {
         src_js: [].concat(
-                          MODS.CONTEXTMENU.src_js, 
+                          MODS.CONTEXTMENU.src_js,
+                          addPrefix(MODULE_DIR,["dateformat/date.format.js"]),
                           addPrefix(MODULE_DIR,["dev/ui.notepaneView10.js"])),
         src_css: [].concat(
                            MODS.CONTEXTMENU.src_css, 
@@ -95,7 +96,8 @@ module.exports = function(grunt) {
 
     MODS.THREADVIEW = {
         src_js: [].concat(
-                          MODS.CONTEXTMENU.src_js, 
+                          MODS.CONTEXTMENU.src_js,
+                          addPrefix(MODULE_DIR,["dateformat/date.format.js"]),
                           addPrefix(MODULE_DIR,["dev/ui.threadview2.js"])),
         src_css:   [].concat(
                              MODS.CONTEXTMENU.src_css, 
@@ -126,8 +128,9 @@ module.exports = function(grunt) {
     TARGETS.TRAIL = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js",  "dev/ui.concierge1.js"]), 
+                          addPrefix(MODULE_DIR, ["dateformat/date.format.js"]),
                           TARGETS.API.src_js,
-                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(UI_DIR,["conf.js"]),
                           addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildTrail.js"])
                           ), 
         dest_js:  DEST_DIR+"buildTrail_NB.js"

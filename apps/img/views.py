@@ -48,7 +48,7 @@ def serve_img(req, res, scale, id_source):
 def serve_doc(req, id_source, annotated=False): 
     serve_dir =  settings.ANNOTATED_DIR if annotated else  settings.REPOSITORY_DIR
     qual = "_annotated" if annotated else  ""
-    uid = UR.getUserId(req);
+    uid = UR.getUserId(req)
     if not auth.canDownloadPDF(uid, id_source): 
         return HttpResponse("Error: You don't have credentials to see file #%s" % (id_source, ))
     try:   
@@ -74,7 +74,6 @@ def serve_grades_spreadsheet(req, id_ensemble):
     stats = a["stats"]
     users = a["users"]
     sections = a["sections"]
-        
     import xlwt
     wbk = xlwt.Workbook()
     s_wd = wbk.add_sheet("word_count")
@@ -107,7 +106,7 @@ def serve_grades_spreadsheet(req, id_ensemble):
         s_ch.write(row, col, val)
         s_cm.write(row, col, val)
         col+=1
-        val = sections[users[u]["section_id"]]["name"] if  users[u]["section_id"] is None else sections[users[u]["section_id"]]
+        val = "" if  users[u]["section_id"] is None else  sections[users[u]["section_id"]]["name"] 
         s_wd.write(row, col, val)
         s_ch.write(row, col, val)
         s_cm.write(row, col, val)

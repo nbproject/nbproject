@@ -41,6 +41,7 @@ if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATAB
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = None
+# USE_TZ = True TODO: use when we upgrade to Django 1.4
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -141,12 +142,9 @@ HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/
 IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
-LOGIN_TEMPLATE  = "web/login1_compat.xhtml"
 DESKTOP_TEMPLATE= "web/desktop.html"
 COLLAGE_TEMPLATE= "web/desktop11.html"
 ADMIN_TEMPLATE  = "web/desktop9.xhtml"
-FEEDBACK_TEMPLATE = "web/feedback1.xhtml"
-FEEDBACK_ALPHA_TEMPLATE = "web/feedback2.xhtml"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
 ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.html"

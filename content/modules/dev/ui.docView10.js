@@ -450,7 +450,7 @@
             sel_contents += "<div class='nbicon dark meicon' title='I participated to this thread'/>";
             }
             else{
-            sel_contents += "<div class='nbicon dark privateicon' title='I have private comments in this thread'/>";
+            sel_contents += "<div class='nbicon privateicon' title='I have private comments in this thread'/>";
             }
         }
         contents+=("<div class='selection' id_item='"+ID+"' style='top: "+t+"px; left: "+l+"px; width: "+w+"px; height: "+h+"px'>"+sel_contents+"</div>");

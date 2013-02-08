@@ -1,7 +1,10 @@
 from django.db import models
 from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateTimeField, EmailField
 from django.db.models.fields.related import ForeignKey, OneToOneField
+from django.utils.tzinfo import FixedOffset, LocalTimezone
 from datetime import datetime
+import time
+from pytz import timezone
 
 ### TODO continue porting with schema in main_dir/schema
 
@@ -191,17 +194,8 @@ class Comment(models.Model):                                                    
         return "%s %s: %s " % (self.__class__.__name__,self.id,  self.body[:50])
    
     @property
-    def created(self):      
-        t_d = self.ctime.isocalendar()
-        t_now = datetime.now().isocalendar()
-        if t_d[0] != t_now[0]: #not even this year
-            return self.ctime.strftime("%d %b %Y")
-        if t_d[1] != t_now[1]: #this year but not this week
-            return self.ctime.strftime("%d %b, %I:%M%p")
-        if t_d[2] != t_now[2]: #this week but not today
-            return self.ctime.strftime("%a %I:%M%p")
-        #today: 
-        return  self.ctime.strftime("%I:%M%p")
+    def created(self):
+        return str(time.mktime(timezone(time.tzname[0]).localize(self.ctime).timetuple()))
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
