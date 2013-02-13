@@ -365,7 +365,7 @@ def getCommentsByFile(id_source, uid, after):
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
-    membership = M.Membership.objects.get(user__id=uid, ensemble__ownership__source__id=id_source)
+    membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
     if membership.section is not None:
         comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
