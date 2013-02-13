@@ -47,6 +47,9 @@ def process_file(id_source):
     if not os.path.exists(srcfile):
         os.symlink(repfile, srcfile)
     pdf       = PdfFileReader(file(srcfile, "rb"))
+    if pdf.isEncrypted and pdf.decrypt("")==0:
+        print "PDF file encrypted with non-empty password: %s" % (srcfile,)
+        return False
     trim_box  = pdf.pages[0].trimBox # Sacha's coordinate system now uses this box
     crop_box  = pdf.pages[0].cropBox  # ConTeXt's page inclusion uses this box
     fudge     = (int(trim_box[2])-int(trim_box[0]))/612.0 # for the assumption of 612bp width
