@@ -56,8 +56,10 @@ def serve_doc(req, id_source, annotated=False):
         response["Content-Type"]='application/pdf'
         #the following makes sure that: 
         #- the downloaded file name always ends up w/ '.pdf'
-        #- it conatains the qualif. '_annotated' if it's... er... well.... annotated : )        
-        filename = "%s%s%s" % (M.Source.objects.get(pk=id_source).title.partition(".pdf")[0], qual, ".pdf")        
+        #- it conatains the qualif. '_annotated' if it's... er... well.... annotated : )                
+        #- the filename only contains ascii characters, so that we don't get an UnicodeEncodeError since the 
+        #  filename is part of the response headers and that HTTP response headers can only contain ascii characters. 
+        filename = "%s%s%s" % (M.Source.objects.get(pk=id_source).title.partition(".pdf")[0].encode("ascii", "replace"), qual, ".pdf")        
         response['Content-Disposition'] = "attachment; filename=%s" % (filename, )
         signals.file_downloaded.send("file", req=req, uid=uid, id_source=id_source, annotated=annotated)
         return response
