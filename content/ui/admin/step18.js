@@ -174,6 +174,7 @@ GLOB.pers.createStore = function(payload){
         location:{pFieldName: "locations",references: {id_ensemble: "ensemble", id_source: "file"}}, 
         link: {pFieldName: "links"}, 
         mark: {}, 
+        threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{pFieldName: "seen", references: {id_location: "location"}}
     });
