@@ -190,8 +190,9 @@
                    function(P){
                        $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
                        $("#login_to_nb").click(function(evt){
-                               console.log("opening iframe");
-                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+                               //sacha: disable this for now. 
+                               //console.log("opening iframe");
+                               //                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
                                $.concierge.get_component("login_user_menu")();
                                
                        });
@@ -216,7 +217,9 @@
         var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);    
         var server_url = server_info[1]+"://"+server_info[2];
         GLOB.pers.add_css(server_url+"/content/compiled/embed_NB.css");
-        GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
+        //GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
+        //sacha: disabled this as well for now. 
+        GLOB.pers.openid_url="";
 
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
