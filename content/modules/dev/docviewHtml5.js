@@ -105,10 +105,9 @@
                 var range = sel.saveCharacterRanges(element);
 
                 var target = getElementXPath(element);
-//                var global = sel.saveCharacterRanges($("body")[0]);
-//                var charcount = Math.min(global.characterRange.start, global.characterRange.end);
 
                 insertPlaceholderAnnotation(sel);
+
                 $.concierge.trigger({
                     type: "new_thread",
                     value: {
@@ -127,8 +126,17 @@
         GLOB.pers.store.register({
             update: function (action, payload, items_fieldname) {
                 var key;
-                if (action === "remove" && items_fieldname === "draft") {
-                    $(".nb-comment-highlight.nb-placeholder").contents().unwrap();
+
+                if (items_fieldname === "draft") {
+                    var draft;
+                    for (draft in payload.diff) { break; }
+
+                    if (action === "remove") {
+                        $(".nb-comment-highlight.nb-placeholder[id_item=" + draft + "]").contents().unwrap();
+                    } else if (action === "add") {
+                        $(".nb-comment-highlight.nb-placeholder").attr("id_item", draft);
+                    }
+
                 }
 
                 if (action === "remove" && items_fieldname === "location") {
