@@ -130,7 +130,9 @@
                            }
                        };
                        
-                       $pers.perspective({
+                       //SACHA FIXME: Hack we embed the following into a delay because FF doesn't compute the right window height if we execute this right away
+                       setTimeout(function(){                               
+                          $pers.perspective({
                                height: function(){
                                    return $vp.height() - ($pers.offset().top - $vp.offset().top);
                                }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
@@ -191,9 +193,7 @@
                                        }, 300);
                                }
                            });
-                       
-                       
-                       
+                           }, 1000);
                    },
                    function(P){
                        $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
