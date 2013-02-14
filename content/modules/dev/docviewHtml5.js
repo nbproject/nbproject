@@ -220,7 +220,14 @@
         $("span.nb-comment-fresh")
             .addClass("nb-comment-highlight")
             .addClass("nb-placeholder")
-            .removeClass("nb-comment-fresh");
+            .removeClass("nb-comment-fresh")
+            .attr("id_item", 0);
+
+        // remove placeholder comment after 0.25 seconds if we do not receive a "draft created" event (i.e. the concierge
+        // did not allow the creation of the draft). We check this by seeing if id_item is still 0.
+        window.setTimeout(function() {
+            $(".nb-placeholder[id_item=0]").contents().unwrap();
+        }, 250);
     };
 
     GLOB.html.clearAnnotations = function () {
