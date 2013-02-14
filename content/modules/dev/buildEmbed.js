@@ -93,7 +93,8 @@
 
                        //let's create perspective here: 
                        var $pers        = $("<div id='pers_"+id_source+"'/>").appendTo($vp);
-                       var notesview    =  {
+
+                       var notesview = {
                            priority: 1, 
                            min_width: 650, 
                            desired_width: 35, 
@@ -104,7 +105,7 @@
                                $div.notepaneView("set_model",GLOB.pers.store );
                            }
                        }; 
-                       var threadview    = {
+                       var threadview = {
                            priority: 1, 
                            min_width: 650, 
                            desired_width: 35,  
@@ -115,7 +116,7 @@
                                $div.threadview("set_model",GLOB.pers.store );                
                            }
                        };
-                       var editorview    =  {
+                       var editorview = {
                            priority: 1, 
                            min_width: 650, 
                            desired_width: 35,  
@@ -129,6 +130,7 @@
                                $div.editorview("set_model",GLOB.pers.store );                
                            }
                        };
+                      
                        
                        //SACHA FIXME: Hack we embed the following into a delay because FF doesn't compute the right window height if we execute this right away
                        setTimeout(function(){                               
@@ -136,24 +138,28 @@
                                height: function(){
                                    return $vp.height() - ($pers.offset().top - $vp.offset().top);
                                }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
-                                   listens: {
+                               listens: {
                                    page_peek: function(evt){
                                        //need to add 1 value for uniqueness
                                        $.concierge.logHistory("page", evt.value+"|"+id_source+"|"+(new Date()).getTime());
                                    }, 
-                                       close_view: function(evt){
+                                   close_view: function(evt){
                                        if (evt.value === this.l.element[0].id){
                                            delete($.concierge.features.doc_viewer[id_source]);
                                        }
                                        $.L("closeview: ", evt, this.l.element[0].id);
                                    }                    
                                }, 
-                                   views: {
-                                   v1:{data: notesview}, 
-                                       v2:{children: 
-                                       {v1: { data: threadview}, v2: {data: editorview}, orientation: "horizontal"}},  
-                                       orientation: "horizontal"
-                                       }
+                               views: {
+                                   v1: { data: notesview }, 
+                                   v2: {
+                                       children: {
+                                           v1: { data: threadview},
+                                           v2: {data: editorview},
+                                           orientation: "horizontal"
+                                   }},
+                                   orientation: "horizontal"
+                                   }
                            });
                        
                        //end of perspective creation code
