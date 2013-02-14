@@ -21,8 +21,16 @@
     var $vp;
     var id_ensemble = null;  
     GLOB.pers.iframe_id = "nb_iframe";
-
     var f_after_successful_login = function(){    
+        //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
+        //for now, just update user name and email on hover. :
+        var uinfo = GLOB.conf.userinfo;
+        if (!uinfo.guest){
+            var screenname = uinfo.firstname === null ? $.E(uinfo.email): $.E(uinfo.firstname) + " " + $.E(uinfo.lastname);         
+            $("#login-name").text(screenname).attr("title", $.E(uinfo.email));
+        }
+        
+        //now move stuff here it's supposed to be: 
         $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
         $("#login-window").appendTo(".ui-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
@@ -229,6 +237,7 @@
                     GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
                     $("#splash-welcome").parent().dialog("destroy");
+                    
                     f_after_successful_login();
                     
                     
