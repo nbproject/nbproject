@@ -47,10 +47,14 @@
 
         var countChildChars = function(_char, _this) {
             var char = _char;
-            $(' > *', _this).each(function() {
-                $(this).attr("data_char", char);
-                countChildChars(char, this);
-                char += ($(this).text()).length;
+
+            // count text nodes as well (includes whitespace)
+            $(_this).contents().each(function() {
+                  if (this.nodeType === 1) {
+                      $(this).attr("data_char", char);
+                      countChildChars(char, this);
+                  }
+                  char += ($(this).text()).length;
             });
         };
 
@@ -107,6 +111,12 @@
                 var target = getElementXPath(element);
 
                 insertPlaceholderAnnotation(sel);
+
+                if ( $(element).attr("data_char") === undefined) {
+                    // we have a problem
+                    $.L("Error: target does not have data_char attribute", element);
+                }
+
                 $.concierge.trigger({
                     type: "new_thread",
                     value: {
@@ -115,7 +125,7 @@
                             path2: range[0].backward,
                             offset1: range[0].characterRange.start, 
                             offset2: range[0].characterRange.end,
-                            apparent_height: parseInt($(".nb-placeholder").parents("*[data_char]").attr("data_char"), 10) +
+                            apparent_height: parseInt($(element).attr("data_char"), 10) +
                                 Math.min(range[0].characterRange.start, range[0].characterRange.end)
                         }
                     }
