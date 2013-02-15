@@ -72,7 +72,7 @@
                 select_thread: function(event){
                     $(".nb-comment-highlight.selected").removeClass("selected");
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
-                    $("body").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
+                    $("body, html").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
                 }
             }, 
             GLOB.html.id);
