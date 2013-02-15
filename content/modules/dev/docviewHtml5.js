@@ -96,7 +96,7 @@
         cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
 
         // Initialize Highlighting Event
-        $("#content").mouseup(function (event) {
+        $("body>*").not(".nb-sidebar").mouseup(function (event) {
                 var sel = rangy.getSelection();
 
                 if (sel.isCollapsed){
