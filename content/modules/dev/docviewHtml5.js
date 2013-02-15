@@ -76,7 +76,15 @@
                 select_thread: function(event){
                     $(".nb-comment-highlight.selected").removeClass("selected");
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
-                    $("body, html").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
+
+                    var viewTop = $(window).scrollTop();
+                    var viewBottom = viewTop + $(window).height() * 0.9;
+                    var elementTop = $(".nb-comment-highlight[id_item="+event.value+"]").offset().top;
+
+                    if (viewTop > elementTop || viewBottom < elementTop) {
+
+                        $("body, html").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
+                     }
                 }
             }, 
             GLOB.html.id);
