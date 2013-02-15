@@ -413,6 +413,5 @@ var getRuleMatchingElements = function (rule, doc) {
     var xpath = cssToXPath(css);
     return getElementsByXPath(doc, xpath);
 };
-        jQuery(function(){NB.html.init();});
 
 })(NB);

@@ -147,7 +147,7 @@ module.exports = function(grunt) {
                           addPrefix(MODULE_DIR, ["wgxpath/wgxpath.install.js"]),
                           addPrefix(MODULE_DIR+"wgxpath/",["termfix.js" ]),
                           addPrefix(UI_DIR,["conf.js"]), 
-                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/buildEmbed.js", "dev/docviewHtml5.js"])
+                          addPrefix(MODULE_DIR, ["dev/pers2.js", "dev/docviewHtml5.js", "dev/buildEmbed.js"])
                           ), 
         dest_js:  DEST_DIR+"embed_NB.js", 
         src_css: [].concat( 

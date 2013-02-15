@@ -21,7 +21,7 @@
     var $vp;
     var id_ensemble = null;  
     GLOB.pers.iframe_id = "nb_iframe";
-    var f_after_successful_login = function(){    
+    var f_after_successful_login = function(){
         //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
         //for now, just update user name and email on hover. :
         var uinfo = GLOB.conf.userinfo;
@@ -211,6 +211,7 @@
                                
                        });
                    });    
+        $(function(){GLOB.html.init();});
 };
     GLOB.pers.ckey_from_iframe = null;
     GLOB.pers.f_poll_iframe = function(){
