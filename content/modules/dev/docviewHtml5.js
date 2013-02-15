@@ -175,6 +175,11 @@
     var placeAnnotation = function (selection, loc) {
         var uid = loc.id_location;
 
+        // quit if annotation already placed
+        if ($(".nb-comment-highlight[id_item=" + uid + "]").length > 0) {
+            return;
+        }
+
         // apply nb-comment-fresh to ranges
         cssApplier.applyToSelection(selection);
         selection.removeAllRanges();
