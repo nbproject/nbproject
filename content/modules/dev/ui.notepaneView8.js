@@ -315,10 +315,19 @@
         }
         }, 
         _render_one: function(page){
+
         var self    = this;        
+        var nosummary = false;
+
         if (page > self._maxpage){
             self._maxpage =  page;
         }
+
+        // If we only have one page, no need to display the page summary
+        if (self._maxpage <= 1) {
+            nosummary = true;
+        }
+
         if (!(page in self._pages)){
             var m    = self._model; 
             var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
@@ -335,7 +344,7 @@
             }
             var locs_array = locs.sort(self.options.loc_sort_fct);
             var o;
-            if (locs_array.length){
+            if (locs_array.length && !nosummary){
             $pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+" on page "+page+"</div>");
             }
             for (var i=0;i<locs_array.length;i++){

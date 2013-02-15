@@ -107,7 +107,6 @@
                 var target = getElementXPath(element);
 
                 insertPlaceholderAnnotation(sel);
-
                 $.concierge.trigger({
                     type: "new_thread",
                     value: {
@@ -116,7 +115,8 @@
                             path2: range[0].backward,
                             offset1: range[0].characterRange.start, 
                             offset2: range[0].characterRange.end,
-                            apparent_height: $(".nb-placeholder").parents("*[data_char]").attr("data_char") + range[0].characterRange.start
+                            apparent_height: parseInt($(".nb-placeholder").parents("*[data_char]").attr("data_char"), 10) +
+                                Math.min(range[0].characterRange.start, range[0].characterRange.end)
                         }
                     }
                 });
