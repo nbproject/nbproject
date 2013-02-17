@@ -136,15 +136,12 @@ background-color: #000044;
     background-position: -180px 0;
 }
 
-/*
-Removed because new icon set is high-contrast.
-.staricon-hicontrast{
-    background-position: -200px 0;
+.nbicon.noteicon {
+    background-position: -201px 0px;
 }
-
-.questionicon-hicontrast{
-    background-position: -220px 0;
-}*/
+.nbicon.addnoteicon {
+    background-position: -221px 0;
+}
 
 .no-staricon{
     background-position: -240px 0;
