@@ -47,3 +47,23 @@ position: absolute;
 .nb_iframe.nb_hidden{
     display: none;
 }
+
+#addnote-widget {
+    position: absolute;
+    top: 300px;
+    left: 200px;
+    display: block;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+}
+
+#addnote-widget>button {
+    margin: 0;
+    display:  block;
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+}
