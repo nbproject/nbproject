@@ -59,7 +59,7 @@
                     self._sel        = null;
                     self._note        = null;
                     model.add("draft", drafts);
-                    self._render(id_item);    
+                    self._render(id_item, evt.value.suppressFocus);
                     break;
                 case "reply_thread": 
                     if (me.guest === 1){
@@ -115,9 +115,21 @@
                     model.add("draft", drafts);
                     self._render(id_item);    
                     break;
-                }    
+                case "focus_thread":
+                    // We assume the thread is already rendered, we simply focus
+                    $("textarea", self.element).focus();
+                    break;
+                case "discard_if_empty":
+                    // only allow one current editor if draft is not empty
+                    if (self.element.children().length){
+                        if ($("textarea", self.element).val().length === 0) {
+                            $("button[action=discard]", self.element).click(); // HACK: get f_discard to work from our scope.
+                        }
+                    }
+                    break;
+                }
             },
-            _render: function(id_item){
+            _render: function(id_item, suppress_focus){
                 var self        = this;
                 var model        = self._model;
                 self.element.trigger("restore");
@@ -284,8 +296,11 @@
                     else{
                         $("input[value=anonymous]", self.element).attr("checked", "checked");
                     }
-                }        
-                $("textarea", self.element).focus();
+                }
+
+                if (suppress_focus !== true || typeof suppress_focus === 'undefined') {
+                    $("textarea", self.element).focus();
+                }
             },
             set_model: function(model){
                 var self=this;
@@ -304,7 +319,9 @@
         listens: {
             new_thread: null, 
             reply_thread: null, 
-            edit_thread: null
+            edit_thread: null,
+            focus_thread: null,
+            discard_if_empty: null
         },
         id_source: null, 
         note: null, 

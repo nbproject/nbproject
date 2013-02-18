@@ -23,6 +23,7 @@ var NB$ = jQuery.noConflict();
     this.constants = {};
     this.components = {};
     this.allowed_repeat_event={};
+    this.keydown_block = true;
     this.historyHelper = {
         ptr: null,
         log: {}, 
@@ -50,8 +51,8 @@ var NB$ = jQuery.noConflict();
         return self.activeView._keydown(event);
         }
         else{
-        return false; // do NOT propagate. 
-        }  
+        return !(self.keydown_block); // do NOT propagate by default.
+        }
     };
     if ( $.browser.mozilla){
         $(document.documentElement).keypress(f_key_cb);
@@ -59,7 +60,7 @@ var NB$ = jQuery.noConflict();
     else{
         $(document.documentElement).keydown(f_key_cb);
     }
-    };    
+    };
     Concierge.prototype.allowRepeatedEvents = function(list){
     for (var i in list){
         this.allowed_repeat_event[list[i]]=true;

@@ -95,15 +95,58 @@
         // the styled element must have an nb-comment-highlight class.
         cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
 
+        // Make sure concierge won't steal our keys!
+        $.concierge.keydown_block = false;
+
+        // Global key-down monitor
+        $(document).keydown(function(event) {
+            // If there are no current drafts, we don't interfere.
+            if ($(".nb-placeholder").length === 0) {
+                return true;
+            }
+
+            // If we are currently interacting with an input, button, or textarea, we don't interfere.
+            if (document.activeElement.nodeType === "INPUT" ||
+                document.activeElement.nodeType === "BUTTON" ||
+                document.activeElement.nodeType === "TEXTAREA") {
+                return true;
+            }
+
+            // If certain key combinations are being pressed, do not interfere.
+            if (event.altKey === true || event.ctrlKey === true) {
+                return true;
+            }
+
+            // If the key is an escape, we discard the draft if it is empty
+            if (event.keyCode === 27) {
+                $.concierge.trigger({ type: "discard_if_empty", value: {}});
+                return true;
+            }
+
+            // If the key is not a chracter, do not interfere.
+            if (event.keyCode < 48 ||
+               (event.keyCode > 90 && event.keyCoe < 96) ||
+               (event.keyCode > 111 && event.keyCode < 186)) {
+                return true;
+            }
+
+            // Keypress only has characters pressed, so we do not neet check for
+            // arrow keys, or CTRL+C and other combinations
+            $.concierge.trigger({ type: "focus_thread", value: {}});
+
+        });
+
         // Initialize Highlighting Event
-        $("body>*").not(".nb-sidebar").mouseup(function (event) {
+        $("body>*").not(".nb_sidebar").mouseup(function (event) {
                 var sel = rangy.getSelection();
 
                 if (sel.isCollapsed){
+                    $.concierge.trigger({ type: "discard_if_empty", value: {}});
                     return;
                 }
 
                 if (sel.containsNode($(".nb_sidebar")[0], true)) {
+                    $.concierge.trigger({ type: "discard_if_empty", value: {}});
                     return;
                 }
 
@@ -135,9 +178,12 @@
                             offset2: range[0].characterRange.end,
                             apparent_height: parseInt($(element).attr("data_char"), 10) +
                                 Math.min(range[0].characterRange.start, range[0].characterRange.end)
-                        }
+                        },
+                        suppressFocus: true
                     }
                 });
+
+                sel.restoreCharacterRanges(element, range);
 
             });
 
@@ -171,6 +217,7 @@
 
         // fix IE XPath implementation
         wgxpath.install();
+
     };
 
     // must be called only on inner-most element
