@@ -43,7 +43,7 @@ var NB$ = jQuery.noConflict();
     */
     //keypress is better in mozilla, since we get repeated strokes, but doesn't work in other browsers
     var f_key_cb = function(event){
-        if (document.activeElement !== document.body && document.activeElement.tagName !== "a"){
+        if (document.activeElement !== document.body && document.activeElement.tagName !== "A"){
         return true; //a "non-anchor" focusable element has the focus: let's not interfere
         }
         if ("activeView" in self && self.activeView !== null){
