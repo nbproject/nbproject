@@ -122,6 +122,12 @@
         _keydown: function(event){
         var codes = {37: {sel: "prev", no_sel: "last", dir: -1, msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: 1, msg:"No more comments below..."}}; 
         var new_sel, id_item, id_new, new_page;
+
+        if (event.shiftKey || event.altKey || event.ctrlKey) {
+            // We aren ot expecting shift, alt, or ctrl with our key codes, so we let others handle this
+            return true;
+        }
+
         if (event.keyCode in codes){
             var sel = $("div.location-lens.selected", this.element);
             if (sel.length){

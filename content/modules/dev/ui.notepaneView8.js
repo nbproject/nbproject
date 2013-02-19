@@ -230,6 +230,12 @@
         var self=this;
         var codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
         var new_sel, id_item, id_new;
+
+        if (event.shiftKey || event.altKey || event.ctrlKey) {
+            // We aren ot expecting shift, alt, or ctrl with our key codes, so we let others handle this
+            return true;
+        }
+
         if (event.keyCode in codes){
             var sel = $("div.location-lens.selected", self.element);
             if (sel.length){

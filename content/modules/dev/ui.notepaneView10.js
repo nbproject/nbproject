@@ -201,6 +201,12 @@
                      38: "move_up", 
                      40: "move_down"};
             var proxy_grading = {65:"grade_A", 66:"grade_B", 67:"grade_C", 68:"grade_D", 70:"grade_F", 97:"grade_A" , 98:"grade_B", 99:"grade_C", 100:"grade_D", 102:"grade_F"};
+
+        if (event.shiftKey || event.altKey || event.ctrlKey) {
+            // We aren ot expecting shift, alt, or ctrl with our key codes, so we let others handle this
+            return true;
+        }
+
             if (code in translate_codes){
             code = translate_codes[code];
             }
