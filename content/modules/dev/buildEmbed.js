@@ -163,8 +163,7 @@
                            });
                        
                        //end of perspective creation code
-                       
-                       
+
                        var f = GLOB.pers.store.o.file[id_source];
                        $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
                                var m = GLOB.pers.store;
@@ -200,6 +199,8 @@
                                }
                            });
                            }, 1000);
+
+                       $(function(){GLOB.html.init();});
                    },
                    function(P){
                        $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
@@ -211,7 +212,7 @@
                                
                        });
                    });    
-        $(function(){GLOB.html.init();});
+
 };
     GLOB.pers.ckey_from_iframe = null;
     GLOB.pers.f_poll_iframe = function(){
