@@ -23,6 +23,10 @@ body:not(.nb-active) .nb_sidebar {
 opacity: 0.5;
 }
 
+.nb_sidebar .nb-widget-header {
+  border-left: 1px #CCC solid;
+}
+
 .nb-error {
   cursor: pointer;
   padding: 8px;

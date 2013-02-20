@@ -35,7 +35,7 @@ GLOB.pers.init = function(){
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("collection", "collection_viewer", function(id){
         var pers_id        = "pers_"+id;
-        var $vp        = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo("body");
+        var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo("body");
         var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
         var docview        =  {
             priority: 1, 
