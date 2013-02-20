@@ -62,7 +62,10 @@
                        //TODO: Take something else than first id_source
                        var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
                        if (source === null){
-                           alert("The URL for this page ("+document.location.href+") isn't registered on NB.");
+                           $("<div class=\"nb-error\"><p>The URL for this page isn't registered on NB. Click this message to close the NB sidebar.</p></div>").
+                             appendTo(".nb_sidebar>.nb-viewport").click(function() {
+                                 $(".nb_sidebar").fadeOut(400);
+                             });
                            return;
                        }
                        var id_source = GLOB.pers.id_source = NB.pers.store.get("file").first().ID;
@@ -200,6 +203,7 @@
                            });
                            }, 1000);
 
+                       $("body").addClass("nb-active");
                        $(function(){GLOB.html.init();});
                    },
                    function(P){
