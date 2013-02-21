@@ -222,11 +222,11 @@ padding-left: 10px;
 
 #splash-list-instructions li{
 list-style: none;
+margin-bottom: 10px;
 }
 
 #splash-welcome, #reg_welcome{
 font-size: xx-large; 
-letter-spacing: 6px;
 color: #a0a0a0;
 text-align: center;
 }
@@ -245,6 +245,7 @@ margin: 10px;
 
 span.ui-icon{
 display: inline-block;
+vertical-align: top;
 }
 
 
