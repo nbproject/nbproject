@@ -170,12 +170,15 @@
         $("#filesView-question-header-plural").text($.pluralize(locs.length));
         
 
-        var i,l,c,q;
+        var i,l,c,q, snippet;
         for (i in locs){
             l = locs[i];
             c = m.get("comment", {location_id: l.id, parent_id: null}).first();
             q = m.get("question", {location_id: l.id});
-            $list.append(self.img_snippet(i,l,c,q));        
+            snippet = self.img_snippet(i,l,c,q);
+            if (snippet){
+                $list.append(snippet);        
+            }
         }
         return locs.length;
         },
@@ -183,6 +186,9 @@
         var self = this;
         var id_ensemble = self._id_ensemble;
         var m = self._model;
+        if (!(l.source_id in m.o.file)){
+            return null;
+        }
         var s =  m.o.file[l.source_id];
         var scalefactor, doc, inner,  inner_top, sel, link, numvotes;
         var body, comment_link, reply_link, ensemble_info, parity, lens;
