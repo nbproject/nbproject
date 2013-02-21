@@ -11,11 +11,11 @@ right: 0px;
 top: 0px;
 position: fixed;
 width: 400px;
+z-index: 2;
 }
 
 body.nb-active .nb_sidebar {
 bottom: 0px;
-z-index: 2;
 background-color: #ffffff;
 }
 
