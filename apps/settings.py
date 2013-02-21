@@ -143,10 +143,8 @@ IMG_FMT_STRING  =  "%04d"
 SERVER_USERNAME = "www-data"
 
 DESKTOP_TEMPLATE= "web/desktop.html"
-COLLAGE_TEMPLATE= "web/desktop11.html"
-ADMIN_TEMPLATE  = "web/desktop9.xhtml"
+COLLAGE_TEMPLATE= "web/collage.html"
 DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
-ALPHA_TEMPLATE  = "web/desktop8.xhtml"
 SOURCE_TEMPLATE = "web/source1.html"
 YOUTUBE_TEMPLATE = "web/youtube1.html"
 GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)

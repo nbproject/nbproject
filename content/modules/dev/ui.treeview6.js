@@ -27,7 +27,7 @@
             $.concierge.get_component("add_ensemble_menu")();
             });
     
-        $.mods.declare({treeview5: {js: [], css: ["/content/modules/dev/ui.treeview4.css"]}});
+        $.mods.declare({treeview5: {js: [], css: ["/content/modules/dev/ui.treeview.css"]}});
         $.mods.ready("treeview5", function(){});
         $.mods.declare({jstree: {js: ["/content/modules/jstree/jquery.jstree.js"], css: ["/content/modules/jstree/themes/default/style.css"]}});
         },
