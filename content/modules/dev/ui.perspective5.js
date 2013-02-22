@@ -23,14 +23,14 @@
  In your JS: 
  $("#pers1").perspective();
 */
-/*global alert:true jQuery:true*/
+/*global alert:true jQuery:true console:false*/
 (function($) {
     var P_OBJ = {
     SEP_TOTAL_SIZE: 5,
     SEP_INSIDE_SIZE:4, 
     ORIENTATIONS: { 
-        vertical:  {axis: "x", dir:  "left", dim: "width",  dim2:"height", cursor: "col-resize" }, 
-        horizontal:{axis: "y", dir:  "top" , dim: "height", dim2:"width",  cursor: "ns-resize"}
+            vertical:  {axis: "x", dir:  "left", dim: "width",  dim2:"height", cursor: "col-resize", margin: "margin-right" }, 
+            horizontal:{axis: "y", dir:  "top" , dim: "height", dim2:"width",  cursor: "ns-resize", margin: "margin-bottom"}
     }, 
     CP_PARAMS : {
         width: {
@@ -376,6 +376,34 @@
         }
         }
     }, 
+    _create_ext_separator: function(){ 
+            var self = this;
+            if (self._ext_separator){
+                var v =  self.ORIENTATIONS[self._ext_separator.orientation];
+                var $p=$(self._ext_separator.container);      
+                var  o_css            = {};        
+                o_css[v.dir]        = 0;
+                o_css[v.dim2]        = "100%";
+                o_css[v.dim]        = self.SEP_INSIDE_SIZE+"px";
+                o_css["cursor"]        = v.cursor;
+                o_css["border-"+v.dir]    = "thin solid #FEFCFB";
+                var sep = $("<div class='external-separator' orientation='"+self._ext_separator.orientation+"'/>").css(o_css).draggable({
+                         axis: v.axis, 
+            stop: function(event, ui){
+            var VD    = self._views_data;
+            var x1 = parseInt(this.style[v.dir], 10);
+            var $elt = $(this);           
+            var $p = $elt.parent();
+            var newdim = $p[v.dim]()-$elt.position()[v.dir];
+            $p[v.dim](newdim);
+            $p.parent().css(v.margin, newdim+"px");
+            $elt.css(v.dir, 0);
+            self.f_on_window_resize();
+                        }
+                    });
+                $p.prepend(sep);
+            }    
+        },
     _create_contents: function(prefix, elt, views){
         var self        = this;
         var VD        = self._views_data;
@@ -446,6 +474,7 @@
         self._height    = self.options.height || function(){return self.element.parent().height();};
         self._orientation    = self.options.orientation;
         self._listens    = self.options.listens;
+        self._ext_separator = self.options.ext_separator;
         if (self._views){//are we creating any contents ? 
         var views_data = {
             _min_width: {}, 
@@ -474,7 +503,8 @@
         self._compute_leaves_allocations("height", false);
         self._propagate_allocations("", self._views, "width");
         self._propagate_allocations("", self._views, "height");
-        self._create_contents("", self.element, self._views);
+        self._create_contents("", self.element, self._views);        
+        self._create_ext_separator();
         if (self._listens){
             $.concierge.addListeners(self, self._listens);
         }
@@ -487,27 +517,25 @@
            parameter (o) gets copied, because if we inlined the code, the callback 
            function declared in _f_new_draggable ("stop") would only have the value
            of the closure variable at the last iteration */
-        self._f_new_draggable(o); 
+            self._f_new_draggable(o); 
         }            
-        window.addEventListener("resize",function(evt){
-            //            if (self.element.is(":visible")){
-            //if we're in a viewport, resize the outerview height: 
+        window.addEventListener("resize", self.f_on_window_resize.bind(self), false);           if (self._views){
+            //this is needed when opening a 3rd perspective for instance
+            self._resize_contents(true);
+            self._adjust(self.element.children("div.separator"));
+            self.element.trigger("resize_perspective", ["xy"]); 
+        }
+        },
+    f_on_window_resize: function(evt){
+            var self = this;
             var $vp = self.element.closest("div.viewport");
             if ($vp.length){
-            $vp.viewport("adjust_height");
+                $vp.viewport("adjust_height");
             }
             self._resize_contents(false);
             self._adjust(self.element.children("div.separator"));
             self.element.trigger("resize_perspective", ["xy"]);
-            //    }
-        }, false);    
-        if (self._views){
-        //this is needed when opening a 3rd perspective for instance
-        self._resize_contents(true);
-        self._adjust(self.element.children("div.separator"));
-        self.element.trigger("resize_perspective", ["xy"]); 
-        }
-    },
+        },
     update: function(){
         var self=this;
         self._adjust(self.element.children("div.separator"));
