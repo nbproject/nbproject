@@ -2,7 +2,8 @@ body.nb-active{
 margin-right: 405px;
 }
 
-.nb_sidebar.nb_inactive{
+.nb_sidebar.nb_inactive,
+body:not(.nb-active) .nb_sidebar {
 
 }
 
@@ -11,16 +12,16 @@ right: 0px;
 top: 0px;
 position: fixed;
 width: 400px;
+z-index: 2;
 }
 
 body.nb-active .nb_sidebar {
 bottom: 0px;
-z-index: 2;
 background-color: #ffffff;
 }
 
-body:not(.nb-active) .nb_sidebar {
-opacity: 0.5;
+.nb_sidebar .nb-widget-header {
+  border-left: 1px #CCC solid;
 }
 
 .nb-error {

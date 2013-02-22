@@ -16,7 +16,7 @@ def confirmInvite(id):
     if len(invite) == 0: 
         return None
     invite = invite[0]
-    membership = M.Membership.objects.filter(user=invite.user_id, ensemble=invite.ensemble_id)
+    membership = M.Membership.objects.filter(user=invite.user_id, ensemble=invite.ensemble_id, deleted=False)
     if len(membership) == 0: 
         membership = M.Membership()
         membership.user = invite.user
@@ -44,13 +44,13 @@ def canDownloadPDF(uid, id_source):
         id_source = int(id_source)
     except ValueError:
         return False
-    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid)
+    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid, deleted=False)
     return (len(o)>0 and (o[0].admin or o[0].ensemble.allow_download)) or canGuestDownloadPDF(id_source)
 
 def canGuestReadFile(uid, id_source, req=None):
     o = M.Ownership.objects.get(source__id=id_source)
     e = M.Ensemble.objects.get(pk=o.ensemble_id)
-    if o.ensemble.allow_guest and len(M.Membership.objects.filter(user__id=uid, ensemble=e))==0: 
+    if o.ensemble.allow_guest and len(M.Membership.objects.filter(user__id=uid, ensemble=e, deleted=False))==0: 
         #add membership for guest user: 
         m = M.Membership()
         m.user_id = uid
@@ -100,7 +100,7 @@ def getCkeyInfo(ckey):
 
 def canAnnotate(uid, eid):
     """Need to be a either a member of a group or a registered user for a public group """
-    o = M.Membership.objects.filter(ensemble__id=eid, user__id=uid)
+    o = M.Membership.objects.filter(ensemble__id=eid, user__id=uid, deleted=False)
     if len(o)>0:  
         return True
     #TODO registered user and public group ?
@@ -151,7 +151,7 @@ def canAddFolder(uid, id_ensemble, id_parent=None):
 
 def canInsertFile(uid, eid, id_folder=None):
     """need to be an admin on that membership, and the folder (if not None) needs to be in this membership"""
-    m = M.Membership.objects.get(ensemble__id=eid, user__id=uid)
+    m = M.Membership.objects.get(ensemble__id=eid, user__id=uid, deleted=False)
     if id_folder is None: 
         return m.admin
     else: 
@@ -162,13 +162,13 @@ def canRenameFile(uid, id):
     """need to be an admin on the ensemble that contains that file"""
     o = M.Ownership.objects.filter(source__id=id)
     e = M.Ensemble.objects.filter(ownership__in=o)
-    m = M.Membership.objects.filter(user__id=uid, ensemble__in=e)
+    m = M.Membership.objects.filter(user__id=uid, ensemble__in=e, deleted=False)
     return m.count()>0 and m[0].admin
 
 def canRenameFolder(uid, id): 
     """need to be an admin on the ensemble that contains that folder"""
     e = M.Folder.objects.get(pk=id).ensemble     
-    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e, deleted=False)
     return m.count()>0 and m[0].admin
 
 
@@ -185,7 +185,7 @@ def canDeleteFolder(uid, id):
         - Can't contain any folder
     """
     e = M.Folder.objects.get(pk=id).ensemble     
-    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e, deleted=False)
     o = M.Ownership.objects.filter(deleted=False, folder__id=id)
     f = M.Folder.objects.filter(parent__id=id)
     return m.count()>0 and m[0].admin and o.count()==0 and f.count()==0
@@ -205,7 +205,7 @@ def __isDirOrParent(id_a, id_b):
 def canMoveFolder(uid, id, id_dest): 
     """need to be an admin on the ensemble that contains that folder, and folder dest not to be the same or a subfolder of id"""
     e = M.Folder.objects.get(pk=id).ensemble     
-    m = M.Membership.objects.filter(user__id=uid, ensemble=e)
+    m = M.Membership.objects.filter(user__id=uid, ensemble=e, deleted=False)
     return m.count()>0 and m[0].admin and not __isDirOrParent(id_dest, id)
 
 def canUpdateFile(uid, id): 
@@ -213,7 +213,7 @@ def canUpdateFile(uid, id):
 
 def canSendInvite(uid, eid):
     """need to be an admin on that membership"""
-    m = M.Membership.objects.filter(user__id=uid, ensemble__id=eid)
+    m = M.Membership.objects.filter(user__id=uid, ensemble__id=eid, deleted=False)
     return m.count() > 0 and m[0].admin
 
 def canEditEnsemble(uid, eid):
@@ -226,12 +226,12 @@ def canGrade(uid, id_source, id_student):
     """Need to be admin on ensemble that contains file and student needs to be a member of that ensemble"""
     o = M.Ownership.objects.filter(source__id=id_source)
     e = M.Ensemble.objects.filter(ownership__in=o)
-    m = M.Membership.objects.filter(user__id=uid, ensemble__in=e)
-    m2 = M.Membership.objects.filter(user__id=id_student, ensemble__in=e)
+    m = M.Membership.objects.filter(user__id=uid, ensemble__in=e, deleted=False)
+    m2 = M.Membership.objects.filter(user__id=id_student, ensemble__in=e, deleted=False)
     return m.count()>0 and m[0].admin and m2.count()>0
  
 def isMember(user_id, ensemble_id):
-    return M.Membership.objects.filter(user__id=user_id, ensemble__id=ensemble_id).count() != 0
+    return M.Membership.objects.filter(user__id=user_id, ensemble__id=ensemble_id, deleted=False).count() != 0
     
 def canEdit(uid, id_ann):
     #uid need to be comment owner and there need to be no dependent non-deleted comment
@@ -247,7 +247,7 @@ def canMarkThread(uid, id_location):
     root_comment = M.Comment.objects.get(parent=None, location=location)
     if root_comment.author_id == uid: 
         return True
-    m = M.Membership.objects.filter(ensemble = location.ensemble, user__id=uid)
+    m = M.Membership.objects.filter(ensemble = location.ensemble, user__id=uid, deleted=False)
     return m.count()>0 and (root_comment.type>2 or (m[0].admin and root_comment.type>1)) 
     
  

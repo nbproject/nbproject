@@ -267,8 +267,38 @@ def properties_ensemble_users(req, id):
     memberships = M.Membership.objects.filter(ensemble=ensemble)
     pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)    
+    deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
     pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))    
-    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations})
+    if "action" in req.GET and "membership_id" in req.GET: 
+        if req.GET["action"] == "delete": 
+            m = real_memberships.filter(id=req.GET["membership_id"])
+            if len(m):
+                m = m[0]
+                m.deleted = True
+                m.save()
+                return HttpResponseRedirect(req.path)   
+        elif req.GET["action"] == "undelete":
+            m = deleted_memberships.filter(id=req.GET["membership_id"])
+            if len(m):
+                m = m[0]
+                m.deleted = False
+                m.save()
+                return HttpResponseRedirect(req.path)   
+        elif req.GET["action"] == "admin":
+            m = real_memberships.filter(id=req.GET["membership_id"])
+            if len(m):
+                m = m[0]
+                m.admin = True
+                m.save()
+                return HttpResponseRedirect(req.path)      
+        elif req.GET["action"] == "unadmin":
+            m = real_memberships.filter(id=req.GET["membership_id"])
+            if len(m):
+                m = m[0]
+                m.admin = False
+                m.save()
+                return HttpResponseRedirect(req.path)
+    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations, "deleted_memberships": deleted_memberships})
 
 def spreadsheet(req):
     return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")
