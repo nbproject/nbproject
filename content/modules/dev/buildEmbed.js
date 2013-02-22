@@ -31,8 +31,8 @@
         }
         
         //now move stuff here it's supposed to be: 
-        $vp = $("<div class='nb-viewport'><div class='ui-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
-        $("#login-window").appendTo(".ui-widget-header"); // add this here so it's fixed as well
+        $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
+        $("#login-window").appendTo(".nb-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
@@ -207,7 +207,7 @@
                        $(function(){GLOB.html.init();});
                    },
                    function(P){
-                       $(".ui-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
+                       $(".nb-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
                        $("#login_to_nb").click(function(evt){
                                //sacha: disable this for now. 
                                //console.log("opening iframe");
