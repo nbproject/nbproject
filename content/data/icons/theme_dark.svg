@@ -27,8 +27,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="269.90932"
-     inkscape:cy="9.5989616"
+     inkscape:cx="126.5"
+     inkscape:cy="12.5"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -36,7 +36,12 @@
      inkscape:window-height="837"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4949" />
+  </sodipodi:namedview>
   <defs
      id="defs5828">
     <linearGradient
@@ -4172,17 +4177,6 @@
        y1="21.550869"
        x2="21.941509"
        y2="18.037588" />
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3558-5"
-       id="radialGradient31250"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1,0,0,0.651376,0,10.75754)"
-       cx="22.571428"
-       cy="30.857143"
-       fx="22.571428"
-       fy="30.857143"
-       r="15.571428" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4116"
@@ -5755,7 +5749,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -6272,46 +6266,6 @@
        d="M 108 1 C 105.14211 0.96564 103.25 2.27984 103.25 5.03125 L 103.25 7 L 102.78125 7 C 102.35666 7 102 7.3333407 102 7.75 L 102 15.25 C 102 15.666659 102.35666 16 102.78125 16 L 113.21875 16 C 113.64334 16 114 15.666659 114 15.25 L 114 7.75 C 114 7.3333407 113.64334 7 113.21875 7 L 112.75 7 L 112.75 5.03125 C 112.75 2.24747 110.87343 1.0344 108 1 z M 108.03125 2.75 C 111.21938 2.75 111 5.01954 111 5.71875 L 111 7 L 105.03125 7 L 105.03125 5.71875 C 105.01976 5.03628 104.82113 2.75 108.03125 2.75 z "
        transform="translate(3,872.61934)"
        id="rect1314" />
-    <g
-       id="g4174">
-      <path
-         inkscape:r_cy="true"
-         inkscape:r_cx="true"
-         sodipodi:type="arc"
-         style="opacity:0.47368421;color:#000000;fill:url(#radialGradient31250);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
-         id="path3556-4"
-         sodipodi:cx="22.571428"
-         sodipodi:cy="30.857143"
-         sodipodi:rx="15.571428"
-         sodipodi:ry="10.142858"
-         d="m 38.142857,30.857143 c 0,5.601746 -6.971566,10.142858 -15.571429,10.142858 C 13.971566,41.000001 7,36.458889 7,30.857143 7,25.255398 13.971566,20.714286 22.571428,20.714286 c 8.599863,0 15.571429,4.541112 15.571429,10.142857 z"
-         transform="matrix(0.52379589,0,0,0.14947196,119.12807,882.87492)" />
-      <g
-         id="g4074"
-         transform="matrix(0.25393493,0,0,0.25393493,92.319785,657.96026)">
-        <rect
-           rx="6.3134551"
-           ry="7.9750404"
-           y="852.87329"
-           x="120.81921"
-           height="50.268913"
-           width="63.008266"
-           id="rect3296"
-           style="fill:#c8e6e6;fill-opacity:1;stroke:none" />
-        <text
-           transform="scale(0.86575147,1.1550659)"
-           id="text3292"
-           y="773.08905"
-           x="143.30231"
-           style="font-size:43.65790939px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:cmr10;-inkscape-font-specification:cmr10"
-           xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#646464;fill-opacity:1;font-family:AlMateen;-inkscape-font-specification:AlMateen Bold"
-             y="773.08905"
-             x="143.30231"
-             id="tspan3294"
-             sodipodi:role="line">me</tspan></text>
-      </g>
-    </g>
     <g
        id="layer1-3"
        transform="matrix(0.02915323,0,0,0.02915323,140.76593,869.27999)">
@@ -7045,5 +6999,10 @@
          x="224.37639"
          y="890.76782"
          style="font-size:17.54778861999999900px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;color:#000000;fill:#eeeeee;fill-opacity:1;fill-rule:nonzero;stroke:#3a3a3a;stroke-width:0.48743856000000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Open Sans;-inkscape-font-specification:Open Sans Bold">+</tspan></text>
+    <path
+       style="color:#000000;fill:#8a8a8a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.91331547;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 122.15625 2 C 120.96911 2 120 2.892 120 4 L 120 14 C 120 15.108 120.96911 16 122.15625 16 L 132.84375 16 C 134.03089 16 135 15.108 135 14 L 135 4 C 135 2.892 134.03089 2 132.84375 2 L 122.15625 2 z M 124.0625 6 C 124.36031 6.00001 124.59408 6.11206 124.75 6.3125 C 124.90592 6.51295 125.01023 6.76915 125.03125 7.125 C 125.11535 6.92231 125.19891 6.76915 125.28125 6.625 C 125.36355 6.48087 125.44191 6.34234 125.53125 6.25 C 125.62065 6.1577 125.70914 6.10304 125.8125 6.0625 C 125.91585 6.022 126.03011 6 126.15625 6 C 126.54516 6.00001 126.84555 6.18215 127.03125 6.53125 C 127.21695 6.88032 127.3125 7.37784 127.3125 8.0625 L 127.3125 13 L 126.1875 13 L 126.1875 8.3125 C 126.1875 8.14134 126.194 8.00339 126.1875 7.875 C 126.1805 7.74662 126.146 7.64809 126.125 7.5625 C 126.104 7.4769 126.07155 7.41778 126.03125 7.375 C 125.99095 7.3322 125.94515 7.3125 125.875 7.3125 C 125.76638 7.31251 125.66761 7.40457 125.5625 7.59375 C 125.45738 7.78295 125.32063 8.10756 125.1875 8.5625 L 125.1875 13 L 124.09375 13 L 124.09375 8.3125 C 124.09374 8.14133 124.10025 8.00339 124.09375 7.875 C 124.08675 7.74662 124.0835 7.64809 124.0625 7.5625 C 124.0415 7.4769 124.01085 7.41779 123.96875 7.375 C 123.92675 7.3322 123.85133 7.3125 123.78125 7.3125 C 123.69015 7.31251 123.58087 7.40457 123.46875 7.59375 C 123.35663 7.78293 123.23039 8.10756 123.09375 8.5625 L 123.09375 13 L 122 13 L 122 6.125 L 122.9375 6.125 L 122.96875 7.125 C 123.04585 6.92231 123.14167 6.76914 123.21875 6.625 C 123.29585 6.48086 123.3499 6.34234 123.4375 6.25 C 123.5251 6.1577 123.61889 6.10304 123.71875 6.0625 C 123.81865 6.022 123.93636 6 124.0625 6 z M 130.65625 6 C 131.03466 6 131.36544 6.07144 131.65625 6.21875 C 131.94706 6.3661 132.21003 6.57986 132.40625 6.84375 C 132.60245 7.10766 132.74213 7.41619 132.84375 7.78125 C 132.94535 8.14632 132.99999 8.53331 133 8.96875 C 132.99999 9.07876 133.005 9.23033 133 9.40625 C 132.995 9.58219 132.97925 9.84606 132.96875 10 L 129.46875 10 C 129.46875 10.2947 129.49076 10.46319 129.5625 10.6875 C 129.6343 10.91183 129.7436 11.09825 129.875 11.25 C 130.00639 11.40175 130.1598 11.51459 130.34375 11.59375 C 130.52769 11.67285 130.74451 11.71875 130.96875 11.71875 C 131.22802 11.71876 131.48517 11.6756 131.78125 11.625 C 132.0773 11.5744 132.39991 11.48935 132.71875 11.375 L 132.71875 12.65625 C 132.58211 12.70475 132.41117 12.77295 132.25 12.8125 C 132.08883 12.8521 131.94942 12.87553 131.78125 12.90625 C 131.61307 12.93705 131.42169 12.95345 131.25 12.96875 C 131.07832 12.98415 130.91117 13 130.75 13 C 130.34357 13 129.97858 12.92637 129.65625 12.78125 C 129.3339 12.6361 129.06799 12.40868 128.84375 12.125 C 128.61951 11.8413 128.46288 11.51159 128.34375 11.09375 C 128.22463 10.67591 128.15625 10.54981 128.15625 10 C 128.15625 9.4546 128.22467 8.60269 128.34375 8.15625 C 128.46288 7.70982 128.62653 7.31888 128.84375 7 C 129.06099 6.68112 129.31491 6.42373 129.625 6.25 C 129.93508 6.07626 130.27435 6 130.65625 6 z M 130.625 7.1875 C 130.30265 7.18751 130.05047 7.32325 129.84375 7.59375 C 129.63703 7.86424 129.50728 8.50738 129.46875 9 L 131.6875 9 C 131.6915 8.73611 131.6811 8.25823 131.625 8.0625 C 131.5689 7.86678 131.47134 7.69005 131.375 7.5625 C 131.2787 7.43495 131.19039 7.34284 131.0625 7.28125 C 130.93461 7.21965 130.77215 7.1875 130.625 7.1875 z "
+       transform="translate(3,872.61934)"
+       id="rect4157" />
   </g>
 </svg>
