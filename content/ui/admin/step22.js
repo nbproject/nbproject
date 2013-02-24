@@ -33,11 +33,11 @@ GLOB.pers.init = function(){
     $.mods.declare({
         docview: {
         js: ["/content/modules/dev/ui.docView11.js",  "/content/modules/dev/ui.drawable4.js"],
-            css: [ "/content/modules/dev/ui.docView5.css" , "/content/modules/dev/ui.drawable.css" ]
+            css: [ "/content/modules/dev/ui.docView.css" , "/content/modules/dev/ui.drawable.css" ]
             }, 
-        notepaneview: {js: ["/content/modules/dev/ui.notepaneView11.js"],css: ["/content/modules/dev/ui.notepaneView6.css"] }, 
-        threadview: {js: ["/content/modules/dev/ui.threadview2.js"],css: [] },
-        editorview: {js: ["/content/modules/dev/ui.editorview2.js"],css: [] }
+        notepaneview: {js: ["/content/modules/dev/ui.notepaneView11.js"],css: ["/content/modules/dev/ui.notepaneView.css"] }, 
+        threadview: {js: ["/content/modules/dev/ui.threadview.js"],css: [] },
+        editorview: {js: ["/content/modules/dev/ui.editorview.js"],css: [] }
 
     });
     

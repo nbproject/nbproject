@@ -29,7 +29,7 @@ GLOB.pers.init = function(){
         treeview: {js: ["/content/modules/dev/ui.treeview6.js"],css: [] },
         filesview:  {js: ["/content/modules/dev/ui.filesview3.js","/content/modules/calendrical/jquery.calendrical.js" ],css: ["/content/modules/calendrical/calendrical.css"] },
         homeview:  {js: ["/content/modules/dev/ui.homeview1.js" ],css: ["/content/modules/dev/ui.homeview1.css"] },
-        stackview: {js:  ["/content/modules/dev/ui.stackview1.js" ],css: ["/content/modules/dev/ui.stackview1.css"] }
+        stackview: {js:  ["/content/modules/dev/ui.stackview.js" ],css: ["/content/modules/dev/ui.stackview.css"] }
     });
     
     //Factories: methods called if an event calls for a function that's not yet present
