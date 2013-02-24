@@ -173,7 +173,7 @@
                             f_cleanup();
                         }
                     });
-                $textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height() - 38);
+                $textarea.css('minHeight', $textarea.height() + self.element.height() - $("div.notebox", self.element).height() - 42);
                 var f_sel = function(evt, ui){
                     $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
                 };
