@@ -137,21 +137,24 @@ margin: 0 2px;
 ins.lf-numnotes,
 ins.lf-numnewnotes{
 text-align: center;
-border-radius: 3px;
+border-radius: 2px;
 padding: 1px 3px;
+margin-top: 2px;
+box-sizing: border-box;
+height: 14px;
 }
 
 ins.lf-numnotes{
 color: #a0a0a0;
 background-color: #e0e0e0;
-border: thin solid #c7c7c7;
+
 }
 
 ins.lf-numnewnotes{
 color: #7070ff;
 font-weight: bold;
 background-color: #ffff70;
-border: thin solid #c0c0a0;
+
 }
 
 div.notepaneView span.standout{
