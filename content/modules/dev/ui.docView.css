@@ -50,11 +50,13 @@ border: thin solid #777777;
 opacity: 0.3;
 z-index: 2;
 border-radius: 5px;
+overflow: hidden;
 }
 
 div.docView div.selection.hovered{
-border-color: #773333;
-background-color: #E5E5B5;
+border-color: #333377;
+background-color: #B5B5E5;
+overflow: visible;
 }
 
 div.docView div.selection.selected{
