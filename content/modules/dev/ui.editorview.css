@@ -11,7 +11,9 @@ background-color: #FFF;
 }
 
 div.notebox {
-    margin: 5px;
+    padding: 8px 5px 0 5px;
+    border-left: 1px #ddd solid;
+    border-right: 1px #ddd solid;
 }
 
 div.editor textarea {
