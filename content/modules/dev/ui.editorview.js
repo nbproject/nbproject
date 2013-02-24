@@ -147,13 +147,6 @@
                 var timeout_save_button;
                 var timeout_func = function(self) { $("button[action=save]", self.element).removeAttr("disabled"); };
 
-                var answerplease_opt = " ";
-                if(self._doEdit && self._note.ID in model.o.mark){
-                    var mark = model.o.mark[self._note.ID];
-                    if (mark.answerplease === 1){
-                        answerplease_opt = " checked='checked' ";
-                    }
-                }
                 var f_cleanup = function(){
                     window.clearTimeout(timeout_save_button);
                     self.element.trigger("before_cleanup", true);
@@ -164,29 +157,23 @@
                         self._sel.remove();
                     }            
                 };
-                var staffoption    = self._allowStaffOnly ? "<tr><td><input type='radio' name='vis_"+id_item+"' value='2'/></td><td>Instructors and TAs</td></tr>" : " ";
-                var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></span>": " ";
-                var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span> ";
-                var checkbox_options = "<div class='editor_checkbox_options'>"+questionoption+signoption+"</div>";
+                var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
+                var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
+                var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
+                var checkbox_options = questionoption+signoption;
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
-                //        var body    = self._doEdit ? self._note.body : "";
+
                 var contents = $([
-                                  "<div class='notebox'><div class='notebox-body'><div><!--<input type='checkbox' id='checkbox_answerplease'", 
-                                  answerplease_opt, 
-                                  " value='answerplease'/><label for='checkbox_answerplease'>Question</label>--><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><div class='editor-header'>", 
-                                  header,
-                                  "</div><textarea/><br/></div> <div class='editor-footer'><table class='editorcontrols'><tr><td class='tablecontrols'><table><tr> <td><input type='radio' checked='checked' name='vis_", 
-                                  id_item, 
-                                  "' value='3' /></td><td>The entire class</td></tr>", staffoption, 
-                                  "<tr><td><input type='radio' name='vis_"+id_item+"' value='1'/></td><td>Myself only</td></tr></table></td><td>"+checkbox_options+"<button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
                 self.element.append(contents);
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
                             f_cleanup();
                         }
-                    }).width(self.element.width()-15);     
-                $textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height()-30);
+                    });
+                $textarea.height($textarea.height() + self.element.height() - $("div.notebox", self.element).height() - 38);
                 var f_sel = function(evt, ui){
                     $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
                 };
@@ -222,7 +209,7 @@
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
 
                     var msg = {
-                        type: $("input[name=vis_"+id_item+"]:checked", self.element)[0].value,
+                        type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {}
