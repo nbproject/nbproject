@@ -90,18 +90,14 @@ z-index:100;
 /*Beginning of standard icon theme */
 
 .nbicon{
-background-image: url("/content/data/icons/png/theme_dark.png");
- background-repeat: no-repeat;
-display: inline-block;
-margin: 0;
-padding: 0;
-text-decoration: none;
-width: 18px;
-height: 18px;
-}
-
-.nbicon.dark{
-background-color: #000044;
+    background-image: url("/content/data/icons/png/theme_dark.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    width: 18px;
+    height: 18px;
 }
 
 .foldericon{
