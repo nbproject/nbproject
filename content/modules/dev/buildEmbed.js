@@ -31,7 +31,7 @@
         }
         
         //now move stuff here it's supposed to be: 
-        $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
+        $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").appendTo(".nb_sidebar");
         $("#login-window").appendTo(".nb-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
@@ -123,7 +123,7 @@
                            priority: 1, 
                            min_width: 650, 
                            desired_width: 35,  
-                           min_height: 1000, 
+                           min_height: 1500, 
                            desired_height: 50, 
                            transcient: true,  
                            content: function($div){
@@ -138,6 +138,11 @@
                        //SACHA FIXME: Hack we embed the following into a delay because FF doesn't compute the right window height if we execute this right away
                        setTimeout(function(){                               
                           $pers.perspective({
+                                  ext_separator: {
+                                      container: ".nb_sidebar", 
+                                          orientation: "vertical"
+                                      
+                                          },
                                height: function(){
                                    return $vp.height() - ($pers.offset().top - $vp.offset().top);
                                }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position
