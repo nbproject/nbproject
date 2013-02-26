@@ -7,7 +7,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 .external-separator{
     background-color:#EFEBE7;
     z-index: 10;
-    position: absolute;
+    position: absolute !important;
 }
 
 .separator{
