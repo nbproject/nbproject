@@ -227,7 +227,10 @@ var NB$ = jQuery.noConflict();
     }
     var display_fct = do_html ? "html":"text";
     $("body").append(popup);
-    popup[display_fct](msg).stop(true).fadeTo("normal", 0.7, function(){$(this).fadeTo(time_ms, 0.7, function(){$(this).fadeTo("normal", 0, function(){$(this).remove();});});});
+
+    popup[display_fct](msg).stop(true, true).hide().fadeIn(400).delay(time_ms).fadeOut(400, function() {$(this).remove();});
+
+//fadeTo("normal", 0.7, function(){$(this).fadeTo(time_ms, 0.7, function(){$(this).fadeTo("normal", 0, function(){$(this).remove();});});});
     };
     $.E = function(s){
         return s ? s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : "None";

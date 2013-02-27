@@ -36,7 +36,7 @@ div.filesView div.filesView-header {
 }
 
 div.filesView-header>* {
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 div.filesView-header .title{

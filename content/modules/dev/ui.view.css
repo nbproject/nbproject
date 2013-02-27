@@ -26,18 +26,18 @@ border: thin solid #ffc0a0 !important;
 }
 
 div.ui-view-popup{
-user-select: none;
--moz-user-select:none;
--webkit-user-select:none;
-background-color:#AACCFF;
-border:thin solid #7799AA;
-bottom:30px;
-font-size:large;
-min-height:40px;
-min-width:320px;
-opacity:0;
-padding:10px;
+user-select:none;
+border-radius: 6px;
+padding: 8px;
+font-weight: bold;
+text-align: center;
+background-color:#FAEC9B;
+color: #666;
+top:30px;
+left: 50%;
+margin-left: -160px;
+width:320px;
 position:fixed;
-right:30px;
 z-index:100;
+box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 }
