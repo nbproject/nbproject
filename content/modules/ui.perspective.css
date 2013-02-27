@@ -3,15 +3,27 @@ Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
+
+.external-separator{
+    background-color:#EFEBE7;
+    z-index: 10;
+    position: absolute !important;
+}
+
 .separator{
     background-color:#EFEBE7;
     z-index: 10;
-    position: absolute;
+    position: absolute; 
+}
+
+.external-separator:hover{
+    background-color: #CCC;
 }
 
 .separator:hover{
     background-color: #CCC;
 }
+
 
 .pers-container{
     overflow: hidden;

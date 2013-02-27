@@ -1,17 +1,12 @@
 body.nb-active{
-margin-right: 405px;
-}
-
-.nb_sidebar.nb_inactive,
-body:not(.nb-active) .nb_sidebar {
-
+margin-right: 505px;
 }
 
 .nb_sidebar{
 right: 0px;
 top: 0px;
 position: fixed;
-width: 400px;
+width: 500px;
 z-index: 2;
 }
 
