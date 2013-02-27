@@ -26,7 +26,7 @@
 /*global alert:true jQuery:true console:false*/
 (function($) {
     var P_OBJ = {
-    SEP_TOTAL_SIZE: 5,
+    SEP_TOTAL_SIZE: 4,
     SEP_INSIDE_SIZE:4, 
     ORIENTATIONS: { 
             vertical:  {axis: "x", dir:  "left", dim: "width",  dim2:"height", cursor: "col-resize", margin: "margin-right" }, 
@@ -135,7 +135,7 @@
         o_css[v.dim2]        = $p[v.dim2]()+"px";
         o_css[v.dim]        = self.SEP_INSIDE_SIZE+"px";
         o_css["cursor"]        = v.cursor;
-        o_css["border-"+v.dir]    = "thin solid #FEFCFB";
+        //o_css["border-"+v.dir]    = "thin solid #FEFCFB";
         $sep.css(o_css);    
         };
         $SEPS.each(f_adjust); 
@@ -386,7 +386,7 @@
                 o_css[v.dim2]        = "100%";
                 o_css[v.dim]        = self.SEP_INSIDE_SIZE+"px";
                 o_css["cursor"]        = v.cursor;
-                o_css["border-"+v.dir]    = "thin solid #FEFCFB";
+                //o_css["border-"+v.dir]    = "thin solid #FEFCFB";
                 var sep = $("<div class='external-separator' orientation='"+self._ext_separator.orientation+"'/>").css(o_css).draggable({
                          axis: v.axis, 
             stop: function(event, ui){
