@@ -519,7 +519,8 @@
            of the closure variable at the last iteration */
             self._f_new_draggable(o); 
         }            
-        window.addEventListener("resize", self.f_on_window_resize.bind(self), false);           if (self._views){
+        window.addEventListener("resize", self.f_on_window_resize.bind(self), false);           
+        if (self._views){
             //this is needed when opening a 3rd perspective for instance
             self._resize_contents(true);
             self._adjust(self.element.children("div.separator"));

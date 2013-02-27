@@ -31,7 +31,7 @@
         }
         
         //now move stuff here it's supposed to be: 
-        $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").appendTo(".nb_sidebar");
+        $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo(".nb_sidebar");
         $("#login-window").appendTo(".nb-widget-header"); // add this here so it's fixed as well
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
