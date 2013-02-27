@@ -20,7 +20,7 @@ table{
 <div class='section'>
 	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
       <table>
-      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th></tr></thead>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
       	<tbody>
 	{% for o in memberships %}	
 		<tr>
@@ -28,6 +28,13 @@ table{
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
 			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+            <td><a style='margin-right: 10px' href='?action=delete&membership_id={{o.id}}'>Delete</a>
+              {% if o.admin %}
+              <a href='?action=unadmin&membership_id={{o.id}}'>Remove staff status</a>
+              {% else %}
+              <a href='?action=admin&membership_id={{o.id}}'>Add staff status</a>
+              {% endif %}
+            </td>
 		</tr>
         {% endfor %}
 	
@@ -54,9 +61,8 @@ table{
       </table>
       </div>
 
-
-<h2>{{pendingconfirmations.count}} pending email confirmations</h2>
 {% if pendingconfirmations %}
+<h2>{{pendingconfirmations.count}} pending email confirmations</h2>
  <div class='section'>
   	<p>The following users have used the subscribe link but haven't confirmed their email yet.  </p>
 
@@ -74,7 +80,29 @@ table{
       </table>
       </div>
 {% endif %}      
-      
-<!--TODO: deleted users -->
+
+{% if deleted_memberships %}
+<h2>{{deleted_memberships.count}} deleted memberships</h2>
+ <div class='section'>
+  	<p>The following users have been removed from this group.  </p>
+   <table>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+      	<tbody>
+	{% for o in deleted_memberships %}	
+		<tr>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+            <td><a href='?action=undelete&membership_id={{o.id}}'>Undelete</a></td>
+
+		</tr>
+        {% endfor %}
+	
+	</tbody>
+      </table>
+      </div>
+{% endif %}
+
 {% endblock %}
 

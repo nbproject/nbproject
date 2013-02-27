@@ -123,7 +123,7 @@
                            priority: 1, 
                            min_width: 650, 
                            desired_width: 35,  
-                           min_height: 1000, 
+                           min_height: 1500, 
                            desired_height: 50, 
                            transcient: true,  
                            content: function($div){
@@ -138,6 +138,11 @@
                        //SACHA FIXME: Hack we embed the following into a delay because FF doesn't compute the right window height if we execute this right away
                        setTimeout(function(){                               
                           $pers.perspective({
+                                  ext_separator: {
+                                      container: ".nb_sidebar", 
+                                          orientation: "vertical"
+                                      
+                                          },
                                height: function(){
                                    return $vp.height() - ($pers.offset().top - $vp.offset().top);
                                }, //3rd term is to account for the fact we have NB embedded as part of widget that has a 'fixed' position

@@ -1,27 +1,22 @@
 body.nb-active{
-margin-right: 405px;
-}
-
-.nb_sidebar.nb_inactive,
-body:not(.nb-active) .nb_sidebar {
-
+margin-right: 505px;
 }
 
 .nb_sidebar{
 right: 0px;
 top: 0px;
 position: fixed;
-width: 400px;
+width: 500px;
 z-index: 2;
+}
+
+.nb_sidebar > div.nb-viewport {
+    margin-left: 4px;
 }
 
 body.nb-active .nb_sidebar {
 bottom: 0px;
 background-color: #ffffff;
-}
-
-.nb_sidebar .nb-widget-header {
-  border-left: 1px #CCC solid;
 }
 
 .nb-error {
