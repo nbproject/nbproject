@@ -148,6 +148,38 @@ def enter_your_name(req):
             return HttpResponseRedirect("/?ckey=%s" % (user.confkey,))         
     return render_to_response("web/enteryourname.html", {"user_form": user_form})
 
+def add_html_doc(req, ensemble_id): 
+    import base.models as M
+    user       = UR.getUserInfo(req, False)
+    if user is None:
+        redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
+        return HttpResponseRedirect(redirect_url)
+    if not auth.canEditEnsemble(user.id, ensemble_id):
+        return HttpResponseRedirect("/notallowed")
+    addform = forms.Html5Form()
+    if req.method == 'POST':
+        addform = forms.Html5Form(req.POST)
+        if addform.is_valid():             
+            source = M.Source()
+            source.numpages = 1
+            source.w = 0
+            source.h = 0
+            source.rotation = 0
+            source.version = 0
+            source.type = 4
+            source.submittedby=user
+            source.title = addform.cleaned_data['title']
+            source.save()            
+            ownership = M.Ownership()
+            ownership.source = source
+            ownership.ensemble_id = ensemble_id
+            ownership.save()
+            info = M.HTML5Info()
+            info.source = source
+            info.url = addform.cleaned_data['url']
+            info.save();
+            return HttpResponseRedirect("/")         
+    return render_to_response("web/add_html_doc.html", {"form": addform})
 
 
 def comment(req, id_comment): 

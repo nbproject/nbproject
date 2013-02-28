@@ -51,6 +51,7 @@ urlpatterns = patterns("",
                        (r'^enteryourname$', 'pages.views.enter_your_name'), 
                        (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
                        (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
+                       (r'^addhtml/(\d+)$', 'pages.views.add_html_doc'),
                        (r'^fbchannel$', 'pages.views.fbchannel'),  #TODO: not sure this is needed anymore. 
                        (r'^spreadsheet$', 'pages.views.spreadsheet'),
                        (r'^spreadsheet/download/(\d+)$', 'img.views.serve_grades_spreadsheet'),
