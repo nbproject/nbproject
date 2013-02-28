@@ -66,13 +66,6 @@ def index(req):
 def collage(req): 
     return __serve_page(req, settings.COLLAGE_TEMPLATE, mimetype="text/html")
 
-def admin(req): 
-    return HttpResponseRedirect("/")    #no more admin
-#    return __serve_page(req, settings.ADMIN_TEMPLATE)
-
-def alpha(req): 
-    return __serve_page(req, settings.ALPHA_TEMPLATE)
-
 def dev_desktop(req, n): 
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
