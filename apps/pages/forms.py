@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ValidationError
+from django.forms import Form, ModelForm, ValidationError
 from base import models as M
 from django.forms.fields import CharField
 from django.forms.widgets import PasswordInput
@@ -46,6 +46,21 @@ class EnsembleForm(ModelForm):
     class Meta: 
         model = M.Ensemble
         exclude = ("invitekey")
+
+
+class Html5Form(Form):
+    title = CharField(max_length=256)
+    url = CharField(max_length=1024)
+
+class SourceForm(ModelForm): 
+    class Meta: 
+        model = M.Source
+        exclude = ("numpages", "w", "h", "rotation", "version", "type", "submittedby")
+
+class HTML5InfoForm(ModelForm): 
+    class Meta: 
+        model = M.HTML5Info
+        exclude = ("source",)
 
 #class EditEnsembleForm(ModelForm):
 #    class Meta: 
