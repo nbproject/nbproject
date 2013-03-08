@@ -55,6 +55,7 @@ urlpatterns = patterns("",
                        (r'^spreadsheet$', 'pages.views.spreadsheet'),
                        (r'^spreadsheet/download/(\d+)$', 'img.views.serve_grades_spreadsheet'),
                        (r'^debug', 'pages.views.debug'),
+                       (r'^stats', include(stats.urls)),
                        (r'^polls', include(polls.urls)),  
                        )
 
