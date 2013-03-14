@@ -1,7 +1,8 @@
 # Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 # MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 from os.path import abspath, dirname, basename 
-from django.conf.urls.defaults import *
+from django.conf.urls import *
+from django.views.generic import TemplateView
 from django.contrib import admin
 import rpc.urls
 import polls.urls
@@ -61,27 +62,27 @@ urlpatterns = patterns("",
                        )
 
 urlpatterns += patterns('django.views.generic.simple',
-                        (r'^glossary/$',                           'direct_to_template', {'template': 'web/glossary.html'}),
-                         (r'^about/$',                           'direct_to_template', {'template': 'web/about.html'}),
-                        (r'^help/$',                           'direct_to_template', {'template': 'web/help.html'}),
-                        (r'^tutorial/$',                           'direct_to_template', {'template': 'web/help.html'}),
-                        (r'^contact/$',                           'direct_to_template', {'template': 'web/contact.html'}),
-                        (r'^faq/$',                           'direct_to_template', {'template': 'web/faq.html'}),
-                        (r'^faq_student/$',                           'direct_to_template', {'template': 'web/faq_student.html'}),
-                        (r'^faq_instructor/$',                           'direct_to_template', {'template': 'web/faq_professor.html'}),
-                        (r'^disclaimer/$',                           'direct_to_template', {'template': 'web/disclaimer.html'}),
+                        (r'^glossary/$',                           TemplateView.as_view(template_name='web/glossary.html')),
+                         (r'^about/$',                           TemplateView.as_view(template_name='web/about.html')),
+                        (r'^help/$',                           TemplateView.as_view(template_name='web/help.html')),
+                        (r'^tutorial/$',                           TemplateView.as_view(template_name='web/help.html')),
+                        (r'^contact/$',                           TemplateView.as_view(template_name='web/contact.html')),
+                        (r'^faq/$',                           TemplateView.as_view(template_name='web/faq.html')),
+                        (r'^faq_student/$',                           TemplateView.as_view(template_name='web/faq_student.html')),
+                        (r'^faq_instructor/$',                           TemplateView.as_view(template_name='web/faq_professor.html')),
+                        (r'^disclaimer/$',                           TemplateView.as_view(template_name='web/disclaimer.html')),
 
-                        (r'^password_reminder/$',                           'direct_to_template', {'template': 'web/password_reminder.html'}),
-                        (r'^terms_public_site/$',                           'direct_to_template', {'template': 'web/terms_public_site.html'}),
-                        (r'^robots.txt/$',                           'direct_to_template', {'template': 'web/robots.txt'}),
-                         (r'^staff_benefits/$',                           'direct_to_template', {'template': 'web/staff_benefits.html'}),
-                         (r'^welcome$',                           'direct_to_template', {'template': 'web/welcome.html'}),
-                         (r'^login$',                           'direct_to_template', {'template': 'web/login.html'}),
-                         (r'^newsite_thanks$',                           'direct_to_template', {'template': 'web/newsite_thanks.html'}),
-                            (r'^subscribe_thanks$',                           'direct_to_template', {'template': 'web/subscribe_thanks.html'}),
-                        (r'^notallowed$',                           'direct_to_template', {'template': 'web/notallowed.html'}),
-                             (r'^news$',                           'direct_to_template', {'template': 'web/news.html'}),
-                             (r'^fb$',                           'direct_to_template', {'template': 'web/fb.html'}),
+                        (r'^password_reminder/$',                           TemplateView.as_view(template_name='web/password_reminder.html')),
+                        (r'^terms_public_site/$',                           TemplateView.as_view(template_name='web/terms_public_site.html')),
+                        (r'^robots.txt/$',                           TemplateView.as_view(template_name='web/robots.txt')),
+                         (r'^staff_benefits/$',                           TemplateView.as_view(template_name='web/staff_benefits.html')),
+                         (r'^welcome$',                           TemplateView.as_view(template_name='web/welcome.html')),
+                         (r'^login$',                           TemplateView.as_view(template_name='web/login.html')),
+                         (r'^newsite_thanks$',                           TemplateView.as_view(template_name='web/newsite_thanks.html')),
+                            (r'^subscribe_thanks$',                           TemplateView.as_view(template_name='web/subscribe_thanks.html')),
+                        (r'^notallowed$',                           TemplateView.as_view(template_name='web/notallowed.html')),
+                             (r'^news$',                           TemplateView.as_view(template_name='web/news.html')),
+                             (r'^fb$',                           TemplateView.as_view(template_name='web/fb.html')),
                         )
 urlpatterns += patterns('', 
                          (r'djangoadmin/',    include(admin.site.urls)),
