@@ -6,4 +6,6 @@ import views
 
 urlpatterns = patterns("",
      (r'test1$', views.test1,),
+     (r'api$', views.api,),
+             
 )

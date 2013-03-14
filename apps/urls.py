@@ -5,6 +5,7 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 import rpc.urls
 import polls.urls
+import stats.urls
 from django.conf import settings
 
 admin.autodiscover()
