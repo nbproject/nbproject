@@ -3,7 +3,6 @@ from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
-from django.views.generic.simple import direct_to_template
 import  urllib, json, base64, logging 
 from base import auth, signals, annotations, utils_response as UR, models as M
 from django.conf import settings
