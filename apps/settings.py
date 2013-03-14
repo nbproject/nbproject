@@ -84,8 +84,6 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
@@ -235,3 +233,6 @@ OPENID_USE_AS_ADMIN_LOGIN       = False
 #AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
 AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'                                                                          
 FACEBOOK_SCOPE = 'email'
+
+#Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS). 
+ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
