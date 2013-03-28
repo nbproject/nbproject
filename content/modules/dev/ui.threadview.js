@@ -109,7 +109,7 @@
         else if (o.type === 2){
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
-        var author_name        = " <span class='author'>"+o.fullname+"</span> ";
+        var author_name        = " <span class='author'>"+"[name hidden]"+"</span> ";
         var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
         var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&sdot;&sdot;&sdot;</div></a> ";
