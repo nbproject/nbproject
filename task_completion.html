@@ -18,7 +18,34 @@
     // This allows the Javascript code inside this block to only run when the page
     // has finished loading in the browser.
     $(document).ready(function() {
+    
+    	var currently_selected = '';
     	
+    	// Selects a family member when clicked
+    	$('.selectionCell').click(function(evt) {
+    		currently_selected = evt.target.id;
+    		document.getElementById("selectedName").innerHTML = currently_selected;
+    		$('.selectionPic').css('border-width', '0px');
+    		$('#'+currently_selected).css('border-width', '2px');
+    		$('#selectedPerson').attr('src', 'assets/'+currently_selected+'.jpg');
+    		$('#buttonTable').css('margin-top', '16px');
+    	});
+    	
+		// Cancel Button
+		$('#btnCancel').click(function(evt) {
+    		
+    	});
+    	
+    	// Claim Button
+		$('#btnClaim').click(function(evt) {
+    		
+    	});
+    	
+    	// Complete Button
+		$('#btnComplete').click(function(evt) {
+    		
+    	});
+
 
     });
 </script>
@@ -35,16 +62,16 @@
 <img src="assets/unknown_person.jpg" id="selectedPerson"></img>
 <br>
 
-<span id="selectedName">Name</span>
+<span id="selectedName">Select Family Member</span>
 <br>
 
 <table id="selectionTable"><tr>
 
-<td class="selectionCell"><img src="assets/Cersei.jpg" class="selectionPic" /></td>
-<td class="selectionCell"><img src="assets/Robert.jpg" class="selectionPic" /></td>
-<td class="selectionCell"><img src="assets/Joffrey.jpg" class="selectionPic" /></td>
-<td class="selectionCell"><img src="assets/Myrcella.jpg" class="selectionPic" /></td>
-<td class="selectionCell"><img src="assets/Tommen.jpg" class="selectionPic" /></td>
+<td class="selectionCell"><img src="assets/Cersei.jpg" class="selectionPic" id="Cersei" /></td>
+<td class="selectionCell"><img src="assets/Robert.jpg" class="selectionPic" id="Robert" /></td>
+<td class="selectionCell"><img src="assets/Joffrey.jpg" class="selectionPic" id="Joffrey" /></td>
+<td class="selectionCell"><img src="assets/Myrcella.jpg" class="selectionPic" id="Myrcella" /></td>
+<td class="selectionCell"><img src="assets/Tommen.jpg" class="selectionPic" id="Tommen" /></td>
 
 </tr></table>
 <br>

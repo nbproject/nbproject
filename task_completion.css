@@ -26,13 +26,16 @@
 }
 
 .selectionCell {
-
+	padding: 1px;
 }
 
 .selectionPic {
 	width: 60px;
 	height: 60px;
 	display: block;
+	border-style: solid;
+	border-color: blue;
+	border-width: 0px;
 }
 
 #buttonTable {
