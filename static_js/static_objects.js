@@ -1,3 +1,9 @@
+/*
+	create static objects here
+	let test_account be the static account we use
+	simply create users, create tasks. 
+	
+*/
 var test_account = new account(1);
 test_account.createMember("Cersei");
 test_account.createMember("Robert");

@@ -1,3 +1,110 @@
 #containsImage {
-	float:left;
+	display:block;
+}
+
+body {
+	background-color: brown;
+	background-image: url('../assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
+	font-family: "Gabriola";
+	font-size: 150%;
+}
+
+#tag {
+	background: #FFFFC9;
+	text-align: center;
+	display: inline-block;
+	font-size: 1.5em;
+	margin: 0;
+	padding: 3px;
+	box-shadow: 2px 2px 2px black;
+}
+
+#main {
+	margin: 0 auto;
+	width: 1000px;
+}
+
+#navigation ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+#family {
+	font-size: 0;
+}
+
+#family li {
+	font-size: 15px;
+}
+
+#navigation ul li {
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.profile {
+	background: #FFFFC9;
+}
+
+.profile h3 {
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	text-align: center;
+}
+.profile img {
+	width: 50px;
+	padding: 4px;
+	vertical-align: bottom;
+}
+
+#tabs li {
+	padding: 4px;
+	background: #C9E9FF;
+}
+
+#navigation div {
+	display: inline-block;
+}
+.tabs_container {
+	width: 30%;
+}
+
+.family_container {
+	width: 69%;
+	text-align: right;
+}
+
+/* Task list */
+#content {
+	background-color: white;
+	position: relative;
+	top: -17px; /* Something wrong with the nav div */
+	padding-top: 12px;
+	padding-left: 15px;
+	box-shadow: 4px 4px 9px black;
+}
+
+img.pin_left {
+	width: 31px;
+	position:absolute;
+	top: -1;
+	left: 1;
+}
+
+
+button#newtask {
+	display: inline;
+	margin: 0;
+	font-style: bold;
+	font-size: 1.5em;
+	margin-left: .5em;
+}
+
+#containsImage{
+
 }

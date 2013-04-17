@@ -26,7 +26,8 @@ $(document).ready(function() {
     $("#header").text("Today " + member.name + "...");
     var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
     console.log(imgHTML);
-    $("#bottom").html(imgHTML);
+    $("#containsImage").html(imgHTML);
     console.log("nope");
 
+    $("#hideme").hide();
 });
