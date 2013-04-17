@@ -12,6 +12,41 @@
 	border-width: 1px;
 }
 
+#selectedName {
+	font-size: 1.1em;
+	font-family: verdana;
+}
+
+#selectionTable {
+	width: 300px;
+	height: 60px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 25px;
+}
+
+.selectionCell {
+
+}
+
+.selectionPic {
+	width: 60px;
+	height: 60px;
+	display: block;
+}
+
+#buttonTable {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	width: 400px;
+}
+
+.completeButton {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #completionWindow {
 	width: 400px;
 	height: 400px;
