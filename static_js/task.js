@@ -2,6 +2,6 @@
 function task(name) {
 	this.name = name;
 	//this.duedate = duedate;
-	//this.assignedTo = assignedTo;
+	this.assignedTo = undefined;
 }
 

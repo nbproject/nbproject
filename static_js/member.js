@@ -7,6 +7,7 @@ function member(name) {
 	}
 
 	this.finishTask = function(task) {
+		
 	}
 
 	this.containsTask = function(task_name) {
