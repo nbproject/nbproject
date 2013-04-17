@@ -3,62 +3,133 @@
 <style type="text/css">
 body {
 	background-color: brown;
-	background-image: url('assets/fzm-seamless.corkboard.texture-01-[500x500].jpg');
+	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
+	font-family: Helvetica;
+}
+
+h1 {
+	background: #FFFFC9;
+	text-align: center;
+	display: inline-block;
+	font-size: 1.5em;
+	margin: 0;
+	padding: 3px;
+	box-shadow: 2px 2px 2px black;
 }
 
 div#content {
 	margin: 0 auto;
-	width: 75%;
+	width: 600px;
 }
 
-div#tasklist {
-	background-color: white;
-}
-
-button#newtask {
-	display: inline;
-	float: right;
-}
-#tasklist h2 {
-	display: inline;
+div#navigation {
+	overflow: visible;
 }
 
 #navigation ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	width: 50%;
-	display: inline;
+	display: inline-block;
+	vertical-align: bottom;
 }
 
 ul#family {
-	float: right;
 }
 
 #navigation ul li {
 	display: inline;
-	width: 60px;
 }
 
+.profile {
+	background: #FFFFC9;
+}
+.profile h3 {
+	font-size: 0.7em;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	text-align: center;
+}
+.profile img {
+	width: 50px;
+	padding: 4px;
+	vertical-align: bottom;
+}
+
+#tabs li {
+	padding: 4px;
+	background: #C9E9FF;
+}
+
+#navigation div {
+	
+	display: inline-block;
+}
+div.tabs_container {
+	width: 30%;
+}
+
+div.family_container {
+	width: 69%;
+	text-align: right;
+}
+
+/* Task list */
+div#tasklist {
+	background-color: white;
+	position: relative;
+	top: -4px; /* Something wrong with the nav div */
+	padding-top: 12px;
+	padding-left: 15px;
+	box-shadow: 4px 4px 9px black;
+}
+
+
+#tasklist h2 {
+	display: inline;
+	font-size: 1.5em;
+}
+
+button#newtask {
+	display: inline;
+	margin: 0;
+	font-style: bold;
+	font-size: 1.5em;
+	margin-left: .5em;
+}
+
+
 </style>
+<title>Household Dashboard</title>
 </head>
 <body>
 	<div id="content">
+		<h1>Household Dashboard</h1>
 		<div id="navigation">
-			<h1>Household Dashboard</h1>
-			<ul>
-				<li>To-Do</li>
-			</ul>
-			<ul id="family">
-				<li>Cersei</li>
-				<li>Robert</li>
-				<li>Joffrey</li>
-				<li>Myrcella</li>
-				<li>Tommen</li>
-			</ul>
+			<div class="tabs_container">
+				<ul id="tabs">
+					<li>To-Do</li>
+				</ul>
+			</div>
+			<div class="family_container">
+				<ul id="family">
+					<li><div class="profile"><img src="assets/Cersei.jpg"><h3>Cersei</h3></div></li>
+					<li><div class="profile"><img src="assets/Robert.jpg"><h3>Robert</h3></div></li>
+					<li><div class="profile"><img src="assets/Joffrey.jpg"><h3>Joffrey</h3></div></li>
+					<li><div class="profile"><img src="assets/Myrcella.jpg"><h3>Myrcella</h3></div></li>
+					<li><div class="profile"><img src="assets/Tommen.jpg"><h3>Tommen</h3></div></li>
+				</ul>
+			</div>
 		</div>
 		<div id="tasklist">
-			<h2>To-Do</h2><button id="newtask">+</button>
+			<div>
+				<h2>To-Do</h2><button id="newtask">+</button>
+			</div>
+			<div>
+				<p>Hello world.</p>
+			</div>
+
 		</div>
 	</div>
 </body>
