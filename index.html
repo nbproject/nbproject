@@ -4,7 +4,7 @@
 body {
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
-	font-family: Helvetica;
+	font-family: "Gabriola";
 }
 
 h1 {
@@ -84,7 +84,7 @@ div.family_container {
 div#tasklist {
 	background-color: white;
 	position: relative;
-	top: -4px; /* Something wrong with the nav div */
+	top: -12px; /* Something wrong with the nav div */
 	padding-top: 12px;
 	padding-left: 15px;
 	box-shadow: 4px 4px 9px black;
@@ -93,8 +93,8 @@ div#tasklist {
 img.pin_left {
 	width: 31px;
 	position:absolute;
-	left: 12;
-	top: -112;
+	top: -6;
+	left: 1;
 }
 
 
@@ -117,7 +117,10 @@ button#newtask {
 </head>
 <body>
 	<div id="content">
-		<h1>Household Dashboard</h1>
+		<div style="position: relative;">
+			<img class="pin_left" src="assets/pushpin.png">
+			<h1>Household Dashboard</h1>
+		</div>
 		<div id="navigation">
 			<div class="tabs_container">
 				<ul id="tabs">
@@ -135,7 +138,7 @@ button#newtask {
 			</div>
 		</div>
 		<div id="tasklist">
-			<img class="pin_left" src="assets/pushpin.png">
+			
 			<div>
 				<h2>To-Do</h2><button id="newtask">+</button>
 			</div>
