@@ -35,10 +35,16 @@ div#navigation {
 }
 
 ul#family {
+	font-size: 0;
+}
+
+ul#family li {
+	font-size: 15px;
 }
 
 #navigation ul li {
-	display: inline;
+	display: inline-block;
+	margin-left: 5px;
 }
 
 .profile {
@@ -63,7 +69,6 @@ ul#family {
 }
 
 #navigation div {
-	
 	display: inline-block;
 }
 div.tabs_container {
@@ -83,6 +88,13 @@ div#tasklist {
 	padding-top: 12px;
 	padding-left: 15px;
 	box-shadow: 4px 4px 9px black;
+}
+
+img.pin_left {
+	width: 31px;
+	position:absolute;
+	left: -5;
+	top: -35;
 }
 
 
@@ -123,6 +135,7 @@ button#newtask {
 			</div>
 		</div>
 		<div id="tasklist">
+			<img class="pin_left" src="assets/pushpin.png">
 			<div>
 				<h2>To-Do</h2><button id="newtask">+</button>
 			</div>
