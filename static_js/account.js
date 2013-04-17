@@ -64,9 +64,7 @@ function account(id) {
 			console.log("this task does not exist");
 			return;
 		}
-		
 		return this.tasks[containsNameValueInList(task_name, this.tasks)];
-
 	}
 }
 
