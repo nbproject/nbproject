@@ -1,7 +1,3 @@
-#containsImage {
-	display:block;
-}
-
 body {
 	background-color: brown;
 	background-image: url('../assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
@@ -46,7 +42,7 @@ body {
 }
 
 .profile {
-	background: #FFFFC9;
+	background: #FFFFC9;	
 }
 
 .profile h3 {
@@ -79,11 +75,10 @@ body {
 	text-align: right;
 }
 
-/* Task list */
 #content {
 	background-color: white;
 	position: relative;
-	top: -17px; /* Something wrong with the nav div */
+	top: -17px; 
 	padding-top: 12px;
 	padding-left: 15px;
 	box-shadow: 4px 4px 9px black;
@@ -96,15 +91,10 @@ img.pin_left {
 	left: 1;
 }
 
-
-button#newtask {
-	display: inline;
-	margin: 0;
-	font-style: bold;
-	font-size: 1.5em;
-	margin-left: .5em;
+#containsImage {
+	display:inline-block;
 }
 
-#containsImage{
-
+#back{
+	display:inline-block;
 }
