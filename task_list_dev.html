@@ -9,28 +9,31 @@
 
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
+	<script type="text/javascript" src="js/task_itemrenderer.js"></script>
 	<script type="text/javascript">
 		
-
 		var items = new Array();
-		var itemRenderer = new ItemRenderer();
+		var itemRenderer = new TaskListRenderer();
+		
 
 		//wrapper tracing function
 		function line(txt){
 			console.log(txt);
 		}
 
-		$(document).ready(function() {
-			
+		$(document).ready(function() {	
+
 			for (var i = 0; i < 10; i++) {
-				var task = new Task();
+				var task = new Task("Do laundry #" + i, items.length);
 				task.name = "task " + i;
 				items.push(task);
 			};
-			line(items);
 
-			itemRenderer.renderList();
-		}
+			line(items);
+			var template = $("#taskRowTemplate");
+			var container = $("#taskContainer");			
+			itemRenderer.renderList(items, $("#taskRowTemplate"), $("#taskContainer"));
+		});
 	</script>
 </head>
 <body>
