@@ -9,11 +9,16 @@
 	display:inline-block;
 }
 
+#memberTasks {
+	width:100%;
+	text-align:center;
+}
 .task {
 	border:2px solid;	
 	display:inline-block;
 	padding-left:10px;
 	padding-right:10px;
 	margin: 10px;
+	font-size: 3em;
 
 }
