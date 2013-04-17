@@ -24,16 +24,14 @@
 		$(document).ready(function() {	
 
 			for (var i = 0; i < 10; i++) {
-				var task = new Task();
+				var task = new Task("Do laundry #" + i, items.length);
 				task.name = "task " + i;
 				items.push(task);
 			};
 
 			line(items);
 			var template = $("#taskRowTemplate");
-			var container = $("#taskContainer");
-			line(template);
-			line(container);
+			var container = $("#taskContainer");			
 			itemRenderer.renderList(items, $("#taskRowTemplate"), $("#taskContainer"));
 		});
 	</script>
