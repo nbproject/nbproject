@@ -1,1 +1,22 @@
-﻿
+#taskName {
+	font-weight: bold;
+	font-family: verdana;
+	font-size: 1.5em;
+}
+
+#selectedPerson {
+	width: 150px;
+	height: 150px;
+	margin-top: 30px;
+	border-style: solid;
+	border-width: 1px;
+}
+
+#completionWindow {
+	width: 400px;
+	height: 400px;
+	border-style: solid;
+	border-width:2px;
+	text-align: center;
+	padding: 5px;
+}﻿
