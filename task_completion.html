@@ -29,6 +29,8 @@
     		$('#'+currently_selected).css('border-width', '3px');
     		$('#selectedPerson').attr('src', 'assets/'+currently_selected+'.jpg');
     		$('#buttonTable').css('margin-top', '16px');
+    		document.getElementById('btnClaim').disabled = false;
+    		document.getElementById('btnComplete').disabled = false;
     	});
     	
 		// Cancel Button
@@ -80,9 +82,9 @@
 
 <td><input id="btnCancel" class="completeButton" type="button" name="new" value="Cancel"/></td>
 
-<td><input id="btnClaim" class="completeButton" type="button" name="new" value="I'm Working On It!"/></td>
+<td><input id="btnClaim" class="completeButton" disabled="true" type="button" name="new" value="I'm Working On It!"/></td>
 
-<td><input id="btnComplete" class="completeButton" type="button" name="new" value="I'm Finished!"/></td> 
+<td><input id="btnComplete" class="completeButton" disabled="true" type="button" name="new" value="I'm Finished!"/></td> 
 
 
 </tr></table>
