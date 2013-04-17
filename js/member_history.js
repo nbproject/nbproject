@@ -22,11 +22,8 @@ $(document).ready(function() {
         member = test_account.getMember("Cersei");
     }  
     
-
     $("#header").text("Today " + member.name + "...");
     var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
-    console.log(imgHTML);
-    $("#bottom").html(imgHTML);
-    console.log("nope");
-
+    $("#containsImage").html(imgHTML);
+    $("#hideme").hide();
 });

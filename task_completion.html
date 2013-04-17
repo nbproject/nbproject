@@ -18,7 +18,9 @@
     // This allows the Javascript code inside this block to only run when the page
     // has finished loading in the browser.
     $(document).ready(function() {
-    
+    	document.getElementById('btnClaim').disabled = true;
+    	document.getElementById('btnComplete').disabled = true;
+    	
     	var currently_selected = '';
     	
     	// Selects a family member when clicked

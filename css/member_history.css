@@ -1,3 +1,10 @@
+
+
+
 #containsImage {
-	float:left;
+	display:inline-block;
+}
+
+#back{
+	display:inline-block;
 }

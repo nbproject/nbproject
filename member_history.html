@@ -1,28 +1,63 @@
 <html>
-
 <head>
-
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <title>Member History</title>
+<link rel="stylesheet" type="text/css" href="css/member_history.css" />
+
+<link rel="stylesheet" type="text/css" href="corkboard_theme.css" />
 <script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 <script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="static_js/misc.js"></script>
 <script type="text/javascript" src="static_js/task.js"></script>
 <script type="text/javascript" src="static_js/member.js"></script>
 <script type="text/javascript" src="static_js/account.js"></script>
 <script type="text/javascript" src="static_js/static_objects.js"></script>
 <script type="text/javascript" src="js/member_history.js"></script>
-
 </head>
 
 <body>
 
-<h1 id="header"></h1>
-<div id="top"> heheh
-</div>
+<div id="content">
+    <div style="position: relative;">
+        <img class="pin_left" src="assets/pushpin.png">
+        <h1 id="tag">Household Dashboard</h1>
+    </div>
+    <div id="navigation">
+        <div class="tabs_container">
+            <ul id="tabs">
+                <li>To-Do</li>
+            </ul>
+        </div>
+        <div class="family_container">
+            <ul id="family">
+                <li><div class="profile"><img src="assets/Cersei.jpg"><h3>Cersei</h3></div></li>
+                <li><div class="profile"><img src="assets/Robert.jpg"><h3>Robert</h3></div></li>
+                <li><div class="profile"><img src="assets/Joffrey.jpg"><h3>Joffrey</h3></div></li>
+                <li><div class="profile"><img src="assets/Myrcella.jpg"><h3>Myrcella</h3></div></li>
+                <li><div class="profile"><img src="assets/Tommen.jpg"><h3>Tommen</h3></div></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="tasklist">        
+        <div>                
+            <div class="dropdown">
+                <h2 id="header" class="dropdown-toggle" data-toggle="dropdown">Dropdown trigger</h2>
+                    <ul id="hideme" class="dropdown-menu" role="menu">
+                        <li>Yesterday</li>
+                        <li>Last 7 days</li>
+                    </ul>
+            </div>
 
-<div id="bottom"> 
+            <div id="previousTasks"> This is where the tasks go </div>
+
+            <div id="bottom"> 
+                <div id="containsImage"></div>
+                <div id="back"> <a href="">Back!</a> </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
-
 </html>
