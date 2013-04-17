@@ -3,7 +3,13 @@
 <style type="text/css">
 body {
 	background-color: brown;
-	background-image: url('assets/fzm-seamless.corkboard.texture-01-[500x500].jpg');
+	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
+	font-family: Helvetica;
+}
+
+h1 {
+	background: gray;
+	text-align: center;
 }
 
 div#content {
@@ -11,54 +17,103 @@ div#content {
 	width: 75%;
 }
 
-div#tasklist {
-	background-color: white;
-}
-
-button#newtask {
-	display: inline;
-	float: right;
-}
-#tasklist h2 {
-	display: inline;
+div#navigation {
+	overflow: visible;
 }
 
 #navigation ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	width: 50%;
-	display: inline;
+	display: inline-block;
+	vertical-align: bottom;
 }
 
 ul#family {
-	float: right;
 }
 
 #navigation ul li {
 	display: inline;
-	width: 60px;
 }
+
+img.profile {
+	width: 50px;
+	background: gray;
+	padding: 4px;
+	vertical-align: bottom;
+}
+
+#tabs li {
+	padding: 4px;
+	background: gray;
+}
+
+#navigation div {
+	
+	display: inline-block;
+}
+div.tabs_container {
+	width: 30%;
+}
+
+div.family_container {
+	width: 69%;
+	text-align: right;
+}
+
+/* Task list */
+div#tasklist {
+	background-color: white;
+	position: relative;
+	top: -4px; /* Something wrong with the nav div */
+	padding-top: 12px;
+	padding-left: 15px;
+}
+
+
+#tasklist h2 {
+	display: inline;
+	font-size: 1.5em;
+}
+
+button#newtask {
+	display: inline;
+	margin: 0;
+	font-style: bold;
+	font-size: 1.5em;
+	margin-left: .5em;
+}
+
 
 </style>
 </head>
 <body>
 	<div id="content">
+		<h1>Household Dashboard</h1>
 		<div id="navigation">
-			<h1>Household Dashboard</h1>
-			<ul>
-				<li>To-Do</li>
-			</ul>
-			<ul id="family">
-				<li>Cersei</li>
-				<li>Robert</li>
-				<li>Joffrey</li>
-				<li>Myrcella</li>
-				<li>Tommen</li>
-			</ul>
+			<div class="tabs_container">
+				<ul id="tabs">
+					<li>To-Do</li>
+				</ul>
+			</div>
+			<div class="family_container">
+				<ul id="family">
+					<li><img class="profile" src="assets/Cersei.jpg"></li>
+					<li><img class="profile" src="assets/Robert.jpg"></li>
+					<li><img class="profile" src="assets/Joffrey.jpg"></li>
+					<li><img class="profile" src="assets/Myrcella.jpg"></li>
+					<li><img class="profile" src="assets/Tommen.jpg"></li>
+				</ul>
+			</div>
 		</div>
 		<div id="tasklist">
-			<h2>To-Do</h2><button id="newtask">+</button>
+			<div>
+				<h2>To-Do</h2><button id="newtask">+</button>
+			</div>
+			<div>
+				<p>Hello world.</p>
+			</div>
+
 		</div>
 	</div>
 </body>
