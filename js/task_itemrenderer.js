@@ -1,20 +1,20 @@
-function TaskListRenderer(){
+var TaskListRenderer = function(){
 
-	function line(txt){
+	this.line = function(txt){
 		console.log("[TaskListRenderer] " + txt);
 	}
 
-	function renderList(items, template, container){
+	this.renderList = function(items, template, container){
 		line("--renderList--");
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			var itemDiv = renderItem(item, i, template);
-			itemDiv.prependTo("#historyPanel");
+			var itemDiv = this.renderItem(item, i, template);
+			itemDiv.prependTo(container);
 		}
-
 	}
 
-	function renderItem(item, id, template){
+	this.renderItem = function(item, id, template){
+		line("--renderItem--");
 		var taskDiv = $("#taskRowTemplate").clone().attr('id', "task_" + id);
 		return taskDiv;
 	}
