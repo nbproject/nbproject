@@ -1,6 +1,3 @@
-
-
-
 function account(id) {
 	this.id = id;
 	this.members = new Array();
@@ -37,8 +34,16 @@ function account(id) {
 
 		var tmp_member = this.members[containsNameValueInList(member_name, this.members)];
 		var tmp_task = this.tasks[containsNameValueInList(task_name, this.tasks)];
+
+		if (tmp_task.assignedTo === undefined) {
+
+		} else {
+			console.log("task is already assigned to " + tmp_task.assignedTo);
+			return;
+		}
 		if ( !tmp_member.containsTask(task_name)) {
 			tmp_member.tasks.push(tmp_task);
+			tmp_task.assignedTo = member_name;
 			console.log("successfully added task " + task_name + " to member " + member_name);
 		} else {
 			console.log(member_name + " already contains task " + task_name);
