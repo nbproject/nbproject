@@ -8,3 +8,12 @@
 #back{
 	display:inline-block;
 }
+
+.task {
+	border:2px solid;	
+	display:inline-block;
+	padding-left:10px;
+	padding-right:10px;
+	margin: 10px;
+
+}

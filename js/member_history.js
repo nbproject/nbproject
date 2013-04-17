@@ -26,4 +26,25 @@ $(document).ready(function() {
     var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
     $("#containsImage").html(imgHTML);
     $("#hideme").hide();
+
+
+    var taskHTML = "";
+    for (var i = 0; i < member.tasks.length; i++) {
+        var ct = member.tasks[i];
+        var curHTML = "<div class='task'> <table><tr><td>" + ct.name + "</td></tr> <tr><td>" + ct.status + "</td></tr></table> </div>";
+        taskHTML+=curHTML;
+        console.log("more");
+    }
+
+    for (var i = 0; i < member.completedTasks.length; i++) {
+        console.log("more");
+        var ct = member.completedTasks[i];
+        var curHTML = "<div class='task'> <table><tr><td>" + ct.name + "</td></tr> <tr><td>" + ct.status + "</td></tr></table> </div>";
+        taskHTML+=curHTML;
+    }
+
+    if (member.tasks.length + member.completedTasks.length === 0) {
+        taskHTML = "This family member has no activity!";
+    }
+    $("#memberTasks").html(taskHTML);
 });
