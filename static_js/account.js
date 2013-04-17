@@ -41,13 +41,26 @@ function account(id) {
 			console.log("task is already assigned to " + tmp_task.assignedTo);
 			return;
 		}
-		if ( !tmp_member.containsTask(task_name)) {
-			tmp_member.tasks.push(tmp_task);
+		if ( !tmp_member.containsTask(tmp_task)) {
+			tmp_member.assignedTasks.push(tmp_task);
 			tmp_task.assignedTo = member_name;
 			console.log("successfully added task " + task_name + " to member " + member_name);
 		} else {
 			console.log(member_name + " already contains task " + task_name);
 		}
+	}
+
+	this.finishTask = function(task_name, member) {
+		if (containsNameValueInList(task_name, this.tasks) === -1) {
+			console.log("this task does not exist");
+			return;
+		}
+
+		var tmp_task = this.tasks[containsNameValueInList(task_name, this.tasks)];
+
+		//if (tmp_task)
+
+
 	}
 }
 
