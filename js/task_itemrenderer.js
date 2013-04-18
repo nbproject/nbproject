@@ -15,7 +15,12 @@ var TaskListRenderer = function(){
 
 	this.renderItem = function(item, id, template){
 		line("--renderItem--");
-		var taskDiv = $("#taskRowTemplate").clone().attr('id', "task_" + id);
+		var taskDiv = template.clone().attr('id', "row_" + id);
+		var icon = taskDiv(".taskIcon");
+		var label = taskDiv(".taskLabel");
+		var claim = taskDiv(".taskClaim");
+		var complete = taskDiv(".taskComplete");
+
 		return taskDiv;
 	}
 
