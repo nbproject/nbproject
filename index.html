@@ -59,10 +59,10 @@
 
 			$('#add_task').click(function() {
 				console.log('bar');
-				$('#item_entry').hide();
+				//$('#item_entry').hide();
 			});
 			var id = 0;
-			var form = $('form#item_entry');
+			var form = $('form#new_task');
 			form.submit(function(e) {
 				tasks = new Array();
 				e.preventDefault();
@@ -107,7 +107,7 @@
 				<h2>To-Do</h2>
 			</div>
 			<div id="item_entry">
-				<form id="new_task">
+				<form id="new_task" target="index.html">
 					<!--<button>?</button>-->
 					<input class="remember" type="text" name="taskname" value="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
