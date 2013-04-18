@@ -1,7 +1,8 @@
 //some way 
-function Task(name, id) {
+function Task(name, img, id) {
 	this.id = id; //like a in a db, ids need to be set on instantiation.
 	this.name = name;
+	this.img = img;
 	//this.duedate = duedate;
 	//this.assignedTo = undefined;
 	this.finished = undefined; // this is the name of member who finished it

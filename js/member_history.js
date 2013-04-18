@@ -39,19 +39,33 @@ $(document).ready(function() {
     	window.location = 'index.html';
     });
 
-
     var taskHTML = "";
     for (var i = 0; i < member.tasks.length; i++) {
         var ct = member.tasks[i];
-        var curHTML = "<div class='task'> <table><tr><td>Task: " + ct.name + "</td></tr> <tr><td>Status: " + ct.status + "</td></tr></table> </div>";
+        var curHTML = "<div class='task'> <table><tr><td>Task: " + ct.name + "</td></tr> <tr><td>Status: " + ct.status + "</td></tr>"
+        if (ct.status === "Completed") {
+            if (ct.img === undefined) {
+
+            } else {
+                curHTML += "<tr><td><img src='assets/" + ct.img + "' height ='200'></td></tr>"
+            }
+        }
+        curHTML += "</table> </div>";
         taskHTML+=curHTML;
-        console.log("more");
     }
 
     for (var i = 0; i < member.completedTasks.length; i++) {
-        console.log("more");
         var ct = member.completedTasks[i];
-        var curHTML = "<div class='task'> <table><tr><td>Task: " + ct.name + "</td></tr> <tr><td>Status: " + ct.status + "</td></tr></table> </div>";
+        var curHTML = "<div class='task'> <table><tr><td>Task: " + ct.name + "</td></tr> <tr><td>Status: " + ct.status + "</td></tr>"
+        if (ct.status === "Completed") {
+            console.log(ct);
+            if (ct.img === undefined) {
+
+            } else {
+                curHTML += "<tr><td><img src='assets/" + ct.img + "' height ='100'></td></tr>"
+            }
+        }
+        curHTML += "</table> </div>";
         taskHTML+=curHTML;
     }
 
