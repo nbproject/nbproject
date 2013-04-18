@@ -1,12 +1,31 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
-<style type="text/css">
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
 
+	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.blur_default.js"></script>
+	<script type="text/javascript" src="external_js/date.js"></script>
 
+	<script type="text/javascript">
+	(function($) {
+		$(function() {
+			// Handle the input field defaults.
+			$('.remember').blur_default();
 
-</style>
-<title>Household Dashboard</title>
+			// Insert weekdays from tomorrow till a week from today.
+			var duedd = $('#due');
+			var day_start = (2).day().fromNow();
+			for (var i = 0; i < 5; ++i) {
+				var day_name = day_start.toString('dddd');
+				duedd.append('<option>Due: '+day_name+'</option>');
+				day_start = day_start.add(1).day();
+			}
+	    });
+	})(jQuery);
+	</script>
+	<title>Household Dashboard</title>
 </head>
 <body>
 	<div id="content">
@@ -35,7 +54,20 @@
 			<div>
 				<h2>To-Do</h2><button id="newtask">+</button>
 			</div>
-			
+			<div id="item_entry">
+				<form id="new_task">
+					<!--<button>?</button>-->
+					<input class="remember" type="text" name="lastname" value="Enter Task Name">
+					<!-- <label for="due">Due</label>-->
+					<select name="due" id="due">
+						<option>Due: ASAP</option>
+						<option>Due: Today</option>
+						<option>Due: Tomorrow</option>
+						<!-- Javascript will add next 5 days -->
+					</select>
+					<button>Add</button>
+				</form>
+			</div>
 			<div>
 				<p>Hello world.</p>
 			</div>
