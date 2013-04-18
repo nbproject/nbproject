@@ -99,9 +99,9 @@
                     _scrollTimerID =  null;
                 }
                 timerID = window.setTimeout(function(){
-                        _scrollTimerID =  timerID;    
                         $.concierge.logHistory("scrolling", ["s",$("html").scrollTop(),$(window).height(), _scrollCounter++, $("body").height(),$.concierge.get_state("file") ].join("|"));
                     }, 300);               
+                _scrollTimerID =  timerID;    
             });
         
         // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
