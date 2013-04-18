@@ -49,3 +49,7 @@
 	margin-top:12px;
 	font-size:.8em;
 }
+
+#taskPopup{
+	border: 1px solid black;
+}
