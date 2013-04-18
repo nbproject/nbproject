@@ -40,6 +40,7 @@
                 if ($this.val() == def) {
                     $this.val('');
                     $this.css('color', 'black');
+                    $this.css('font-weight', 'normal');
                 }
             });
             $this.bind('blur.blur_default', function() {
