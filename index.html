@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
 	<script type="text/javascript" src="js/jquery.blur_default.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
 
 	<script type="text/javascript">
 
@@ -20,7 +21,8 @@
 			var day_start = (2).day().fromNow();
 			for (var i = 0; i < 5; ++i) {
 				var day_name = day_start.toString('dddd');
-				duedd.append('<option>Due: '+day_name+'</option>');
+				duedd.append('<option value="'+day_name+'">Due: '
+					+day_name+'</option>');
 				day_start = day_start.add(1).day();
 			}
 
@@ -34,9 +36,18 @@
 				console.log('bar');
 				$('#item_entry').hide();
 			});
-
-			$('form#item_entry').onSubmit(function() {
-
+			var id = 0;
+			var form = $('form#item_entry');
+			form.submit(function(e) {
+				tasks = new Array();
+				e.preventDefault();
+				var taskTxt = form.find('[name="taskname"]');
+				var taskDue = form.find('[name="due"]');
+				var task = new Task(id, taskTxt);
+				task.duedate = taskDue;
+				++id;
+				tasks[id] = task;
+				updateTaskList(task);
 			});
 	    });
 	})(jQuery);
@@ -73,12 +84,12 @@
 			<div id="item_entry">
 				<form id="new_task">
 					<!--<button>?</button>-->
-					<input class="remember" type="text" name="lastname" value="Enter Task Name">
+					<input class="remember" type="text" name="taskname" value="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
 					<select name="due" id="due">
-						<option>Due: ASAP</option>
-						<option>Due: Today</option>
-						<option>Due: Tomorrow</option>
+						<option value="ASAP">Due: ASAP</option>
+						<option value="Today">Due: Today</option>
+						<option value="Tomorrow">Due: Tomorrow</option>
 						<!-- Javascript will add next 5 days -->
 					</select>
 					<button id="add_task">Add</button>

@@ -22,6 +22,10 @@
             $this.val($this.data('default_value.blur_default'));
         });
     };
+
+    $.fn.get_default = function( method ) {
+        return $(this).data('default_value.blur_default');
+    };
     
     $.fn.blur_default = function( method ) {
         return this.each(function() {
