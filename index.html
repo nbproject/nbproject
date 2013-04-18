@@ -72,7 +72,8 @@
 				e.preventDefault();
 				if (!validateTaskInput())
 					return;
-				var taskTxt = form.find('[name="taskname"]').val();
+				var taskInput = form.find('[name="taskname"]');
+				var taskTxt = taskInput.val();
 				var taskDue = form.find('[name="due"]').val();
 
 				var task = new Task(taskTxt, null,id);
@@ -81,6 +82,7 @@
 				++id;
 				tasks[id] = task;
 				updateTaskList(task);
+				taskInput.blur_reset();
 			});
 			
 			$('.profile').click(function(evt) {
