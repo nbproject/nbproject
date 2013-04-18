@@ -21,15 +21,16 @@
 		line("--click!--");
 		var item = $(elem);
 		line(item.attr('id'));
+		//TODO: Here look up the actual task, update Louis' content with it
 	}
 
 	function updateTaskList(task){
-		line("--updateTaskList--");
-		line(task);
+		//line("--updateTaskList--");
+		//line(task);
 		var template = $("#taskRowTemplate");
 		var container = $("#taskContainer");
 		var taskDiv = template.clone().attr('id', task.id);			
-		taskDiv.appendTo(container);
+		taskDiv.prependTo(container);
 		var complete = $(taskDiv).find(".taskComplete");		
 		var label = taskDiv.find(".taskLabel");
 		label.html(task.name);
@@ -73,12 +74,9 @@
 					return;
 				var taskTxt = form.find('[name="taskname"]').val();
 				var taskDue = form.find('[name="due"]').val();
-				line("--submit--");
-				line(taskTxt);
-				line(taskDue);
+
 				var task = new Task(taskTxt, null,id);
-				line(task);
-				line("id: " + id);
+				
 				task.duedate = taskDue;
 				++id;
 				tasks[id] = task;
@@ -121,7 +119,10 @@
 			</div>
 		</div>
 		<div id="tasklist">
-			
+			<div>
+				TEMPORARY POPUP DIV:
+				<div id="taskPopup"></div>
+			<div>
 			<div>
 				<h2>To-Do</h2>
 			</div>
