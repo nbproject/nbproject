@@ -104,7 +104,7 @@ img.pin_left {
 	font-size: 1.5em;
 }
 
-button#newtask {
+button#new_task_btn {
 	display: inline;
 	margin: 0;
 	font-style: bold;
@@ -114,6 +114,7 @@ button#newtask {
 
 /* Add a new task */
 div#item_entry {
+	display: none;
 	background: gray;
 	border: 1px black solid;
 	padding-left: 10px;
