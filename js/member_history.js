@@ -34,6 +34,10 @@ $(document).ready(function() {
     $('.profile').click(function(evt) {
     	window.location = window.location.pathname + '?member=' + evt.target.id.slice(3);
     });
+    
+    $('#tabTodo').click(function(evt) {
+    	window.location = 'index.html';
+    });
 
 
     var taskHTML = "";
