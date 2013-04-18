@@ -28,20 +28,24 @@
 .taskComplete{
 	position: absolute;
 	left:10px;
-	margin-top:12px;
+	border:2px solid #CCCCCC;
+	width:30px;
+	height:30px;
+	top:5px;
+
 }
 
 .taskLabel{
 	position: absolute;			
-	left:100px;
+	left:55px;
 	right:100px;
-	margin-top:12px;
+	margin-top:8px;
 	font-weight: bold;
-	font-size: 1.2em;
 }
 
 .taskDue{
 	position: absolute;
 	right:10px;			
 	margin-top:12px;
+	font-size:.8em;
 }

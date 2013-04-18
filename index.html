@@ -25,18 +25,31 @@
 
 	function updateTaskList(task){
 		line("--updateTaskList--");
+		line(task);
 		var template = $("#taskRowTemplate");
 		var container = $("#taskContainer");
 		var taskDiv = template.clone().attr('id', task.id);			
 		taskDiv.appendTo(container);
-		var complete = $(taskDiv).find(".taskComplete");
-		complete.html("To Do");
+		var complete = $(taskDiv).find(".taskComplete");		
 		var label = taskDiv.find(".taskLabel");
 		label.html(task.name);
 		var taskDue = taskDiv.find(".taskDue");		
-		taskDue.html(task.due);
+		taskDue.html("Due: " + task.duedate);
 	}
 
+	function validateTaskInput() {
+		var form = $('form#new_task');
+		var txtinput = form.find('[name="taskname"]');
+		var dueinput = form.find('[name="due"]');
+
+		if (txtinput.get_default() == txtinput.val() || txtinput.val().trim().length == 0) {
+			txtinput.blur_reset();
+			txtinput.css('color', 'red');
+			txtinput.css('font-weight', 'bold');
+			return false;
+		}
+		return true;
+	}
 	(function($) {
 		$(function() {
 			// Handle the input field defaults.
@@ -53,12 +66,19 @@
 			}
 			var id = 0;
 			var form = $('form#new_task');
-			form.submit(function(e) {
-				tasks = new Array();
+			tasks = new Array();
+			form.submit(function(e) {		
 				e.preventDefault();
+				if (!validateTaskInput())
+					return;
 				var taskTxt = form.find('[name="taskname"]').val();
 				var taskDue = form.find('[name="due"]').val();
-				var task = new Task(taskTxt, id);
+				line("--submit--");
+				line(taskTxt);
+				line(taskDue);
+				var task = new Task(taskTxt, null,id);
+				line(task);
+				line("id: " + id);
 				task.duedate = taskDue;
 				++id;
 				tasks[id] = task;
@@ -66,8 +86,11 @@
 			});
 			
 			$('.profile').click(function(evt) {
-				console.log(evt.target.id.slice(3));
     			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+    		});
+    		
+    		$('#titleButton').click(function(evt) {
+    			window.location = 'index.html';
     		});
 			
 	    });
@@ -77,23 +100,23 @@
 </head>
 <body>
 	<div id="content">
-		<div style="position: relative;">
+		<div style="position: relative;" id="titleButton">
 			<img class="pin_left" src="assets/pushpin.png">
 			<h1>Household Dashboard</h1>
 		</div>
 		<div id="navigation">
 			<div class="tabs_container">
 				<ul id="tabs">
-					<li id="tabTodo">To-Do</li>
+					<li>To-Do</li>
 				</ul>
 			</div>
 			<div class="family_container">
 				<ul id="family">
-					<li><div class="profile"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
-					<li><div class="profile"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
-					<li><div class="profile"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
-					<li><div class="profile"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
-					<li><div class="profile"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
+					<li><div class="profile" id="boxCersei"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
+					<li><div class="profile" id="boxRobert"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
+					<li><div class="profile" id="boxJoffrey"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
+					<li><div class="profile" id="boxMyrcella"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
+					<li><div class="profile" id="boxTommen"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
 				</ul>
 			</div>
 		</div>

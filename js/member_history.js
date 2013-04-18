@@ -38,6 +38,12 @@ $(document).ready(function() {
     $('#tabTodo').click(function(evt) {
     	window.location = 'index.html';
     });
+    
+    $('#titleButton').click(function(evt) {
+    	window.location = 'index.html';
+    });
+
+    
 
     var taskHTML = "";
     for (var i = 0; i < member.tasks.length; i++) {
