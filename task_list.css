@@ -1,8 +1,7 @@
-#taskContainer{
-			margin:10px;
-			border:1px solid black;
-			padding:10px;
-			background-color:#DDDDDD;
+#taskContainer{		
+	border:1px solid #333;
+	padding:10px;
+	background-color:#DDDDDD;
 }
 #taskRowTemplate{
 	display: none;
