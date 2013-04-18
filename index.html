@@ -21,6 +21,8 @@
 		line("--click!--");
 		var item = $(elem);
 		line(item.attr('id'));
+		var id = item.attr('id');
+		taskPopupInit(tasks[id]);
 		//TODO: Here look up the actual task, update Louis' content with it
 	}
 
@@ -52,9 +54,9 @@
 		return true;
 	}
 
-	function taskPopupInit() {
+	function taskPopupInit(task) {
 		// Set task variable
-    	var task = new Task('Dummy Task', 1);
+    	//var task = new Task('Dummy Task', 1);
     	
     	// Display Task Name
     	document.getElementById("taskName").innerHTML = task.name;
@@ -129,10 +131,10 @@
 				var task = new Task(taskTxt, null,id);
 				
 				task.duedate = taskDue;
-				++id;
-				tasks[id] = task;
+				tasks[id.toString()] = task;
 				updateTaskList(task);
 				taskInput.blur_reset();
+				++id;
 			});
 			
 			$('.profile').click(function(evt) {
@@ -143,7 +145,7 @@
     			window.location = 'index.html';
     		});
 
-    		taskPopupInit();
+    		
 			
 	    });
 	})(jQuery);
