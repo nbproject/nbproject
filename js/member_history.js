@@ -30,6 +30,10 @@ $(document).ready(function() {
     // Color Tabs
     $('#box'+member.name).css('background', '#C9E9FF');
     $('#tabs li').css('background', '#FFFFC9');
+    
+    $('.profile').click(function(evt) {
+    	window.location = window.location.pathname + '?member=' + evt.target.id.slice(3);
+    });
 
 
     var taskHTML = "";
