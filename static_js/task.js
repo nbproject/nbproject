@@ -1,5 +1,6 @@
 //some way 
-function task(name) {
+function Task(name, id) {
+	this.id = id; //like a in a db, ids need to be set on instantiation.
 	this.name = name;
 	//this.duedate = duedate;
 	//this.assignedTo = undefined;

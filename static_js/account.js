@@ -15,7 +15,7 @@ function account(id) {
 
 	this.createTask = function(task_name) {
 		if ( containsNameValueInList(task_name, this.tasks) === -1) {
-			this.tasks.push(new task(task_name));
+			this.tasks.push(new Task(task_name));
 			console.log("successfully added task " + task_name);
 		} else {
 			console.log(task_name + " already in tasks");
@@ -38,10 +38,20 @@ function account(id) {
 		var tmp_task = this.tasks[containsNameValueInList(task_name, this.tasks)];
 
 		if (tmp_task.finished === undefined) {
-			tmp_task.assignedTo = member_name;
-			tmp_member.tasks.push(tmp_task);
-			tmp_task.status = "Claimed";
-			console.log("task : " + task_name + " successfully claimed by member " + member_name);
+			if (tmp_task.assignedTo === undefined) {
+				tmp_task.assignedTo = member_name;
+				tmp_member.tasks.push(tmp_task);
+				tmp_task.status = "Claimed";
+				console.log("task : " + task_name + " successfully claimed by member " + member_name);
+			} else {
+				var old_member = this.members[containsNameValueInList(tmp_task.assignedTo, this.members)];
+				old_member.tasks.splice( containsNameValueInList(task_name, this.tasks), 1);
+				tmp_task.assignedTo = member_name;
+				tmp_member.tasks.push(tmp_task);
+				tmp_task.status = "Claimed";
+				console.log("task : " + task_name + " successfully claimed by member " + member_name);
+			}
+			
 		} else {
 			console.log("task already done");
 			return;

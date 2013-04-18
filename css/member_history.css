@@ -8,3 +8,29 @@
 #back{
 	display:inline-block;
 }
+
+#memberTasks {
+	width:100%;
+	text-align:center;
+}
+.task {
+	border:2px solid black;	
+	display:inline-block;
+	padding-left:10px;
+	padding-right:10px;
+	margin: 10px;
+}
+
+#back {
+	margin-left:170px;
+}
+
+#back a {
+	text-decoration: none;
+	color:black;
+	font-size:1.2em;
+}
+
+.task td {
+	font-size:1.4em;
+}
