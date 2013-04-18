@@ -99,7 +99,7 @@
                     _scrollTimerID =  null;
                 }
                 timerID = window.setTimeout(function(){
-                        $.concierge.logHistory("scrolling", ["s",$("html").scrollTop(),$(window).height(), _scrollCounter++, $("body").height(),$.concierge.get_state("file") ].join("|"));
+                        $.concierge.logHistory("scrolling", ["s",$("html").scrollTop(),$(window).height(), _scrollCounter++, $("body").height(),$.concierge.get_state("file") ].join(","));
                     }, 300);               
                 _scrollTimerID =  timerID;    
             });

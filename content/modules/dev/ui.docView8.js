@@ -161,7 +161,7 @@
                     }
                     self.___pbar_old =  pbar;
                     self._area_indicator =  area_indicator;                            
-                    $.concierge.logHistory("scrolling", ["s",self.element.scrollTop(),self.element.height(),  self._scrollCounter++].join("|"));
+                    $.concierge.logHistory("scrolling", ["s",self.element.scrollTop(),self.element.height(),  self._scrollCounter++].join(","));
                 }, 300);
                 self._scrollTimerID =  timerID;    
             }
@@ -460,7 +460,7 @@
 
         }
         self._render();        
-        $.concierge.logHistory("scrolling", ["u",self._id_source, self.element.scrollTop(),self.element.height(), self._scrollCounter++, self.element.children(".contents").height()].join("|"));
+        $.concierge.logHistory("scrolling", ["u",self._id_source, self.element.scrollTop(),self.element.height(), self._scrollCounter++, self.element.children(".contents").height()].join(","));
         }, 
         _render: function(){
         /*
