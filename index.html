@@ -74,6 +74,12 @@
 				tasks[id] = task;
 				updateTaskList(task);
 			});
+			
+			$('.profile').click(function(evt) {
+				console.log(evt.target.id.slice(3));
+    			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+    		});
+			
 	    });
 	})(jQuery);
 	</script>
@@ -93,11 +99,11 @@
 			</div>
 			<div class="family_container">
 				<ul id="family">
-					<li><div class="profile"><img src="assets/Cersei.jpg"><h3>Cersei</h3></div></li>
-					<li><div class="profile"><img src="assets/Robert.jpg"><h3>Robert</h3></div></li>
-					<li><div class="profile"><img src="assets/Joffrey.jpg"><h3>Joffrey</h3></div></li>
-					<li><div class="profile"><img src="assets/Myrcella.jpg"><h3>Myrcella</h3></div></li>
-					<li><div class="profile"><img src="assets/Tommen.jpg"><h3>Tommen</h3></div></li>
+					<li><div class="profile"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
+					<li><div class="profile"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
+					<li><div class="profile"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
+					<li><div class="profile"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
+					<li><div class="profile"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
 				</ul>
 			</div>
 		</div>
