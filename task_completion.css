@@ -27,11 +27,14 @@
 
 .selectionCell {
 	padding: 1px;
+	min-height: 68px;
+	min-width: 68px;
 }
 
 .selectionPic {
 	width: 60px;
 	height: 60px;
+	margin: 3px;
 	display: block;
 	border-style: solid;
 	border-color: #C9E9FF;
@@ -43,6 +46,8 @@
 	margin-right: auto;
 	margin-top: 20px;
 	width: 400px;
+	text-align: center;
+
 }
 
 .completeButton {
@@ -52,7 +57,6 @@
 
 #completionWindow {
 	width: 400px;
-	height: 400px;
 	border-style: solid;
 	border-width:2px;
 	text-align: center;
