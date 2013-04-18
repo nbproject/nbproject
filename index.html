@@ -17,6 +17,15 @@
 		console.log(txt);
 	}
 
+	function showPopup(){
+		$("#popContainer").show();
+
+	}
+
+	function hidePopup(){
+		$("#popContainer").hide();
+	}
+
 	function taskClick(elem){
 		line("--click!--");
 		var item = $(elem);
@@ -24,6 +33,7 @@
 		var id = item.attr('id');
 		taskPopupInit(tasks[id]);
 		//TODO: Here look up the actual task, update Louis' content with it
+		showPopup();
 	}
 
 	function updateTaskList(task){
@@ -86,13 +96,15 @@
     	
 		// Cancel Button
 		$('#btnCancel').click(function(evt) {
-    		
+    		hidePopup();
     	});
     	
     	// Claim Button
 		$('#btnClaim').click(function(evt) {
     		task.status = 'claimed';
     		task.assignedTo = currently_selected;
+    		var imgurl = 'assets/'+currently_selected+'.jpg';
+    		taskClaimed(task.id, imgurl);
     	});
     	
     	// Complete Button
@@ -100,6 +112,8 @@
     		task.status = 'completed';
     		task.assignedTo = currently_selected;
     		task.finished = currently_selected;
+    		var imgurl = 'assets/'+currently_selected+'.jpg';
+    		taskCompleted(task.id, imgurl);
     	});
 	}
 	(function($) {
@@ -145,8 +159,10 @@
     			window.location = 'index.html';
     		});
 
-    		
-			
+    		$("#popClose").click(function(evt){
+    			
+    		});
+
 	    });
 	})(jQuery);
 	</script>
@@ -174,9 +190,40 @@
 				</ul>
 			</div>
 		</div>
+
 		<div id="tasklist">
+
 			<div>
-				TEMPORARY POPUP DIV:
+				<h2>To-Do</h2>
+			</div>
+			<div id="item_entry">
+				<form id="new_task" target="index.html">
+					<!--<button>?</button>-->
+					<input class="remember" type="text" name="taskname" value="Enter Task Name">
+					<!-- <label for="due">Due</label>-->
+					<select name="due" id="due">
+						<option value="ASAP">Due: ASAP</option>
+						<option value="Today">Due: Today</option>
+						<option value="Tomorrow">Due: Tomorrow</option>
+						<!-- Javascript will add next 5 days -->
+					</select>
+					<button id="add_task">Add</button>
+				</form>
+			</div>
+			<div id="taskContainer">
+				<div id="taskRowTemplate" class="taskRow" onclick="javascript:taskClick(this)">
+					<div class="taskRowInner">
+						<div class="taskComplete"></div>
+						<div class="taskLabel"></div>
+						<div class="taskDue"></div>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+	<div id="popContainer">
+		<div id="popup">
+			<div id="taskPopup">
 				<div id="completionWindow">
 
 					<span id="taskName">Task Name</span>
@@ -211,35 +258,8 @@
 					</tr></table>
 
 				</div>
-			<div>
-			<div>
-				<h2>To-Do</h2>
 			</div>
-			<div id="item_entry">
-				<form id="new_task" target="index.html">
-					<!--<button>?</button>-->
-					<input class="remember" type="text" name="taskname" value="Enter Task Name">
-					<!-- <label for="due">Due</label>-->
-					<select name="due" id="due">
-						<option value="ASAP">Due: ASAP</option>
-						<option value="Today">Due: Today</option>
-						<option value="Tomorrow">Due: Tomorrow</option>
-						<!-- Javascript will add next 5 days -->
-					</select>
-					<button id="add_task">Add</button>
-				</form>
-			</div>
-			<div id="taskContainer">
-				<div id="taskRowTemplate" class="taskRow" onclick="javascript:taskClick(this)">
-					<div class="taskRowInner">
-						<div class="taskComplete"></div>
-						<div class="taskLabel"></div>
-						<div class="taskDue"></div>
-					</div>
-				</div>
-			</div>
-
+		<div>
 		</div>
-	</div>
 </body>
 </html>
