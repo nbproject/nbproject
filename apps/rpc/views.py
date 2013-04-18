@@ -563,7 +563,10 @@ def log_history(payload, req):
     if "page" in payload and cid != 0: 
         annotations.markPageSeen(uid, id_session,  payload["page"])
     if "idle" in payload and cid != 0: 
-        annotations.markIdle(uid,  id_session, payload["idle"])        
+        annotations.markIdle(uid,  id_session, payload["idle"]) 
+    if "scrolling" in payload and cid != 0:         
+        logger = logging.getLogger("scrolling")
+        logger.info("%s|%s"%(id_session, payload["scrolling"]));
     if "__return" in payload and cid != 0:
         R = payload["__return"]
         if R["type"] == "newNotesOnFile": 

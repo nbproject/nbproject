@@ -1,6 +1,7 @@
 /*global NB:true NB$:true $:true rangy:true alert:true wgxpath:true jQuery:true getElementCSSSelector:true console:true */
 (function(GLOB){
-    
+    var _scrollTimerID=null;
+    var _scrollCounter=0;
     if ("NB$" in window){
         var $ = NB$;
     }
@@ -90,7 +91,19 @@
             GLOB.html.id);
 
         rangy.init();
-
+        
+        $(window).scroll(function(evt){
+                var timerID = _scrollTimerID;
+                if (timerID !== null){
+                    window.clearTimeout(timerID);
+                    _scrollTimerID =  null;
+                }
+                timerID = window.setTimeout(function(){
+                        _scrollTimerID =  timerID;    
+                        $.concierge.logHistory("scrolling", ["s",$("html").scrollTop(),$(window).height(), _scrollCounter++, $("body").height(),$.concierge.get_state("file") ].join("|"));
+                    }, 300);               
+            });
+        
         // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
         // the styled element must have an nb-comment-highlight class.
         cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
