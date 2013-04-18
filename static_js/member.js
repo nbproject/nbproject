@@ -1,5 +1,6 @@
-function member(name) {
+function member(name, pictureURL) {
 	this.name = name;
+	this.pictureURL = pictureURL;
 	this.completedTasks = new Array();
 	this.tasks = new Array();
 

@@ -12,12 +12,30 @@
 <!-- Load any supplemental Javascript libraries here: jQuery UI -->
 <script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 <script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+<script type="text/javascript" src="static_js/task.js"></script>
+<script type="text/javascript" src="static_js/member.js"></script>
 
 <script type="text/javascript">
 
     // This allows the Javascript code inside this block to only run when the page
     // has finished loading in the browser.
     $(document).ready(function() {
+    
+    	/*// Family Members
+    	var family_members = {};
+    	family_members['Cersei'] = new member('Cersei', 'assets/Cersei.jpg');
+    	family_members['Robert'] = new member('Robert', 'assets/Robert.jpg');
+    	family_members['Joffrey'] = new member('Joffrey', 'assets/Joffrey.jpg');
+    	family_members['Myrcella'] = new member('Myrcella', 'assets/Myrcella.jpg');
+    	family_members['Tommen'] = new member('Tommen', 'assets/Tommen.jpg');*/
+    
+    	// Set task variable
+    	var task = new Task('Dummy Task', 1);
+    	
+    	// Display Task Name
+    	document.getElementById("taskName").innerHTML = task.name;
+    
+    	// Disable buttons
     	document.getElementById('btnClaim').disabled = true;
     	document.getElementById('btnComplete').disabled = true;
     	
@@ -42,12 +60,15 @@
     	
     	// Claim Button
 		$('#btnClaim').click(function(evt) {
-    		
+    		task.status = 'claimed';
+    		task.assignedTo = currently_selected;
     	});
     	
     	// Complete Button
 		$('#btnComplete').click(function(evt) {
-    		
+    		task.status = 'completed';
+    		task.assignedTo = currently_selected;
+    		task.finished = currently_selected;
     	});
 
 
