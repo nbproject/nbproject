@@ -17,11 +17,21 @@
 		console.log(txt);
 	}
 
+	function showPopup(){
+		$("#popContainer").show();
+
+	}
+
+	function hidePopup(){
+		$("#popContainer").hide();
+	}
+
 	function taskClick(elem){
 		line("--click!--");
 		var item = $(elem);
 		line(item.attr('id'));
 		//TODO: Here look up the actual task, update Louis' content with it
+		showPopup();
 	}
 
 	function updateTaskList(task){
@@ -91,6 +101,10 @@
     		$('#titleButton').click(function(evt) {
     			window.location = 'index.html';
     		});
+
+    		$("#popClose").click(function(evt){
+    			hidePopup();
+    		});
 			
 	    });
 	})(jQuery);
@@ -119,11 +133,9 @@
 				</ul>
 			</div>
 		</div>
+
 		<div id="tasklist">
-			<div>
-				TEMPORARY POPUP DIV:
-				<div id="taskPopup"></div>
-			<div>
+			
 			<div>
 				<h2>To-Do</h2>
 			</div>
@@ -149,9 +161,14 @@
 						<div class="taskDue"></div>
 					</div>
 				</div>
-			</div>
-
+			</div>		
 		</div>
 	</div>
+	<div id="popContainer">
+		<div id="popup">
+			<span id="popClose">Close</span>
+			<div id="taskPopup"></div>
+		<div>
+		</div>
 </body>
 </html>
