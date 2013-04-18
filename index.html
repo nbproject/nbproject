@@ -67,9 +67,9 @@
 			form.submit(function(e) {
 				tasks = new Array();
 				e.preventDefault();
-				var taskTxt = form.find('[name="taskname"]');
-				var taskDue = form.find('[name="due"]');
-				var task = new Task(id, taskTxt);
+				var taskTxt = form.find('[name="taskname"]').val();
+				var taskDue = form.find('[name="due"]').val();
+				var task = new Task(taskTxt, id);
 				task.duedate = taskDue;
 				++id;
 				tasks[id] = task;
