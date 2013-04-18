@@ -26,6 +26,18 @@ $(document).ready(function() {
     var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
     $("#containsImage").html(imgHTML);
     $("#hideme").hide();
+    
+    // Color Tabs
+    $('#box'+member.name).css('background', '#C9E9FF');
+    $('#tabs li').css('background', '#FFFFC9');
+    
+    $('.profile').click(function(evt) {
+    	window.location = window.location.pathname + '?member=' + evt.target.id.slice(3);
+    });
+    
+    $('#tabTodo').click(function(evt) {
+    	window.location = 'index.html';
+    });
 
     var taskHTML = "";
     for (var i = 0; i < member.tasks.length; i++) {
