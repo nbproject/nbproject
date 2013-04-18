@@ -151,3 +151,7 @@ div#item_entry {
 #family li h3 {
 	pointer-events: none;
 }
+
+.selectionPic {
+	cursor: pointer;
+}

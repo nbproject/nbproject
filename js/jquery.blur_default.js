@@ -15,6 +15,7 @@
         return this.each(function() {
             var $this = $(this);
             $this.val($this.data('default_value.blur_default'));
+            $this.css('color', '#AAA');
         });
     };
 
