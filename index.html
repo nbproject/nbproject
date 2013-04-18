@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="js/jquery.blur_default.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
-
+	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 	<script type="text/javascript">
 
 	//wrapper tracing function
@@ -50,6 +50,55 @@
 			return false;
 		}
 		return true;
+	}
+
+	function taskPopupInit() {
+		// Set task variable
+    	var task = new Task('Dummy Task', 1);
+    	
+    	// Display Task Name
+    	document.getElementById("taskName").innerHTML = task.name;
+    
+    	// Disable buttons
+    	document.getElementById('btnClaim').disabled = true;
+    	document.getElementById('btnComplete').disabled = true;
+    	
+    	var currently_selected = '';
+    	
+    	// Selects a family member when clicked
+    	$('.selectionCell').click(function(evt) {
+    		currently_selected = evt.target.id;
+    		if (!currently_selected)
+    			return;
+    		document.getElementById("selectedName").innerHTML = currently_selected;
+    		$('.selectionPic').css('border-width', '0px');
+    		$('.selectionPic').css('margin', '3px');
+    		$('#'+currently_selected).css('border-width', '3px');
+    		$('#'+currently_selected).css('margin', '0px');
+    		$('#selectedPerson').attr('src', 'assets/'+currently_selected+'.jpg');
+
+    		//$('#buttonTable').css('margin-top', '14px');
+    		document.getElementById('btnClaim').disabled = false;
+    		document.getElementById('btnComplete').disabled = false;
+    	});
+    	
+		// Cancel Button
+		$('#btnCancel').click(function(evt) {
+    		
+    	});
+    	
+    	// Claim Button
+		$('#btnClaim').click(function(evt) {
+    		task.status = 'claimed';
+    		task.assignedTo = currently_selected;
+    	});
+    	
+    	// Complete Button
+		$('#btnComplete').click(function(evt) {
+    		task.status = 'completed';
+    		task.assignedTo = currently_selected;
+    		task.finished = currently_selected;
+    	});
 	}
 	(function($) {
 		$(function() {
@@ -92,6 +141,8 @@
     		$('#titleButton').click(function(evt) {
     			window.location = 'index.html';
     		});
+
+    		taskPopupInit();
 			
 	    });
 	})(jQuery);
@@ -123,7 +174,40 @@
 		<div id="tasklist">
 			<div>
 				TEMPORARY POPUP DIV:
-				<div id="taskPopup"></div>
+				<div id="completionWindow">
+
+					<span id="taskName">Task Name</span>
+					<br>
+
+					<img src="assets/unknown_person.jpg" id="selectedPerson"></img>
+					<br>
+
+					<span id="selectedName">Select Family Member</span>
+					<br>
+
+					<table id="selectionTable"><tr>
+
+						<td class="selectionCell"><img src="assets/Cersei.jpg" class="selectionPic" id="Cersei" /></td>
+						<td class="selectionCell"><img src="assets/Robert.jpg" class="selectionPic" id="Robert" /></td>
+						<td class="selectionCell"><img src="assets/Joffrey.jpg" class="selectionPic" id="Joffrey" /></td>
+						<td class="selectionCell"><img src="assets/Myrcella.jpg" class="selectionPic" id="Myrcella" /></td>
+						<td class="selectionCell"><img src="assets/Tommen.jpg" class="selectionPic" id="Tommen" /></td>
+
+					</tr></table>
+					<br>
+
+					<table id="buttonTable"><tr>
+
+						<td><input id="btnCancel" class="completeButton" type="button" name="new" value="Cancel"/></td>
+
+						<td><input id="btnClaim" class="completeButton" disabled="true" type="button" name="new" value="I'm Working On It!"/></td>
+
+						<td><input id="btnComplete" class="completeButton" disabled="true" type="button" name="new" value="I'm Finished!"/></td> 
+
+
+					</tr></table>
+
+				</div>
 			<div>
 			<div>
 				<h2>To-Do</h2>
