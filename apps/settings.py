@@ -260,7 +260,7 @@ LOGGING = {
             'level': 'INFO',
             'class' : 'logging.FileHandler',
             'formatter': 'scrolling',
-            'filename': 'scrolling.log'
+            'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
             }
         },
     'loggers': {
