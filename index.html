@@ -25,16 +25,16 @@
 
 	function updateTaskList(task){
 		line("--updateTaskList--");
+		line(task);
 		var template = $("#taskRowTemplate");
 		var container = $("#taskContainer");
 		var taskDiv = template.clone().attr('id', task.id);			
 		taskDiv.appendTo(container);
-		var complete = $(taskDiv).find(".taskComplete");
-		complete.html("To Do");
+		var complete = $(taskDiv).find(".taskComplete");		
 		var label = taskDiv.find(".taskLabel");
 		label.html(task.name);
 		var taskDue = taskDiv.find(".taskDue");		
-		taskDue.html(task.due);
+		taskDue.html("Due: " + task.duedate);
 	}
 
 	(function($) {
@@ -54,12 +54,17 @@
 
 			var id = 0;
 			var form = $('form#new_task');
-			form.submit(function(e) {
-				tasks = new Array();
+			tasks = new Array();
+			form.submit(function(e) {		
 				e.preventDefault();
 				var taskTxt = form.find('[name="taskname"]').val();
 				var taskDue = form.find('[name="due"]').val();
-				var task = new Task(taskTxt, id);
+				line("--submit--");
+				line(taskTxt);
+				line(taskDue);
+				var task = new Task(taskTxt, null,id);
+				line(task);
+				line("id: " + id);
 				task.duedate = taskDue;
 				++id;
 				tasks[id] = task;
