@@ -114,6 +114,7 @@ button#new_task_btn {
 
 /* Add a new task */
 div#item_entry {
+	display: none;
 	background: gray;
 	border: 1px black solid;
 	padding-left: 10px;
