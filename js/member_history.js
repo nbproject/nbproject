@@ -39,6 +39,8 @@ $(document).ready(function() {
     	window.location = 'index.html';
     });
 
+    
+
     var taskHTML = "";
     for (var i = 0; i < member.tasks.length; i++) {
         var ct = member.tasks[i];
