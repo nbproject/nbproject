@@ -5,6 +5,8 @@ body {
 	font-size: 150%;
 }
 
+form { margin: 0; }
+
 h1 {
 	background: #FFFFC9;
 	text-align: center;
@@ -85,6 +87,7 @@ div#tasklist {
 	top: -17px; /* Something wrong with the nav div */
 	padding-top: 12px;
 	padding-left: 15px;
+	padding-right: 15px;
 	box-shadow: 4px 4px 9px black;
 }
 
@@ -107,4 +110,17 @@ button#newtask {
 	font-style: bold;
 	font-size: 1.5em;
 	margin-left: .5em;
+}
+
+/* Add a new task */
+div#item_entry {
+	background: gray;
+	border: 1px black solid;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+}
+
+#item_entry input[type="text"] {
+	width: 33em;
 }
