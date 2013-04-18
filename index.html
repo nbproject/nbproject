@@ -22,6 +22,16 @@
 				duedd.append('<option>Due: '+day_name+'</option>');
 				day_start = day_start.add(1).day();
 			}
+
+			$('#new_task_btn').click(function() {
+				console.log('foo');
+				$('#item_entry').show();
+			});
+
+			$('#add_task').click(function() {
+				console.log('bar');
+				$('#item_entry').hide();
+			});
 	    });
 	})(jQuery);
 	</script>
@@ -52,10 +62,10 @@
 		<div id="tasklist">
 			
 			<div>
-				<h2>To-Do</h2><button id="newtask">+</button>
+				<h2>To-Do</h2><button id="new_task_btn">+</button>
 			</div>
 			<div id="item_entry">
-				<form id="new_task">
+				<form id="new_task" onSubmit="">
 					<!--<button>?</button>-->
 					<input class="remember" type="text" name="lastname" value="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
@@ -65,7 +75,7 @@
 						<option>Due: Tomorrow</option>
 						<!-- Javascript will add next 5 days -->
 					</select>
-					<button>Add</button>
+					<button id="add_task">Add</button>
 				</form>
 			</div>
 			<div>
