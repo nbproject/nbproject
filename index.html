@@ -36,6 +36,19 @@
 		taskDue.html(task.due);
 	}
 
+	function validateTaskInput() {
+		var form = $('form#new_task');
+		var txtinput = form.find('[name="taskname"]');
+		var dueinput = form.find('[name="due"]');
+
+		if (txtinput.get_default() == txtinput.val() || txtinput.val().trim().length == 0) {
+			txtinput.blur_reset();
+			txtinput.css('color', 'red');
+			txtinput.css('font-weight', 'bold');
+			return false;
+		}
+		return true;
+	}
 	(function($) {
 		$(function() {
 			// Handle the input field defaults.
@@ -56,6 +69,8 @@
 			form.submit(function(e) {
 				tasks = new Array();
 				e.preventDefault();
+				if (!validateTaskInput())
+					return;
 				var taskTxt = form.find('[name="taskname"]').val();
 				var taskDue = form.find('[name="due"]').val();
 				var task = new Task(taskTxt, id);
@@ -84,7 +99,7 @@
 		<div id="navigation">
 			<div class="tabs_container">
 				<ul id="tabs">
-					<li id="tabTodo">To-Do</li>
+					<li>To-Do</li>
 				</ul>
 			</div>
 			<div class="family_container">
