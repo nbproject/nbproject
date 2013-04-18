@@ -1,0 +1,48 @@
+#taskContainer{		
+	border:1px solid #333;
+	padding:10px;
+	background-color:#DDDDDD;
+}
+#taskRowTemplate{
+	display: none;
+}
+
+.taskRow{		
+	border:1px solid #CCC;
+	height:50px;		
+	font-family:'Arial', serif;
+	border:5px solid #FFF;
+	background-color:#FFD;
+	margin:10px;
+	box-shadow: 2px 2px 4px #888888;
+	position:relative;
+}
+.taskRowInner{
+	position:absolute;			
+	border:3px solid #EED;
+	bottom:0;
+	top:0;
+	left:0;
+	right:0;
+}
+
+.taskComplete{
+	position: absolute;
+	left:10px;
+	margin-top:12px;
+}
+
+.taskLabel{
+	position: absolute;			
+	left:100px;
+	right:100px;
+	margin-top:12px;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.taskDue{
+	position: absolute;
+	right:10px;			
+	margin-top:12px;
+}
