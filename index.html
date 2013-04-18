@@ -17,7 +17,8 @@
 		console.log(txt);
 	}
 
-	function taskClick(elem){			
+	function taskClick(elem){
+		line("--click!--");
 		var item = $(elem);
 		line(item.attr('id'));
 	}
@@ -50,25 +51,14 @@
 					+day_name+'</option>');
 				day_start = day_start.add(1).day();
 			}
-
-			$('#new_task_btn').click(function() {
-				console.log('foo');
-				$('#item_entry').show();
-				$('#item_entry input[type="text"]').focus();
-			});
-
-			$('#add_task').click(function() {
-				console.log('bar');
-				//$('#item_entry').hide();
-			});
 			var id = 0;
 			var form = $('form#new_task');
 			form.submit(function(e) {
 				tasks = new Array();
 				e.preventDefault();
-				var taskTxt = form.find('[name="taskname"]');
-				var taskDue = form.find('[name="due"]');
-				var task = new Task(id, taskTxt);
+				var taskTxt = form.find('[name="taskname"]').val();
+				var taskDue = form.find('[name="due"]').val();
+				var task = new Task(taskTxt, id);
 				task.duedate = taskDue;
 				++id;
 				tasks[id] = task;
@@ -94,7 +84,7 @@
 		<div id="navigation">
 			<div class="tabs_container">
 				<ul id="tabs">
-					<li>To-Do</li>
+					<li id="tabTodo">To-Do</li>
 				</ul>
 			</div>
 			<div class="family_container">

@@ -1,10 +1,16 @@
+@font-face {
+	font-family: "Gabriola";
+	src: url('assets/Gabriola.ttf');
+}
+
 body {
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
 	font-family: "Gabriola";
-	src: url('assets/Gabriola.ttf');
 	font-size: 150%;
 }
+
+
 
 form { margin: 0; }
 
@@ -50,6 +56,7 @@ ul#family li {
 
 .profile {
 	background: #FFFFC9;
+	cursor: pointer;
 }
 .profile h3 {
 	font-size: 1em;
@@ -67,6 +74,7 @@ ul#family li {
 #tabs li {
 	padding: 4px;
 	background: #C9E9FF;
+	cursor: pointer;
 }
 
 #navigation div {
@@ -89,6 +97,7 @@ div#tasklist {
 	padding-top: 12px;
 	padding-left: 15px;
 	padding-right: 15px;
+	padding-bottom:15px;
 	box-shadow: 4px 4px 9px black;
 }
 
@@ -124,4 +133,13 @@ div#item_entry {
 
 #item_entry input[type="text"] {
 	width: 33em;
+}
+
+#containsImage {
+	margin-bottom: 20px;
+	margin-top: 15px;
+}
+
+#bottom {
+	text-align: center;
 }
