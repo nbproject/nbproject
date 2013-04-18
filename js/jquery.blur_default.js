@@ -36,7 +36,7 @@
             });
             $this.bind('keypress.blur_default', function() {
                 if ($this.val() == def) {
-                    $this.val(String.fromCharCode(event.which));
+                    //$this.val(String.fromCharCode(event.which));
                     $this.css('color', 'black');
                 }
             });

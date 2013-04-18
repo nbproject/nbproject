@@ -9,23 +9,7 @@
 	<script type="text/javascript" src="external_js/date.js"></script>
 
 	<script type="text/javascript">
-	function setSelectionRange(input, selectionStart, selectionEnd) {
-	  if (input.setSelectionRange) {
-	    input.focus();
-	    input.setSelectionRange(selectionStart, selectionEnd);
-	  }
-	  else if (input.createTextRange) {
-	    var range = input.createTextRange();
-	    range.collapse(true);
-	    range.moveEnd('character', selectionEnd);
-	    range.moveStart('character', selectionStart);
-	    range.select();
-	  }
-	}
 
-	function setCaretToPos (input, pos) {
-	  setSelectionRange(input, pos, pos);
-	}
 	(function($) {
 		$(function() {
 			// Handle the input field defaults.
@@ -49,6 +33,10 @@
 			$('#add_task').click(function() {
 				console.log('bar');
 				$('#item_entry').hide();
+			});
+
+			$('form#item_entry').onSubmit(function() {
+
 			});
 	    });
 	})(jQuery);
@@ -83,7 +71,7 @@
 				<h2>To-Do</h2><button id="new_task_btn">+</button>
 			</div>
 			<div id="item_entry">
-				<form id="new_task" onSubmit="">
+				<form id="new_task">
 					<!--<button>?</button>-->
 					<input class="remember" type="text" name="lastname" value="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
