@@ -2,6 +2,7 @@ body {
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
 	font-family: "Gabriola";
+	src: url('assets/Gabriola.ttf');
 	font-size: 150%;
 }
 
