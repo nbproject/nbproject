@@ -26,16 +26,6 @@
 				day_start = day_start.add(1).day();
 			}
 
-			$('#new_task_btn').click(function() {
-				console.log('foo');
-				$('#item_entry').show();
-				$('#item_entry input[type="text"]').focus();
-			});
-
-			$('#add_task').click(function() {
-				console.log('bar');
-				$('#item_entry').hide();
-			});
 			var id = 0;
 			var form = $('form#item_entry');
 			form.submit(function(e) {
