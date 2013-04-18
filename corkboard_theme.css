@@ -56,6 +56,7 @@ ul#family li {
 
 .profile {
 	background: #FFFFC9;
+	cursor: pointer;
 }
 .profile h3 {
 	font-size: 1em;
@@ -73,6 +74,7 @@ ul#family li {
 #tabs li {
 	padding: 4px;
 	background: #C9E9FF;
+	cursor: pointer;
 }
 
 #navigation div {
@@ -131,4 +133,13 @@ div#item_entry {
 
 #item_entry input[type="text"] {
 	width: 33em;
+}
+
+#containsImage {
+	margin-bottom: 20px;
+	margin-top: 15px;
+}
+
+#bottom {
+	text-align: center;
 }
