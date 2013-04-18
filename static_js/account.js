@@ -13,9 +13,9 @@ function account(id) {
 		}
 	}
 
-	this.createTask = function(task_name) {
+	this.createTask = function(task_name, img) {
 		if ( containsNameValueInList(task_name, this.tasks) === -1) {
-			this.tasks.push(new Task(task_name));
+			this.tasks.push(new Task(task_name, img));
 			console.log("successfully added task " + task_name);
 		} else {
 			console.log(task_name + " already in tasks");
