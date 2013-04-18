@@ -143,3 +143,11 @@ div#item_entry {
 #bottom {
 	text-align: center;
 }
+
+#titleButton {
+	cursor: pointer;
+}
+
+#family li h3 {
+	pointer-events: none;
+}

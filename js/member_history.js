@@ -38,6 +38,10 @@ $(document).ready(function() {
     $('#tabTodo').click(function(evt) {
     	window.location = 'index.html';
     });
+    
+    $('#titleButton').click(function(evt) {
+    	window.location = 'index.html';
+    });
 
     
 
