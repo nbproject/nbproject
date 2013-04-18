@@ -35,6 +35,11 @@
 
 }
 
+.taskComplete img{
+	width: 30px;
+	height:30px;
+}
+
 .taskLabel{
 	position: absolute;			
 	left:55px;
