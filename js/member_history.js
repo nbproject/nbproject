@@ -26,6 +26,10 @@ $(document).ready(function() {
     var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
     $("#containsImage").html(imgHTML);
     $("#hideme").hide();
+    
+    // Color Tabs
+    $('#box'+member.name).css('background', '#C9E9FF');
+    $('#tabs li').css('background', '#FFFFC9');
 
 
     var taskHTML = "";
