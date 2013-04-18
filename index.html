@@ -19,6 +19,7 @@
 
 	function showPopup(){
 		$("#popContainer").show();
+		taskPopupRefresh();
 
 	}
 
@@ -53,8 +54,9 @@
 		var item = $(elem);
 		//line(item.attr('id'));
 		var id = item.attr('id');
-		taskPopupInit(tasks[id]);
+		
 		//TODO: Here look up the actual task, update Louis' content with it
+		task = tasks[id];
 		showPopup();
 	}
 
@@ -86,12 +88,16 @@
 		return true;
 	}
 
-	function taskPopupInit(task) {
+	function taskPopupRefresh() {
+		document.getElementById("taskName").innerHTML = task.name;
+	}
+
+	function taskPopupInit() {
 		// Set task variable
     	//var task = new Task('Dummy Task', 1);
     	
     	// Display Task Name
-    	document.getElementById("taskName").innerHTML = task.name;
+    	//document.getElementById("taskName").innerHTML = task.name;
     
     	// Disable buttons
     	document.getElementById('btnClaim').disabled = true;
@@ -133,9 +139,11 @@
     		task.assignedTo = currently_selected;
     		task.finished = currently_selected;
     	});
+
 	}
 	(function($) {
 		$(function() {
+
 			// Handle the input field defaults.
 			$('.remember').blur_default();
 
@@ -176,6 +184,10 @@
     			window.location = 'index.html';
     		});
 
+    		$("#popClose").click(function(evt){
+    			
+    		});
+    		taskPopupInit();
 	    });
 	})(jQuery);
 	</script>
