@@ -30,63 +30,44 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
         $.concierge.addConstants(p.value);
     });
-    $.mods.declare({
-        docview: {
-        js: ["/content/modules/dev/ui.docView11.js",  "/content/modules/dev/ui.drawable4.js"],
-            css: [ "/content/modules/dev/ui.docView.css" , "/content/modules/dev/ui.drawable.css" ]
-            }, 
-        notepaneview: {js: ["/content/modules/dev/ui.notepaneView11.js"],css: ["/content/modules/dev/ui.notepaneView.css"] }, 
-        threadview: {js: ["/content/modules/dev/ui.threadview.js"],css: [] },
-        editorview: {js: ["/content/modules/dev/ui.editorview.js"],css: [] }
-
-    });
-    
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory("file", "doc_viewer", function(id){
             var pers_id        = "pers_"+id;
             var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
             var docview        =  {priority: 1, min_width: 950, desired_width: 50, 
-                        content: function($div){
-                $.mods.ready("docview", function(){
+                                   content: function($div){
                     $div.docView({img_server: GLOB.conf.servers.img});
                     $div.docView("set_model",GLOB.pers.store );
-                });
-            }
+                }
             };
             var notesview    =  {priority: 1, min_width: 650, desired_width: 35, min_height: 1000, desired_height: 50, 
                         content: function($div){
-                $.mods.ready("notepaneview", function(){
                     $div.notepaneView();
                     $div.notepaneView("set_model",GLOB.pers.store );
-                });
-            }
+                }
             }; 
             var threadview    = {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, 
                        content: function($div){
-                $.mods.ready("threadview", function(){
                     $div.threadview();
                     $div.threadview("set_model",GLOB.pers.store );                
-                });
-            }
+                }
             };
             var editorview    =  {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
-                       content: function($div){
-                $.mods.ready("editorview", function(){
+                                  content: function($div){
                     var m = GLOB.pers.store;
                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
                     $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
                     $div.editorview("set_model",GLOB.pers.store );                
-                });
-            }
+                }
             };
             $pers.perspective({
-                height: function(){return $vp.height() - $pers.offset().top;}, 
-                listens: {
-                page_peek: function(evt){
-                    //need to add 1 value for uniqueness
-                    $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
-                }, 
+                    height: function(){return $vp.height() - $pers.offset().top;}, 
+                        listens: {
+                        page_peek: function(evt){
+                            //need to add 1 value for uniqueness
+                            $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
+                        }, 
                     successful_login: function(evt){
                     GLOB.auth.set_cookie("ckey", evt.value.ckey);
                     document.location ="http://"+document.location.host+document.location.pathname;

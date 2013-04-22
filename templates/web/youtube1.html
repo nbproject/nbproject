@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class='nb_fullscreen'>
   <head>
 <!--
    Author: cf AUTHORS.txt 
@@ -7,37 +7,14 @@
    MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
   -->
     <title>NB YouTube Viewer</title>
-    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/ui.perspective.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/ui.viewport.css" rel="stylesheet" />
-    <link type="text/css" href="/content/modules/dev/ui.view.css" rel="stylesheet" />
-    <link type="text/css" href="/content/ui/admin/template.css" rel="stylesheet" />
-    <script type="text/javascript" src="/content/modules/head.js/head099.min.js"></script> 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <link type="text/css" href="/content/compiled/youtubeviewer.css" rel="stylesheet" />
     <script>
       function onYouTubePlayerAPIReady(){
-      console.debug("YouTube API ready"); 
+      console.log("YouTube API ready"); 
       }
     </script>
     <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
-<!--    <script type="text/javascript" src="/content/modules/dev/ui.notepaneView11.js"></script> -->
-<!--    <script type="text/javascript" src="/content/modules/dev/ui.threadview2.js"></script> -->
-
-    <script>
-      head.js(
-      "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js", 
-      "/content/modules/dev/mods2.js",
-      "/content/modules/dev/ui.concierge.js", 
-      "/content/modules/dev/ui.view.js", 
-      "/content/modules/dev/ui.perspective.js", 
-      "/content/compiled/apidev.js", 
-      "/content/ui/admin/conf.js", 
-      "/content/ui/admin/conf_local.js", 
-      "/content/modules/dev/pers.js", 
-      "/content/ui/admin/step22.js", 
-      function(){$(function(){NB.pers.params = NB.dom.getParams();  NB.pers.preinit();});}
-      );
-    </script>
+    <script type="text/javascript" src="/content/compiled/youtubeviewer_NB.js"></script>
   </head>
   <body/>
 </html>

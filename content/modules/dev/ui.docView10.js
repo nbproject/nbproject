@@ -263,6 +263,9 @@
         var self = this;
         var st = self.element[0].scrollTop;
         var page1 =  $("div.material[page="+self._page+"]", self.element);
+        if (page1.length === 0){
+            return; //can't scroll to page that doesn't exist
+        }
         var w1 = page1.width();
         var w2 = self.element.width();
         //        var pbar = Math.ceil((st+0.01)/(self._h+self._v_margin));

@@ -29,6 +29,7 @@
         self._page =  null; 
         self._id_source =  null;
         self._scrollTimerID =  null;
+        self._scrollCounter = 0;
         self._id_location       = null; //location_id of selected thread
 
         },
@@ -153,13 +154,14 @@
                     var area_indicator = (prem-0.5*evt.currentTarget.clientHeight)>0;
                     var pbar_old = self.___pbar_old;
                     if ( (area_indicator !== self._area_indicator) || (pbar !== pbar_old)){
-                    var newpage = (area_indicator) ?  pbar: pbar+1;
-                    self._in_page_transition =  true; //prevent animation 
-                    $.concierge.trigger({type: "page_peek", value:newpage});
-                    self._in_page_transition =  false;
+                        var newpage = (area_indicator) ?  pbar: pbar+1;
+                        self._in_page_transition =  true; //prevent animation 
+                        $.concierge.trigger({type: "page_peek", value:newpage});
+                        self._in_page_transition =  false;
                     }
                     self.___pbar_old =  pbar;
                     self._area_indicator =  area_indicator;                            
+                    $.concierge.logHistory("scrolling", ["s",self.element.scrollTop(),self.element.height(),  self._scrollCounter++].join(","));
                 }, 300);
                 self._scrollTimerID =  timerID;    
             }
@@ -457,7 +459,8 @@
             self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top"), 10), 10 );
 
         }
-        self._render();
+        self._render();        
+        $.concierge.logHistory("scrolling", ["u",self._id_source, self.element.scrollTop(),self.element.height(), self._scrollCounter++, self.element.children(".contents").height()].join(","));
         }, 
         _render: function(){
         /*
