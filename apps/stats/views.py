@@ -55,7 +55,7 @@ sum(cast(c.signed as integer)) as signed,
 count(distinct c.author_id) as number_authors, 
 count(distinct c.location_id) as number_threads, 
 e.name, 
-e.id  from base_comment c, base_location l, base_ensemble e where  e.id=l.ensemble_id and l.id=c.location_id and c.ctime>? group by e.name, e.id ) as v2 order by total
+e.id  from base_comment c, base_location l, base_ensemble e where  e.id=l.ensemble_id and l.id=c.location_id and c.ctime>? group by e.name, e.id ) as v2 order by total desc limit 50
 """, (P["after"],))
     output["data"] = data
     return UR.prepare_response(output)

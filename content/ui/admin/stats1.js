@@ -18,6 +18,7 @@
     GLOB.report.media.tables = {
       popular_groups2 :{
         labels: ["id", "Class", "Threads", "Notes", "Authors", "Select"],
+        facets: [null, null, 10, null, null, null],
         lenses: [null, null, null, null, null, function(i,j,d){
               return "<input type='checkbox' class='check_category' value='"+d.data[i][0]+"'></input>";}]
       }

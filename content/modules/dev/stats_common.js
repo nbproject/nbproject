@@ -450,7 +450,7 @@
                 return O[data[j].id].data[i][data[j].col];
             };
             var lenses = [];
-            //we var the user specify a default lens if he wishes
+            //we let the user specify a default lens if he wishes
             var defaultLens = ("defaultLens" in M) ? M.defaultLens: defaultLens0;
             for (u in labels){
                 lenses.push(("lenses" in M && M.lenses[u]!=null) ? M.lenses[u]: defaultLens);
@@ -462,6 +462,47 @@
                 }
                 tbody.append(tr);
             }
+            var facets = M.facets || [];
+            var findExtrema = function(d, j){
+                //j: column number
+                var xmin =Number.MAX_VALUE,
+                xmax = -Number.MAX_VALUE, 
+                i;
+                
+                for (i=0;i<d.length;i++){
+                    if (d[i][j]<xmin){
+                         xmin = d[i][j];
+                    }
+                    if (d[i][j]>xmax){
+                        xmax = d[i][j];
+                    }
+                }
+                return [xmin, xmax];
+            };
+            
+            var fillBins = function(d,j, d_min, d_max, NBINS){
+                var i, bins=[];
+                for (i=0;i<NBINS;i++){
+                    bins.push(0);
+                }
+                for (i=0;i<d.length;i++){
+                    bins[Math.min(Math.floor(((d[i][j]-d_min)*NBINS)/(d_max - d_min)), NBINS-1)]++;
+                }
+                return bins;
+            };
+            for (j=0;j<facets.length;j++){
+                if (facets[j] !== null){
+                    //for now we assume that is not null, we just want a distribution into 10 bins.  
+                    //find min/max to get an idea of distribution. 
+                    var extrema = findExtrema(O[data[j].id].data, j);
+                    var spread = extrema[1] - extrema[0];
+                    var NBINS = 10;
+                    var bins = fillBins(O[data[j].id].data, j, extrema[0],  extrema[1], NBINS);
+                    console.log("facets extrema: ", extrema, bins);
+                }
+            }
+            
+
             table.append(tbody).appendTo($elt);
         }, 
         images: function(id){
