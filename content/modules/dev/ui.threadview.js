@@ -121,7 +121,7 @@
             var cats = m.get("labelcategory", {}).items;
             var i, j, label;
             for (i in cats){
-                label = m.get("commentlabel", {comment_id: o.ID}).first();
+                label = m.get("commentlabel", {comment_id: o.ID, category_id: cats[i].id}).first();
                 cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cats[i].name)+"</div>");
                 for (j=0;j<cats[i].pointscale;j++){
                     cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cats[i].id &&  label.grade===j)? " selected":"" )+"' id_item='"+j+"'>"+j+"</span>");
@@ -249,9 +249,9 @@
         };
         var f_comment_label = function(event){
             var t = $(event.target);
-            var comment_id = t.closest("div.note-lens").attr("id_item");
+            var comment_id = parseInt(t.closest("div.note-lens").attr("id_item"), 10);
             if (t.hasClass("cat_elt")){
-                $.concierge.get_component("set_comment_label")({grade: t.attr("id_item"), category_id: t.parent().attr("id_item"), comment_id:comment_id}, function(P){ 
+                $.concierge.get_component("set_comment_label")({grade: parseInt(t.attr("id_item"), 10), category_id: parseInt(t.parent().attr("id_item"), 10), comment_id:comment_id}, function(P){ 
                         var m    = self._model;                   
                         m.add("commentlabel", P.commentlabels);
                         $.I("label added");
