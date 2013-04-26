@@ -31,6 +31,7 @@ __EXPORTS = [
     "deleteNote", 
     "getStats",
     "getMyNotes", 
+    "getCommentLabels", 
     "getGuestFileInfo", 
     "getHTML5Info",
     "markNote", 
@@ -57,6 +58,7 @@ __EXPORTS = [
     "register_user", 
     "login_user", 
     "set_grade_assignment", 
+    "set_comment_label", 
     "markThread", 
     "getPending", 
     "rate_reply"
@@ -334,6 +336,23 @@ def getNotes(payload, req):
         else:
             return UR.prepare_response({}, 1, "NOT ALLOWED")
     return UR.prepare_response(output)
+
+def getCommentLabels(payload, req): 
+    uid = UR.getUserId(req)
+    if "file" in payload: #access by file
+        id_source = payload["file"]
+        o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid, deleted=False)
+        if len(o)>0 and o[0].admin: #for now, simply restrict to admin level            
+            output = {}
+            lc =  M.LabelCategory.objects.filter(ensemble = o[0].ensemble) 
+            output["labelcategories"] =  UR.qs2dict(lc)
+            comments = M.Comment.objects.filter(location__source__id=id_source, deleted=False, moderated=False)
+            output["commentlabels"] = UR.qs2dict(M.CommentLabel.objects.filter(category__in=lc, comment__in=comments, grader__id=uid))
+            return UR.prepare_response(output)     
+    return UR.prepare_response({}, 1, "NOT ALLOWED")
+
+
+
 
 def saveNote(payload, req): 
     uid = UR.getUserId(req)
@@ -621,7 +640,31 @@ def set_grade_assignment(P, req):
     retval["grades"] = annotations.set_grade_assignment(uid, {"id_source": P["id_source"], "id_user":  P["id_user"], "grade": P["grade"]})
     return UR.prepare_response(retval)
 
-    
+def set_comment_label(P, req):
+    uid = UR.getUserId(req)
+    cid = P["comment_id"]
+    if not auth.canLabelComment(uid, cid):
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    record = None
+    try: 
+        record = M.CommentLabel.objects.get(grader__id=uid, comment__id=cid, category_id=P["category_id"])
+        rh = M.CommentLabelHistory()        
+        rh.grader = record.grader
+        rh.ctime = record.ctime
+        rh.grade = record.grade
+        rh.category = record.category
+        rh.comment = record.comment
+        rh.save()
+        record.ctime = datetime.datetime.now()
+    except M.CommentLabel.DoesNotExist: 
+        record = M.CommentLabel()
+        record.category_id = P["category_id"]
+        record.comment_id = cid
+    record.grade = P["grade"]
+    record.grader_id = uid
+    record.save()
+    retval = {"commentlabels":{record.id: UR.model2dict(record)}}
+    return UR.prepare_response(retval)    
     
 @csrf_exempt
 def other(req):

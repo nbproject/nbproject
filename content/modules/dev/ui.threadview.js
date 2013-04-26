@@ -115,7 +115,24 @@
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&sdot;&sdot;&sdot;</div></a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
         var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
-        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div></div>"].join("");
+        var commentlabels = "";
+        if (self.options.commentLabels){
+            var cl_container = ["<div class='commentlabel_container'>"];
+            var cats = m.get("labelcategory", {}).items;
+            var i, j, label;
+            for (i in cats){
+                label = m.get("commentlabel", {comment_id: o.ID}).first();
+                cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cats[i].name)+"</div>");
+                for (j=0;j<cats[i].pointscale;j++){
+                    cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cats[i].id &&  label.grade===j)? " selected":"" )+"' id_item='"+j+"'>"+j+"</span>");
+                }
+                
+                cl_container.push("</div>");
+            }
+            cl_container.push("</div>");
+            commentlabels = cl_container.join("");
+        }
+        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>",commentlabels, "</div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
         _fill_tree: function(m, c){
@@ -230,8 +247,20 @@
             var id_item = $(event.target).closest("div.note-lens").attr("id_item");
             $.concierge.trigger({type: "reply_thread", value: id_item});
         };
+        var f_comment_label = function(event){
+            var t = $(event.target);
+            var comment_id = t.closest("div.note-lens").attr("id_item");
+            if (t.hasClass("cat_elt")){
+                $.concierge.get_component("set_comment_label")({grade: t.attr("id_item"), category_id: t.parent().attr("id_item"), comment_id:comment_id}, function(P){ 
+                        var m    = self._model;                   
+                        m.add("commentlabel", P.commentlabels);
+                        $.I("label added");
+                    });
+            }
+        };
         $("div.note-lens", $pane).contextMenu({menu: "contextmenu_threadview"}, f_context);
         $("a.replymenu", $pane).click(f_reply);
+        $("div.commentlabel_container", $pane).click(f_comment_label);
         $("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
         $("#contextmenu_threadview").bind("beforeShow", function(event, el){
             var id_item = el.closest("div.note-lens").attr("id_item");
@@ -265,7 +294,7 @@
         self._file =  id_source ; 
         self._QUESTION = $.concierge.get_constant("QUESTION");
         self._STAR = $.concierge.get_constant("STAR");
-        model.register($.ui.view.prototype.get_adapter.call(this),  {comment: null, threadmark: null});
+        model.register($.ui.view.prototype.get_adapter.call(this),  {comment: null, threadmark: null, commentlabel: null});
         },
         _keydown: function(event){ // same as ui.noteview8.js
         //just proxy to other view if any interested. 
@@ -273,7 +302,7 @@
         return true;
         }, 
         update: function(action, payload, items_fieldname){
-        if ((action === "add"|| action === "remove") && (items_fieldname ==="comment" || items_fieldname ==="threadmark") && this._location){
+        if ((action === "add"|| action === "remove") && (items_fieldname ==="comment" || items_fieldname ==="threadmark" || items_fieldname==="commentlabel") && this._location){
             this._render();
         }
         }
@@ -284,6 +313,7 @@
     loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
     listens: {
         select_thread: null
-    }
+    }, 
+    commentLabels: false
     };
 })(jQuery);

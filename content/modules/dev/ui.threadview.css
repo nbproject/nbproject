@@ -60,14 +60,48 @@ color: #000000;
 }
 
 div.threadview span.author{
-color: #a0a0a0;
-font-style: italic;
-margin-left: 10px;
+    color: #a0a0a0;
+    font-style: italic;
+    margin-left: 10px;
 }
 
 div.threadview span.created{
 color: #a0a0a0;
 }
+
+div.threadview div.commentlabel_container{
+    position: absolute;
+    right: 60px;    
+    margin-top: -15px;
+    color: #a0a0a0;
+}
+
+
+div.threadview  span.cat_elt{
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 3px;
+    cursor: pointer;
+    border: thin solid transparent;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+div.threadview  span.cat_elt.selected{
+    color: #777777;
+    border-color: #777777;
+}
+
+div.threadview  span.cat_elt:hover{
+    background-color: #70A0F0;
+}
+
+
+div.threadview div.cat_name{
+    display: inline-block;
+    width: 60px;
+}
+
 
 div.threadview div.stat-count{
     background-color: #EEE;
