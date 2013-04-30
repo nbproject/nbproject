@@ -115,6 +115,7 @@ module.exports = function(grunt) {
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.threadview.css"]))
     };
+
     MODS.EDITORVIEW = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.editorview.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.editorview.css"])
@@ -237,8 +238,8 @@ module.exports = function(grunt) {
                             ), 
         dest_js:  DEST_DIR+"pdfviewer_NB.js",
         dest_css:  DEST_DIR+"pdfviewer.css"
-        
     };    
+
  TARGETS.YOUTUBEVIEWER = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 

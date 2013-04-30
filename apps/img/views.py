@@ -128,6 +128,55 @@ def serve_grades_spreadsheet(req, id_ensemble):
             s_cm.write(row, col, stats[stat_id]["cnt"] if stat_id in stats else "")
             col+=1
         row+=1
+    #now add a sheet for labeled comments if there are any: 
+    lcs = M.LabelCategory.objects.filter(ensemble__id=id_ensemble).order_by("id")
+    lcs_ids = list(lcs.values_list('id', flat=True))
+    cls = M.CommentLabel.objects.select_related("comment", "location").filter(category__in=lcs, grader__id=uid).order_by("comment__location__source__id", "comment__id", "category__id")
+    if len(cls)>0:
+        s_lc = wbk.add_sheet("labeled_comments")
+        #Header row: 
+        row=0
+        col=0
+        s_lc.write(row, col,"SOURCE_ID")
+        col+=1
+        s_lc.write(row, col,"COMMENT_ID")
+        col+=1
+        s_lc.write(row, col,"PARENT_ID")
+        col+=1
+        s_lc.write(row, col,"LOCATION_ID")
+        col+=1
+        s_lc.write(row, col,"AUTHOR_ID")
+        col+=1
+        s_lc.write(row, col,"BODY")
+        for i in xrange(0,len(lcs)):
+            col+=1
+            s_lc.write(row, col,"%s - [0:%s]" %(lcs[i].name, lcs[i].pointscale))       
+        #Data Rows: 
+        previous_comment_id=0
+        for j in xrange(0, len(cls)):
+            rec = cls[j]
+            if previous_comment_id == rec.comment.id:
+                #We just need to complete the data that we missed on the previous row. 
+                col_grade = col+lcs_ids.index(rec.category_id) #move to the column for the next category for which we have data
+                s_lc.write(row, col_grade, rec.grade)
+            else: 
+                row+=1
+                col=0
+                s_lc.write(row, col,rec.comment.location.source_id)
+                col+=1
+                s_lc.write(row, col,rec.comment.id)
+                col+=1
+                s_lc.write(row, col,rec.comment.parent_id)
+                col+=1
+                s_lc.write(row, col,rec.comment.location_id)
+                col+=1
+                s_lc.write(row, col, rec.comment.author_id)
+                col+=1
+                s_lc.write(row, col, rec.comment.body)
+                col+=1
+                col_grade = col+lcs_ids.index(rec.category_id) #move to the column for the next category for which we have data
+                s_lc.write(row, col_grade, rec.grade) 
+            previous_comment_id = rec.comment.id
     import datetime
     a = datetime.datetime.now()
     fn = "stats_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
