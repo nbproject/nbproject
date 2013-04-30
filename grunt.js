@@ -380,7 +380,7 @@ module.exports = function(grunt) {
                           addPrefix(UI_DIR,[ "pagelinks.js", "stats1.js", "launch.js"]) 
                           ), 
         src_css: [].concat(
-                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "dev/ui.view.css"]),
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "dev/ui.view.css", "dev/stats.css"]),
                            addPrefix(UI_DIR, ["template.css"])
                            ),
         dest_js:  DEST_DIR+"stats_NB.js",

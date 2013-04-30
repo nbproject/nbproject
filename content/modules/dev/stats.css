@@ -1,0 +1,44 @@
+/*
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+div.facetpanel{
+position: absolute;
+left: 0px;
+}
+
+div.facet{
+border: thin solid #a0a0a0;
+position: relative;
+min-width: 120px;
+padding: 8px;
+margin-bottom: 30px;
+}
+
+div.facet_hdr{
+width:100%;
+color: #707070;
+padding-bottom: 8px;
+}
+
+div.facet_row{
+position: relative;
+}
+
+a.facet_a{
+position: relative;
+}
+
+div.facet_fill{
+position: absolute;
+height: 100%;
+background-color: #ffc0a0;
+/*opacity: 0.3;*/
+}
+
+span.facet_cnt{
+position: absolute;
+right: 5px;
+}

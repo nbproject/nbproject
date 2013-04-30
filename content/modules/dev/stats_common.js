@@ -438,9 +438,11 @@
                 data   = M.data;
             }
             labels = M.labels;
-            var table = NB$("<table class='media'/>");
-            var tr = NB$("<tr/>");
-            var headerLens = ("headerLens" in M) ? M.headerLens : function(j){return labels[j];};
+            var table = NB$("<table class='media'/>"),
+            facetpanel = NB$("<div class='facetpanel'/>"), 
+            facet,
+            tr = NB$("<tr/>"),
+            headerLens = ("headerLens" in M) ? M.headerLens : function(j){return labels[j];};
             for (j in labels){
                 tr.append("<th>"+headerLens(j,O[data[j].id] )+"</th>");
             }
@@ -462,7 +464,7 @@
                 }
                 tbody.append(tr);
             }
-            var facets = M.facets || [];
+            var facets = M.facets || [], l_min, l_max, cnt_max;
             var findExtrema = function(d, j){
                 //j: column number
                 var xmin =Number.MAX_VALUE,
@@ -492,17 +494,26 @@
             };
             for (j=0;j<facets.length;j++){
                 if (facets[j] !== null){
-                    //for now we assume that is not null, we just want a distribution into 10 bins.  
+                    facet = NB$("<div class='facet' align='left'/>");
+                    facet.append("<div class='facet_hdr'>"+(M.labels[j]||"(no name)")+"</div>");
+                    //for now we assume that is not null, we just want a distribution into facets[j] bins.  
                     //find min/max to get an idea of distribution. 
-                    var extrema = findExtrema(O[data[j].id].data, j);
-                    var spread = extrema[1] - extrema[0];
-                    var NBINS = 10;
-                    var bins = fillBins(O[data[j].id].data, j, extrema[0],  extrema[1], NBINS);
-                    console.log("facets extrema: ", extrema, bins);
+                    var extrema = findExtrema(O[data[j].id].data, j),
+                        spread = extrema[1] - extrema[0],
+                        NBINS = facets[j] || 10,
+                        bins = fillBins(O[data[j].id].data, j, extrema[0],  extrema[1], NBINS);
+                    cnt_max = Math.max.apply(null, bins);
+                    //console.log("facets extrema: ", extrema, bins);
+                    for (i=0;i<NBINS;i++){
+                        l_min = extrema[0]+Math.floor(spread*i/NBINS);
+                        l_max = extrema[0]+Math.floor(spread*(i+1)/NBINS)-1;
+                        facet.append("<div class='facet_row'><div class='facet_fill' style='width:"+100*bins[i]/cnt_max+"%'/><a class='facet_a' href='#?l_min="+l_min+"&l_max="+l_max+"'>"+l_min+"-"+l_max+"</a><span class='facet_cnt'>"+bins[i]+"</span></div>");
+                    }
+                    facetpanel.append(facet);
                 }
             }
             
-
+            $elt.append(facetpanel);
             table.append(tbody).appendTo($elt);
         }, 
         images: function(id){
