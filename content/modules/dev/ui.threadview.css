@@ -71,7 +71,7 @@ color: #a0a0a0;
 
 div.threadview div.commentlabel_container{
     position: absolute;
-    right: 60px;    
+    right: 0px;    
     margin-top: -15px;
     color: #a0a0a0;
 }

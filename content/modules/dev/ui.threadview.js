@@ -117,7 +117,7 @@
         var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
         var commentlabels = "";
         if (self.options.commentLabels){
-            var cl_container = ["<div class='commentlabel_container'>"];
+            var cl_container = ["<div style='position: relative'><div class='commentlabel_container'>"];
             var cats = m.get("labelcategory", {}).items;
             var i, j, label;
             for (i in cats){
@@ -129,7 +129,7 @@
                 
                 cl_container.push("</div>");
             }
-            cl_container.push("</div>");
+            cl_container.push("</div></div>");
             commentlabels = cl_container.join("");
         }
         return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>",commentlabels, "</div>"].join("");
