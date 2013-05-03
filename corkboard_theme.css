@@ -48,6 +48,8 @@ div#content {
 
 div#navigation {
 	overflow: visible;
+	position: relative;
+	height: 100px;
 }
 
 #navigation ul {
@@ -75,6 +77,7 @@ ul#family li {
 .profile {
 	background: #FFFFC9;
 	cursor: pointer;
+	text-align: center;
 }
 .profile h3 {
 	font-size: 1em;
@@ -96,17 +99,21 @@ ul#family li {
 }
 
 #navigation div {
-	display: inline-block;
+	
 }
 div.tabs_container {
-	width: 30%;
 	vertical-align: bottom;
+	position: absolute;
+	bottom: 0;
+	left: 0;
 }
 
 div.family_container {
 	/*width: 69%;*/
 	text-align: right;
-	float: right;
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 
 /* Task list */
