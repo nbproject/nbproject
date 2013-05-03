@@ -6,7 +6,6 @@
 */
 
 body {
-
 	padding: 0;
 	background-color: #ADB8A6;
 }
@@ -14,6 +13,7 @@ body {
 div#outer {
 	font-family: 'Quicksand', sans-serif;
 	margin: 0 auto;
+	margin-top: 10px;
 	height: 100%;
 	width: 750px;
 	background-color: brown;
@@ -180,6 +180,7 @@ div#item_entry {
 }
 
 #titleButton {
+	top: 10px;
 	cursor: pointer;
 }
 
