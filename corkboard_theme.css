@@ -1,13 +1,30 @@
-@font-face {
+
+/*@font-face {
 	font-family: "Gabriola";
 	src: url('assets/Gabriola.ttf');
 }
+*/
 
 body {
+
+	padding: 0;
+	background-color: #ADB8A6;
+}
+
+div#outer {
+	font-family: 'Quicksand', sans-serif;
+	margin: 0 auto;
+	height: 100%;
+	width: 750px;
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
-	font-family: "Gabriola";
 	font-size: 150%;
+
+	box-shadow: inset 0px 0px 10px black, 0px 0px 10px;
+	border-style: solid;
+	border-width: 10px;
+	border-radius: 50px;
+	border-color: #999;
 }
 
 
@@ -38,7 +55,7 @@ div#navigation {
 	margin: 0;
 	padding: 0;
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: top;
 }
 
 ul#family {
@@ -47,6 +64,7 @@ ul#family {
 
 ul#family li {
 	font-size: 15px;
+	vertical-align: top;
 }
 
 #navigation ul li {
@@ -82,10 +100,11 @@ ul#family li {
 }
 div.tabs_container {
 	width: 30%;
+	vertical-align: bottom;
 }
 
 div.family_container {
-	width: 69%;
+	/*width: 69%;*/
 	text-align: right;
 }
 
@@ -93,7 +112,7 @@ div.family_container {
 div#tasklist {
 	background-color: white;
 	position: relative;
-	top: -17px; /* Something wrong with the nav div */
+	/*top: -17px; /* Something wrong with the nav div */
 	padding-top: 12px;
 	padding-left: 15px;
 	padding-right: 15px;
