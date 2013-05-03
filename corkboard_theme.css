@@ -19,7 +19,6 @@ div#outer {
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
 	font-size: 150%;
-
 	box-shadow: inset 0px 0px 10px black, 0px 0px 10px;
 	border-style: solid;
 	border-width: 10px;
@@ -136,6 +135,11 @@ div#tasklist {
 	box-shadow: 4px 4px 9px black;
 }
 
+div.taskLabel {
+	word-wrap:break-word;
+	margin-right:2px;
+	padding-right:2px;
+}
 img.pin_left {
 	width: 31px;
 	position:absolute;
