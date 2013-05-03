@@ -38,6 +38,8 @@ h1 {
 	font-size: 1.5em;
 	margin: 0;
 	padding: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
 	box-shadow: 2px 2px 2px black;
 }
 
@@ -67,11 +69,12 @@ ul#family {
 ul#family li {
 	font-size: 15px;
 	vertical-align: top;
+	margin-left: 5px;
 }
 
 #navigation ul li {
 	display: inline-block;
-	margin-left: 5px;
+	
 }
 
 .profile {
@@ -85,10 +88,14 @@ ul#family li {
 	padding: 0;
 	font-weight: normal;
 	text-align: center;
+	padding-left: 3px;
+	padding-right: 3px;
+
 }
 .profile img {
 	width: 50px;
-	padding: 4px;
+	margin: 4px;
+	border: 1px solid black;
 	vertical-align: bottom;
 }
 
