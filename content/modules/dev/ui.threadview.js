@@ -119,16 +119,32 @@
         if (self.options.commentLabels){
             var cl_container = ["<div style='position: relative'><div class='commentlabel_container'>"];
             var cats = m.get("labelcategory", {}).items;
-            var i, j, label;
+            var i, j, label, tags = [], cat; 
+            //tags are categories for which pointgrade=2: we just want to display the tag,
+            //instead of displaying the name and the list of grades, we just want to display the name and whether it's toggled or not.            
             for (i in cats){
-                label = m.get("commentlabel", {comment_id: o.ID, category_id: cats[i].id}).first();
-                cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cats[i].name)+"</div>");
-                for (j=0;j<cats[i].pointscale;j++){
-                    cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cats[i].id &&  label.grade===j)? " selected":"" )+"' id_item='"+j+"'>"+j+"</span>");
+                cat = cats[i];
+                if (cat.pointscale === 2){
+                    tags.push(i);
                 }
-                
-                cl_container.push("</div>");
+                else{
+                    label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
+                    cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cat.name)+"</div>");
+                    for (j=0;j<cat.pointscale;j++){
+                        cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===j)? " selected":"" )+"' val='"+j+"'>"+j+"</span>");
+                    }
+                    cl_container.push("</div>");
+                }              
             }
+            //now display tags: 
+            cl_container.push("<div>");
+            for (j=0;j<tags.length;j++){
+                cat = cats[tags[j]];
+                label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
+                cl_container.push("<span id_item='"+tags[j]+"' class='tag cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===1)? " selected":"" )+"'>"+$.E(cat.name)+"</span>");
+
+            }
+            cl_container.push("</div>");            
             cl_container.push("</div></div>");
             commentlabels = cl_container.join("");
         }
@@ -248,13 +264,21 @@
             $.concierge.trigger({type: "reply_thread", value: id_item});
         };
         var f_comment_label = function(event){
-            var t = $(event.target);
-            var comment_id = parseInt(t.closest("div.note-lens").attr("id_item"), 10);
+            var t = $(event.target), 
+            comment_id = parseInt(t.closest("div.note-lens").attr("id_item"), 10), 
+            grade, category_id;
             if (t.hasClass("cat_elt")){
-                $.concierge.get_component("set_comment_label")({grade: parseInt(t.attr("id_item"), 10), category_id: parseInt(t.parent().attr("id_item"), 10), comment_id:comment_id}, function(P){ 
+                if (t.hasClass("tag")){
+                    grade = t.hasClass("selected") ? 0 : 1; //toggle 
+                    category_id = parseInt(t.attr("id_item"), 10);
+                }
+                else{
+                    grade = parseInt(t.attr("val"), 10);
+                    category_id = parseInt(t.parent().attr("id_item"), 10);
+                }
+                $.concierge.get_component("set_comment_label")({grade: grade, category_id:category_id, comment_id:comment_id}, function(P){ 
                         var m    = self._model;                   
                         m.add("commentlabel", P.commentlabels);
-                        $.I("label added");
                     });
             }
         };

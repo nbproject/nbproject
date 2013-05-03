@@ -71,9 +71,20 @@ color: #a0a0a0;
 
 div.threadview div.commentlabel_container{
     position: absolute;
-    right: 0px;    
+    right: 42px;    
     margin-top: -15px;
-    color: #a0a0a0;
+    opacity: 0.3;
+    z-index: 0;
+    padding: 5px;
+    border: thin solid transparent;    
+}
+
+div.threadview div.commentlabel_container:hover{
+    background-color: #fbfbfb;
+    color: #303030;
+    opacity: 1.0;
+    border-color: #a0a0a0;
+    
 }
 
 
@@ -88,12 +99,13 @@ div.threadview  span.cat_elt{
 }
 
 div.threadview  span.cat_elt.selected{
-    color: #777777;
+    color: #ffffff;
     border-color: #777777;
+    background-color: #70A0F0;
 }
 
 div.threadview  span.cat_elt:hover{
-    background-color: #70A0F0;
+    background-color: #FFFFD0;
 }
 
 
