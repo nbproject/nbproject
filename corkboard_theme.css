@@ -106,10 +106,12 @@ div.tabs_container {
 div.family_container {
 	/*width: 69%;*/
 	text-align: right;
+	float: right;
 }
 
 /* Task list */
 div#tasklist {
+	clear: both;
 	background-color: white;
 	position: relative;
 	/*top: -17px; /* Something wrong with the nav div */
