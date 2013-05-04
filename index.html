@@ -148,6 +148,7 @@
 	}
 	(function($) {
 		$(function() {
+			editMode = false;
 
 			// Handle the input field defaults.
 			$('.remember').blur_default();
@@ -194,6 +195,15 @@
     			
     		});
     		taskPopupInit();
+
+    		$("button#edit").click(function(evt){
+    			if (editMode) {
+    				$("button#edit").text("Done");
+    			} else {
+    				$("button#edit").text("Edit");
+    			}
+    			editMode = !editMode;
+    		});
 	    });
 	})(jQuery);
 	</script>
@@ -227,6 +237,7 @@
 
 			<div>
 				<h2>To-Do</h2>
+				<button id="edit" type="button">Edit</edit>
 			</div>
 			<div id="item_entry">
 				<form id="new_task" target="index.html">
