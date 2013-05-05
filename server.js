@@ -1,26 +1,26 @@
 var express = require("express");
+var mongo = require('mongodb');
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017';
+
+
 var app = express();
 app.use(express.logger());
+
+//mongo server
+//var server = new mongo.Server(mongoUri);
 
 app.use(express.static(__dirname));
 
 app.get('/hello', function(request, response) {
-  response.send('Hello World!');
+	response.send('Hello World!');
 });
 
-var port = process.env.PORT || 8008;
-app.listen(port, function() {
-  console.log("Listening on " + port);
+app.get('/post', function(req, resp){
+	resp.send({'name': 'hello'});
 });
 
-
-/*
-var http = require('http');
 var port = process.env.PORT || 5000;
-http.createServer(function (req, res) {
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.end('Hello World\n');
-}).listen(port);
+app.listen(port, function() {
+	console.log("Listening on " + port);
 
-console.log('Server running on port ' + port);
-*/
+});
