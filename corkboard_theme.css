@@ -4,6 +4,18 @@
 	src: url('assets/Gabriola.ttf');
 }
 */
+
+.error:-moz-placeholder {
+    color: red;
+    opacity: 1;
+    font-weight: bold;
+}
+
+.error::-webkit-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
 html, body, div#outer, div#content {
 	height: auto;
 }

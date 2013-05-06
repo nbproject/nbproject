@@ -77,8 +77,8 @@
 	position: absolute;
 	top:50%;
 	left:50%;
-	width:400px;  /* adjust as per your needs */
-	height:400px;   /* adjust as per your needs */
+	width:414px;  /* adjust as per your needs */
+	/*height:495px;    adjust as per your needs */
 	margin-left:-200px;   /* negative half of width above */
 	margin-top:-200px;
 	box-shadow: 2px 2px 4px #888888;
