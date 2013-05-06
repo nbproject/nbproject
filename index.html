@@ -14,6 +14,8 @@
 	<script type="text/javascript">
 
 	//wrapper tracing function
+	var popup = false;
+	var popupCount = 0;
 	function line(txt){
 		console.log(txt);
 	}
@@ -21,11 +23,12 @@
 	function showPopup(){
 		$("#popContainer").show();
 		taskPopupRefresh();
-
+		popup = true;
 	}
 
 	function hidePopup(){
 		$("#popContainer").hide();
+		popup = false;
 	}
 
 	function taskClaimed(id, imgurl){
@@ -182,6 +185,21 @@
     			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
     		});
     		
+    		$(document).click(function() {
+    			if (popup) {
+    				popupCount +=1;
+    				if (popupCount > 1) {
+    					hidePopup();
+    					popupCount = 0;
+    				}
+
+    			}
+    		});
+
+    		$("#popup").click(function(e) {
+    			e.stopPropagation();
+    		});
+
     		$('#titleButton').click(function(evt) {
     			window.location = 'index.html';
     		});
