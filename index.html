@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="js/jquery.blur_default.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 	<script type="text/javascript">
 
@@ -17,11 +18,47 @@
 		console.log(txt);
 	}
 
+	function showPopup(){
+		$("#popContainer").show();
+		taskPopupRefresh();
+
+	}
+
+	function hidePopup(){
+		$("#popContainer").hide();
+	}
+
+	function taskClaimed(id, imgurl){
+		line("--taskClaimed--: " + id);
+		hidePopup();
+		var item = $("#taskContainer #" + id);
+		item.css("background-color", "#77D");
+		item.find(".taskRowInner").css("border", "1px solid #336");
+		item.find(".taskDue").html("Working!")
+		var complete = item.find(".taskComplete");
+		complete.html("<img src='" + imgurl + "'/>");
+	}
+
+	function taskCompleted(id, imgurl){
+		line("--taskComplete--: " + id);
+		hidePopup();
+		var item = $("#taskContainer #" + id);
+		item.css("background-color", "#7D7");
+		item.find(".taskRowInner").css("border", "1px solid #363");
+		item.find(".taskDue").html("Complete!");		
+		var complete = item.find(".taskComplete");
+		complete.html("<img src='" + imgurl + "' />");
+	}
+
 	function taskClick(elem){
-		line("--click!--");
+		//line("--click!--");
 		var item = $(elem);
-		line(item.attr('id'));
+		//line(item.attr('id'));
+		var id = item.attr('id');
+		
 		//TODO: Here look up the actual task, update Louis' content with it
+		task = tasks[id];
+		showPopup();
 	}
 
 	function updateTaskList(task){
@@ -52,12 +89,16 @@
 		return true;
 	}
 
+	function taskPopupRefresh() {
+		document.getElementById("taskName").innerHTML = task.name;
+	}
+
 	function taskPopupInit() {
 		// Set task variable
-    	var task = new Task('Dummy Task', 1);
+    	//var task = new Task('Dummy Task', 1);
     	
     	// Display Task Name
-    	document.getElementById("taskName").innerHTML = task.name;
+    	//document.getElementById("taskName").innerHTML = task.name;
     
     	// Disable buttons
     	document.getElementById('btnClaim').disabled = true;
@@ -99,9 +140,12 @@
     		task.assignedTo = currently_selected;
     		task.finished = currently_selected;
     	});
+
 	}
 	(function($) {
 		$(function() {
+			editMode = false;
+
 			// Handle the input field defaults.
 			$('.remember').blur_default();
 
@@ -128,10 +172,10 @@
 				var task = new Task(taskTxt, null,id);
 				
 				task.duedate = taskDue;
-				++id;
-				tasks[id] = task;
+				tasks[id.toString()] = task;
 				updateTaskList(task);
 				taskInput.blur_reset();
+				++id;
 			});
 			
 			$('.profile').click(function(evt) {
@@ -142,14 +186,26 @@
     			window.location = 'index.html';
     		});
 
+    		$("#popClose").click(function(evt){
+    			
+    		});
     		taskPopupInit();
-			
+
+    		$("button#edit").click(function(evt){
+    			if (editMode) {
+    				$("button#edit").text("Done");
+    			} else {
+    				$("button#edit").text("Edit");
+    			}
+    			editMode = !editMode;
+    		});
 	    });
 	})(jQuery);
 	</script>
 	<title>Household Dashboard</title>
 </head>
 <body>
+	<div id="outer">
 	<div id="content">
 		<div style="position: relative;" id="titleButton">
 			<img class="pin_left" src="assets/pushpin.png">
@@ -171,46 +227,11 @@
 				</ul>
 			</div>
 		</div>
+
 		<div id="tasklist">
 			<div>
-				TEMPORARY POPUP DIV:
-				<div id="completionWindow">
-
-					<span id="taskName">Task Name</span>
-					<br>
-
-					<img src="assets/unknown_person.jpg" id="selectedPerson"></img>
-					<br>
-
-					<span id="selectedName">Select Family Member</span>
-					<br>
-
-					<table id="selectionTable"><tr>
-
-						<td class="selectionCell"><img src="assets/Cersei.jpg" class="selectionPic" id="Cersei" /></td>
-						<td class="selectionCell"><img src="assets/Robert.jpg" class="selectionPic" id="Robert" /></td>
-						<td class="selectionCell"><img src="assets/Joffrey.jpg" class="selectionPic" id="Joffrey" /></td>
-						<td class="selectionCell"><img src="assets/Myrcella.jpg" class="selectionPic" id="Myrcella" /></td>
-						<td class="selectionCell"><img src="assets/Tommen.jpg" class="selectionPic" id="Tommen" /></td>
-
-					</tr></table>
-					<br>
-
-					<table id="buttonTable"><tr>
-
-						<td><input id="btnCancel" class="completeButton" type="button" name="new" value="Cancel"/></td>
-
-						<td><input id="btnClaim" class="completeButton" disabled="true" type="button" name="new" value="I'm Working On It!"/></td>
-
-						<td><input id="btnComplete" class="completeButton" disabled="true" type="button" name="new" value="I'm Finished!"/></td> 
-
-
-					</tr></table>
-
-				</div>
-			<div>
-			<div>
 				<h2>To-Do</h2>
+				<button id="edit" type="button">Edit</edit>
 			</div>
 			<div id="item_entry">
 				<form id="new_task" target="index.html">
@@ -234,8 +255,14 @@
 						<div class="taskDue"></div>
 					</div>
 				</div>
-			</div>
-
+			</div>		
+		</div>
+	</div>
+	<div id="popContainer">
+		<div id="popup">
+			<span id="popClose">Close</span>
+			<div id="taskPopup"></div>
+		<div>
 		</div>
 	</div>
 </body>

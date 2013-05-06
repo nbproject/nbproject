@@ -1,13 +1,29 @@
-@font-face {
+
+/*@font-face {
 	font-family: "Gabriola";
 	src: url('assets/Gabriola.ttf');
 }
+*/
 
 body {
+	padding: 0;
+	background-color: #ADB8A6;
+}
+
+div#outer {
+	font-family: 'Quicksand', sans-serif;
+	margin: 0 auto;
+	margin-top: 10px;
+	height: 100%;
+	width: 750px;
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
-	font-family: "Gabriola";
 	font-size: 150%;
+	box-shadow: inset 0px 0px 10px black, 0px 0px 10px;
+	border-style: solid;
+	border-width: 10px;
+	border-radius: 50px;
+	border-color: #999;
 }
 
 
@@ -21,6 +37,8 @@ h1 {
 	font-size: 1.5em;
 	margin: 0;
 	padding: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
 	box-shadow: 2px 2px 2px black;
 }
 
@@ -31,6 +49,8 @@ div#content {
 
 div#navigation {
 	overflow: visible;
+	position: relative;
+	height: 100px;
 }
 
 #navigation ul {
@@ -38,7 +58,7 @@ div#navigation {
 	margin: 0;
 	padding: 0;
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: top;
 }
 
 ul#family {
@@ -47,16 +67,19 @@ ul#family {
 
 ul#family li {
 	font-size: 15px;
+	vertical-align: top;
+	margin-left: 5px;
 }
 
 #navigation ul li {
 	display: inline-block;
-	margin-left: 5px;
+	
 }
 
 .profile {
 	background: #FFFFC9;
 	cursor: pointer;
+	text-align: center;
 }
 .profile h3 {
 	font-size: 1em;
@@ -64,10 +87,14 @@ ul#family li {
 	padding: 0;
 	font-weight: normal;
 	text-align: center;
+	padding-left: 3px;
+	padding-right: 3px;
+
 }
 .profile img {
 	width: 50px;
-	padding: 4px;
+	margin: 4px;
+	border: 1px solid black;
 	vertical-align: bottom;
 }
 
@@ -78,22 +105,29 @@ ul#family li {
 }
 
 #navigation div {
-	display: inline-block;
+	
 }
 div.tabs_container {
-	width: 30%;
+	vertical-align: bottom;
+	position: absolute;
+	bottom: 0;
+	left: 0;
 }
 
 div.family_container {
-	width: 69%;
+	/*width: 69%;*/
 	text-align: right;
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 
 /* Task list */
 div#tasklist {
+	clear: both;
 	background-color: white;
 	position: relative;
-	top: -17px; /* Something wrong with the nav div */
+	/*top: -17px; /* Something wrong with the nav div */
 	padding-top: 12px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -101,6 +135,11 @@ div#tasklist {
 	box-shadow: 4px 4px 9px black;
 }
 
+div.taskLabel {
+	word-wrap:break-word;
+	margin-right:2px;
+	padding-right:2px;
+}
 img.pin_left {
 	width: 31px;
 	position:absolute;
@@ -132,7 +171,7 @@ div#item_entry {
 }
 
 #item_entry input[type="text"] {
-	width: 33em;
+	width: 65%;
 }
 
 #containsImage {
@@ -145,6 +184,7 @@ div#item_entry {
 }
 
 #titleButton {
+	top: 10px;
 	cursor: pointer;
 }
 
