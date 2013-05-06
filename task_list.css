@@ -5,6 +5,11 @@
 	display: none;
 }
 
+.editButton {
+	position:absolute;
+	left:100px;
+}
+
 .taskRow{		
 	border:1px solid #CCC;
 	height:50px;		

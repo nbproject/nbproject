@@ -54,6 +54,9 @@
 	}
 
 	function taskClick(elem){
+		if (editModeOn) {
+			return;
+		}
 		//line("--click!--");
 		var item = $(elem);
 		//line(item.attr('id'));
@@ -62,6 +65,66 @@
 		//TODO: Here look up the actual task, update Louis' content with it
 		task = tasks[id];
 		showPopup();
+	}
+
+
+	var editButtonVisibile = false;
+	var editModeOn = false;
+	var beforeEditHTML = "";
+	function handleMouseEnter(e) {
+		if (editModeOn) {
+			return;
+		}
+		var id = e.toElement.id;
+		var editable = $("#" + id);
+		console.log("enter");
+		editButtonVisible = true;
+		if (false) {
+		} else {
+			var tmptmp = editable.find(".taskRowInner");
+			tmptmp.append("<div class='editButton' id='b" + id + "'> <button> Edit</button></div>");
+			$(".editButton").click( function(e) {
+				e.stopPropagation();
+				var buttonId = $(".editButton").attr('id');
+				var eltId = buttonId.substr(1);
+				var label = $("#" + eltId).find(".taskLabel");
+				var labelText = label.text();
+
+				beforeEditHTML = label.html();
+				label.html("<input id = 'l" + id + "' type = 'text' value='" + labelText + "'>");
+				$("#l"+id).focus();
+
+				$("#l"+id).keyup(function(e){
+					if(e.keyCode == 13){
+  						var inputText = $("#l"+id).val();
+  						label.html(beforeEditHTML);
+  						label.text(inputText);
+  						editModeOn = false;
+  						editButtonVisible = false;
+					}
+				});
+				editModeOn = true;
+				$(".editButton").remove();
+			});
+
+
+		}
+	}
+
+
+
+	function handleMouseLeave(e) {
+		if (editModeOn) {
+			return;
+		}
+		var id = e.toElement.id;
+		var editable = $("#" + id);
+
+		if (editButtonVisible) {
+			console.log("leave");
+			editButtonVisibile = false;
+			$(".editButton").remove();
+		} 
 	}
 
 	function updateTaskList(task){
@@ -76,6 +139,14 @@
 		label.html(task.name);
 		var taskDue = taskDiv.find(".taskDue");		
 		taskDue.html("Due: " + task.duedate);
+
+		$(".taskRow").mouseenter(function(e) {
+			handleMouseEnter(e);
+		});
+
+		$(".taskRow").mouseleave(function(e){
+			handleMouseLeave(e);
+		});
 	}
 
 	function validateTaskInput() {
