@@ -3,6 +3,8 @@
 	This account id will be used when trying to send requests to the server about page information.
 	Any page that includes this script MUST include 
 	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
+
+	source: https://github.com/carhartl/jquery-cookie
 */
 
 
