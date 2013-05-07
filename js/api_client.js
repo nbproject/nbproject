@@ -35,8 +35,8 @@ function ApiClient() {
 
 	this.getFamilyInfo = function(id, callback){
 		console.log("Client:--getFamilyInfo--");
-		var endpoint = this.url + "/familyinfo/id";
-		$.get(endpoint, function(data){
+		var endpoint = this.url + "/familyinfo/" + id;
+		$.get(endpoint, function(data){			
 			callback(data);
 		});
 	};
@@ -44,9 +44,9 @@ function ApiClient() {
 	this.getFamily = function(id, callback){
 		console.log("Client:--getFamily--");
 		var endpoint = this.url + "/family/" + id;
-		$.get(endpoint, function(data){		
+		$.get(endpoint, function(data){
 			callback(data);
-		});	
+		});
 	};
 
 	this.modifyFamily = function(account, callback){
@@ -55,7 +55,17 @@ function ApiClient() {
 
 	//Member functions
 	this.createMember = function(member, callback){
+		console.log("Client:--createMember--");
+		var endpoint = this.url + "/member/make";
+		if(this.familyId === null){
+			callback({error:"api_client doesn't have a familyId"});
+			return;
+		}
 
+		member.familyId = this.familyId;
+		$.post(endpoint, member, function(data){
+			callback(data);
+		});
 	};
 
 	this.getMember = function(id, callback){
@@ -74,6 +84,8 @@ function ApiClient() {
 			callback({error:"api_client doesn't have a familyId"});
 			return;
 		}
+
+		task.familyId = this.familyId;
 		$.post(endpoint, task, function(data){		
 			callback(data);
 		});

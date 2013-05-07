@@ -50,13 +50,14 @@
 
 	</style>
 
-	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
 
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/api_client.js"></script>
 	<script type="text/javascript" src="static_js/family.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
+	<script type="text/javascript" src="static_js/member.js"></script>
 	<script>
 
 	var client;
@@ -90,9 +91,11 @@
 	function showFamily(family){
 		console.log("--showFamily--");
 		console.log(family);
-		client.getFamilyInfo(function(data){
+		client.getFamilyInfo(family._id, function(data){
 			console.log("received family info:");
 			console.log(data);
+			var jstring = JSON.stringify(data, null, 2);	
+			$('#famJson').html(jstring);
 		});
 	}
 
@@ -113,8 +116,11 @@
 					$('#login_succeed').hide();
 				}else{
 					client.familyId = data._id;
+					$('#not_logged_in').hide();
 					$('#login_failed').hide();
 					$('#login_succeed').show();
+					$('#login_form').hide();
+					$('#login_succeed').find('strong').html('logged in as: ' + data.name);
 				}
 			});
 			return false;			
@@ -134,7 +140,7 @@
 				var id = data._id;
 				client.getFamily(id, function(data){
 					console.log("retrieved family");
-					console.log(data);
+
 				});
 				loadFamilies();
 			});
@@ -167,6 +173,30 @@
 			return false;
 		});
 
+		$('#memb_form').submit(function(){
+			console.log("--submit Member--");
+			var name =  $('#memb_name').val();
+			var pictureURL =  $('#memb_picture').val();
+			//THIS IS A FAKE MEMBER. Functions screw up the post
+			var member = {'name': name, 'pictureUrl':pictureURL};
+
+			client.createMember(member, function(data){
+				if(data.error == null){
+					console.log("posted member");
+					var id = data._id;
+					client.getMember(id, function(data){
+						console.log("retrieved member");
+						console.log(data);
+					});
+
+				}else{
+					console.log(data.error);
+				}
+			});			
+		});
+
+
+
 		//fake login
 		$('#login_email').val('mail@exanple.com');
 		$('#login_pass').val('blahblah');
@@ -185,25 +215,28 @@
 		$('#task_due').val('06/07/13');
 		$('#task_finish').val('06/06/13');
 
+		//fake member
+		$('#memb_name').val('Joffrey');
+		$('#memb_picture').val('http://awoiaf.westeros.org/images/thumb/0/07/Joffrey_Baratheon.PNG/300px-Joffrey_Baratheon.PNG');
+
 		loadFamilies();
+		//Automatically logs you in
+		$('#login_form').submit();
 	});
 
 </script>
 <title>console</title>
 </head>
 <body>
-	<div class="container rounded">
+	<div class="container rounded no-space">
 		<div class="row">
 			<div class="span4 sidebar">	
-				<form class="form-signin rounded" id="fam_form">
-					<fieldset>
-						<legend>Create family</legend><br>
-						<input id="fam_name" type="text" placeholder="Type family name..."><br>
-						<input id="fam_email" type="text" placeholder="Type email.."><br>
-						<input id="fam_pass" type="text" placeholder="Type password..."><br>
-						<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
-					</fieldset>
-				</form>	
+				<div id="not_logged_in" class="alert">		
+					Not logged in
+				</div>
+				<div id="login_succeed" class="alert alert-success">		
+					<strong>Log in succeded!</strong>
+				</div>
 				<form class="form-signin rounded" id="login_form">	
 					<fieldset>
 						<legend>Log In</legend><br>
@@ -212,9 +245,7 @@
 						<div id="login_failed" class="alert alert-error">					
 							<strong>Log in failed</strong>
 						</div>
-						<div id="login_succeed" class="alert alert-success">		
-							<strong>Log in succeded</strong>
-						</div>
+						
 						<button id="login_submit" type="submit" class="btn btn-primary">Submit</button>
 					</fieldset>
 				</form>
@@ -230,14 +261,44 @@
 						<input id="task_completion" type="text" placeholder="Completion date..."><br>
 						<button id="task_submit" type="submit" class="btn btn-primary">Submit</button>
 					</fieldset>
+				</form>	
+				<form class="form-signin rounded" id="memb_form">	
+					<fieldset>
+						<legend>Create Member</legend><br>
+						<input id="memb_name" type="text" placeholder="Member Name"><br>
+						<input id="memb_picture" type="text" placeholder="Picture Url"><br>
+						<button id="memb_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>	
+
+				<form class="form-signin rounded" id="fam_form">
+					<fieldset>
+						<legend>Create family</legend><br>
+						<input id="fam_name" type="text" placeholder="Type family name..."><br>
+						<input id="fam_email" type="text" placeholder="Type email.."><br>
+						<input id="fam_pass" type="text" placeholder="Type password..."><br>
+						<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
 				</form>				
 			</div>
-			<div class="span2 rounded famColumn">
-				<h3>Families:</h3>
-				<ul id="famContainer" class="nav nav-tabs nav-stacked">
-								
-				</ul>	
-				<li id="family_template" class="fam_name"><a href="#"></a></li>			
+			<div class="span7">
+				<div class="row">
+					<div class="span2 rounded famColumn">
+						<h3>Families:</h3>
+						<ul id="famContainer" class="nav nav-tabs nav-stacked">
+						</ul>	
+						<li id="family_template" class="fam_name"><a href="#"></a></li>			
+					</div>
+				</div>
+				<div class="row">
+					<div class="span5 rounded famColumn">
+						<h3>Data:</h3>
+						<div class="well"> 
+							<pre id="famJson">
+							</pre>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
