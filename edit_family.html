@@ -23,6 +23,31 @@
     // has finished loading in the browser.
     $(document).ready(function() {
     
+    var newMemberVisible = false;
+    
+    function addMember() {
+    	// Create and add new member
+    	
+    	// Remove the new member row
+    	newMemberVisible = false;
+    }
+    
+    function populatePage(family) {
+    
+    }
+    
+    $("#addMember").click(function() {
+    	// Only do something if row isn't visible yet
+    	if (!newMemberVisible) {
+    
+    	$("#familyMemberList").prepend('<tr><td class="left"><img id="newPic" src="assets/unknown_person.jpg" /></td> <td class="middle"><input id="newName" type="text"></td> <td class="right"><button id="newAddButton" class="btn btn-success btn-mini">Add</btn></td></tr>');
+    	newMemberVisible = true;
+    
+    	$("#newAddButton").click(addMember);
+    	
+    	}
+    });
+    
     	
     	
     });
@@ -38,8 +63,8 @@
     
     <div id="nameEditor" class="input-append">
     <input id="familyName" type="text" placeholder="Family Name" />
-    <button class="btn" type="button">Change</button>
-    <button class="btn" type="button">Restore</button>
+    <button id="changeButton" class="btn" type="button">Change</button>
+    <button id="restoreButton" class="btn" type="button">Restore</button>
     </div>
     
     <br>

@@ -1,6 +1,7 @@
 //some way 
 function Task(name, img, id) {
 	this.id = id; //like a in a db, ids need to be set on instantiation.
+	this.familyId = null;
 	this.name = name;
 	this.img = img;
 	//this.duedate = duedate;
