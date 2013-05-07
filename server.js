@@ -13,21 +13,6 @@ app.configure(function(){
 	app.use(express.bodyParser());
 });
 
-
-//mongo server
-//var server = new mongo.Server(mongoUri);
-
-//Server config object
-//var server = new mongo.Server(host, port, {auto_reconnect:true});
-
-/*
-db = mongo.db("localhost:27017?auto_reconnect=true",
-  database: "testing"
-  safe: true
-)
-*/
-
-
 app.use(express.static(__dirname));
 
 app.get('/hello', function(request, response) {
@@ -40,8 +25,16 @@ app.get('/hello', function(request, response) {
 	});
 });
 
-app.get('/post', function(req, resp){
-	resp.send({'name': 'hello'});
+app.post('/login', function(req, resp) {
+	console.log("--login--:" + req.body);
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('families', function(er, collection){
+			collection.findOne(req.body, function(err, item) {
+				db.close();
+				resp.send(item);
+			});
+		});
+	});
 });
 
 app.post('/family/make', function(req, resp){
@@ -70,6 +63,38 @@ app.get('/family/:id', function(req, resp){
 		});
 	});
 });
+
+
+/*
+------------ Tasks ----------------
+*/
+
+app.post('/task/make', function(req, resp){
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('tasks', function(er, collection){
+			collection.insert(req.body, function(er, rs){
+				db.close();
+				resp.send(rs[0]);
+			});
+		});
+	});
+});
+
+app.get('/task/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--getTask--:" + id);
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('tasks', function(er, collection){
+			console.log("taskId: " + id);
+			var o_id = new BSON.ObjectID(id);
+			collection.findOne({'_id':o_id}, function(err, item) {
+				db.close();
+				resp.send(item);
+			});
+		});
+	});
+});
+
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
