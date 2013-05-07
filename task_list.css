@@ -63,7 +63,7 @@
 
 #popContainer{
     background-color: rgba(255, 255, 255, 0.7);    
-    position: absolute;
+    position: fixed;
     top: 0px;
     left:0px;
     width:100%;
