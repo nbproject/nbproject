@@ -5,6 +5,7 @@ var Db = require('mongodb').Db;
 
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/household';
 
+console.log("URI: " + mongoUri);
 //TO RELOAD ON UPDATE: supervisor server.js
 
 var app = express();
@@ -32,6 +33,30 @@ app.post('/login', function(req, resp) {
 			collection.findOne(req.body, function(err, item) {
 				db.close();
 				resp.send(item);
+			});
+		});
+	});
+});
+
+app.get('/families', function(req, resp){	
+	console.log("--getFamilies--:");
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('families', function(er, collection){
+			collection.find().toArray(function(err, items){
+				resp.send(items);
+			});
+		});
+	});
+});
+
+app.get('/familyinfo/:id', function(req, resp){	
+	var famid = req.params.id;
+	console.log("--getFamilyInfo--:" + famid);
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('families', function(er, collection){			
+			var o_id = new BSON.ObjectID(famid);
+			collection.findOne({'_id':o_id}, function(err, item) {
+
 			});
 		});
 	});

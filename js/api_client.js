@@ -1,7 +1,7 @@
 function ApiClient() {
 
 	this.url = "";
-
+	this.familyId = null;
 
 	this.login = function(email, password, callback){
 		var credentials = {'email':email, 'password':password};
@@ -10,7 +10,6 @@ function ApiClient() {
 		$.post(endpoint, credentials, function(data){		
 			callback(data);
 		});
-
 	};
 
 	this.logout = function(callback){
@@ -22,6 +21,22 @@ function ApiClient() {
 		console.log("Client:--createFamily--");
 		var endpoint = this.url + "/family/make";
 		$.post(endpoint, family, function(data){		
+			callback(data);
+		});
+	};
+
+	this.getFamilies = function(callback){
+		console.log("Client:--getFamilies--");
+		var endpoint = this.url + "/families";
+		$.get(endpoint, function(data){
+			callback(data);
+		});
+	}
+
+	this.getFamilyInfo = function(id, callback){
+		console.log("Client:--getFamilyInfo--");
+		var endpoint = this.url + "/familyinfo/id";
+		$.get(endpoint, function(data){
 			callback(data);
 		});
 	};
@@ -55,7 +70,11 @@ function ApiClient() {
 	this.createTask = function(task, callback){
 		console.log("Client:--createTask--");
 		var endpoint = this.url + "/task/make";
-		$.post(endpoint, family, function(data){		
+		if(this.familyId === null){
+			callback({error:"api_client doesn't have a familyId"});
+			return;
+		}
+		$.post(endpoint, task, function(data){		
 			callback(data);
 		});
 	};
@@ -63,6 +82,8 @@ function ApiClient() {
 	this.getTask = function(id, callback){
 		console.log("Client:--getTask--");
 		var endpoint = this.url + "/task/" + id;
+
+
 		$.get(endpoint, function(data){		
 			callback(data);
 		});	
