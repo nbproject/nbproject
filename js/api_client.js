@@ -1,6 +1,6 @@
 function ApiClient() {
 
-	this.url = "http://localhost:5000";
+	this.url = "";
 
 
 	this.login = function(username, password, callback){
