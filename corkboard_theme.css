@@ -5,6 +5,12 @@
 }
 */
 
+* { 
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .error:-moz-placeholder {
     color: red;
     opacity: 1;
@@ -46,7 +52,7 @@ div#outer {
 
 
 
-form { margin: 0; }
+form { margin: 0; line-height: 0;}
 
 h1 {
 	background: #FFFFC9;
@@ -184,6 +190,7 @@ button#new_task_btn {
 div#item_entry {
 	background: gray;
 	border: 1px black solid;
+	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
 	text-align: center;
