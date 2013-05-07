@@ -16,8 +16,12 @@
     font-weight: bold;
 }
 
-html, body, div#outer, div#content {
-	height: auto;
+html, body {
+	height: 100%;
+}
+
+div#outer, div#content {
+	min-height: 100%;
 }
 
 body {
