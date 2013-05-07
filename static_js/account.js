@@ -6,7 +6,7 @@ function account(id) {
 
 	this.createMember = function(name) {
 		if ( containsNameValueInList(name, this.members) === -1) {
-			this.members.push(new member(name));
+			this.members.push(new Member(name));
 			console.log("successfully added member " + name);
 		} else {
 			console.log(name + " already a member");
