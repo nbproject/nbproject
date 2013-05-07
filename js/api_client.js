@@ -3,8 +3,13 @@ function ApiClient() {
 	this.url = "";
 
 
-	this.login = function(username, password, callback){
-		console.log("--login--: " + username, password);
+	this.login = function(email, password, callback){
+		var credentials = {'email':email, 'password':password};
+		console.log("--login--: " + credentials);
+		var endpoint = this.url + "/login";
+		$.post(endpoint, credentials, function(data){		
+			callback(data);
+		});
 
 	};
 
@@ -48,11 +53,19 @@ function ApiClient() {
 
 	//Task functions
 	this.createTask = function(task, callback){
-
+		console.log("Client:--createTask--");
+		var endpoint = this.url + "/task/make";
+		$.post(endpoint, family, function(data){		
+			callback(data);
+		});
 	};
 
 	this.getTask = function(id, callback){
-
+		console.log("Client:--getTask--");
+		var endpoint = this.url + "/task/" + id;
+		$.get(endpoint, function(data){		
+			callback(data);
+		});	
 	};
 
 	this.modifyTask = function(task, callback){
