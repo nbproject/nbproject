@@ -8,11 +8,11 @@
 		background-color: #f5f5f5;
 	}
 
-	.form-signin {
-		max-width: 300px;
-		padding: 19px 29px 29px;
-		margin: 20px auto 20px;
-		background-color: #fff;
+	.sidebar{
+		background-color:#DDD;
+	}
+
+	.rounded{
 		border: 1px solid #e5e5e5;
 		-webkit-border-radius: 5px;
 		-moz-border-radius: 5px;
@@ -20,6 +20,32 @@
 		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
 		-moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
 		box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	}
+
+	.form-signin {		
+		padding: 19px 29px 29px;
+		margin: 10px;
+		background-color: #fff;
+		
+	}
+
+	#family_template{
+		display: none;
+	}
+
+	.famColumn{
+		padding:10px;
+	}
+
+	.familyItem{
+		border:1px solid #CCC;
+		margin:5px;
+		padding:2px;
+		cursor:pointer;
+	}
+	.familyItem:hover{
+		background-color:#00F;
+		color:#FFF;
 	}
 
 	</style>
@@ -30,10 +56,48 @@
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/api_client.js"></script>
 	<script type="text/javascript" src="static_js/family.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
 	<script>
+
+	var client;
+	var families = [];
+
+	function loadFamilies(){
+		client.getFamilies(function(data){
+			console.log("-receivedFamilies--");
+			console.log(data);
+			$('#famContainer').html('');
+			for (var i = 0; i < data.length; i++) {
+				//turn the json into family objects
+				var obj = data[i];
+				$.extend(obj, Family.prototype);
+				families.push(obj);
+				drawFamily(obj);
+			};			
+		});
+	}
+
+	function drawFamily(family){
+		var template = $('#family_template').clone();
+		template.removeAttr('id');
+		template.find('a').html(family.name);
+		$('#famContainer').append(template);
+		template.click(function(){
+			showFamily(family);
+		});
+	}
+
+	function showFamily(family){
+		console.log("--showFamily--");
+		console.log(family);
+		client.getFamilyInfo(function(data){
+			console.log("received family info:");
+			console.log(data);
+		});
+	}
+
 	$(function(){
-		var client = new ApiClient();
-		console.log(client);
+		client = new ApiClient();
 
 		$('#login_form').submit(function(){
 			console.log("--login--");		
@@ -48,6 +112,7 @@
 					$('#login_failed').show();			
 					$('#login_succeed').hide();
 				}else{
+					client.familyId = data._id;
 					$('#login_failed').hide();
 					$('#login_succeed').show();
 				}
@@ -71,13 +136,14 @@
 					console.log("retrieved family");
 					console.log(data);
 				});
+				loadFamilies();
 			});
 			return false;
 		});	
 
 		$('#task_form').submit(function(){
 			console.log("--submit--");
-
+			var name =  $('#task_name').val();
 			var task = new Task(name, null, null);
 			
 			task.finished =  $('#task_finished').val();
@@ -87,13 +153,16 @@
 			task.finishdate =  $('#task_completion').val();
 
 			client.createTask(task, function(data){
-				console.log("posted task");
-				console.log(data);
-				var id = data._id;
-				client.getTask(id, function(data){
-					console.log("retrieved task");
-					console.log(data);
-				});
+				if(data.error == null){					
+					console.log("posted task");
+					var id = data._id;
+					client.getTask(id, function(data){
+						console.log("retrieved task");
+						console.log(data);
+					});	
+				}else{
+					console.log(data.error);
+				}	
 			});
 			return false;
 		});
@@ -115,49 +184,63 @@
 		$('#task_assigned').val('23423');
 		$('#task_due').val('06/07/13');
 		$('#task_finish').val('06/06/13');
+
+		loadFamilies();
 	});
 
 </script>
 <title>console</title>
 </head>
 <body>
-	<div>		
-		<form class="form-signin" id="login_form">	
-			<fieldset>
-				<legend>Log In</legend><br>
-				<input id="login_email" type="text" placeholder="Type email.."><br>
-				<input id="login_pass" type="text" placeholder="Type password..."><br>
-				<div id="login_failed" class="alert alert-error">					
-					<strong>Log in failed</strong>
-				</div>
-				<div id="login_succeed" class="alert alert-success">		
-					<strong>Log in succeded</strong>
-				</div>
-
-				<button id="login_submit" type="submit" class="btn btn-primary">Submit</button>
-			</fieldset>
-		</form>
-		<form class="form-signin" id="task_form">	
-			<fieldset>
-				<legend>Create Task</legend><br>
-				<input id="task_name" type="text" placeholder="Task name..."><br>
-				<input id="task_status" type="text" placeholder="Task status.."><br>
-				<input id="task_assigned" type="text" placeholder="Assigned Member id.."><br>
-				<input id="task_finished" type="text" placeholder="Member who finished it..."><br>
-				<input id="task_due" type="text" placeholder="Due date..."><br>
-				<input id="task_completion" type="text" placeholder="Completion date..."><br>
-				<button id="task_submit" type="submit" class="btn btn-primary">Submit</button>
-			</fieldset>
-		</form>
-		<form class="form-signin" id="fam_form">
-			<fieldset>
-				<legend>Create family</legend><br>
-				<input id="fam_name" type="text" placeholder="Type family name..."><br>
-				<input id="fam_email" type="text" placeholder="Type email.."><br>
-				<input id="fam_pass" type="text" placeholder="Type password..."><br>
-				<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
-			</fieldset>
-		</form>
+	<div class="container rounded">
+		<div class="row">
+			<div class="span4 sidebar">	
+				<form class="form-signin rounded" id="fam_form">
+					<fieldset>
+						<legend>Create family</legend><br>
+						<input id="fam_name" type="text" placeholder="Type family name..."><br>
+						<input id="fam_email" type="text" placeholder="Type email.."><br>
+						<input id="fam_pass" type="text" placeholder="Type password..."><br>
+						<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>	
+				<form class="form-signin rounded" id="login_form">	
+					<fieldset>
+						<legend>Log In</legend><br>
+						<input id="login_email" type="text" placeholder="Type email.."><br>
+						<input id="login_pass" type="text" placeholder="Type password..."><br>
+						<div id="login_failed" class="alert alert-error">					
+							<strong>Log in failed</strong>
+						</div>
+						<div id="login_succeed" class="alert alert-success">		
+							<strong>Log in succeded</strong>
+						</div>
+						<button id="login_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>
+				
+				<form class="form-signin rounded" id="task_form">	
+					<fieldset>
+						<legend>Create Task</legend><br>
+						<input id="task_name" type="text" placeholder="Task name..."><br>
+						<input id="task_status" type="text" placeholder="Task status.."><br>
+						<input id="task_assigned" type="text" placeholder="Assigned Member id.."><br>
+						<input id="task_finished" type="text" placeholder="Member who finished it..."><br>
+						<input id="task_due" type="text" placeholder="Due date..."><br>
+						<input id="task_completion" type="text" placeholder="Completion date..."><br>
+						<button id="task_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>				
+			</div>
+			<div class="span2 rounded famColumn">
+				<h3>Families:</h3>
+				<ul id="famContainer" class="nav nav-tabs nav-stacked">
+								
+				</ul>	
+				<li id="family_template" class="fam_name"><a href="#"></a></li>			
+			</div>
+		</div>
 	</div>
+	
 </body>
 </html>
