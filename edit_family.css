@@ -30,8 +30,17 @@ h1 {
 	width: 60px;
 }
 
+#newPic {
+	height: 60px;
+	width: 60px;
+}
+
+#newName {
+	width: 150px;
+}
+
 .left {
-	padding-right: 50px;
+	padding-right: 40px;
 }
 
 .right {
