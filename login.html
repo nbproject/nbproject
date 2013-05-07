@@ -23,12 +23,13 @@
     // has finished loading in the browser.
     $(document).ready(function() {
     
+    	hideError();
+    
     	// Sign In Button
     	$("#submitButton").click(function() {
     		var email = $("#email").val();
     		var password = $("#password").val();
     		var rememberMe = $("#rememberMe").is(":checked");
-    		
     		
     		
     	});
@@ -37,6 +38,15 @@
     	$("#registerButton").click(function() {
     		window.location = 'create_account.html';
     	});
+    	
+    	function showError(message) {
+    		$("#errorText").text(message);
+    		$("#errorText").show();
+    	}
+    	
+    	function hideError() {
+    		$("#errorText").hide();
+    	}
     	
     });
 </script>
@@ -56,6 +66,7 @@
 Remember me
 </label>
 <button id="submitButton" class="btn btn-large btn-primary" type="button">Sign in</button>
+<span id="errorText">Error</span>
 <br><br>
 <button id="registerButton" class="btn" type="button">Register</button>
 </form>
