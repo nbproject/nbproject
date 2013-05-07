@@ -1,45 +1,62 @@
-function apiClient() {
+function ApiClient() {
 
-	this.url = "url";
+	this.url = "http://localhost:5000";
+
+
+	this.login = function(username, password, callback){
+		console.log("--login--: " + username, password);
+
+	};
+
+	this.logout = function(callback){
+
+	};
 
 	//Family Functions
-	this.createAccount = function(account){
-
+	this.createFamily = function(family, callback){
+		console.log("Client:--createFamily--");
+		var endpoint = this.url + "/family/make";
+		$.post(endpoint, family, function(data){		
+			callback(data);
+		});
 	};
 
-	this.getAccount = function(id){
-
+	this.getFamily = function(id, callback){
+		console.log("Client:--getFamily--");
+		var endpoint = this.url + "/family/" + id;
+		$.get(endpoint, function(data){		
+			callback(data);
+		});	
 	};
 
-	this.modifyAccount = function(account){
+	this.modifyFamily = function(account, callback){
 
 	};
 
 	//Member functions
-	this.createMember = function(member){
+	this.createMember = function(member, callback){
 
 	};
 
-	this.getMember = function(id){
+	this.getMember = function(id, callback){
 
 	};
 
-	this.modifyMember = function(member){
+	this.modifyMember = function(member, callback){
 
 	};
 
 	//Task functions
-	this.createTask = function(task){
+	this.createTask = function(task, callback){
 
 	};
 
-	this.getTask = function(id){
+	this.getTask = function(id, callback){
 
 	};
 
-	this.modifyTask = function(task){
+	this.modifyTask = function(task, callback){
 
 	};
-
 
 }
