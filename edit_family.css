@@ -1,0 +1,39 @@
+#editFamilyWindow {
+	width: 400px;
+	border-style: solid;
+	border-width:2px;
+	text-align: center;
+}
+
+#nameEditor {
+	margin-left: 15px;
+	margin-top: 15px;
+}
+
+h1 {
+	margin-left: 15px;
+}
+
+#addMember {
+	margin-top: 20px;
+	margin-left: 15px;
+	margin-bottom: 10px;
+}
+
+#familyTable {
+	margin-left: 15px;
+	display: inline;
+}
+
+#testPic {
+	height: 60px;
+	width: 60px;
+}
+
+.left {
+	padding-right: 50px;
+}
+
+.right {
+	padding-left: 25px;
+}
