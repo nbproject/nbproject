@@ -23,6 +23,8 @@
     // has finished loading in the browser.
     $(document).ready(function() {
     
+    	hideError();
+    
     	// Create Button
     	$("#createButton").click(function() {
     		var familyName = $("#familyName").val();
@@ -34,6 +36,15 @@
     	$("#cancelButton").click(function() {
     		window.location = 'login.html';
     	});
+    	
+    	function showError(message) {
+    		$("#errorText").text(message);
+    		$("#errorText").show();
+    	}
+    	
+    	function hideError() {
+    		$("#errorText").hide();
+    	}
     	
     });
 </script>
@@ -50,6 +61,7 @@
 <input id="email" class="input-block-level" type="email" placeholder="Email address">
 <input id="password" class="input-block-level" type="password" placeholder="Password">
 <button id="createButton" class="btn btn-large btn-primary" type="button">Create</button>
+<span id="errorText">Error</span>
 <br><br>
 <button id="cancelButton" class="btn" type="button">Cancel</button>
 </form>
