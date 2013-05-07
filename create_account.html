@@ -4,11 +4,11 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<title>Household Dashboard</title>
+<title>Create New Account</title>
 
 <!-- Load style sheets -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-<link rel="stylesheet" type="text/css" href="login.css" />
+<link rel="stylesheet" type="text/css" href="create_account.css" />
 
 <!-- Load any supplemental Javascript libraries here: jQuery UI -->
 <script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
@@ -23,19 +23,16 @@
     // has finished loading in the browser.
     $(document).ready(function() {
     
-    	// Sign In Button
-    	$("#submitButton").click(function() {
+    	// Create Button
+    	$("#createButton").click(function() {
+    		var familyName = $("#familyName").val();
     		var email = $("#email").val();
     		var password = $("#password").val();
-    		var rememberMe = $("#rememberMe").is(":checked");
-    		
-    		
-    		
     	});
     
-    	// Register Button
-    	$("#registerButton").click(function() {
-    		window.location = 'create_account.html';
+    	// Cancel Button
+    	$("#cancelButton").click(function() {
+    		window.location = 'login.html';
     	});
     	
     });
@@ -45,19 +42,16 @@
 </head>
 
 <body>
-    <div id="loginWindow">
+    <div id="accountCreateWindow">
     
 <form class="form-signin">
-<h2 class="form-signin-heading">Household Dashboard</h2>
+<h2 class="form-signin-heading">New Family</h2>
+<input id="familyName" class="input-block-level" type="text" placeholder="Family Name">
 <input id="email" class="input-block-level" type="email" placeholder="Email address">
 <input id="password" class="input-block-level" type="password" placeholder="Password">
-<label class="checkbox">
-<input id="rememberMe" type="checkbox" value="remember-me">
-Remember me
-</label>
-<button id="submitButton" class="btn btn-large btn-primary" type="button">Sign in</button>
+<button id="createButton" class="btn btn-large btn-primary" type="button">Create</button>
 <br><br>
-<button id="registerButton" class="btn" type="button">Register</button>
+<button id="cancelButton" class="btn" type="button">Cancel</button>
 </form>
 
 

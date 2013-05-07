@@ -1,19 +1,27 @@
+<!DOCTYPE html>
 <html>
 <head>
+		<!-- Bootstrap -->
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.dotdotdot-1.5.7.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
 	<link rel="stylesheet" type="text/css" href="task_list.css"/>
-	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
 
 	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
-	<script type="text/javascript" src="js/jquery.blur_default.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="task_completion.css" />
+
+
 	<script type="text/javascript">
 
 	//wrapper tracing function
+	var popup = false;
+	var popupCount = 0;
 	function line(txt){
 		console.log(txt);
 	}
@@ -21,11 +29,12 @@
 	function showPopup(){
 		$("#popContainer").show();
 		taskPopupRefresh();
-
+		popup = true;
 	}
 
 	function hidePopup(){
 		$("#popContainer").hide();
+		popup = false;
 	}
 
 	function taskClaimed(id, imgurl){
@@ -51,6 +60,9 @@
 	}
 
 	function taskClick(elem){
+		if (editModeOn) {
+			return;
+		}
 		//line("--click!--");
 		var item = $(elem);
 		//line(item.attr('id'));
@@ -59,6 +71,64 @@
 		//TODO: Here look up the actual task, update Louis' content with it
 		task = tasks[id];
 		showPopup();
+	}
+
+
+	var editButtonVisibile = false;
+	var editModeOn = false;
+	var beforeEditHTML = "";
+	function handleMouseEnter(e) {
+		if (editModeOn) {
+			return;
+		}
+		var id = e.toElement.id;
+		var editable = $("#" + id);
+		editButtonVisible = true;
+		if (false) {
+		} else {
+			var tmptmp = editable.find(".taskRowInner");
+			tmptmp.append("<div class='editButton' id='b" + id + "'> <button> Edit</button></div>");
+			$(".editButton").click( function(e) {
+				e.stopPropagation();
+				var buttonId = $(".editButton").attr('id');
+				var eltId = buttonId.substr(1);
+				var label = $("#" + eltId).find(".taskLabel");
+				var labelText = label.text();
+
+				beforeEditHTML = label.html();
+				label.html("<input id = 'l" + id + "' type = 'text' value='" + labelText + "'>");
+				$("#l"+id).focus();
+
+				$("#l"+id).keyup(function(e){
+					if(e.keyCode == 13){
+  						var inputText = $("#l"+id).val();
+  						label.html(beforeEditHTML);
+  						label.text(inputText);
+  						editModeOn = false;
+  						editButtonVisible = false;
+					}
+				});
+				editModeOn = true;
+				$(".editButton").remove();
+			});
+
+
+		}
+	}
+
+
+
+	function handleMouseLeave(e) {
+		if (editModeOn) {
+			return;
+		}
+		var id = e.toElement.id;
+		var editable = $("#" + id);
+
+		if (editButtonVisible) {
+			editButtonVisibile = false;
+			$(".editButton").remove();
+		} 
 	}
 
 	function updateTaskList(task){
@@ -73,6 +143,14 @@
 		label.html(task.name);
 		var taskDue = taskDiv.find(".taskDue");		
 		taskDue.html("Due: " + task.duedate);
+
+		$(".taskRow").mouseenter(function(e) {
+			handleMouseEnter(e);
+		});
+
+		$(".taskRow").mouseleave(function(e){
+			handleMouseLeave(e);
+		});
 	}
 
 	function validateTaskInput() {
@@ -80,8 +158,8 @@
 		var txtinput = form.find('[name="taskname"]');
 		var dueinput = form.find('[name="due"]');
 
-		if (txtinput.get_default() == txtinput.val() || txtinput.val().trim().length == 0) {
-			txtinput.blur_reset();
+		if (txtinput.val().trim().length == 0) {
+			//txtinput.blur_reset();
 			txtinput.css('color', 'red');
 			txtinput.css('font-weight', 'bold');
 			return false;
@@ -144,10 +222,9 @@
 	}
 	(function($) {
 		$(function() {
-			editMode = false;
 
 			// Handle the input field defaults.
-			$('.remember').blur_default();
+			//$('.remember').blur_default();
 
 			// Insert weekdays from tomorrow till a week from today.
 			var duedd = $('#due');
@@ -161,20 +238,25 @@
 			var id = 0;
 			var form = $('form#new_task');
 			tasks = new Array();
-			form.submit(function(e) {		
+			form.submit(function(e) {
 				e.preventDefault();
-				if (!validateTaskInput())
-					return;
 				var taskInput = form.find('[name="taskname"]');
 				var taskTxt = taskInput.val();
 				var taskDue = form.find('[name="due"]').val();
+
+				if (taskTxt.trim().length == 0) {
+					taskInput.addClass('error');
+					return;
+				} else {
+					taskInput.removeClass('error');
+				}
 
 				var task = new Task(taskTxt, null,id);
 				
 				task.duedate = taskDue;
 				tasks[id.toString()] = task;
 				updateTaskList(task);
-				taskInput.blur_reset();
+				taskInput.val('');
 				++id;
 			});
 			
@@ -182,6 +264,21 @@
     			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
     		});
     		
+    		$(document).click(function() {
+    			if (popup) {
+    				popupCount +=1;
+    				if (popupCount > 1) {
+    					hidePopup();
+    					popupCount = 0;
+    				}
+
+    			}
+    		});
+
+    		$("#popup").click(function(e) {
+    			e.stopPropagation();
+    		});
+
     		$('#titleButton').click(function(evt) {
     			window.location = 'index.html';
     		});
@@ -191,14 +288,10 @@
     		});
     		taskPopupInit();
 
-    		$("button#edit").click(function(evt){
-    			if (editMode) {
-    				$("button#edit").text("Done");
-    			} else {
-    				$("button#edit").text("Edit");
-    			}
-    			editMode = !editMode;
-    		});
+    		$(".labelWrapper").dotdotdot({
+				//	configuration goes here
+				ellipsis: '... '
+			});
 	    });
 	})(jQuery);
 	</script>
@@ -231,12 +324,11 @@
 		<div id="tasklist">
 			<div>
 				<h2>To-Do</h2>
-				<button id="edit" type="button">Edit</edit>
 			</div>
 			<div id="item_entry">
 				<form id="new_task" target="index.html">
 					<!--<button>?</button>-->
-					<input class="remember" type="text" name="taskname" value="Enter Task Name">
+					<input autofocus="autofocus" class="remember" type="text" name="taskname" placeholder="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
 					<select name="due" id="due">
 						<option value="ASAP">Due: ASAP</option>
@@ -251,7 +343,7 @@
 				<div id="taskRowTemplate" class="taskRow" onclick="javascript:taskClick(this)">
 					<div class="taskRowInner">
 						<div class="taskComplete"></div>
-						<div class="taskLabel"></div>
+						<p class="taskLabel"></p>
 						<div class="taskDue"></div>
 					</div>
 				</div>

@@ -5,6 +5,31 @@
 }
 */
 
+* { 
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.error:-moz-placeholder {
+    color: red;
+    opacity: 1;
+    font-weight: bold;
+}
+
+.error::-webkit-input-placeholder {
+    color: red;
+    font-weight: bold;
+}
+
+html, body {
+	height: 100%;
+}
+
+div#outer, div#content {
+	min-height: 100%;
+}
+
 body {
 	padding: 0;
 	background-color: #ADB8A6;
@@ -14,7 +39,6 @@ div#outer {
 	font-family: 'Quicksand', sans-serif;
 	margin: 0 auto;
 	margin-top: 10px;
-	height: 100%;
 	width: 750px;
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
@@ -28,7 +52,7 @@ div#outer {
 
 
 
-form { margin: 0; }
+form { margin: 0; line-height: 0;}
 
 h1 {
 	background: #FFFFC9;
@@ -133,6 +157,7 @@ div#tasklist {
 	padding-right: 15px;
 	padding-bottom:15px;
 	box-shadow: 4px 4px 9px black;
+	margin-bottom: 20px;
 }
 
 div.taskLabel {
@@ -165,6 +190,7 @@ button#new_task_btn {
 div#item_entry {
 	background: gray;
 	border: 1px black solid;
+	padding: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
 	text-align: center;

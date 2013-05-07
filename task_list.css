@@ -1,13 +1,16 @@
 #taskContainer{		
-	
 }
 #taskRowTemplate{
 	display: none;
 }
 
+.editButton {
+	position:absolute;
+	left:100px;
+}
+
 .taskRow{		
 	border:1px solid #CCC;
-	height:50px;		
 	font-family:'Arial', serif;
 	border:5px solid #FFF;
 	background-color:#FFD;
@@ -15,49 +18,52 @@
 	box-shadow: 2px 2px 4px #888888;
 	position:relative;
 	cursor: pointer;
+
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
-.taskRowInner{
-	position:absolute;			
+.taskRowInner{			
+	padding: 8px;
 	border:3px solid #EED;
-	bottom:0;
-	top:0;
-	left:0;
-	right:0;
 }
 
 .taskComplete{
-	position: absolute;
-	left:10px;
 	border:2px solid #CCCCCC;
 	width:30px;
 	height:30px;
-	top:5px;
-
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .taskComplete img{
 	width: 30px;
 	height:30px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .taskLabel{
-	position: absolute;			
-	left:55px;
-	right:100px;
-	margin-top:8px;
+	display: inline-block;
 	font-weight: bold;
+	width: 64%;
+	margin: 0;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
 }
 
 .taskDue{
-	position: absolute;
-	right:10px;			
-	margin-top:12px;
+	display: inline-block;
 	font-size:.8em;
+	vertical-align: middle;
 }
 
 #popContainer{
     background-color: rgba(255, 255, 255, 0.7);    
-    position: absolute;
+    position: fixed;
     top: 0px;
     left:0px;
     width:100%;
@@ -72,8 +78,8 @@
 	position: absolute;
 	top:50%;
 	left:50%;
-	width:400px;  /* adjust as per your needs */
-	height:400px;   /* adjust as per your needs */
+	width:414px;  /* adjust as per your needs */
+	/*height:495px;    adjust as per your needs */
 	margin-left:-200px;   /* negative half of width above */
 	margin-top:-200px;
 	box-shadow: 2px 2px 4px #888888;
