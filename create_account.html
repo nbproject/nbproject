@@ -16,7 +16,9 @@
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static_js/task.js"></script>
 <script type="text/javascript" src="static_js/member.js"></script>
+<script type="text/javascript" src="static_js/family.js"></script>
 <script type="text/javascript" src="js/api_client.js"></script>
+<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
 
 <script type="text/javascript">
 
@@ -38,9 +40,7 @@
     		// Create Family Object
     		var family = new Family(familyName, email, password);
     		
-    		client.createFamily(family, function(familyData) {
-    			
-    		});
+    		client.createFamily(family, handleLogin);
     		
     		
     		
