@@ -16,6 +16,7 @@
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static_js/task.js"></script>
 <script type="text/javascript" src="static_js/member.js"></script>
+<script type="text/javascript" src="js/api_client.js"></script>
 
 <script type="text/javascript">
 
@@ -25,11 +26,24 @@
     
     	hideError();
     
+    	// Instantiate API Client
+    	var client = new ApiClient();
+    
     	// Create Button
     	$("#createButton").click(function() {
     		var familyName = $("#familyName").val();
     		var email = $("#email").val();
     		var password = $("#password").val();
+    		
+    		// Create Family Object
+    		var family = new Family(familyName, email, password);
+    		
+    		client.createFamily(family, function(familyData) {
+    			
+    		});
+    		
+    		
+    		
     	});
     
     	// Cancel Button
