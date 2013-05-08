@@ -204,10 +204,6 @@
     			e.stopPropagation();
     		});
 
-    		$('#manageFamily').click(function(evt) {
-       			window.location = 'manage_family.html';
-    		});
-    		
     		$("#popClose").click(function(evt){
     			
     		});
@@ -330,8 +326,8 @@
 				<li class="dropdown">
 				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-				    <li>Edit Family</lI>
-				    <li onclick="logout()">Log Out</li>
+				    <li><a href="manage_family.html">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
 				  </ul>
 				</li>
 			</ul>
@@ -342,7 +338,6 @@
 			<div class="tabs_container">
 				<ul id="tabs">
 					<li><div class="profile active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
-					<li id="manageFamily">Manage</li>
 				</ul>
 			</div>
 
