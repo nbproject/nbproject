@@ -1,5 +1,6 @@
 function logout() {
 	$.removeCookie("family");
+	window.location = "login.html";
 }
 
 function getFamilyObject() {
