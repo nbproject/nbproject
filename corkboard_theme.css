@@ -280,3 +280,8 @@ div#item_entry {
 .selectionPic {
 	cursor: pointer;
 }
+
+#managePic {
+	height:50px;
+	width:50px;
+}
