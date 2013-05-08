@@ -2,6 +2,9 @@
 
 $(document).ready(function() {
     var family = getFamilyObject();
+
+    $("#fam").text(family.name);
+    
     var familyNames = new Array();
     var deleteUserHTML = "";
     var targetParent;
