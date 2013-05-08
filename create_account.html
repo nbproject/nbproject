@@ -37,7 +37,7 @@
     		var familyName = $("#familyName").val();
     		var email = $("#email").val();
     		var password = $("#password").val();
-    		
+    		var file = document.getElementById('yourPic').files[0];
     		// Create Family Object
     		var family = new Family(familyName, email, password);
     		
@@ -51,14 +51,33 @@
     			var memberName = $("#yourName").val();
     			var memberPicUrl = "";
     			var member = {'name': memberName, 'pictureURL':memberPicUrl};
-    			
-    			client.createMember(member, function(data) {
-    				handleLogin(familyData);
-    			});
-    			
+
+                // Upload the image to imgur:
+                if (file != null) {
+                    upload(file, function(resp) {
+                        memberPicUrl = resp.data.link;
+                        member = {'name': memberName, 'pictureURL':memberPicUrl};
+
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    }, function (err) {
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    });
+                } else {
+                    // Proceed without image.
+                    client.createMember(member, function(data) {
+                        handleLogin(familyData);
+                    });
+                }
     		});
+
     		
-    		
+            if (file != null) {
+                upload(file);
+            }
     		
     	});
     
@@ -103,6 +122,32 @@
             }
         }
     	$('#yourPic').change(handleFileSelect);
+
+        function upload(file, success, err) {
+          // file is from a <input> tag or from Drag'n Drop
+          // Is the file an image?
+         
+          if (!file.type.match('image.*')) {
+                return;
+            }
+          // It is!
+          // Let's build a FormData object
+         
+          var fd = new FormData();
+          fd.append("image", file); // Append the file
+          // Get your own key: http://api.imgur.com/
+
+          $.ajax({
+                url: 'https://api.imgur.com/3/image',
+                type: 'POST',
+                beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Client-ID 7058a2b30655903');},
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: success,
+                error: err
+            });
+         }
     });
 
 </script>
