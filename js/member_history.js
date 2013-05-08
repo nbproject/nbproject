@@ -39,6 +39,10 @@ $(document).ready(function() {
     	window.location = 'index.html';
     });
     
+     $('#manageFamily').click(function(evt) {
+        window.location = 'manage_family.html';
+    });
+
     $('#titleButton').click(function(evt) {
     	window.location = 'index.html';
     });
