@@ -3,7 +3,8 @@
 $(document).ready(function() {
     var family = getFamilyObject();
     var familyNames = new Array();
-
+    var deleteUserHTML = "";
+    var targetParent;
     client.getFamilyInfo(family._id, function(data){
         var datamembers = data.members;
         var familyList = $("#family");
@@ -20,13 +21,15 @@ $(document).ready(function() {
             }
             var userInfo = '<li><div class="profile" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             
-            var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td class="right"><button class="btn btn-danger btn-mini">Delete</btn></td></tr>'
+            var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn></td></tr>'
             //var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             $(userInfo).appendTo(familyList);
             $(familyTable).append(userTableInfo);
             $('.profile').click(function(evt) {
                 window.location = 'member_history.html?member=' + evt.target.id.slice(3);
             });
+
+
         };
 
     });
