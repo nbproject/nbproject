@@ -16,3 +16,4 @@ function verifyLogin() {
 }
 
 verifyLogin();
+var client = new ApiClient();
