@@ -45,6 +45,7 @@ $(document).ready(function() {
     }
     var family = getFamilyObject();
     
+    $("#fam").text(family.name);
 
 
     client.getFamilyInfo(family._id, function(data){
@@ -97,6 +98,11 @@ $(document).ready(function() {
             curHTML += "</table> </div>";
             taskHTML+=curHTML;
         }
+
+        if (memberTasks.length === 0) {
+            taskHTML = "This family member has no activity!";
+        }
+        
         $("#memberTasks").html(taskHTML);
 
     });
@@ -120,9 +126,7 @@ $(document).ready(function() {
         window.location = 'index.html';
     });
     
-     $('#manageFamily').click(function(evt) {
-        window.location = 'manage_family.html';
-    });
+     
 
     //$('#titleButton').click(function(evt) {
     //	window.location = 'index.html';
