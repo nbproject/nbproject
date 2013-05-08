@@ -41,7 +41,7 @@
 		popup = false;
 	}
 
-	function taskClaimed(id, imgurl){
+	function taskClaimed(id, imgurl, Claimname){
 		line("--taskClaimed--: " + id);
 		hidePopup();
 		var item = $("#taskContainer #" + id);
@@ -53,9 +53,40 @@
 		item.find(".taskDue").html("Working!")
 		var complete = item.find(".taskComplete");
 		complete.html("<img class=\"completeIcon\" src='" + imgurl + "'/>" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
+
+		var taskClaimed = "";
+		var memberClaimed = "";
+		var family = getFamilyObject();
+		client.getFamilyInfo(family._id, function(data){
+			var datatasks = data.tasks;
+
+			for (var i = 0; i < datatasks.length; i++) {
+				var curDataTask = datatasks[i];
+				if (curDataTask.id.toString() === id.toString()) {
+					taskClaimed = curDataTask;
+				}
+			};	
+			
+
+			var datamembers = data.members;
+			for (var i = 0; i < datamembers.length; i++) {
+				var member = datamembers[i];
+				var name = member.name;
+				if (Claimname === name) {
+					memberClaimed = member;
+				}
+			}
+
+			taskClaimed.assignedTo = memberClaimed._id;
+			taskClaimed.status = "Claimed";
+			client.modifyTask(taskClaimed, function(){});
+		});	
+
+
 	}
 
-	function taskCompleted(id, imgurl){
+	function taskCompleted(id, imgurl, Claimedname){
+
 		line("--taskComplete--: " + id);
 		hidePopup();
 		var item = $("#taskContainer #" + id);
@@ -66,6 +97,33 @@
 		item.find(".taskDue").html("Complete!");		
 		var complete = item.find(".taskComplete");
 		complete.html("<img class=\"completeIcon\" src='" + imgurl + "' />" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
+
+		var taskClaimed = "";
+		var memberClaimed = "";
+		var family = getFamilyObject();
+		client.getFamilyInfo(family._id, function(data){
+			var datatasks = data.tasks;
+
+			for (var i = 0; i < datatasks.length; i++) {
+				var curDataTask = datatasks[i];
+				if (curDataTask.id.toString() === id.toString()) {
+					taskClaimed = curDataTask;
+				}
+			};	
+
+			var datamembers = data.members;
+			for (var i = 0; i < datamembers.length; i++) {
+				var member = datamembers[i];
+				var name = member.name;
+				if (Claimedname === name) {
+					memberClaimed = member;
+				}
+			}
+
+			taskClaimed.finished = memberClaimed._id;
+			taskClaimed.status = "Finished";
+			client.modifyTask(taskClaimed, function(){});
+		});	
 	}
 
 	function taskClick(){
@@ -173,11 +231,14 @@
 		$('#btnClaim').click(function(evt) {
 			var currently_selected = $('.selectionPic.selected').id;
 			var pic = $('.selectionPic.selected').attr('src');
+
+			var selectedName = $("#selectedName").text();
+
             console.log('btnClaim thinks id=' + task.id);
     		task.status = 'claimed';
     		task.assignedTo = currently_selected;
     		var imgurl = pic;
-    		taskClaimed(task.id, imgurl);
+    		taskClaimed(task.id, imgurl, selectedName);
     	});
     	
     	// Complete Button
@@ -186,10 +247,11 @@
 			var pic = $('.selectionPic.selected').attr('src');
             console.log('btnComplete thinks id=' + task.id);
     		task.status = 'completed';
+    		var selectedName = $("#selectedName").text();
     		task.assignedTo = currently_selected;
     		task.finished = currently_selected;
     		var imgurl = pic;
-    		taskCompleted(task.id, imgurl);
+    		taskCompleted(task.id, imgurl, selectedName);
     	});
     		
     		$("#popClose").click(function(evt){
@@ -208,7 +270,7 @@
 	    				var row = $(rows[i]);
 	    				var textInput = row.find('input[type="text"]');
 	    				var dueInput = row.find('select');
-
+	    				alert(textInput.val());
 	    				// Update client:
 	    				row.find('.taskLabel').text(textInput.val());
 	    				row.find('.taskDue').text(dueInput.find('option:selected').text());
@@ -216,6 +278,7 @@
 	    				// Update server:
 	    				var taskid = row.attr('id');
 	    			}
+
 
 	    			$('.taskLabel').show();
 	    			$('.taskDue').show();
