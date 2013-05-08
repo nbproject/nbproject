@@ -22,6 +22,10 @@
     font-weight: bold;
 }
 
+.active {
+	background: #C9E9FF !important;
+}
+
 html, body {
 	height: 100%;
 }
@@ -42,7 +46,6 @@ div#outer {
 	width: 750px;
 	background-color: brown;
 	background-image: url('assets/fzm-seamless.corkboard.texture-01-[800x800].jpg');
-	font-size: 150%;
 	box-shadow: inset 0px 0px 10px black, 0px 0px 10px;
 	border-style: solid;
 	border-width: 10px;
@@ -61,8 +64,8 @@ h1 {
 	font-size: 1.5em;
 	margin: 0;
 	padding: 3px;
-	padding-left: 10px;
-	padding-right: 10px;
+	padding-left: 36px;
+	padding-right: 36px;
 	box-shadow: 2px 2px 2px black;
 }
 
@@ -105,6 +108,8 @@ ul#family li {
 	cursor: pointer;
 	text-align: center;
 }
+
+
 .profile h3 {
 	font-size: 1em;
 	margin: 0;
@@ -120,6 +125,10 @@ ul#family li {
 	margin: 4px;
 	border: 1px solid black;
 	vertical-align: bottom;
+}
+
+.profile #checkbox {
+	border: none;
 }
 
 #tabs li {
@@ -178,6 +187,7 @@ div.taskLabel {
 	margin-right:2px;
 	padding-right:2px;
 }
+
 img.pin_left {
 	width: 31px;
 	position:absolute;
@@ -207,6 +217,11 @@ div#item_entry {
 	padding-left: 10px;
 	padding-right: 10px;
 	text-align: center;
+	margin-top: 10px;
+}
+
+#item_entry select {
+	vertical-align: middle;
 }
 
 #item_entry input[type="text"] {
