@@ -33,7 +33,7 @@ $(document).ready(function(){
 			$(userInfo).appendTo(familyList);
 			$("#selectionTable tr:last").append(popupUserInfo);
 			$('.profile').click(function(evt) {
-                //window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+                window.location = 'member_history.html?member=' + evt.target.id.slice(3);
             });
 
 			document.getElementById('btnClaim').disabled = true;
