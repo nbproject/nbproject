@@ -1,4 +1,13 @@
+function findMyMember(members, name) {
+    var out;
+    for (var i = 0; i < members.length; i++) {
+        var cur = members[i];
+        if (cur.name === name) {
+            return cur;
+        }
+    }
 
+}
 
 $(document).ready(function() {
     var family = getFamilyObject();
@@ -8,6 +17,13 @@ $(document).ready(function() {
     var familyNames = new Array();
     var deleteUserHTML = "";
     var targetParent;
+
+
+    var editModeOn = false;
+    var currentEditableElement = "";
+    var beforeEditHTML = "";
+
+
     client.getFamilyInfo(family._id, function(data){
         var datamembers = data.members;
         var familyList = $("#family");
@@ -24,7 +40,7 @@ $(document).ready(function() {
             }
             var userInfo = '<li><div class="profile" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             
-            var userTableInfo = '<tr id="row'+name+'"><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn></td></tr>'
+            var userTableInfo = '<tr id="row'+name+'"><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn> <button id="edit' + name + '" class="btn btn-warning btn-mini">Edit</btn></td></tr>'
             //var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             $(userInfo).appendTo(familyList);
             $(familyTable).append(userTableInfo);
@@ -53,6 +69,36 @@ $(document).ready(function() {
                         }
                     });
                 }
+
+            });
+
+
+            $("#edit"+name).click(function(e) {
+                e.stopPropagation();
+                var name = $(this).attr("id").substr(4);
+                if (editModeOn) {
+                    return;
+                } else {
+                    editModeOn = true;
+                    var currentEditableElement = $(this).parent().parent().find(".middle");
+                    beforeEditHTML = currentEditableElement.text();
+                    console.log(beforeEditHTML);
+                    currentEditableElement.html("<input id='inputedit'></input>");
+                    $("#inputedit").val(beforeEditHTML);
+                    $("#inputedit").focus();
+
+                    $("#inputedit").keypress( function(event) { 
+                        if (event.which == 13) {          
+                            var newName = $(this).val();
+                            $(currentEditableElement).html( newName);
+                            editModeOn = false;
+                            var m = findMyMember(datamembers, beforeEditHTML);
+                            m.name = newName;
+                            console.log(m);
+                            client.modifyMember(m, function(){});
+                        }
+                     });
+                }      
 
             });
 
@@ -162,5 +208,12 @@ $(document).ready(function() {
             newMemberVisible = true;        
             $("#newAddButton").click(addMember);        
         }
-    });         
+    });
+
+
+    var editModeOn = false;
+    $(".edit").click(function(){
+
+    }); 
+
 });
