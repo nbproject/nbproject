@@ -53,6 +53,7 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	vertical-align: middle;
+	margin-left: 10px;
 }
 
 .taskDue{
