@@ -21,9 +21,9 @@
 	border: none;
 }
 
-.taskButton:hover {
-	background: #bfbfa5;
-	box-shadow: 1px 1px 5px black inset
+.taskButton:hover, .taskHover {
+	background: #ffffee;
+	box-shadow: 1px 1px 5px white inset, 0px 0px 10px black;
 }
 
 .taskRow{		
