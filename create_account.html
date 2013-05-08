@@ -8,6 +8,7 @@
 
 <!-- Load style sheets -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<link rel="stylesheet" type="text/css" href="corkboard_theme.css" />
 <link rel="stylesheet" type="text/css" href="create_account.css" />
 
 <!-- Load any supplemental Javascript libraries here: jQuery UI -->
@@ -67,9 +68,11 @@
 </head>
 
 <body>
-    <div id="accountCreateWindow">
+    <div id="outer">
     
 <form class="form-signin">
+<img class="pin_left" src="assets/pushpin.png">
+<br>
 <h2 class="form-signin-heading">New Family</h2>
 <input id="familyName" class="input-block-level" type="text" placeholder="Family Name">
 <input id="email" class="input-block-level" type="email" placeholder="Email address">
