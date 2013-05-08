@@ -73,6 +73,7 @@
 		showPopup();
 	}	
 
+
 	var beforeEditHTML = "";
 	var editModeOn = false;
 	function updateTaskList(task){
@@ -88,7 +89,6 @@
 		taskDue.attr("id", "d" + task.id);	
 		taskDue.html("Due: " + task.duedate);
 		attachLabelListener(label);
-
 		var button = taskDiv.find(".taskButton");
 		console.log(button);
 		$(button).click( taskClick);
@@ -219,7 +219,6 @@
 				var taskInput = form.find('[name="taskname"]');
 				var taskTxt = taskInput.val();
 				var taskDue = form.find('[name="due"]').val();
-
 				if (taskTxt.trim().length == 0) {
 					taskInput.addClass('error');
 					return;
@@ -231,6 +230,7 @@
 				
 				task.duedate = taskDue;
 				tasks[id.toString()] = task;
+
 				updateTaskList(task);
 				taskInput.val('');
 				++id;
@@ -269,6 +269,35 @@
 				//	configuration goes here
 				ellipsis: '... '
 			}); */
+
+
+
+
+
+
+
+
+
+
+	//task management
+
+	function getAndRenderTasks() {
+		//for each task, render new
+	}
+
+	function editTask(task) {
+
+	}
+
+	function addNewTask(task) {
+
+	}
+
+	function renderNewTask(task) {
+
+	}
+
+
 	    });
 	})(jQuery);
 	</script>
