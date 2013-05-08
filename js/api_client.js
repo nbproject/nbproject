@@ -73,7 +73,12 @@ function ApiClient() {
 	};
 
 	this.modifyMember = function(member, callback){
-
+		console.log("Client:--modifyMember--");
+		console.log(member);
+		var endpoint = this.url + "/member/modify/" + member._id;	
+		$.post(endpoint, member, function(data){
+			callback(data);
+		});
 	};
 
 	//Task functions
