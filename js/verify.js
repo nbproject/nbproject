@@ -1,10 +1,11 @@
+function logout() {
+	$.removeCookie("family");
+}
+
 function getFamilyObject() {
 	return JSON.parse($.cookie("family"));
 }
 
-function logout() {
-	$.removeCookie("family");
-}
 
 function verifyLogin() {
 	if ($.cookie("family")) {
@@ -14,6 +15,4 @@ function verifyLogin() {
 	}
 }
 
-$(document).ready(){
-	verifyLogin();
-}
+verifyLogin();
