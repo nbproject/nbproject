@@ -2,9 +2,6 @@
 <html>
 <head>
 
-
-
-
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
 	<link rel="stylesheet" type="text/css" href="edit_family.css" />
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
@@ -32,11 +29,32 @@
 	    
 	    var newMemberVisible = false;
 	    
+
+	    function newMemberCallback(data) {
+			if(data.error == null){
+				console.log("posted member");
+				console.log(data);
+				var id = data._id;
+				console.log(id);
+				client.getMember(id, function(data){
+					console.log("retrieved member");
+					console.log(data);
+				});
+
+			}else{
+				console.log(data.error);
+			}
+	    }
+
 	    function addMember() {
-	    	// Create and add new member
-	    	
-	    	// Remove the new member row
-	    	newMemberVisible = false;
+			console.log("--submit Member--");
+			var name =  "joffrey3";
+			var pictureURL =  "";
+			//THIS IS A FAKE MEMBER. Functions screw up the post
+			var member = {'name': name, 'pictureURL':pictureURL};
+
+			client.createMember(member, newMemberCallback);
+				
 	    }
 	    
 	    function populatePage(family) {

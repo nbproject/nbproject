@@ -2,14 +2,17 @@ function logout() {
     $.removeCookie("family");
 }
 
+if ($.cookie("family")) {
+    window.location = "index.html";
+} 
+
 $(document).ready(function() {
-    
+        
+        
     	hideError();
         var client = new ApiClient();
         //console.log(client);
     	// Sign In Button
-
-        
 
     	$("#submitButton").click(function() {
             console.log("--login--");
@@ -17,8 +20,6 @@ $(document).ready(function() {
     		var pass = $("#password").val();
     		var rememberMe = $("#rememberMe").is(":checked");        
             client.login(email, pass, handleLogin);
-                  
-    		
     	});
     
     	// Register Button

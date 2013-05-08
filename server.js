@@ -103,6 +103,40 @@ app.get('/family/:id', function(req, resp){
 	});
 });
 
+app.post('/family/modify/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--modifyFamily--: " + id);
+	//for safety, remove the id
+	var data = req.body;
+	delete data._id;
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('families', function(er, collection){
+			collection.update({'_id':new BSON.ObjectID(id)}, data, function(er, rs){
+				console.log(er);
+				db.close();
+				resp.send(rs);
+			});
+		});
+	});
+});
+
+app.post('/family/delete/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--delete family--: " + id);
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('families', function(er, collection){
+			collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(er, rs){
+				if (err) {
+					resp.send({'error':'An error has occurred - ' + err});
+				} else {
+					console.log('' + rs + ' document(s) deleted');
+					resp.send({'success': true});
+				}
+			});
+		});
+	});
+});
+
 /*
 ------------ Members --------------
 */

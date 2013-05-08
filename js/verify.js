@@ -1,5 +1,6 @@
 function logout() {
 	$.removeCookie("family");
+	window.location = "login.html";
 }
 
 function getFamilyObject() {
@@ -17,3 +18,4 @@ function verifyLogin() {
 
 verifyLogin();
 var client = new ApiClient();
+client.familyId = getFamilyObject()._id;
