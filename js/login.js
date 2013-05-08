@@ -1,3 +1,7 @@
+function logout() {
+    $.removeCookie("family");
+}
+
 $(document).ready(function() {
     
     	hideError();
@@ -12,7 +16,7 @@ $(document).ready(function() {
                     console.log(data);
                     var string = JSON.stringify(data);
                     $.cookie("family", string, { expires: 7 });
-
+                    window.location = "index.html";
                 }
             }
 
