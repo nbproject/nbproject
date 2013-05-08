@@ -4,7 +4,7 @@ $(document).ready(function() {
     var family = getFamilyObject();
 
     $("#fam").text(family.name);
-    
+
     var familyNames = new Array();
     var deleteUserHTML = "";
     var targetParent;
@@ -32,10 +32,10 @@ $(document).ready(function() {
                 window.location = 'member_history.html?member=' + evt.target.id.slice(3);
             });
 
-            $("#delete"+name).click(function() {
+            $("#delete"+name).click(function(e) {
+                e.stopPropagation();
                 var name = $(this).attr("id").substr(6);
                 var proceed = confirm("Are you sure you want to delete " + name + "?");
-
                 if (proceed) {
                     $("#row"+name).remove();
                     var memberToDelete;
@@ -47,6 +47,7 @@ $(document).ready(function() {
                                 console.log("fuck");
                                 memberToDelete = thismember;
                                 client.deleteMember(memberToDelete, function(){});
+
                                 return;
                             }
                         }
@@ -69,9 +70,7 @@ $(document).ready(function() {
     	window.location = 'index.html';
     });
     
-    $('#manageFamily').click(function(evt) {
-        window.location = 'manage_family.html';
-    });
+   
 
     $('#boxTodo').click(function(evt) {
     	window.location = 'index.html';
@@ -101,6 +100,7 @@ $(document).ready(function() {
             $(familyTable).append(userTableInfo);
 
             $("#delete"+name).click(function() {
+                e.stopPropagation();
                 var name = $(this).attr("id").substr(6);
                 console.log(name);
                 var proceed = confirm("Are you sure you want to delete " + name + "?");
@@ -134,7 +134,8 @@ $(document).ready(function() {
     }
 
     var errorAddMember = false;
-    function addMember() {
+    function addMember(e) {
+        //e.stopPropagation();
         console.log("--submit Member--");
         var name =  $("#newName").val();
         var pictureURL =  "";
@@ -154,7 +155,8 @@ $(document).ready(function() {
         
     }
         
-    $("#addMember").click(function() {
+    $("#addMember").click(function(e) {
+        e.stopPropagation();
         if (!newMemberVisible) {        
             $("#familyMemberList").prepend('<tr><td class="left"><img id="newPic" src="assets/unknown_person.jpg" /></td> <td class="middle"><input id="newName" type="text"></td> <td class="right"><button id="newAddButton" class="btn btn-success btn-mini">Add</btn></td></tr>');
             newMemberVisible = true;        
