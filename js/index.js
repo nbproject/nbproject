@@ -4,6 +4,8 @@ function dum(data) {
 
 $(document).ready(function(){
 	var family = getFamilyObject();
+
+    $("#fam").text(family.name);
 	client.getFamilyInfo(family._id, function(data){
 		var datatasks = data.tasks;
 		for (var i = 0; i < datatasks.length; i++) {
