@@ -21,12 +21,35 @@ $(document).ready(function() {
             }
             var userInfo = '<li><div class="profile" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             
-            var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn></td></tr>'
+            var userTableInfo = '<tr id="row'+name+'"><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn></td></tr>'
             //var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             $(userInfo).appendTo(familyList);
             $(familyTable).append(userTableInfo);
             $('.profile').click(function(evt) {
                 window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+            });
+
+            $("#delete"+name).click(function() {
+                var name = $(this).attr("id").substr(6);
+                var proceed = confirm("Are you sure you want to delete " + name + "?");
+
+                if (proceed) {
+                    $("#row"+name).remove();
+                    var memberToDelete;
+                    client.getFamilyInfo(family._id, function(data){
+                        for (var i = 0; i < datamembers.length; i++) {
+                            var thismember = datamembers[i];
+                            var thisname = thismember.name;
+                            if (name === thisname) {
+                                console.log("fuck");
+                                memberToDelete = thismember;
+                                client.deleteMember(memberToDelete, function(){});
+                                return;
+                            }
+                        }
+                    });
+                }
+
             });
 
 
@@ -71,8 +94,33 @@ $(document).ready(function() {
                 pic = "/assets/unknown_person.jpg";
             }
             var familyTable = $("#familyTable");
-            var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td class="right"><button class="btn btn-danger btn-mini">Delete</btn></td></tr>'
+            var userTableInfo = '<tr id="row'+name+'"><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td id=class="right"><button id="delete' + name + '" class="btn btn-danger btn-mini">Delete</btn></td></tr>'
             $(familyTable).append(userTableInfo);
+
+            $("#delete"+name).click(function() {
+                var name = $(this).attr("id").substr(6);
+                console.log(name);
+                var proceed = confirm("Are you sure you want to delete " + name + "?");
+
+                if (proceed) {
+                    $("#row"+name).remove();
+                    var memberToDelete;
+                    client.getFamilyInfo(family._id, function(data){
+                        var datamembers = data.members;
+                        for (var i = 0; i < datamembers.length; i++) {
+                            var thismember = datamembers[i];
+                            var thisname = thismember.name;
+                            console.log(name);
+                            if (name === thisname) {
+                                memberToDelete = thismember;
+                                client.deleteMember(memberToDelete, function(){});
+                                return;
+                            }
+                        }
+                    });
+                }
+
+            });
             newMemberVisible = false;
             if (errorAddMember) {
                 errorAddMember = false;
