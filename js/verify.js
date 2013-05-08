@@ -17,3 +17,4 @@ function verifyLogin() {
 
 verifyLogin();
 var client = new ApiClient();
+client.familyId = getFamilyObject()._id;
