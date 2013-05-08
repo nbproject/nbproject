@@ -47,7 +47,6 @@ $(document).ready(function() {
     
     $("#fam").text(family.name);
 
-
     client.getFamilyInfo(family._id, function(data){
         var datamembers = data.members;
         var familyList = $("#family");
@@ -64,13 +63,15 @@ $(document).ready(function() {
             }
 
 
-            var userInfo = '<li><div class="profile" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
+            var userInfo = '<li><div class="profile '+name+'" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '" class="'+name +'"><h3>' + name + '</h3></div></li>'
             
             //var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             $(userInfo).appendTo(familyList);
             $('.profile').click(function(evt) {
                 window.location = 'member_history.html?member=' + evt.target.id.slice(3);
             });
+
+            $("div."+member_name).addClass('active');
         };
 
         var memberTasks = new Array();
