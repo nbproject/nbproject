@@ -169,9 +169,8 @@ ul#family li {
 
 
 #tabs li {
-	padding: 4px;
-	background: #C9E9FF;
 	cursor: pointer;
+	vertical-align: bottom;
 }
 
 #navigation div {
@@ -256,8 +255,7 @@ img.pin_left {
 	left: 1;
 }
 
-
-#tasklist h2 {
+h2 {
 	display: inline;
 	font-size: 1.5em;
 }
