@@ -1,3 +1,15 @@
+function handleLogin(data) {
+                if (!data) {
+                    console.log("login failed");
+                } else {
+                    console.log(data);
+                    var string = JSON.stringify(data);
+                    $.cookie("family", string, { expires: 7 });
+                    window.location = "index.html";
+                }
+            }
+
+
 function ApiClient() {
 
 	this.url = "";
@@ -73,8 +85,22 @@ function ApiClient() {
 	};
 
 	this.modifyMember = function(member, callback){
-
+		console.log("Client:--modifyMember--");
+		console.log(member);
+		var endpoint = this.url + "/member/modify/" + member._id;	
+		$.post(endpoint, member, function(data){
+			callback(data);
+		});
 	};
+
+	this.deleteMember = function(member, callback){
+		console.log("Client:--deleteMember--");
+		console.log(member);
+		var endpoint = this.url + "/member/delete/" + member._id;	
+		$.post(endpoint, function(data){
+			callback(data);
+		});
+	}
 
 	//Task functions
 	this.createTask = function(task, callback){
@@ -102,7 +128,21 @@ function ApiClient() {
 	};
 
 	this.modifyTask = function(task, callback){
+		console.log("Client:--modifyTask--");
+		console.log(task);
+		var endpoint = this.url + "/task/modify/" + task._id;	
+		$.post(endpoint, task, function(data){
+			callback(data);
+		});
+	};
 
+	this.deleteTask = function(task, callback){
+		console.log("Client:--deleteTask--");
+		console.log(task);
+		var endpoint = this.url + "/task/delete/" + task._id;	
+		$.post(endpoint, function(data){
+			callback(data);
+		});
 	};
 
 }

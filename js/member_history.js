@@ -23,8 +23,8 @@ $(document).ready(function() {
     }  
     
     $("#header").text("Today " + member.name + "...");
-    var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
-    $("#containsImage").html(imgHTML);
+    //var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
+    //$("#containsImage").html(imgHTML);
     $("#hideme").hide();
     
     // Color Tabs
@@ -39,6 +39,10 @@ $(document).ready(function() {
     	window.location = 'index.html';
     });
     
+     $('#manageFamily').click(function(evt) {
+        window.location = 'manage_family.html';
+    });
+
     $('#titleButton').click(function(evt) {
     	window.location = 'index.html';
     });

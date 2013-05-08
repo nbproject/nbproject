@@ -63,15 +63,12 @@ app.get('/familyinfo/:id', function(req, resp){
 				db.collection('tasks', function(er, taskCollection){
 					taskCollection.find({'familyId':famid}).toArray(function(err, taskItems) {
 						returnObj["tasks"] = taskItems;
-						resp.send(returnObj);
-					});
-				});
-
-				//--Get Members
-				db.collection('members', function(er, taskCollection){
-					taskCollection.find({'familyId':famid}).toArray(function(err, taskItems) {
-						returnObj["members"] = taskItems;
-						resp.send(returnObj);
+						db.collection('members', function(er, taskCollection){
+							taskCollection.find({'familyId':famid}).toArray(function(err, taskItems) {
+								returnObj["members"] = taskItems;
+								resp.send(returnObj);
+							});
+						});
 					});
 				});
 			});
@@ -121,9 +118,47 @@ app.post('/member/make', function(req, resp){
 	});
 });
 
+app.post('/member/modify/:id', function(req, resp){
+
+	var id = req.params.id;
+	console.log("--modifyMember--: " + id);
+	//for safety, remove the id
+	var data = req.body;
+	delete data._id;
+
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('members', function(er, collection){
+			collection.update({'_id':new BSON.ObjectID(id)}, data, function(er, rs){
+				console.log(er);
+				db.close();
+				resp.send(rs);
+			});
+		});
+	});
+});
+
+app.post('/member/delete/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--delete member--: " + id);
+
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('members', function(er, collection){
+			collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(er, rs){
+				if (err) {
+					resp.send({'error':'An error has occurred - ' + err});
+				} else {
+					console.log('' + rs + ' document(s) deleted');
+					resp.send({'success': true});
+				}
+			});
+		});
+	});
+});
+
 app.get('/member/:id', function(req, resp){
 	var id = req.params.id;
 	console.log("--getMember--:" + id);
+
 	Db.connect(mongoUri+"?safe=true",  function(err, db){
 		db.collection('members', function(er, collection){
 			console.log("memberId: " + id);
@@ -135,7 +170,6 @@ app.get('/member/:id', function(req, resp){
 		});
 	});
 });
-
 
 /*
 ------------ Tasks ----------------
@@ -167,9 +201,42 @@ app.get('/task/:id', function(req, resp){
 	});
 });
 
+app.post('/task/modify/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--modifyTask--: " + id);
+	//for safety, remove the id
+	var data = req.body;
+	delete data._id;
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('tasks', function(er, collection){
+			collection.update({'_id':new BSON.ObjectID(id)}, data, function(er, rs){
+				console.log(er);
+				db.close();
+				resp.send(rs);
+			});
+		});
+	});
+});
+
+app.post('/task/delete/:id', function(req, resp){
+	var id = req.params.id;
+	console.log("--delete task--: " + id);
+
+	Db.connect(mongoUri+"?safe=true",  function(err, db){
+		db.collection('tasks', function(er, collection){
+			collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(er, rs){
+				if (err) {
+					resp.send({'error':'An error has occurred - ' + err});
+				} else {
+					console.log('' + rs + ' document(s) deleted');
+					resp.send({'success': true});
+				}
+			});
+		});
+	});
+});
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
 	console.log("Listening on " + port);
-
 });

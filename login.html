@@ -13,43 +13,13 @@
 <!-- Load any supplemental Javascript libraries here: jQuery UI -->
 <script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 <script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static_js/family.js"></script>
 <script type="text/javascript" src="static_js/task.js"></script>
 <script type="text/javascript" src="static_js/member.js"></script>
-
-<script type="text/javascript">
-
-    // This allows the Javascript code inside this block to only run when the page
-    // has finished loading in the browser.
-    $(document).ready(function() {
-    
-    	hideError();
-    
-    	// Sign In Button
-    	$("#submitButton").click(function() {
-    		var email = $("#email").val();
-    		var password = $("#password").val();
-    		var rememberMe = $("#rememberMe").is(":checked");
-    		
-    		
-    	});
-    
-    	// Register Button
-    	$("#registerButton").click(function() {
-    		window.location = 'create_account.html';
-    	});
-    	
-    	function showError(message) {
-    		$("#errorText").text(message);
-    		$("#errorText").show();
-    	}
-    	
-    	function hideError() {
-    		$("#errorText").hide();
-    	}
-    	
-    });
-</script>
+<script type="text/javascript" src="js/api_client.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
 
 
 </head>
