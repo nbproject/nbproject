@@ -285,3 +285,7 @@ div#item_entry {
 	height:50px;
 	width:50px;
 }
+
+#error {
+	color:red;
+}
