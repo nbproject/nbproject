@@ -1,13 +1,13 @@
 function handleLogin(data) {
-                if (!data) {
-                    console.log("login failed");
-                } else {
-                    console.log(data);
-                    var string = JSON.stringify(data);
-                    $.cookie("family", string, { expires: 7 });
-                    window.location = "index.html";
-                }
-            }
+	if (!data) {
+		console.log("login failed");
+	} else {
+		console.log(data);
+		var string = JSON.stringify(data);
+		$.cookie("family", string, { expires: 7 });
+		window.location = "index.html";
+	}
+}
 
 
 function ApiClient() {
@@ -43,12 +43,12 @@ function ApiClient() {
 		$.get(endpoint, function(data){
 			callback(data);
 		});
-	}
+	};
 
 	this.getFamilyInfo = function(id, callback){
 		console.log("Client:--getFamilyInfo--");
 		var endpoint = this.url + "/familyinfo/" + id;
-		$.get(endpoint, function(data){			
+		$.get(endpoint, function(data){
 			callback(data);
 		});
 	};
@@ -61,8 +61,22 @@ function ApiClient() {
 		});
 	};
 
-	this.modifyFamily = function(account, callback){
+	this.modifyFamily = function(family, callback){
+		console.log("Client:--modifyFamily--");
+		console.log(family);
+		var endpoint = this.url + "/family/modify/" + family._id;
+		$.post(endpoint, family, function(data){
+			callback(data);
+		});
+	};
 
+	this.deleteFamily = function(family, callback){
+		console.log("Client:--deleteFamily--");
+		console.log(family);
+		var endpoint = this.url + "/family/delete/" + family._id;
+		$.post(endpoint, function(data){
+			callback(data);
+		});
 	};
 
 	//Member functions
@@ -81,13 +95,17 @@ function ApiClient() {
 	};
 
 	this.getMember = function(id, callback){
-
+		console.log("Client:--getMember--");
+		var endpoint = this.url + "/member/" + id;
+		$.get(endpoint, function(data){
+			callback(data);
+		});
 	};
 
 	this.modifyMember = function(member, callback){
 		console.log("Client:--modifyMember--");
 		console.log(member);
-		var endpoint = this.url + "/member/modify/" + member._id;	
+		var endpoint = this.url + "/member/modify/" + member._id;
 		$.post(endpoint, member, function(data){
 			callback(data);
 		});
@@ -96,11 +114,11 @@ function ApiClient() {
 	this.deleteMember = function(member, callback){
 		console.log("Client:--deleteMember--");
 		console.log(member);
-		var endpoint = this.url + "/member/delete/" + member._id;	
+		var endpoint = this.url + "/member/delete/" + member._id;
 		$.post(endpoint, function(data){
 			callback(data);
 		});
-	}
+	};
 
 	//Task functions
 	this.createTask = function(task, callback){
@@ -112,7 +130,7 @@ function ApiClient() {
 		}
 
 		task.familyId = this.familyId;
-		$.post(endpoint, task, function(data){		
+		$.post(endpoint, task, function(data){
 			callback(data);
 		});
 	};
@@ -121,10 +139,9 @@ function ApiClient() {
 		console.log("Client:--getTask--");
 		var endpoint = this.url + "/task/" + id;
 
-
-		$.get(endpoint, function(data){		
+		$.get(endpoint, function(data){
 			callback(data);
-		});	
+		});
 	};
 
 	this.modifyTask = function(task, callback){
