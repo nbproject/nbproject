@@ -29,24 +29,20 @@
 		
 	}
 
-	#family_template{
+	#item_template{
 		display: none;
 	}
 
-	.famColumn{
+	.dataColumn{
 		padding:10px;
 	}
 
-	.familyItem{
-		border:1px solid #CCC;
-		margin:5px;
-		padding:2px;
-		cursor:pointer;
+	.itemContainer{
+		height:200px;
+		overflow: scroll;
 	}
-	.familyItem:hover{
-		background-color:#00F;
-		color:#FFF;
-	}
+
+
 
 	</style>
 
@@ -72,20 +68,23 @@
 				//turn the json into family objects
 				var obj = data[i];
 				$.extend(obj, Family.prototype);
-				families.push(obj);
-				drawFamily(obj);
+				families.push(obj);	
+				//Draw the family list item			
+				var item = getListItem(obj.name, function(){
+					showFamily(obj);
+				});
+				$('#famContainer').append(item);
+
 			};			
 		});
 	}
 
-	function drawFamily(family){
-		var template = $('#family_template').clone();
+	function getListItem(name, activate){
+		var template = $('#item_template').clone();
 		template.removeAttr('id');
-		template.find('a').html(family.name);
-		$('#famContainer').append(template);
-		template.click(function(){
-			showFamily(family);
-		});
+		template.find('a').html(name);
+		template.click(activate);
+		return template;
 	}
 
 	function showFamily(family){
@@ -96,8 +95,73 @@
 			console.log(data);
 			var jstring = JSON.stringify(data, null, 2);	
 			$('#famJson').html(jstring);
+
+			//draw the members	
+			$('#membContainer').html('');
+			var members = data.members;
+			for (var i = 0; i < members.length; i++) {
+				var m = members[i];
+				var item = getListItem(m.name, function(){
+					editMember(m);
+				});
+				$('#membContainer').append(item);
+			};			
+
+			//draw tasks
+			$('#taskContainer').html('');
+			var tasks = data.tasks;
+			for (var i = 0; i < tasks.length; i++) {
+				var task = tasks[i];
+				var item = getListItem(task.name, function(){
+					editTask(task);
+				});
+				$('#taskContainer').append(item);
+			};		
+
 		});
 	}
+
+	function editMember(obj){
+		console.log("--editMember---");
+		var form = $("#memb_form").clone();
+		form.attr("id", "#memb_edit");
+		$("#editContainer").html('');
+		form.find("legend").html('Edit Member');
+		var member = obj;
+
+		$("#editContainer").append(form);
+
+		//populate the form
+		form.find('.memb_name').val(member.name);
+		form.find('.memb_picture').val(member.pictureURL);
+		
+
+		form.submit(function(){
+			console.log("--edit member--: " + member.name);
+			console.log(member);
+			member.name = form.find('.memb_name').val();
+			member.pictureURL = form.find('.memb_picture').val();
+			console.log(member);
+
+			client.modifyMember(member, function(data){
+				if(data.error == null){
+					console.log("edited member");
+					console.log(data);
+					var id = data._id;
+					client.getMember(id, function(data){
+						console.log("retrieved member");
+						console.log(data);
+					});
+
+				}else{
+					console.log(data.error);
+				}
+			});
+
+		});
+	}
+
+
 
 	$(function(){
 		client = new ApiClient();
@@ -175,14 +239,15 @@
 
 		$('#memb_form').submit(function(){
 			console.log("--submit Member--");
-			var name =  $('#memb_name').val();
-			var pictureURL =  $('#memb_picture').val();
+			var name =  $('#memb_form .memb_name').val();
+			var pictureURL =  $('#memb_form .memb_picture').val();
 			//THIS IS A FAKE MEMBER. Functions screw up the post
-			var member = {'name': name, 'pictureUrl':pictureURL};
+			var member = {'name': name, 'pictureURL':pictureURL};
 
 			client.createMember(member, function(data){
 				if(data.error == null){
 					console.log("posted member");
+					console.log(data);
 					var id = data._id;
 					client.getMember(id, function(data){
 						console.log("retrieved member");
@@ -216,12 +281,12 @@
 		$('#task_finish').val('06/06/13');
 
 		//fake member
-		$('#memb_name').val('Joffrey');
-		$('#memb_picture').val('http://awoiaf.westeros.org/images/thumb/0/07/Joffrey_Baratheon.PNG/300px-Joffrey_Baratheon.PNG');
+		$('#memb_form .memb_name').val('Joffrey');
+		$('#memb_form .memb_picture').val('http://awoiaf.westeros.org/images/thumb/0/07/Joffrey_Baratheon.PNG/300px-Joffrey_Baratheon.PNG');
 
 		loadFamilies();
 		//Automatically logs you in
-		$('#login_form').submit();
+		//$('#login_form').submit();
 	});
 
 </script>
@@ -265,8 +330,8 @@
 				<form class="form-signin rounded" id="memb_form">	
 					<fieldset>
 						<legend>Create Member</legend><br>
-						<input id="memb_name" type="text" placeholder="Member Name"><br>
-						<input id="memb_picture" type="text" placeholder="Picture Url"><br>
+						<input class="memb_name" type="text" placeholder="Member Name"><br>
+						<input class="memb_picture" type="text" placeholder="Picture Url"><br>
 						<button id="memb_submit" type="submit" class="btn btn-primary">Submit</button>
 					</fieldset>
 				</form>	
@@ -283,20 +348,38 @@
 			</div>
 			<div class="span7">
 				<div class="row">
-					<div class="span2 rounded famColumn">
-						<h3>Families:</h3>
-						<ul id="famContainer" class="nav nav-tabs nav-stacked">
-						</ul>	
-						<li id="family_template" class="fam_name"><a href="#"></a></li>			
+					<div class="span2 rounded dataColumn">
+						<h4>Families:</h4>
+						<div class="itemContainer">
+							<ul id="famContainer" class="nav nav-tabs nav-stacked">
+
+							</ul>
+						</div>
 					</div>
+					<div class="span2 rounded dataColumn">
+						<h4>Members:</h4>
+						<div class="itemContainer">
+							<ul id="membContainer" class="nav nav-tabs nav-stacked">
+							</ul>
+						</div>								
+					</div>
+					<div class="span2 rounded dataColumn">
+						<h4>Tasks:</h4>
+						<div class="itemContainer">
+							<ul id="taskContainer" class="nav nav-tabs nav-stacked">
+							</ul>
+						</div>							
+					</div>
+					<li id="item_template" class="fam_name"><a href="#"></a></li>
+				</div>
+				<div class="row" id="editContainer">
+
 				</div>
 				<div class="row">
-					<div class="span5 rounded famColumn">
-						<h3>Data:</h3>
-						<div class="well"> 
-							<pre id="famJson">
-							</pre>
-						</div>
+					<div class="span7 rounded">
+						<h4>Family Data:</h4>
+						<pre id="famJson">
+						</pre>
 					</div>
 				</div>
 			</div>
