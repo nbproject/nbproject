@@ -49,6 +49,9 @@ $(document).ready(function(){
     		console.log(pic);
 
     		currently_selected = evt.target.id;
+            $('.selectionPic').removeClass('selected');
+            $(evt.target).addClass('selected');
+            console.log(currently_selected);
     		if (!currently_selected)
     			return;
     		document.getElementById("selectedName").innerHTML = currently_selected;
@@ -67,22 +70,7 @@ $(document).ready(function(){
     		hidePopup();
     	});
     	
-    	// Claim Button
-		$('#btnClaim').click(function(evt) {
-    		task.status = 'claimed';
-    		task.assignedTo = currently_selected;
-    		var imgurl = pic;
-    		taskClaimed(task.id, imgurl);
-    	});
-    	
-    	// Complete Button
-		$('#btnComplete').click(function(evt) {
-    		task.status = 'completed';
-    		task.assignedTo = currently_selected;
-    		task.finished = currently_selected;
-    		var imgurl = pic;
-    		taskCompleted(task.id, imgurl);
-    	});
+
 
 		};
 

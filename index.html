@@ -74,6 +74,7 @@
 			return;
 		}
 		var id = $(this).parents('.taskRow').attr('id');
+		console.log('taskClick thinks id=' + id);
 		task = tasks[id];
 		showPopup();
 	}	
@@ -170,6 +171,29 @@
 			$('.profile').click(function(evt) {
     			//window.location = 'member_history.html?member=' + evt.target.id.slice(3);
     		});
+
+    		// Claim Button
+		$('#btnClaim').click(function(evt) {
+			var currently_selected = $('.selectionPic.selected').id;
+			var pic = $('.selectionPic.selected').attr('src');
+            console.log('btnClaim thinks id=' + task.id);
+    		task.status = 'claimed';
+    		task.assignedTo = currently_selected;
+    		var imgurl = pic;
+    		taskClaimed(task.id, imgurl);
+    	});
+    	
+    	// Complete Button
+		$('#btnComplete').click(function(evt) {
+			var currently_selected = $('.selectionPic.selected').id;
+			var pic = $('.selectionPic.selected').attr('src');
+            console.log('btnComplete thinks id=' + task.id);
+    		task.status = 'completed';
+    		task.assignedTo = currently_selected;
+    		task.finished = currently_selected;
+    		var imgurl = pic;
+    		taskCompleted(task.id, imgurl);
+    	});
     		
     		
     		
