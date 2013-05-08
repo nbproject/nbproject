@@ -26,7 +26,11 @@ $(document).ready(function() {
             var name = member.name;
 
             var pic = member.pictureURL;
-            console.log(pic);
+            if (pic === "") {
+                pic = "/assets/unknown_person.jpg";
+            }
+
+
             var userInfo = '<li><div class="profile" id="box' + name + '"><img src="'+ pic + '" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
             
             //var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
