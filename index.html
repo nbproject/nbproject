@@ -5,6 +5,9 @@
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/api_client.js"></script>
+	<script type="text/javascript" src="js/verify.js"></script>
 	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
 	<link rel="stylesheet" type="text/css" href="task_list.css"/>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
@@ -69,6 +72,7 @@
 		showPopup();
 	}	
 
+
 	var beforeEditHTML = "";
 	var editModeOn = false;
 	function updateTaskList(task){
@@ -84,7 +88,6 @@
 		taskDue.attr("id", "d" + task.id);	
 		taskDue.html("Due: " + task.duedate);
 		attachLabelListener(label);
-
 		var button = taskDiv.find(".taskButton");
 		console.log(button);
 		$(button).click( taskClick);
@@ -210,7 +213,6 @@
 				var taskInput = form.find('[name="taskname"]');
 				var taskTxt = taskInput.val();
 				var taskDue = form.find('[name="due"]').val();
-
 				if (taskTxt.trim().length == 0) {
 					taskInput.addClass('error');
 					return;
@@ -222,12 +224,13 @@
 				
 				task.duedate = taskDue;
 				tasks[id.toString()] = task;
+
 				updateTaskList(task);
 				taskInput.val('');
 				++id;
 			});
 			
-			$('.profile').click(function(evt) {
+			$('.member-btn').click(function(evt) {
     			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
     		});
     		
@@ -255,6 +258,35 @@
 				//	configuration goes here
 				ellipsis: '... '
 			}); */
+
+
+
+
+
+
+
+
+
+
+	//task management
+
+	function getAndRenderTasks() {
+		//for each task, render new
+	}
+
+	function editTask(task) {
+
+	}
+
+	function addNewTask(task) {
+
+	}
+
+	function renderNewTask(task) {
+
+	}
+
+
 	    });
 	})(jQuery);
 	</script>
@@ -270,8 +302,8 @@
 				<li class="dropdown">
 				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-				    <li>Edit Family</lI>
-				    	<li>Log Out</li>
+				    <li><a href="manage_family.html">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
 				  </ul>
 				</li>
 			</ul>
@@ -282,17 +314,16 @@
 			<div class="tabs_container">
 				<ul id="tabs">
 					<li><div class="profile active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
-					<li id="manageFamily">Manage</li>
 				</ul>
 			</div>
 
 			<div class="family_container">
 				<ul id="family">
-					<li><div class="profile" id="boxCersei"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
-					<li><div class="profile" id="boxRobert"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
-					<li><div class="profile" id="boxJoffrey"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
-					<li><div class="profile" id="boxMyrcella"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
-					<li><div class="profile" id="boxTommen"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
+					<li><div class="profile member-btn" id="boxCersei"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
+					<li><div class="profile member-btn" id="boxRobert"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
+					<li><div class="profile member-btn" id="boxJoffrey"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
+					<li><div class="profile member-btn" id="boxMyrcella"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
+					<li><div class="profile member-btn" id="boxTommen"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
 				</ul>
 			</div>
 		</div>
@@ -320,9 +351,8 @@
 					<div class="taskRowInner">
 						<div class="taskComplete"></div>
 						<p class="taskLabel"></p>
-						<div class="taskDue"></div>
-						<button class="taskButton">Claim</button>
-					</div>
+						<div class="taskDue"></div>					</div>
+					<button class="taskButton">Claim</button>
 				</div>
 			</div>		
 		</div>
