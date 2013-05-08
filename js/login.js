@@ -14,8 +14,6 @@ $(document).ready(function() {
         //console.log(client);
     	// Sign In Button
 
-        
-
     	$("#submitButton").click(function() {
             console.log("--login--");
     		var email = $("#email").val();
