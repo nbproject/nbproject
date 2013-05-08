@@ -17,6 +17,13 @@ $.extend({
 
 
 function doIOwnThis(id, task) {
+
+    console.log("whoownsthis");
+    console.log(task);
+    console.log(id);
+
+    console.log(task.finished);
+    console.log(task.assignedTo);
     if (task.finished != "") {
         if (task.finished === id) {
             return true;
@@ -79,7 +86,9 @@ $(document).ready(function() {
         for (var i = 0; i < datatasks.length; i++) {
             var curDataTask = datatasks[i];
             console.log(doIOwnThis( profile_member._id, curDataTask));
+
             if (doIOwnThis(profile_member._id, curDataTask)) {
+
                 memberTasks.push(curDataTask);
             }
         };  
