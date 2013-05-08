@@ -68,6 +68,7 @@ $(document).ready(function() {
             var familyTable = $("#familyTable");
             var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td class="right"><button class="btn btn-danger btn-mini">Delete</btn></td></tr>'
             $(familyTable).append(userTableInfo);
+            newMemberVisible = false;
 
         }else{
             console.log(data.error);
