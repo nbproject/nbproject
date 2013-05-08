@@ -44,6 +44,8 @@
 
 
 
+
+
 	</style>
 
 	<link href="css/bootstrap.min.css" rel="stylesheet">
@@ -121,12 +123,71 @@
 		});
 	}
 
+	function editTask(obj){
+		console.log("--editTask---");
+		var form = $("#task_form").clone();
+		form.attr("id", "#task_edit");
+		$("#editContainer").html('');
+		form.find("legend").html('Edit Task');
+		form.find('.btn-danger').show();	
+		var task = obj;
+
+		$("#editContainer").append(form);
+		console.log(task);
+		form.find('#task_name').val(task.name);
+		form.find('#task_status').val(task.status);
+		form.find('#task_assigned').val(task.assignedTo);
+		form.find('#task_finished').val(task.finished);
+		form.find('#task_due').val(task.duedate);
+		form.find('#task_completion').val(task.finishdate);
+
+		form.find('.btn-danger').click(function(){
+			console.log("--delete task--");
+			client.deleteTask(task, function(data
+				){
+				console.log("deletion result:");
+				console.log(data);
+			});
+			return false;
+		});
+
+
+		form.submit(function(){
+			console.log("--edit task--: " + task.name);
+			console.log(task);
+			task.name =  form.find('#task_name').val();
+			task.status = form.find('#task_status').val();
+			task.assignedTo = form.find('#task_assigned').val();
+			task.finished =  form.find('#task_finished').val();
+			task.duedate = form.find('#task_due').val();
+			task.finishdate =  form.find('#task_completion').val();
+			console.log(task);
+
+			client.modifyTask(task, function(data){
+				if(data.error == null){
+					console.log("edited task");
+					console.log(data);
+					var id = data._id;
+					client.getTask(id, function(data){
+						console.log("retrieved task");
+						console.log(data);
+					});
+
+				}else{
+					console.log(data.error);
+				}
+			});
+
+		});
+	}
+
 	function editMember(obj){
 		console.log("--editMember---");
 		var form = $("#memb_form").clone();
 		form.attr("id", "#memb_edit");
 		$("#editContainer").html('');
 		form.find("legend").html('Edit Member');
+		form.find('.btn-danger').show();
 		var member = obj;
 
 		$("#editContainer").append(form);
@@ -134,7 +195,16 @@
 		//populate the form
 		form.find('.memb_name').val(member.name);
 		form.find('.memb_picture').val(member.pictureURL);
-		
+
+		form.find('.btn-danger').click(function(){
+			console.log("--delete member--");
+			client.deleteMember(member, function(data
+				){
+				console.log("deletion result:");
+				console.log(data);
+			});
+			return false;
+		});
 
 		form.submit(function(){
 			console.log("--edit member--: " + member.name);
@@ -204,7 +274,6 @@
 				var id = data._id;
 				client.getFamily(id, function(data){
 					console.log("retrieved family");
-
 				});
 				loadFamilies();
 			});
@@ -215,7 +284,6 @@
 			console.log("--submit--");
 			var name =  $('#task_name').val();
 			var task = new Task(name, null, null);
-			
 			task.finished =  $('#task_finished').val();
 			task.status = $('#task_status').val();
 			task.assignedTo = $('#task_assigned').val();
@@ -261,7 +329,6 @@
 		});
 
 
-
 		//fake login
 		$('#login_email').val('mail@exanple.com');
 		$('#login_pass').val('blahblah');
@@ -283,6 +350,9 @@
 		//fake member
 		$('#memb_form .memb_name').val('Joffrey');
 		$('#memb_form .memb_picture').val('http://awoiaf.westeros.org/images/thumb/0/07/Joffrey_Baratheon.PNG/300px-Joffrey_Baratheon.PNG');
+
+		//hide delete buttons
+		$('.btn-danger').hide();
 
 		loadFamilies();
 		//Automatically logs you in
@@ -312,6 +382,7 @@
 						</div>
 						
 						<button id="login_submit" type="submit" class="btn btn-primary">Submit</button>
+
 					</fieldset>
 				</form>
 				
@@ -325,6 +396,7 @@
 						<input id="task_due" type="text" placeholder="Due date..."><br>
 						<input id="task_completion" type="text" placeholder="Completion date..."><br>
 						<button id="task_submit" type="submit" class="btn btn-primary">Submit</button>
+						<button class="btn btn-danger">Baleete!</button>
 					</fieldset>
 				</form>	
 				<form class="form-signin rounded" id="memb_form">	
@@ -333,6 +405,7 @@
 						<input class="memb_name" type="text" placeholder="Member Name"><br>
 						<input class="memb_picture" type="text" placeholder="Picture Url"><br>
 						<button id="memb_submit" type="submit" class="btn btn-primary">Submit</button>
+						<button class="btn btn-danger">Baleete!</button>
 					</fieldset>
 				</form>	
 
@@ -343,6 +416,7 @@
 						<input id="fam_email" type="text" placeholder="Type email.."><br>
 						<input id="fam_pass" type="text" placeholder="Type password..."><br>
 						<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
+						<button class="btn btn-danger">Baleete!</button>
 					</fieldset>
 				</form>				
 			</div>
