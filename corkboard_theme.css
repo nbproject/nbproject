@@ -178,6 +178,11 @@ div.family_container {
 	right: 0;
 }
 
+.edit {
+	font-size: 50%;
+	cursor: pointer;
+}
+
 /* Task list */
 div#tasklist {
 	clear: both;
