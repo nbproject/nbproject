@@ -74,6 +74,7 @@
 				//Draw the family list item			
 				var item = getListItem(obj.name, function(){
 					showFamily(obj);
+					editFamily(obj);
 				});
 				$('#famContainer').append(item);
 
@@ -151,7 +152,6 @@
 			return false;
 		});
 
-
 		form.submit(function(){
 			console.log("--edit task--: " + task.name);
 			console.log(task);
@@ -173,6 +173,57 @@
 						console.log(data);
 					});
 
+				}else{
+					console.log(data.error);
+				}
+			});
+
+		});
+	}
+
+	function editFamily(obj){
+		console.log("--editFamily---");
+		var form = $("#fam_form").clone();
+		form.attr("id", "#fam_edit");
+		$("#editContainer").html('');
+		form.find("legend").html('Edit Family');
+		form.find('.btn-danger').show();
+		var family = obj;
+
+		$("#editContainer").append(form);
+
+		//populate the form
+		form.find('#fam_name').val(family.name);
+		form.find('#fam_email').val(family.email);
+		form.find('#fam_pass').val(family.password);
+
+		form.find('.btn-danger').click(function(){
+			console.log("--delete family--");
+			client.deleteFamily(family, function(data
+				){
+				console.log("deletion result:");
+				console.log(data);
+			});
+			return false;
+		});
+
+		form.submit(function(){
+			console.log("--edit family--: " + family.name);
+			console.log(family);
+			family.name = form.find('#fam_name').val();
+			family.email = form.find('#fam_email').val();
+			family.password = form.find('#fam_pass').val();			
+			console.log(family);
+
+			client.modifyFamily(family, function(data){
+				if(data.error == null){
+					console.log("edited family");
+					console.log(data);
+					var id = data._id;
+					client.getFamily(id, function(data){
+						console.log("retrieved family");
+						console.log(data);
+					});
 				}else{
 					console.log(data.error);
 				}
@@ -230,7 +281,6 @@
 
 		});
 	}
-
 
 
 	$(function(){
@@ -327,7 +377,6 @@
 				}
 			});			
 		});
-
 
 		//fake login
 		$('#login_email').val('mail@exanple.com');
