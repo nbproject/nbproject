@@ -29,6 +29,10 @@ $(document).ready(function(){
 			
 			//var y = '<li><div class="profile" id="box' + name + '"><img src="assets/' + name + '.jpg" id="pic' + name + '"><h3>' + name + '</h3></div></li>'
 			$(userInfo).appendTo(familyList);
+
+			$('.profile').click(function(evt) {
+                window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+            });
 		};
 
 	});
