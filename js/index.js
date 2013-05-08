@@ -2,6 +2,7 @@ function dum(data) {
 	console.log("success");
 }
 
+
 $(document).ready(function(){
 	var family = getFamilyObject();
 
