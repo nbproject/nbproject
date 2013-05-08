@@ -109,3 +109,28 @@
 #taskPopup{
 	border: 1px solid black;
 }
+
+.statusClaimed, .statusClaimed .taskButton {
+	background-color: #77D;
+}
+
+.statusClaimed .taskButton:hover, .statusClaimed .taskHover {
+	background-color: #B1B1FC;
+}
+
+
+.statusClaimed .taskRowInner {
+	border: 1px solid #336;
+}
+
+.statusComplete {
+	background-color: #7D7;
+}
+
+.statusComplete .taskRowInner {
+	border: 1px solid #363;
+}
+
+.statusComplete .taskButton {
+	display: none;
+}

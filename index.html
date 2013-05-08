@@ -47,8 +47,10 @@
 		line("--taskClaimed--: " + id);
 		hidePopup();
 		var item = $("#taskContainer #" + id);
-		item.css("background-color", "#77D");
-		item.find(".taskRowInner").css("border", "1px solid #336");
+		item.addClass('statusClaimed');
+		item.find('.taskButton').text('Finish');
+//		item.css("background-color", "#77D");
+//		item.find(".taskRowInner").css("border", "1px solid #336");
 		item.find(".taskDue").html("Working!")
 		var complete = item.find(".taskComplete");
 		complete.html("<img class=\"completeIcon\" src='" + imgurl + "'/>" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
@@ -58,8 +60,9 @@
 		line("--taskComplete--: " + id);
 		hidePopup();
 		var item = $("#taskContainer #" + id);
-		item.css("background-color", "#7D7");
-		item.find(".taskRowInner").css("border", "1px solid #363");
+		item.addClass('statusComplete');
+//		item.css("background-color", "#7D7");
+//		item.find(".taskRowInner").css("border", "1px solid #363");
 		item.find(".taskDue").html("Complete!");		
 		var complete = item.find(".taskComplete");
 		complete.html("<img class=\"completeIcon\" src='" + imgurl + "' />" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
@@ -205,8 +208,6 @@
 
 	    				// Update server:
 	    				var taskid = row.attr('id');
-
-
 	    			}
 
 	    			$('.taskLabel').show();
@@ -228,6 +229,8 @@
 	    				lbl.after(input);
 	    				lbl.hide();
 	    			}
+
+	    			$('.geninput')[0].select();
 
 	    			var dues = $('.taskDue');
 	    			for (var i = 0; i < dues.length; ++i) {
