@@ -179,6 +179,25 @@ div#tasklist {
 	margin-bottom: 20px;
 }
 
+div#manageFamily {
+	clear: both;
+	background-color: white;
+	position: relative;
+	/*top: -17px; /* Something wrong with the nav div */
+	padding-top: 12px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom:15px;
+	box-shadow: 4px 4px 9px black;
+	margin-bottom: 20px;
+}
+
+div.taskLabel {
+	word-wrap:break-word;
+	margin-right:2px;
+	padding-right:2px;
+}
+
 img.pin_left {
 	width: 31px;
 	position:absolute;

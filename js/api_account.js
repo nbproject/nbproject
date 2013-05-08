@@ -14,11 +14,3 @@
 	since we assume users are operating under a local pc, and security is not an issue.
 */
 
-
-function login(username) {
-	$.cookie("user", username, { expires: 7 });
-}
-
-function logout() {
-	$.removeCookie("user");
-}
