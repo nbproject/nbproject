@@ -179,7 +179,7 @@
 				
 				task.duedate = taskDue;
 				tasks[TaskListId.toString()] = task;
-
+				task.status = "Unclaimed";
 				client.createTask(task, dummy);
 				updateTaskList(task);
 				taskInput.val('');
@@ -229,6 +229,7 @@
 
 	    				// Update server:
 	    				var taskid = row.attr('id');
+	    				console.log(taskid);
 
 	    			}
 
