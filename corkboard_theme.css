@@ -11,6 +11,7 @@
     box-sizing: border-box;
 }
 
+
 .error:-moz-placeholder {
     color: red;
     opacity: 1;
@@ -55,7 +56,7 @@ div#outer {
 
 
 
-form { margin: 0; line-height: 0;}
+form { margin: 0; line-height: normal;}
 
 h1 {
 	background: #FFFFC9;
@@ -67,6 +68,7 @@ h1 {
 	padding-left: 36px;
 	padding-right: 36px;
 	box-shadow: 2px 2px 2px black;
+	line-height: normal;
 }
 
 div#content {
@@ -118,6 +120,7 @@ ul#family li {
 	text-align: center;
 	padding-left: 3px;
 	padding-right: 3px;
+	line-height: normal;
 
 }
 .profile img {
@@ -140,6 +143,13 @@ ul#family li {
 #navigation div {
 	
 }
+
+.family_button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
 div.tabs_container {
 	vertical-align: bottom;
 	position: absolute;
@@ -220,8 +230,16 @@ div#item_entry {
 	margin-top: 10px;
 }
 
+#manage_family {
+	background: #FFFFC9;
+	position: absolute;
+	right: 0;
+	top: -1.5em;
+}
+
 #item_entry select {
 	vertical-align: middle;
+	width: auto;
 }
 
 #item_entry input[type="text"] {
@@ -239,7 +257,7 @@ div#item_entry {
 
 #titleButton {
 	top: 10px;
-	cursor: pointer;
+	cursor: default;
 }
 
 #family li h3 {
