@@ -52,7 +52,7 @@
 		item.find(".taskRowInner").css("border", "1px solid #336");
 		item.find(".taskDue").html("Working!")
 		var complete = item.find(".taskComplete");
-		complete.html("<img src='" + imgurl + "'/>");
+		complete.html("<img class=\"completeIcon\" src='" + imgurl + "'/>" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
 	}
 
 	function taskCompleted(id, imgurl){
@@ -63,16 +63,14 @@
 		item.find(".taskRowInner").css("border", "1px solid #363");
 		item.find(".taskDue").html("Complete!");		
 		var complete = item.find(".taskComplete");
-		complete.html("<img src='" + imgurl + "' />");
+		complete.html("<img class=\"completeIcon\" src='" + imgurl + "' />" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
 	}
 
 	function taskClick(){
 		if (editModeOn) {
 			return;
-		}		
-		//console.log($(this));
-		var id = $(this).parent().parent().attr("id");
-		//console.log(parent);
+		}
+		var id = $(this).parents('.taskRow').attr('id');
 		task = tasks[id];
 		showPopup();
 	}	
@@ -207,28 +205,75 @@
     			e.stopPropagation();
     		});
 
-
-    		$('#manageFamily').click(function(evt) {
-       			window.location = 'manage_family.html';
-    		});
     		
     		$("#popClose").click(function(evt){
     			
     		});
-    		
-    		/*
-    		$(".labelWrapper").dotdotdot({
-				//	configuration goes here
-				ellipsis: '... '
-			}); */
 
+    		$(".edit").click(function(evt) {
+    			if (editModeOn) {
+    				// Turn edit mode off:
+	    			$('.taskComplete .deleteIcon').hide();
+	    			$('.taskComplete .completeIcon').show();
+	    			$(this).text('Edit');
 
+	    			var rows = $('.taskRow');
+	    			for (var i = 0; i < rows.length; ++i) {
+	    				var row = $(rows[i]);
+	    				var textInput = row.find('input[type="text"]');
+	    				var dueInput = row.find('select');
 
+	    				// Update client:
+	    				row.find('.taskLabel').text(textInput.val());
+	    				row.find('.taskDue').text(dueInput.find('option:selected').text());
 
+	    				// Update server:
+	    				var taskid = row.attr('id');
 
+	    			}
 
+	    			$('.taskLabel').show();
+	    			$('.taskDue').show();
 
+	    			$('.geninput').remove();
 
+    			} else {
+    				// Turn edit mode on:
+    				$('.taskComplete .deleteIcon').show();
+	    			$('.taskComplete .completeIcon').hide();
+	    			$(this).text('Done Editing');
+	    			
+	    			var labels = $('.taskLabel');
+	    			for (var i = 0; i < labels.length; ++i) {
+	    				var lbl = $(labels[i]);
+	    				var text = lbl.text();
+	    				var input = $('<input class="geninput" type="text" value="'+text+'">');
+	    				lbl.after(input);
+	    				lbl.hide();
+	    			}
+
+	    			var dues = $('.taskDue');
+	    			for (var i = 0; i < dues.length; ++i) {
+	    				var due = $(dues[i]);
+	    				var text = due.text();
+	    				var input = $('#due').clone();
+	    				$('#due option').each(function (i, v) {
+	    					if (v.text == text)
+	    						$(input.find('option')[i]).attr('selected','selected');
+	    				});
+	    				input.addClass('geninput');
+	    				due.after(input);
+	    				due.hide();
+	    			}
+
+    			}
+    			editModeOn = !editModeOn;
+
+    		});
+
+    		$('.deleteIcon').click(function(evt) {
+    			var task_id = $(this).parents('.taskRow').attr('id');
+    		});
 
 
 	//task management
@@ -267,8 +312,8 @@
 				<li class="dropdown">
 				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-				    <li>Edit Family</lI>
-				    <li onclick="logout()">Log Out</li>
+				    <li><a href="manage_family.html">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
 				  </ul>
 				</li>
 			</ul>
@@ -279,7 +324,6 @@
 			<div class="tabs_container">
 				<ul id="tabs">
 					<li><div class="profile active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
-					<li id="manageFamily">Manage</li>
 				</ul>
 			</div>
 
@@ -293,7 +337,7 @@
 		<div id="tasklist">
 
 			<div>
-				<h2>To-Do</h2>
+				<h2>To-Do <a class="edit">Edit</a></h2>
 			</div>
 			<div id="item_entry">
 				<form id="new_task" class="form-inline" target="index.html">
@@ -312,11 +356,10 @@
 			<div id="taskContainer">
 				<div id="taskRowTemplate" class="taskRow" >
 					<div class="taskRowInner">
-						<div class="taskComplete"></div>
+						<div class="taskComplete"><div class="completeIcon"></div><img class="deleteIcon hidden" src="assets/delete.png"/></div>
 						<p class="taskLabel"></p>
-						<div class="taskDue"></div>
-						<button class="taskButton">Claim</button>
-					</div>
+						<div class="taskDue"></div>					</div>
+					<button class="taskButton">Claim</button>
 				</div>
 			</div>		
 		</div>
