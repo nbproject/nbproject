@@ -90,8 +90,10 @@
 		var taskDue = taskDiv.find(".taskDue");	
 		taskDue.attr("id", "d" + task.id);	
 		taskDue.html("Due: " + task.duedate);
-		var button = taskDiv.find(".taskButton");
+		var button = taskDiv.find(".taskRowInner");
+		var sideButton = taskDiv.find(".taskButton")
 		//console.log(button);
+		$(button).hover(function() {$(sideButton).addClass("taskHover");}, function() {$(sideButton).removeClass("taskHover");})
 		$(button).click( taskClick);
 
 	}
