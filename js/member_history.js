@@ -82,7 +82,7 @@ $(document).ready(function() {
             }
         };  
 
-        
+
         var taskHTML = "";
         for (var i = 0; i < memberTasks.length; i++) {
             var ct = memberTasks[i];
@@ -116,17 +116,17 @@ $(document).ready(function() {
     	window.location = window.location.pathname + '?member=' + evt.target.id.slice(3);
     });
     
-    $('#tabTodo').click(function(evt) {
-    	window.location = 'index.html';
+    $('#boxTodo').click(function(evt) {
+        window.location = 'index.html';
     });
     
      $('#manageFamily').click(function(evt) {
         window.location = 'manage_family.html';
     });
 
-    $('#titleButton').click(function(evt) {
-    	window.location = 'index.html';
-    });
+    //$('#titleButton').click(function(evt) {
+    //	window.location = 'index.html';
+    //});
 
     
 
