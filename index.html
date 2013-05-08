@@ -93,7 +93,12 @@
 		var button = taskDiv.find(".taskRowInner");
 		var sideButton = taskDiv.find(".taskButton")
 		//console.log(button);
-		$(button).hover(function() {$(sideButton).addClass("taskHover");}, function() {$(sideButton).removeClass("taskHover");})
+		$(button).hover(function() {
+			if (!editModeOn)
+				$(sideButton).addClass("taskHover");
+		}, function() {
+			$(sideButton).removeClass("taskHover");
+		});
 		$(button).click( taskClick);
 
 	}
