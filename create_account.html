@@ -41,7 +41,22 @@
     		// Create Family Object
     		var family = new Family(familyName, email, password);
     		
-    		client.createFamily(family, handleLogin);
+    		client.createFamily(family, function(data) {
+    			var familyData = data;
+    		
+    			// Set client family id
+    			client.familyId = data._id;
+    			
+    			// Create Initial Member
+    			var memberName = $("#yourName").val();
+    			var memberPicUrl = "";
+    			var member = {'name': memberName, 'pictureURL':memberPicUrl};
+    			
+    			client.createMember(member, function(data) {
+    				handleLogin(familyData);
+    			});
+    			
+    		});
     		
     		
     		
