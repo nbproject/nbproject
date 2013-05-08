@@ -77,7 +77,15 @@
 <input id="familyName" class="input-block-level" type="text" placeholder="Family Name">
 <input id="email" class="input-block-level" type="email" placeholder="Email address">
 <input id="password" class="input-block-level" type="password" placeholder="Password">
-<button id="createButton" class="btn btn-large btn-primary" type="button">Create</button>
+<div class="userInfo">
+<span class="btn btn-success fileinput-button">
+    <img src="assets/unknown_person.jpg"/>
+    <div>Upload Your Picture</div>
+    <input id="yourPic" class="input-block-level" type="file" >
+</span>
+</div>
+<input id="yourName" class="input-block-level" type="text" placeholder="Your Name">
+<button id="createButton" class="btn btn-large btn-warning" type="button">Create</button>
 <span id="errorText">Error</span>
 <br><br>
 <button id="cancelButton" class="btn" type="button">Cancel</button>

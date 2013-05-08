@@ -1,6 +1,4 @@
-#manageFamily {
-	text-align: center;
-}
+
 
 #nameEditor {
 	margin-left: 15px;
@@ -23,23 +21,38 @@ h1 {
 }
 
 #testPic {
-	height: 60px;
-	width: 60px;
+	height: 50px;
+	width: 50px;
 }
 
 #newPic {
-	height: 60px;
-	width: 60px;
+	height: 50px;
+	width: 50px;
 }
 
 #newName {
-	width: 150px;
+	width: 100px;
 }
 
 .left {
-	padding-right: 40px;
+	padding-right: 20px;
+}
+
+.center {
+	padding-right:20px;
 }
 
 .right {
-	padding-left: 25px;
+	padding-left: 0px;
+}
+
+
+h2 {
+	display: inline;
+	font-size: 1.5em;
+}
+
+#containsTable {
+	border: 2px solid black;
+	text-align: center;
 }

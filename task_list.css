@@ -17,9 +17,14 @@
 	width: 14%;
 
 	background: #FFD;
-	box-shadow: 0px 0px 8px gray, 0px 0px 1px black inset;
+	box-shadow: 0px 0px 1px black inset;
 	border: none;
+	pointer-events: none;
+}
 
+.taskButton:hover, .taskHover {
+	background: #ffffee;
+	box-shadow: 1px 1px 5px white inset, 0px 0px 10px black;
 }
 
 .taskRow{		
@@ -44,17 +49,19 @@
 
 .taskComplete{
 	border:2px solid #CCCCCC;
-	width:30px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.taskComplete img, .taskComplete div {
+	width: 30px;
 	height:30px;
 	display: inline-block;
 	vertical-align: middle;
 }
 
-.taskComplete img{
-	width: 30px;
-	height:30px;
-	display: inline-block;
-	vertical-align: middle;
+.taskComplete .deleteIcon {
+	display: none;
 }
 
 .taskLabel{
@@ -101,4 +108,29 @@
 
 #taskPopup{
 	border: 1px solid black;
+}
+
+.statusClaimed, .statusClaimed .taskButton {
+	background-color: #77D;
+}
+
+.statusClaimed .taskButton:hover, .statusClaimed .taskHover {
+	background-color: #B1B1FC;
+}
+
+
+.statusClaimed .taskRowInner {
+	border: 1px solid #336;
+}
+
+.statusComplete {
+	background-color: #7D7;
+}
+
+.statusComplete .taskRowInner {
+	border: 1px solid #363;
+}
+
+.statusComplete .taskButton {
+	display: none;
 }

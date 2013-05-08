@@ -135,10 +135,42 @@ ul#family li {
 	border: none;
 }
 
-#tabs li {
-	padding: 4px;
-	background: #C9E9FF;
+
+#boxTodo {
+	background: #FFFFC9;
 	cursor: pointer;
+	text-align: center;
+}
+
+
+#boxTodo h3 {
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	text-align: center;
+	padding-left: 3px;
+	padding-right: 3px;
+	line-height: normal;
+
+}
+#boxTodo img {
+	width: 50px;
+	height: 50px;
+	margin: 4px;
+	border: 1px solid black;
+	vertical-align: bottom;
+}
+
+#boxTodo #checkbox {
+	border: none;
+}
+
+
+
+#tabs li {
+	cursor: pointer;
+	vertical-align: bottom;
 }
 
 #navigation div {
@@ -155,8 +187,8 @@ ul#family li {
 	background: #FFFFC9;
 }
 
-.family_button button:hover {
-	background: #C9E9FF;
+.profile:hover, #boxTodo:hover, .family_button button:hover {
+	background: #FFFF8C;
 }
 
 .family_button .dropdown-menu {
@@ -176,6 +208,11 @@ div.family_container {
 	position: absolute;
 	bottom: 0;
 	right: 0;
+}
+
+.edit {
+	font-size: 50%;
+	cursor: pointer;
 }
 
 /* Task list */
@@ -218,8 +255,7 @@ img.pin_left {
 	left: 1;
 }
 
-
-#tasklist h2 {
+h2 {
 	display: inline;
 	font-size: 1.5em;
 }
@@ -279,4 +315,13 @@ div#item_entry {
 
 .selectionPic {
 	cursor: pointer;
+}
+
+#managePic {
+	height:50px;
+	width:50px;
+}
+
+#error {
+	color:red;
 }
