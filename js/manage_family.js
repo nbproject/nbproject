@@ -74,11 +74,36 @@ $(document).ready(function() {
 
 
             $("#edit"+name).click(function(e) {
+            	var buttonID = "#"+this.id;
                 e.stopPropagation();
                 var name = $(this).attr("id").substr(4);
                 if (editModeOn) {
+                	$(buttonID).removeClass("btn-success");
+                	$(buttonID).addClass("btn-warning");
+                	$(buttonID).text("Edit");
+                	
+                	var currentEditableElement = $(this).parent().parent().find(".middle");
+                	var newName = $("#inputedit").val();
+                	
+                	$(currentEditableElement).html(newName);
+                    editModeOn = false;
+                    var m = findMyMember(datamembers, beforeEditHTML);
+                    m.name = newName;
+                    console.log(m);
+                    client.modifyMember(m, function(){});
+                	
+                	console.log("TEST");
+                	console.log(newName);
+                	
+                	
                     return;
                 } else {
+                	console.log("edit mode on");
+                	console.log(buttonID);
+                	$(buttonID).removeClass("btn-warning");
+                	$(buttonID).addClass("btn-success");
+                	$(buttonID).text("Confirm");
+                
                     editModeOn = true;
                     var currentEditableElement = $(this).parent().parent().find(".middle");
                     beforeEditHTML = currentEditableElement.text();
@@ -89,6 +114,10 @@ $(document).ready(function() {
 
                     $("#inputedit").keypress( function(event) { 
                         if (event.which == 13) {          
+                        	$(buttonID).removeClass("btn-success");
+                			$(buttonID).addClass("btn-warning");
+                			$(buttonID).text("Edit");
+                			
                             var newName = $(this).val();
                             $(currentEditableElement).html( newName);
                             editModeOn = false;

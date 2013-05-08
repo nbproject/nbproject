@@ -2,6 +2,34 @@ function dum(data) {
 	console.log("success");
 }
 
+
+function doIOwnThis(id, task) {
+
+    console.log("whoownsthis");
+    console.log(task);
+    console.log(id);
+
+    console.log(task.finished);
+    console.log(task.assignedTo);
+    if (task.finished != "") {
+        if (task.finished === id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    if (task.assignedTo != "") {
+        if (task.assignedTo === id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+
 $(document).ready(function(){
 	var family = getFamilyObject();
 
@@ -13,8 +41,9 @@ $(document).ready(function(){
 			var task = new Task(curDataTask.name, null,TaskListId);
 			task.duedate = curDataTask.duedate;
 			tasks[TaskListId.toString()] = task;
-			updateTaskList(task);
-			++TaskListId;
+
+            updateTaskList(task);
+            ++TaskListId;
 		};			
 
 		var datamembers = data.members;
@@ -37,6 +66,27 @@ $(document).ready(function(){
 			$('.profile').click(function(evt) {
                 window.location = 'member_history.html?member=' + evt.target.id.slice(3);
             });
+
+
+            var memberTasks = new Array();
+            var datatasks = data.tasks;
+            for (var j = 0; j < datatasks.length; j++) {
+                var curDataTask = datatasks[j];
+                console.log(doIOwnThis( member._id, curDataTask));
+
+                if (doIOwnThis(member._id, curDataTask)) {
+                    memberTasks.push(curDataTask);
+                }
+            };  
+          
+            for (var j = 0; j < memberTasks.length; j++) {
+                if (memberTasks[j].status === "Claimed") {
+                    taskClaimed(memberTasks[j].id, pic, name);
+                } else {
+                    taskCompleted(memberTasks[j].id, pic, name);
+                }
+            }
+
 
 			document.getElementById('btnClaim').disabled = true;
     	document.getElementById('btnComplete').disabled = true;
