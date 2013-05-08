@@ -81,6 +81,15 @@ function ApiClient() {
 		});
 	};
 
+	this.deleteMember = function(member, callback){
+		console.log("Client:--deleteMember--");
+		console.log(member);
+		var endpoint = this.url + "/member/delete/" + member._id;	
+		$.post(endpoint, function(data){
+			callback(data);
+		});
+	}
+
 	//Task functions
 	this.createTask = function(task, callback){
 		console.log("Client:--createTask--");
@@ -107,7 +116,21 @@ function ApiClient() {
 	};
 
 	this.modifyTask = function(task, callback){
+		console.log("Client:--modifyTask--");
+		console.log(task);
+		var endpoint = this.url + "/task/modify/" + task._id;	
+		$.post(endpoint, task, function(data){
+			callback(data);
+		});
+	};
 
+	this.deleteTask = function(task, callback){
+		console.log("Client:--deleteTask--");
+		console.log(task);
+		var endpoint = this.url + "/task/delete/" + task._id;	
+		$.post(endpoint, function(data){
+			callback(data);
+		});
 	};
 
 }
