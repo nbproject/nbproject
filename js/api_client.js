@@ -1,3 +1,14 @@
+function handleLogin(data) {
+                if (!data) {
+                    console.log("login failed");
+                } else {
+                    console.log(data);
+                    var string = JSON.stringify(data);
+                    $.cookie("family", string, { expires: 7 });
+                    window.location = "index.html";
+                }
+            }
+
 
 function ApiClient() {
 
