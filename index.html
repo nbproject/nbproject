@@ -47,6 +47,7 @@
 		hidePopup();
 		var item = $("#taskContainer #" + id);
 		item.addClass('statusClaimed');
+		item.removeClass('statusComplete');
 		item.find('.taskButton').text('Finish');
 //		item.css("background-color", "#77D");
 //		item.find(".taskRowInner").css("border", "1px solid #336");
@@ -60,6 +61,7 @@
 		hidePopup();
 		var item = $("#taskContainer #" + id);
 		item.addClass('statusComplete');
+		item.removeClass('statusClaimed');
 //		item.css("background-color", "#7D7");
 //		item.find(".taskRowInner").css("border", "1px solid #363");
 		item.find(".taskDue").html("Complete!");		
