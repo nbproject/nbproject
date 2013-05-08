@@ -90,39 +90,17 @@
 		var taskDue = taskDiv.find(".taskDue");	
 		taskDue.attr("id", "d" + task.id);	
 		taskDue.html("Due: " + task.duedate);
-		attachLabelListener(label);
-		var button = taskDiv.find(".taskButton");
+		var button = taskDiv.find(".taskRowInner");
+		var sideButton = taskDiv.find(".taskButton")
 		//console.log(button);
+		$(button).hover(function() {
+			if (!editModeOn)
+				$(sideButton).addClass("taskHover");
+		}, function() {
+			$(sideButton).removeClass("taskHover");
+		});
 		$(button).click( taskClick);
 
-	}
-
-	function attachLabelListener(label) {
-		$(label).click(function(e){
-			if (editModeOn) {
-				return;
-			}
-			editModeOn = true;
-			var beforeText = $(this).text();
-			var labelText = label.text();
-			beforeEditHTML = label.html();
-			label.html("<input type='text' value='" + labelText + "'>");
-			label.html("<input id = 'curEdit' type = 'text' value='" + labelText + "'>");
-			$("#curEdit").focus();
-
-			$("#curEdit").keyup(function(e){
-				if (editModeOn) {
-					if(e.keyCode == 13){
-		  				var inputText = $(this).val();
-		  				label.html(beforeEditHTML);
-		  				label.text(inputText);
-		  				editModeOn = false;
-		  				editButtonVisible = false;
-					}			
-				}
-			});
-
-		});
 	}
 
 	
