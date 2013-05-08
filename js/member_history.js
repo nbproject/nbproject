@@ -23,8 +23,8 @@ $(document).ready(function() {
     }  
     
     $("#header").text("Today " + member.name + "...");
-    var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
-    $("#containsImage").html(imgHTML);
+    //var imgHTML = "<img src='assets/" + member.name + ".jpg' height='200'>"
+    //$("#containsImage").html(imgHTML);
     $("#hideme").hide();
     
     // Color Tabs

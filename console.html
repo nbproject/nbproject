@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	body {
+		padding-top: 40px;
+		padding-bottom: 40px;
+		background-color: #f5f5f5;
+	}
+
+	.sidebar{
+		background-color:#DDD;
+	}
+
+	.rounded{
+		border: 1px solid #e5e5e5;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+		-moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+		box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	}
+
+	.form-signin {		
+		padding: 19px 29px 29px;
+		margin: 10px;
+		background-color: #fff;
+		
+	}
+
+	#item_template{
+		display: none;
+	}
+
+	.dataColumn{
+		padding:10px;
+	}
+
+	.itemContainer{
+		height:200px;
+		overflow: scroll;
+	}
+
+
+
+	</style>
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/api_client.js"></script>
+	<script type="text/javascript" src="static_js/family.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
+	<script type="text/javascript" src="static_js/member.js"></script>
+	<script>
+
+	var client;
+	var families = [];
+
+	function loadFamilies(){
+		client.getFamilies(function(data){
+			console.log("-receivedFamilies--");
+			console.log(data);
+			$('#famContainer').html('');
+			for (var i = 0; i < data.length; i++) {
+				//turn the json into family objects
+				var obj = data[i];
+				$.extend(obj, Family.prototype);
+				families.push(obj);	
+				//Draw the family list item			
+				var item = getListItem(obj.name, function(){
+					showFamily(obj);
+				});
+				$('#famContainer').append(item);
+
+			};			
+		});
+	}
+
+	function getListItem(name, activate){
+		var template = $('#item_template').clone();
+		template.removeAttr('id');
+		template.find('a').html(name);
+		template.click(activate);
+		return template;
+	}
+
+	function showFamily(family){
+		console.log("--showFamily--");
+		console.log(family);
+		client.getFamilyInfo(family._id, function(data){
+			console.log("received family info:");
+			console.log(data);
+			var jstring = JSON.stringify(data, null, 2);	
+			$('#famJson').html(jstring);
+
+			//draw the members	
+			$('#membContainer').html('');
+			var members = data.members;
+			for (var i = 0; i < members.length; i++) {
+				var m = members[i];
+				var item = getListItem(m.name, function(){
+					editMember(m);
+				});
+				$('#membContainer').append(item);
+			};			
+
+			//draw tasks
+			$('#taskContainer').html('');
+			var tasks = data.tasks;
+			for (var i = 0; i < tasks.length; i++) {
+				var task = tasks[i];
+				var item = getListItem(task.name, function(){
+					editTask(task);
+				});
+				$('#taskContainer').append(item);
+			};		
+
+		});
+	}
+
+	function editMember(obj){
+		console.log("--editMember---");
+		var form = $("#memb_form").clone();
+		form.attr("id", "#memb_edit");
+		$("#editContainer").html('');
+		form.find("legend").html('Edit Member');
+		var member = obj;
+
+		$("#editContainer").append(form);
+
+		//populate the form
+		form.find('.memb_name').val(member.name);
+		form.find('.memb_picture').val(member.pictureURL);
+		
+
+		form.submit(function(){
+			console.log("--edit member--: " + member.name);
+			console.log(member);
+			member.name = form.find('.memb_name').val();
+			member.pictureURL = form.find('.memb_picture').val();
+			console.log(member);
+
+			client.modifyMember(member, function(data){
+				if(data.error == null){
+					console.log("edited member");
+					console.log(data);
+					var id = data._id;
+					client.getMember(id, function(data){
+						console.log("retrieved member");
+						console.log(data);
+					});
+
+				}else{
+					console.log(data.error);
+				}
+			});
+
+		});
+	}
+
+
+
+	$(function(){
+		client = new ApiClient();
+
+		$('#login_form').submit(function(){
+			console.log("--login--");		
+			var email = $('#login_email').val();
+			var pass = $('#login_pass').val();
+			
+			client.login(email, pass, function(data){
+				console.log("login callback");				
+				console.log(data);	
+				if(!data){
+					console.log("--login failed--");
+					$('#login_failed').show();			
+					$('#login_succeed').hide();
+				}else{
+					client.familyId = data._id;
+					$('#not_logged_in').hide();
+					$('#login_failed').hide();
+					$('#login_succeed').show();
+					$('#login_form').hide();
+					$('#login_succeed').find('strong').html('logged in as: ' + data.name);
+				}
+			});
+			return false;			
+		});	
+
+		$('#fam_form').submit(function(){
+			console.log("--submit--");			
+			var name = $('#fam_name').val();
+			var email = $('#fam_email').val();
+			var pass = $('#fam_pass').val();	
+
+
+			var family = new Family(name, email, pass);
+			client.createFamily(family, function(data){
+				console.log("posted family");
+				console.log(data);
+				var id = data._id;
+				client.getFamily(id, function(data){
+					console.log("retrieved family");
+
+				});
+				loadFamilies();
+			});
+			return false;
+		});	
+
+		$('#task_form').submit(function(){
+			console.log("--submit--");
+			var name =  $('#task_name').val();
+			var task = new Task(name, null, null);
+			
+			task.finished =  $('#task_finished').val();
+			task.status = $('#task_status').val();
+			task.assignedTo = $('#task_assigned').val();
+			task.duedate = $('#task_due').val();
+			task.finishdate =  $('#task_completion').val();
+
+			client.createTask(task, function(data){
+				if(data.error == null){					
+					console.log("posted task");
+					var id = data._id;
+					client.getTask(id, function(data){
+						console.log("retrieved task");
+						console.log(data);
+					});	
+				}else{
+					console.log(data.error);
+				}	
+			});
+			return false;
+		});
+
+		$('#memb_form').submit(function(){
+			console.log("--submit Member--");
+			var name =  $('#memb_form .memb_name').val();
+			var pictureURL =  $('#memb_form .memb_picture').val();
+			//THIS IS A FAKE MEMBER. Functions screw up the post
+			var member = {'name': name, 'pictureURL':pictureURL};
+
+			client.createMember(member, function(data){
+				if(data.error == null){
+					console.log("posted member");
+					console.log(data);
+					var id = data._id;
+					client.getMember(id, function(data){
+						console.log("retrieved member");
+						console.log(data);
+					});
+
+				}else{
+					console.log(data.error);
+				}
+			});			
+		});
+
+
+
+		//fake login
+		$('#login_email').val('mail@exanple.com');
+		$('#login_pass').val('blahblah');
+		$('#login_failed').hide();
+		$('#login_succeed').hide();
+
+		//fake family
+		$('#fam_name').val('The Johnsons');
+		$('#fam_email').val('mail@exanple.com');
+		$('#fam_pass').val('blahblah');
+
+		//fake task
+		$('#task_name').val('Do laundry');
+		$('#task_status').val('');
+		$('#task_assigned').val('23423');
+		$('#task_due').val('06/07/13');
+		$('#task_finish').val('06/06/13');
+
+		//fake member
+		$('#memb_form .memb_name').val('Joffrey');
+		$('#memb_form .memb_picture').val('http://awoiaf.westeros.org/images/thumb/0/07/Joffrey_Baratheon.PNG/300px-Joffrey_Baratheon.PNG');
+
+		loadFamilies();
+		//Automatically logs you in
+		//$('#login_form').submit();
+	});
+
+</script>
+<title>console</title>
+</head>
+<body>
+	<div class="container rounded no-space">
+		<div class="row">
+			<div class="span4 sidebar">	
+				<div id="not_logged_in" class="alert">		
+					Not logged in
+				</div>
+				<div id="login_succeed" class="alert alert-success">		
+					<strong>Log in succeded!</strong>
+				</div>
+				<form class="form-signin rounded" id="login_form">	
+					<fieldset>
+						<legend>Log In</legend><br>
+						<input id="login_email" type="text" placeholder="Type email.."><br>
+						<input id="login_pass" type="text" placeholder="Type password..."><br>
+						<div id="login_failed" class="alert alert-error">					
+							<strong>Log in failed</strong>
+						</div>
+						
+						<button id="login_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>
+				
+				<form class="form-signin rounded" id="task_form">	
+					<fieldset>
+						<legend>Create Task</legend><br>
+						<input id="task_name" type="text" placeholder="Task name..."><br>
+						<input id="task_status" type="text" placeholder="Task status.."><br>
+						<input id="task_assigned" type="text" placeholder="Assigned Member id.."><br>
+						<input id="task_finished" type="text" placeholder="Member who finished it..."><br>
+						<input id="task_due" type="text" placeholder="Due date..."><br>
+						<input id="task_completion" type="text" placeholder="Completion date..."><br>
+						<button id="task_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>	
+				<form class="form-signin rounded" id="memb_form">	
+					<fieldset>
+						<legend>Create Member</legend><br>
+						<input class="memb_name" type="text" placeholder="Member Name"><br>
+						<input class="memb_picture" type="text" placeholder="Picture Url"><br>
+						<button id="memb_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>	
+
+				<form class="form-signin rounded" id="fam_form">
+					<fieldset>
+						<legend>Create family</legend><br>
+						<input id="fam_name" type="text" placeholder="Type family name..."><br>
+						<input id="fam_email" type="text" placeholder="Type email.."><br>
+						<input id="fam_pass" type="text" placeholder="Type password..."><br>
+						<button id="fam_submit" type="submit" class="btn btn-primary">Submit</button>
+					</fieldset>
+				</form>				
+			</div>
+			<div class="span7">
+				<div class="row">
+					<div class="span2 rounded dataColumn">
+						<h4>Families:</h4>
+						<div class="itemContainer">
+							<ul id="famContainer" class="nav nav-tabs nav-stacked">
+
+							</ul>
+						</div>
+					</div>
+					<div class="span2 rounded dataColumn">
+						<h4>Members:</h4>
+						<div class="itemContainer">
+							<ul id="membContainer" class="nav nav-tabs nav-stacked">
+							</ul>
+						</div>								
+					</div>
+					<div class="span2 rounded dataColumn">
+						<h4>Tasks:</h4>
+						<div class="itemContainer">
+							<ul id="taskContainer" class="nav nav-tabs nav-stacked">
+							</ul>
+						</div>							
+					</div>
+					<li id="item_template" class="fam_name"><a href="#"></a></li>
+				</div>
+				<div class="row" id="editContainer">
+
+				</div>
+				<div class="row">
+					<div class="span7 rounded">
+						<h4>Family Data:</h4>
+						<pre id="famJson">
+						</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

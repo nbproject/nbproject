@@ -8,7 +8,6 @@
 	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
 	<link rel="stylesheet" type="text/css" href="task_list.css"/>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-
 	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
@@ -58,100 +57,68 @@
 		complete.html("<img src='" + imgurl + "' />");
 	}
 
-	function taskClick(elem){
+	function taskClick(){
 		if (editModeOn) {
 			return;
-		}
-		//line("--click!--");
-		var item = $(elem);
-		//line(item.attr('id'));
-		var id = item.attr('id');
-		
-		//TODO: Here look up the actual task, update Louis' content with it
+		}		
+		console.log($(this));
+		var id = $(this).parent().parent().attr("id");
+		console.log(parent);
 		task = tasks[id];
 		showPopup();
-	}
+	}	
 
-
-	var editButtonVisibile = false;
-	var editModeOn = false;
 	var beforeEditHTML = "";
-	function handleMouseEnter(e) {
-		if (editModeOn) {
-			return;
-		}
-		var id = e.toElement.id;
-		var editable = $("#" + id);
-		editButtonVisible = true;
-		if (false) {
-		} else {
-			var tmptmp = editable.find(".taskRowInner");
-			tmptmp.append("<div class='editButton' id='b" + id + "'> <button> Edit</button></div>");
-			$(".editButton").click( function(e) {
-				e.stopPropagation();
-				var buttonId = $(".editButton").attr('id');
-				var eltId = buttonId.substr(1);
-				var label = $("#" + eltId).find(".taskLabel");
-				var labelText = label.text();
-
-				beforeEditHTML = label.html();
-				label.html("<input id = 'l" + id + "' type = 'text' value='" + labelText + "'>");
-				$("#l"+id).focus();
-
-				$("#l"+id).keyup(function(e){
-					if(e.keyCode == 13){
-  						var inputText = $("#l"+id).val();
-  						label.html(beforeEditHTML);
-  						label.text(inputText);
-  						editModeOn = false;
-  						editButtonVisible = false;
-					}
-				});
-				editModeOn = true;
-				$(".editButton").remove();
-			});
-
-
-		}
-	}
-
-
-
-	function handleMouseLeave(e) {
-		if (editModeOn) {
-			return;
-		}
-		var id = e.toElement.id;
-		var editable = $("#" + id);
-
-		if (editButtonVisible) {
-			editButtonVisibile = false;
-			$(".editButton").remove();
-		} 
-	}
-
+	var editModeOn = false;
 	function updateTaskList(task){
-		//line("--updateTaskList--");
-		//line(task);
 		var template = $("#taskRowTemplate");
 		var container = $("#taskContainer");
 		var taskDiv = template.clone().attr('id', task.id);			
 		taskDiv.prependTo(container);
 		var complete = $(taskDiv).find(".taskComplete");		
 		var label = taskDiv.find(".taskLabel");
+		label.attr("id", "l" + task.id);
 		label.html(task.name);
-		var taskDue = taskDiv.find(".taskDue");		
+		var taskDue = taskDiv.find(".taskDue");	
+		taskDue.attr("id", "d" + task.id);	
 		taskDue.html("Due: " + task.duedate);
+		attachLabelListener(label);
 
-		$(".taskRow").mouseenter(function(e) {
-			handleMouseEnter(e);
-		});
+		var button = taskDiv.find(".taskButton");
+		console.log(button);
+		$(button).click( taskClick);
 
-		$(".taskRow").mouseleave(function(e){
-			handleMouseLeave(e);
+	}
+
+	function attachLabelListener(label) {
+		$(label).click(function(e){
+			if (editModeOn) {
+				return;
+			}
+			editModeOn = true;
+			var beforeText = $(this).text();
+			var labelText = label.text();
+			beforeEditHTML = label.html();
+			label.html("<input type='text' value='" + labelText + "'>");
+			label.html("<input id = 'curEdit' type = 'text' value='" + labelText + "'>");
+			$("#curEdit").focus();
+
+			$("#curEdit").keyup(function(e){
+				if (editModeOn) {
+					if(e.keyCode == 13){
+		  				var inputText = $(this).val();
+		  				label.html(beforeEditHTML);
+		  				label.text(inputText);
+		  				editModeOn = false;
+		  				editButtonVisible = false;
+					}			
+				}
+			});
+
 		});
 	}
 
+	
 	function validateTaskInput() {
 		var form = $('form#new_task');
 		var txtinput = form.find('[name="taskname"]');
@@ -291,11 +258,11 @@
     			
     		});
     		taskPopupInit();
-
+    		/*
     		$(".labelWrapper").dotdotdot({
 				//	configuration goes here
 				ellipsis: '... '
-			});
+			}); */
 	    });
 	})(jQuery);
 	</script>
@@ -345,11 +312,12 @@
 				</form>
 			</div>
 			<div id="taskContainer">
-				<div id="taskRowTemplate" class="taskRow" onclick="javascript:taskClick(this)">
+				<div id="taskRowTemplate" class="taskRow" >
 					<div class="taskRowInner">
 						<div class="taskComplete"></div>
 						<p class="taskLabel"></p>
 						<div class="taskDue"></div>
+						<button class="taskButton">Claim</button>
 					</div>
 				</div>
 			</div>		
