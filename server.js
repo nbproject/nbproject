@@ -76,7 +76,9 @@ app.get('/familyinfo/:id', function(req, resp){
 	});
 });
 
-app.post('/family/make', function(req, resp){
+app.post('/family/make', function(req, resp, files){
+	console.log(req.body);
+
 	Db.connect(mongoUri+"?safe=true",  function(err, db){
 		db.collection('families', function(er, collection){
 			collection.insert(req.body, function(er, rs){
@@ -86,6 +88,10 @@ app.post('/family/make', function(req, resp){
 		});
 	});
 });
+
+
+
+
 
 app.get('/family/:id', function(req, resp){
 	var famid = req.params.id;
