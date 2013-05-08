@@ -4,6 +4,8 @@
 		<!-- Bootstrap -->
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+
 
 	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
 	<link rel="stylesheet" type="text/css" href="task_list.css"/>
@@ -12,8 +14,8 @@
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 
+	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 
 	<script type="text/javascript">
 
@@ -250,10 +252,6 @@
     			e.stopPropagation();
     		});
 
-    		$('#titleButton').click(function(evt) {
-    			window.location = 'index.html';
-    		});
-
     		$("#popClose").click(function(evt){
     			
     		});
@@ -274,13 +272,25 @@
 		<div style="position: relative;" id="titleButton">
 			<img class="pin_left" src="assets/pushpin.png">
 			<h1>Cork Together</h1>
+			<ul class="nav nav-pills family_button">
+				<li class="dropdown">
+				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <li>Edit Family</lI>
+				    	<li>Log Out</li>
+				  </ul>
+				</li>
+			</ul>
 		</div>
+
 		<div id="navigation">
+			
 			<div class="tabs_container">
 				<ul id="tabs">
 					<li><div class="profile active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
 				</ul>
 			</div>
+
 			<div class="family_container">
 				<ul id="family">
 					<li><div class="profile" id="boxCersei"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
@@ -298,7 +308,7 @@
 				<h2>To-Do</h2>
 			</div>
 			<div id="item_entry">
-				<form id="new_task" target="index.html">
+				<form id="new_task" class="form-inline" target="index.html">
 					<!--<button>?</button>-->
 					<input autofocus="autofocus" class="remember" type="text" name="taskname" placeholder="Enter Task Name">
 					<!-- <label for="due">Due</label>-->
@@ -308,7 +318,7 @@
 						<option value="Tomorrow">Due: Tomorrow</option>
 						<!-- Javascript will add next 5 days -->
 					</select>
-					<button id="add_task">Add</button>
+					<button class="btn" id="add_task">Add</button>
 				</form>
 			</div>
 			<div id="taskContainer">
