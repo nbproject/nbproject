@@ -37,7 +37,7 @@
     		var familyName = $("#familyName").val();
     		var email = $("#email").val();
     		var password = $("#password").val();
-    		
+    		var file = document.getElementById('yourPic').files[0];
     		// Create Family Object
     		var family = new Family(familyName, email, password);
     		
@@ -51,14 +51,33 @@
     			var memberName = $("#yourName").val();
     			var memberPicUrl = "";
     			var member = {'name': memberName, 'pictureURL':memberPicUrl};
-    			
-    			client.createMember(member, function(data) {
-    				handleLogin(familyData);
-    			});
-    			
+
+                // Upload the image to imgur:
+                if (file != null) {
+                    upload(file, function(resp) {
+                        memberPicUrl = resp.data.link;
+                        member = {'name': memberName, 'pictureURL':memberPicUrl};
+
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    }, function (err) {
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    });
+                } else {
+                    // Proceed without image.
+                    client.createMember(member, function(data) {
+                        handleLogin(familyData);
+                    });
+                }
     		});
+
     		
-    		
+            if (file != null) {
+                upload(file);
+            }
     		
     	});
     
@@ -75,8 +94,62 @@
     	function hideError() {
     		$("#errorText").hide();
     	}
-    	
+
+        function handleFileSelect(evt) {
+            var files = evt.target.files; // FileList object
+
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+
+                console.log(f.type);
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                var fileName = f.name;
+
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                return function(e) {
+                    $('#picPreview').attr('src', e.target.result);
+                    $('#picDesc').html('Uploading: <div id="picName"></div>');
+                    $('#picName').text(fileName);
+                };
+                })(f);
+
+                reader.readAsDataURL(f);
+            }
+        }
+    	$('#yourPic').change(handleFileSelect);
+
+        function upload(file, success, err) {
+          // file is from a <input> tag or from Drag'n Drop
+          // Is the file an image?
+         
+          if (!file.type.match('image.*')) {
+                return;
+            }
+          // It is!
+          // Let's build a FormData object
+         
+          var fd = new FormData();
+          fd.append("image", file); // Append the file
+          // Get your own key: http://api.imgur.com/
+
+          $.ajax({
+                url: 'https://api.imgur.com/3/image',
+                type: 'POST',
+                beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Client-ID 7058a2b30655903');},
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: success,
+                error: err
+            });
+         }
     });
+
 </script>
 
 
@@ -85,7 +158,7 @@
 <body>
     <div id="outer">
     
-<form class="form-signin">
+<form class="form-signin" enctype="multipart/form-data">
 <img class="pin_left" src="assets/pushpin.png">
 <br>
 <h2 class="form-signin-heading">New Family</h2>
@@ -94,9 +167,9 @@
 <input id="password" class="input-block-level" type="password" placeholder="Password">
 <div class="userInfo">
 <span class="btn btn-success fileinput-button">
-    <img src="assets/unknown_person.jpg"/>
-    <div>Upload Your Picture</div>
-    <input id="yourPic" class="input-block-level" type="file" >
+    <img id="picPreview" src="assets/unknown_person.jpg"/>
+    <div id="picDesc">Upload Your Picture</div>
+    <input id="yourPic" name="files[]" class="input-block-level" type="file" >
 </span>
 </div>
 <input id="yourName" class="input-block-level" type="text" placeholder="Your Name">
