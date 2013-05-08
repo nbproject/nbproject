@@ -70,7 +70,7 @@ $(document).ready(function() {
         window.location = 'manage_family.html';
     });
 
-    $('#titleButton').click(function(evt) {
+    $('#boxTodo').click(function(evt) {
     	window.location = 'index.html';
     });
 

@@ -2,32 +2,32 @@
 <html>
 <head>
 
-	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-	<link rel="stylesheet" type="text/css" href="edit_family.css" />
+	
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
 	<script type="text/javascript" src="js/api_client.js"></script>
 	<script type="text/javascript" src="js/verify.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/jquery.dotdotdot-1.5.7.js"></script>
-	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
-	<link rel="stylesheet" type="text/css" href="task_list.css"/>
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	
 	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
 	<script type="text/javascript" src="external_js/date.js"></script>
 	<script type="text/javascript" src="static_js/task.js"></script>
 	<script type="text/javascript" src="static_js/member.js"></script>
-	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 	<script type="text/javascript" src="js/manage_family.js"></script>
+	
 	
 	<script src="js/vendor/jquery.ui.widget.js"></script>
 	<script src="js/jquery.iframe-transport.js"></script>
 	<script src="js/jquery.fileupload.js"></script>
 
-	
 
-
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<link rel="stylesheet" type="text/css" href="edit_family.css" />
+	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
+	<link rel="stylesheet" type="text/css" href="task_list.css"/>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="task_completion.css" />
 
 
 	<title>Household Dashboard</title>
@@ -37,22 +37,33 @@
 	<div id="content">
 		<div style="position: relative;" id="titleButton">
 			<img class="pin_left" src="assets/pushpin.png">
-			<h1>Household Dashboard</h1>
+			<h1>Cork Together</h1>
+			<ul class="nav nav-pills family_button">
+				<li class="dropdown">
+				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <li><a href="manage_family.html">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
+				  </ul>
+				</li>
+			</ul>
 		</div>
+
+
 		<div id="navigation">
+			
 			<div class="tabs_container">
 				<ul id="tabs">
-					<li id="tabTodo">To-Do</li>
-					<li id="manageFamily">Manage</li>
+					<li><div class="active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
 				</ul>
 			</div>
+
 			<div class="family_container">
 				<ul id="family">
 					
 				</ul>
 			</div>
 		</div>
-
 		<div id="manageFamily">
 			
     

@@ -135,6 +135,39 @@ ul#family li {
 	border: none;
 }
 
+
+#boxTodo {
+	background: #FFFFC9;
+	cursor: pointer;
+	text-align: center;
+}
+
+
+#boxTodo h3 {
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	text-align: center;
+	padding-left: 3px;
+	padding-right: 3px;
+	line-height: normal;
+
+}
+#boxTodo img {
+	width: 50px;
+	height: 50px;
+	margin: 4px;
+	border: 1px solid black;
+	vertical-align: bottom;
+}
+
+#boxTodo #checkbox {
+	border: none;
+}
+
+
+
 #tabs li {
 	padding: 4px;
 	background: #C9E9FF;
