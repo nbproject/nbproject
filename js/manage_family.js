@@ -58,15 +58,16 @@ $(document).ready(function() {
 
     function newMemberCallback(data) {
         if(data.error == null){
-            console.log("posted member");
-            console.log(data);
             var id = data._id;
-            console.log(id);
-            client.getMember(id, function(data){
-                console.log("retrieved member");
-                console.log(data);
-            });
             $("#familyTable tr:first").remove();
+            var name = data.name;
+            var pic = data.pictureURL;
+            if (pic === "") {
+                pic = "/assets/unknown_person.jpg";
+            }
+            var familyTable = $("#familyTable");
+            var userTableInfo = '<tr><td class="left"><img id="managePic" src="' + pic + '" /></td> <td class="middle">' + name + '</td> <td class="right"><button class="btn btn-danger btn-mini">Delete</btn></td></tr>'
+            $(familyTable).append(userTableInfo);
 
         }else{
             console.log(data.error);
