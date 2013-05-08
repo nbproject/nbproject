@@ -262,6 +262,7 @@
 			console.log(member);
 			member.name = form.find('.memb_name').val();
 			member.pictureURL = form.find('.memb_picture').val();
+			console.log("thisismember");
 			console.log(member);
 
 			client.modifyMember(member, function(data){
@@ -281,6 +282,7 @@
 
 		});
 	}
+
 
 
 	$(function(){
