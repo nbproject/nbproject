@@ -187,8 +187,8 @@ ul#family li {
 	background: #FFFFC9;
 }
 
-.family_button button:hover {
-	background: #C9E9FF;
+.profile:hover, #boxTodo:hover, .family_button button:hover {
+	background: #FFFF8C;
 }
 
 .family_button .dropdown-menu {
