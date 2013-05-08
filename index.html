@@ -5,7 +5,7 @@
 	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-
+	
 	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
 	<script type="text/javascript" src="js/api_client.js"></script>
 	<script type="text/javascript" src="js/verify.js"></script>
@@ -27,6 +27,10 @@
 	var popupCount = 0;
 	function line(txt){
 		console.log(txt);
+	}
+
+	function dummy() {
+
 	}
 
 	function showPopup(){
@@ -65,15 +69,13 @@
 	function taskClick(){
 		if (editModeOn) {
 			return;
-		}		
-		console.log($(this));
-		var id = $(this).parent().attr("id");
-		console.log(parent);
+		}
+		var id = $(this).parents('.taskRow').attr('id');
 		task = tasks[id];
 		showPopup();
 	}	
 
-
+	var TaskListId = 0;
 	var beforeEditHTML = "";
 	var editModeOn = false;
 	function updateTaskList(task){
@@ -90,7 +92,7 @@
 		taskDue.html("Due: " + task.duedate);
 		attachLabelListener(label);
 		var button = taskDiv.find(".taskButton");
-		console.log(button);
+		//console.log(button);
 		$(button).click( taskClick);
 
 	}
@@ -142,59 +144,6 @@
 		document.getElementById("taskName").innerHTML = task.name;
 	}
 
-	function taskPopupInit() {
-		// Set task variable
-    	//var task = new Task('Dummy Task', 1);
-    	
-    	// Display Task Name
-    	//document.getElementById("taskName").innerHTML = task.name;
-    
-    	// Disable buttons
-    	document.getElementById('btnClaim').disabled = true;
-    	document.getElementById('btnComplete').disabled = true;
-    	
-    	var currently_selected = '';
-    	
-    	// Selects a family member when clicked
-    	$('.selectionCell').click(function(evt) {
-    		currently_selected = evt.target.id;
-    		if (!currently_selected)
-    			return;
-    		document.getElementById("selectedName").innerHTML = currently_selected;
-    		$('.selectionPic').css('border-width', '0px');
-    		$('.selectionPic').css('margin', '3px');
-    		$('#'+currently_selected).css('border-width', '3px');
-    		$('#'+currently_selected).css('margin', '0px');
-    		$('#selectedPerson').attr('src', 'assets/'+currently_selected+'.jpg');
-
-    		//$('#buttonTable').css('margin-top', '14px');
-    		document.getElementById('btnClaim').disabled = false;
-    		document.getElementById('btnComplete').disabled = false;
-    	});
-    	
-		// Cancel Button
-		$('#btnCancel').click(function(evt) {
-    		hidePopup();
-    	});
-    	
-    	// Claim Button
-		$('#btnClaim').click(function(evt) {
-    		task.status = 'claimed';
-    		task.assignedTo = currently_selected;
-    		var imgurl = 'assets/'+currently_selected+'.jpg';
-    		taskClaimed(task.id, imgurl);
-    	});
-    	
-    	// Complete Button
-		$('#btnComplete').click(function(evt) {
-    		task.status = 'completed';
-    		task.assignedTo = currently_selected;
-    		task.finished = currently_selected;
-    		var imgurl = 'assets/'+currently_selected+'.jpg';
-    		taskCompleted(task.id, imgurl);
-    	});
-
-	}
 	(function($) {
 		$(function() {
 
@@ -211,7 +160,7 @@
 				day_start = day_start.add(1).day();
 			}
 
-			var id = 0;
+			
 			var form = $('form#new_task');
 			tasks = new Array();
 			form.submit(function(e) {
@@ -226,17 +175,18 @@
 					taskInput.removeClass('error');
 				}
 
-				var task = new Task(taskTxt, null,id);
+				var task = new Task(taskTxt, null,TaskListId);
 				
 				task.duedate = taskDue;
-				tasks[id.toString()] = task;
+				tasks[TaskListId.toString()] = task;
 
+				client.createTask(task, dummy);
 				updateTaskList(task);
 				taskInput.val('');
-				++id;
+				++TaskListId;
 			});
 			
-			$('.member-btn').click(function(evt) {
+			$('.profile').click(function(evt) {
     			window.location = 'member_history.html?member=' + evt.target.id.slice(3);
     		});
     		
@@ -253,6 +203,11 @@
 
     		$("#popup").click(function(e) {
     			e.stopPropagation();
+    		});
+
+
+    		$('#manageFamily').click(function(evt) {
+       			window.location = 'manage_family.html';
     		});
     		
     		$("#popClose").click(function(evt){
@@ -324,19 +279,6 @@
     		$('.deleteIcon').click(function(evt) {
     			var task_id = $(this).parents('.taskRow').attr('id');
     		});
-    		/*
-    		$(".labelWrapper").dotdotdot({
-				//	configuration goes here
-				ellipsis: '... '
-			}); */
-
-
-
-
-
-
-
-
 
 
 	//task management
@@ -361,6 +303,8 @@
 	    });
 	})(jQuery);
 	</script>
+
+	<script type="text/javascript" src="js/index.js"></script>
 	<title>Household Dashboard</title>
 </head>
 <body>
@@ -373,8 +317,8 @@
 				<li class="dropdown">
 				  <button class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-				    <li><a href="manage_family.html">Edit Family</a></lI>
-				    <li><a href="javascript:logout()">Log Out</a></li>
+				    <li>Edit Family</lI>
+				    	<li>Log Out</li>
 				  </ul>
 				</li>
 			</ul>
@@ -385,16 +329,13 @@
 			<div class="tabs_container">
 				<ul id="tabs">
 					<li><div class="profile active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
+					<li id="manageFamily">Manage</li>
 				</ul>
 			</div>
 
 			<div class="family_container">
 				<ul id="family">
-					<li><div class="profile member-btn" id="boxCersei"><img src="assets/Cersei.jpg" id="picCersei"><h3>Cersei</h3></div></li>
-					<li><div class="profile member-btn" id="boxRobert"><img src="assets/Robert.jpg" id="picRobert"><h3>Robert</h3></div></li>
-					<li><div class="profile member-btn" id="boxJoffrey"><img src="assets/Joffrey.jpg" id="picJoffrey"><h3>Joffrey</h3></div></li>
-					<li><div class="profile member-btn" id="boxMyrcella"><img src="assets/Myrcella.jpg" id="picMyrcella"><h3>Myrcella</h3></div></li>
-					<li><div class="profile member-btn" id="boxTommen"><img src="assets/Tommen.jpg" id="picTommen"><h3>Tommen</h3></div></li>
+					
 				</ul>
 			</div>
 		</div>
@@ -444,12 +385,6 @@
 					<br>
 
 					<table id="selectionTable"><tr>
-
-						<td class="selectionCell"><img src="assets/Cersei.jpg" class="selectionPic" id="Cersei" /></td>
-						<td class="selectionCell"><img src="assets/Robert.jpg" class="selectionPic" id="Robert" /></td>
-						<td class="selectionCell"><img src="assets/Joffrey.jpg" class="selectionPic" id="Joffrey" /></td>
-						<td class="selectionCell"><img src="assets/Myrcella.jpg" class="selectionPic" id="Myrcella" /></td>
-						<td class="selectionCell"><img src="assets/Tommen.jpg" class="selectionPic" id="Tommen" /></td>
 
 					</tr></table>
 					<br>
