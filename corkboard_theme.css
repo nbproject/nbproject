@@ -149,9 +149,13 @@ ul#family li {
 	top: 0;
 	right: 0;
 }
-.family_button button {
+.family_button button, .family_button button:focus {
 	border-radius: 0px;
 	background: #FFFFC9;
+}
+
+.family_button button:hover {
+	background: #C9E9FF;
 }
 
 .family_button .dropdown-menu {
