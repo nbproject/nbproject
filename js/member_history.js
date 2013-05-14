@@ -52,7 +52,6 @@ $(document).ready(function() {
     }
     var family = getFamilyObject();
     
-    $("#fam").text(family.name);
 
     client.getFamilyInfo(family._id, function(data){
         var datamembers = data.members;
