@@ -19,3 +19,8 @@ function verifyLogin() {
 verifyLogin();
 var client = new ApiClient();
 client.familyId = getFamilyObject()._id;
+
+$(document).ready(function(){
+	var family = getFamilyObject();
+	$("#fam").html('The <i>' + family.name + '</i> Family <b class="caret">');
+});
