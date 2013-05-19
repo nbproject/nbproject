@@ -126,7 +126,8 @@ INSTALLED_APPS = (
    # 'django_facebook',
     'facebook',
     "base",
-    "polls"
+    "polls", 
+    "stats"
 )
 
 AUTHENTICATION_BACKENDS = (

@@ -386,6 +386,40 @@ module.exports = function(grunt) {
         dest_js:  DEST_DIR+"stats_NB.js",
 	dest_css: DEST_DIR+"stats.css"
     };
+    TARGETS.STATS2 = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "flot/jquery.flot.js", "flot/jquery.flot.stack.js", "flot/jquery.flot.selection.js","flot/jquery.flot.time.js", "dev/ui.concierge.js"]),                         
+                          addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers.js", "dev/sections.js", "dev/stats_common.js", "dev/report.js" ]), 
+                          addPrefix(UI_DIR,[ "pagelinks.js", "stats2.js", "launch.js"]) 
+                          ), 
+        src_css: [].concat(
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "dev/ui.view.css", "dev/stats.css"]),
+                           addPrefix(UI_DIR, ["template.css"])
+                           ),
+        dest_js:  DEST_DIR+"stats2_NB.js",
+	dest_css: DEST_DIR+"stats2.css"
+    };
+    //now we generalize to stats viewer: 
+TARGETS.STATSVIEWER = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "flot/jquery.flot.js", "flot/jquery.flot.stack.js", "flot/jquery.flot.selection.js","flot/jquery.flot.time.js", "dev/ui.concierge.js"]),                         
+                          addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
+                          TARGETS.API.src_js,
+                          addPrefix(UI_DIR,["conf.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers.js", "dev/sections.js", "dev/stats_common.js", "dev/report.js" ]), 
+                          addPrefix(UI_DIR,[ "pagelinks.js", "reportlib.js", "statsviewer.js", "launch.js"]) 
+                          ), 
+        src_css: [].concat(
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "dev/ui.view.css", "dev/stats.css"]),
+                           addPrefix(UI_DIR, ["template.css"])
+                           ),
+        dest_js:  DEST_DIR+"statsviewer_NB.js",
+	dest_css: DEST_DIR+"statsviewer.css"
+    };
+
 
     var JS_TARGETS = {};
     var i, src;

@@ -98,7 +98,8 @@
         var mf =  GLOB.report.mappings.fct;
         var md =  GLOB.report.mappings.data;
         var f = function (_md, _i){
-            return function(p){
+            return function(_p){
+                var p = _p.payload;
                 if (p.data.length){
                     _md[_i][p.data[0][0]] = p.data[0][1];
                 }
@@ -109,7 +110,7 @@
             for (var j in data){
                 if (i in data[j] && (!(data[j][i] in md[i]))){
                     md[i][data[j][i]] = "untitled";
-                    nbcall(mf[i].__fct, $.extend({}, mf[i].args, {"id": data[j][i]}),f(md, i));
+                    nbcall(mf[i].__fct, NB$.extend({}, mf[i].args, {"id": data[j][i]}),f(md, i));
                 }    
             }
         }
@@ -135,6 +136,9 @@
                             D[seriename] = {};
                             D[seriename][m[i].auto_data.loop] = loops[j];
                             D[seriename].__fct = m[i].auto_data.fct;
+                            if ("options" in m[i].auto_data){
+                                D[seriename].options = m[i].auto_data.options;
+                            }
                             if ("params" in  m[i].auto_data){
                                 for (var l in  m[i].auto_data.params){
                                     var param_name = m[i].auto_data.params[l];
@@ -410,19 +414,37 @@
     GLOB.stats.__renderers = {
         plots: function(id){
             var M = GLOB.report.media.plots[id]; 
-            var data=[];
+            var data=[], i;
             var tb  = NB$("#tb_"+id);
-            for (var i in M.data){
+            for (i=0;i< M.data.length;i++){
                 if (NB$("#cb_"+M.data[i].id+":checked").length===1){
                     data.push(M.data[i]);
                 }
             }
             //    $.plot(NB$("#"+id), M.data, M.opts);
-            M.__plotobject = $.plot(NB$("#"+id), data, M.opts);
+            //            var initPlotParams = NB$.extend({}, {data: data}, M.opts), 
+
+            M.__plotobject = NB$.plot(NB$("#"+id), data, M.opts);
             if ("compute_stats" in M.opts){
                 GLOB.stats.__compute_stats(id);
                 GLOB.stats.__plot_stats(id);
             }
+            
+            /*
+            //sacha: continue here
+            for (i=0;i< M.data.length;i++){                
+                if ("lm" in GLOB.stats.store.o[M.data[i].id]){
+                    //we have lin modeling for the data: plot lin modeling
+                    var axes = M.__plotobject.getAxes();
+                    var x_min = axes.xaxis.datamin, 
+                    x_max = axes.xaxis.datamax, 
+                    lm=GLOB.stats.store.o[M.data[i].id].lm, 
+                    initPlotParams = NB$.extend({}, {data: data}, M.opts), 
+                    lmParams = NB$.extend({}, {data: [[x_min, lm[0]+lm[1]*x_min], [x_max, lm[0]+lm[1]*x_max]] }, M.opts); 
+                    M.__plotobject = NB$.plot(NB$("#"+id),[ initPlotParams, lmParams]);
+                }
+            }
+            */
         }, 
         tables: function(id){
             var $elt= NB$("#"+id);

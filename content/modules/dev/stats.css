@@ -42,3 +42,10 @@ span.facet_cnt{
 position: absolute;
 right: 5px;
 }
+
+div.plot{
+margin-top: 30px;
+width: 1024px; 
+height: 300px;
+align: center;
+}

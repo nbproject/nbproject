@@ -1,0 +1,43 @@
+{% extends "web/base.html" %}
+{% block title %}NB Stats{% endblock %}
+{% block css %}
+    <link type="text/css" href="/content/compiled/stats2.css" rel="stylesheet" />
+{% endblock %}
+{% block js %}   
+<script type="text/javascript" src="/content/compiled/stats2_NB.js"></script>
+{% endblock %}
+{% block content %}
+
+    
+      <h1>NB Stats</h1>
+  <div class="section" id="authoring_stats" label="Authoring"> 
+      <div class="graphitem">
+	<div class="plot" id="a2"></div>
+	<div class="caption">Number of notes authored per day</div>
+      </div>
+      <div class="graphitem">
+	<div class="plot" id="reply1"></div>
+	<div class="caption">Percentage of replies per day</div>
+      </div>
+    </div>
+    <div class="section" id="reading_stats" label="Reading"> 
+      <div class="graphitem">
+	<div class="plot" id="pages_by_day"></div>
+	<div class="caption">Number of pages seen per day</div>
+      </div>
+      <div class="graphitem">
+	<div class="plot" id="distribution_first_minute"></div>
+	<div class="caption">Distribution of number of pages read during the 1st minute (x-axis: seconds spent on a page)</div>
+	Looks like a nice exponential-like decrease between 5 and 30s. From this, I'd say the attention gap (distinction between flipping pages and reading is between 3 and 5 seconds, so it makes sense to keep all pages that were seem for more than 5 seconds as 'the user wasn't just flipping pages'
+      </div>
+ <div class="graphitem">
+	<div class="plot" id="distribution_first_hour"></div>
+	<div class="caption">Distribution of number of pages read during the 1st hour (x-axis: minutes spent on a page)</div>
+From the previous graph, we've excluded the pages where the user spends 5 seconds or less. The results are still in majority less than a minute, and 'almost nothing' past 10 minutes. <strong>Caution ! This is in log scale in y-axis, so stacking info is inaccurate ! </strong>
+      </div>
+
+
+    </div>
+
+{% endblock %}
+

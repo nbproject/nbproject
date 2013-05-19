@@ -1,0 +1,16 @@
+{% extends "web/base.html" %}
+{% block title %}NB Stats Viewer{% endblock %}
+{% block css %}
+    <link type="text/css" href="/content/compiled/statsviewer.css" rel="stylesheet" />
+{% endblock %}
+{% block js %}   
+<script type="text/javascript" src="/content/compiled/statsviewer_NB.js"></script>
+{% endblock %}
+{% block content %}
+      <h1>NB Stats</h1>
+      <div id="statscontent"></div>
+  <div class="section" id="authoring_stats" label="Authoring"> 
+    </div>
+
+{% endblock %}
+
