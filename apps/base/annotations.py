@@ -263,7 +263,19 @@ def get_stats_ensemble(payload):
     retval["grades"] = UR.qs2dict(grades, __NAMES["assignment_grade"], "id")
     retval["sections"] = UR.qs2dict(sections)
     return retval
-     
+
+def get_social_interactions(id_ensemble): 
+    # Generate how many times each student communicated with another student for a given group. 
+    import db
+    names = {
+        "cnt":None,     
+        "id": None
+        }
+    from_clause = """
+     (select count(id) as cnt, a2||'_'||a1 as id  from (select c1.id, c1.author_id as a1, c2.author_id as a2 from base_v_comment c1, base_v_comment c2 where c2.parent_id=c1.id and c1.ensemble_id=?) as v1 group by a1, a2) as v2"""
+    return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,))
+
+
 def set_grade_assignment(uid, P):
     id_user = P["id_user"]
     id_source = P["id_source"]

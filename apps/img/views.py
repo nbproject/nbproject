@@ -72,68 +72,12 @@ def serve_doc(req, id_source, annotated=False):
         logging.info("missing "+id_source)
         return HttpResponse("Error - No such file: #%s %s" % (id_source, qual) )
 
-def serve_grades_spreadsheet(req, id_ensemble): 
-    uid = UR.getUserId(req)
-    if not auth.canSeeGrades(uid, id_ensemble):
-        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
-    a  = annotations.get_stats_ensemble({"id_ensemble": id_ensemble})    
-    files = a["files"]
-    stats = a["stats"]
-    users = a["users"]
-    sections = a["sections"]
-    import xlwt
-    wbk = xlwt.Workbook()
-    s_wd = wbk.add_sheet("word_count")
-    s_ch = wbk.add_sheet("char_count")
-    s_cm = wbk.add_sheet("comments_count")
-
-    # Default order: file id and user email 
-    file_ids = sorted(files)
-    user_ids = sorted(users, key=lambda o:users[o]["email"]) 
-
-    row=0
-    col=0
-    s_wd.write(row, col, "WORDS")
-    s_ch.write(row, col, "CHARACTERS")
-    s_cm.write(row, col, "COMMENTS")
-    col+=1
-    s_wd.write(row, col, "SECTION")
-    s_ch.write(row, col, "SECTION")
-    s_cm.write(row, col, "SECTION")
-    col+=1
-    val = None
-    for f in file_ids: 
-        val = files[f]["title"]
-        s_wd.write(row, col, val)
-        s_ch.write(row, col, val)
-        s_cm.write(row, col, val)
-        col+=1
-    row+=1
-    for u in user_ids: 
-        col=0
-        val = users[u]["email"]
-        s_wd.write(row, col, val)
-        s_ch.write(row, col, val)
-        s_cm.write(row, col, val)
-        col+=1
-        val = "" if  users[u]["section_id"] is None else  sections[users[u]["section_id"]]["name"] 
-        s_wd.write(row, col, val)
-        s_ch.write(row, col, val)
-        s_cm.write(row, col, val)
-        col+=1
-        for f in file_ids: 
-            stat_id = "%s_%s" % (u,f)
-            s_wd.write(row, col, stats[stat_id]["numwords"] if stat_id in stats else "")
-            s_ch.write(row, col, stats[stat_id]["numchars"] if stat_id in stats else "")
-            s_cm.write(row, col, stats[stat_id]["cnt"] if stat_id in stats else "")
-            col+=1
-        row+=1
-    #now add a sheet for labeled comments if there are any: 
+def add_labeledcomments_sheet(uid, id_ensemble, workbook): 
     lcs = M.LabelCategory.objects.filter(ensemble__id=id_ensemble).order_by("id")
     lcs_ids = list(lcs.values_list('id', flat=True))
     cls = M.CommentLabel.objects.select_related("comment", "location").filter(category__in=lcs, grader__id=uid).order_by("comment__location__source__id", "comment__id", "category__id")
     if len(cls)>0:
-        s_lc = wbk.add_sheet("labeled_comments")
+        s_lc = workbook.add_sheet("labeled_comments")
         #Header row: 
         row=0
         col=0
@@ -177,6 +121,105 @@ def serve_grades_spreadsheet(req, id_ensemble):
                 col_grade = col+lcs_ids.index(rec.category_id) #move to the column for the next category for which we have data
                 s_lc.write(row, col_grade, rec.grade) 
             previous_comment_id = rec.comment.id
+
+def add_count_sheets(id_ensemble, workbook): 
+    a  = annotations.get_stats_ensemble({"id_ensemble": id_ensemble})    
+    files = a["files"]
+    stats = a["stats"]
+    users = a["users"]
+    sections = a["sections"]
+  
+    s_wd = workbook.add_sheet("word_count")
+    s_ch = workbook.add_sheet("char_count")
+    s_cm = workbook.add_sheet("comments_count")
+
+    # Default order: file id and user email 
+    file_ids = sorted(files)
+    user_ids = sorted(users, key=lambda o:users[o]["email"]) 
+
+    row=0
+    col=0
+    s_wd.write(row, col, "WORDS")
+    s_ch.write(row, col, "CHARACTERS")
+    s_cm.write(row, col, "COMMENTS")
+    col+=1
+    s_wd.write(row, col, "SECTION")
+    s_ch.write(row, col, "SECTION")
+    s_cm.write(row, col, "SECTION")
+    col+=1
+    val = None
+    for f in file_ids: 
+        val = files[f]["title"]
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
+        col+=1
+    row+=1
+    for u in user_ids: 
+        col=0
+        val = users[u]["email"]
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
+        col+=1
+        val = "" if  users[u]["section_id"] is None else  sections[users[u]["section_id"]]["name"] 
+        s_wd.write(row, col, val)
+        s_ch.write(row, col, val)
+        s_cm.write(row, col, val)
+        col+=1
+        for f in file_ids: 
+            stat_id = "%s_%s" % (u,f)
+            s_wd.write(row, col, stats[stat_id]["numwords"] if stat_id in stats else "")
+            s_ch.write(row, col, stats[stat_id]["numchars"] if stat_id in stats else "")
+            s_cm.write(row, col, stats[stat_id]["cnt"] if stat_id in stats else "")
+            col+=1
+        row+=1
+    return a 
+
+def add_socialgraph_sheet(id_ensemble, users, workbook): 
+    s = workbook.add_sheet("interaction_replies")
+    a  = annotations.get_social_interactions(id_ensemble)
+    user_ids = sorted(users, key=lambda o:users[o]["email"])
+    #Header row: 
+    row=0
+    col=0
+    s.write(row, col,'replier \ initiator')     
+    col+=1
+    for id1 in user_ids: 
+        val = users[id1]["email"]
+        s.write(row, col, val)
+        col+=1
+    row+=1    
+    #now real data: 
+    for id2 in user_ids: 
+        col=0
+        val = users[id2]["email"]
+        s.write(row, col, val)
+        col+=1
+        for id1 in user_ids: 
+            id = "%s_%s" % (id2, id1)
+            if id in a: 
+                val = a[id]["cnt"]
+                s.write(row, col, val)
+            col+=1            
+        row+=1
+
+def serve_grades_spreadsheet(req, id_ensemble): 
+    uid = UR.getUserId(req)
+    if not auth.canSeeGrades(uid, id_ensemble):
+        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+    import xlwt
+    wbk = xlwt.Workbook()
+
+    #first, generate the sheets with comment, words, char counts: 
+    stats = add_count_sheets(id_ensemble, wbk)
+ 
+    #now add a sheet for labeled comments if there are any: 
+    add_labeledcomments_sheet(uid, id_ensemble, wbk)
+    
+    #now add a sheet for the directed social graph
+    add_socialgraph_sheet(id_ensemble, stats["users"], wbk)
+
     import datetime
     a = datetime.datetime.now()
     fn = "stats_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
