@@ -176,33 +176,45 @@ def add_count_sheets(id_ensemble, workbook):
         row+=1
     return a 
 
-def add_socialgraph_sheet(id_ensemble, users, workbook): 
-    s = workbook.add_sheet("interaction_replies")
-    a  = annotations.get_social_interactions(id_ensemble)
+
+def __socialgraph_helper(users, data, s, label): 
     user_ids = sorted(users, key=lambda o:users[o]["email"])
     #Header row: 
     row=0
     col=0
-    s.write(row, col,'replier \ initiator')     
+    s.write(row, col,label)     
     col+=1
     for id1 in user_ids: 
-        val = users[id1]["email"]
+        #val = users[id1]["email"]
+        val = id1
         s.write(row, col, val)
         col+=1
     row+=1    
     #now real data: 
     for id2 in user_ids: 
         col=0
-        val = users[id2]["email"]
+        #val = users[id2]["email"]
+        val = id2
         s.write(row, col, val)
         col+=1
         for id1 in user_ids: 
             id = "%s_%s" % (id2, id1)
-            if id in a: 
-                val = a[id]["cnt"]
+            if id in data: 
+                val = data[id]["cnt"]
                 s.write(row, col, val)
             col+=1            
-        row+=1
+        row+=1    
+
+def add_socialgraph_sheets(id_ensemble, users, workbook): 
+    a  = annotations.get_social_interactions(id_ensemble)
+    __socialgraph_helper(users, 
+                         a["oneway"], 
+                         workbook.add_sheet("interaction_oneway"),
+                         'replier \ initiator')
+    __socialgraph_helper(users, 
+                         a["twoway"], 
+                         workbook.add_sheet("interaction_twoway"),
+                         'pos2 \ pos1,3')
 
 def serve_grades_spreadsheet(req, id_ensemble): 
     uid = UR.getUserId(req)
@@ -217,8 +229,8 @@ def serve_grades_spreadsheet(req, id_ensemble):
     #now add a sheet for labeled comments if there are any: 
     add_labeledcomments_sheet(uid, id_ensemble, wbk)
     
-    #now add a sheet for the directed social graph
-    add_socialgraph_sheet(id_ensemble, stats["users"], wbk)
+    #now add sheets for the social graph
+    add_socialgraph_sheets(id_ensemble, stats["users"], wbk)
 
     import datetime
     a = datetime.datetime.now()
