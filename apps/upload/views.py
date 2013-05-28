@@ -21,6 +21,80 @@ import random, string
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log_%s.log', filemode='a')
 
+def insert_pdf_metadata(id, pdf_dir):
+    import pyPdf
+    #insert metadata if not there: 
+    filename = "%s/%s" % (pdf_dir, id)
+    #this is where we test for good PDF: 
+    numpages = 0
+    h = 0
+    w = 0
+    do_crop = True
+    ROTATE_KEY = "/Rotate"
+    x0=y0=0
+    try: 
+        pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+        if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
+            print "PDF file encrypted with non-empty password: %s" % (filename,)
+            return False
+        numpages = pdf_object.getNumPages()
+        p = pdf_object.getPage(0)
+        box = p.trimBox
+        hm = int(p.mediaBox.getUpperRight_y())
+        wm = int(p.mediaBox.getUpperRight_x())
+        ht = int(box.getUpperRight_y() - box.getLowerLeft_y())
+        wt = int(box.getUpperRight_x() - box.getLowerLeft_x())
+        rotation = 0 if ROTATE_KEY not in p else int(p[ROTATE_KEY]) 
+        if wm<=wt or hm<=ht: #we have a doubt: use media_box
+            do_crop = False
+            w = wm
+            h = hm
+        else: #seems ok to use trimbox
+            w = wt
+            h = ht
+            x0 = box.getLowerLeft_x()
+            y0 = box.getLowerLeft_y()
+    except pyPdf.utils.PdfReadError: 
+        print "PdfReadError for %s ! Aborting !!!" % (filename,)
+        return False
+    except: 
+        print "OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
+        return False
+    s = M.Source.objects.get(pk=id)
+    s.numpages = numpages
+    s.w = w 
+    s.h = h 
+    s.rotation = rotation
+    s.x0 = x0
+    s.y0 = y0
+    #version is set up somewhere else, so it doesn't get called multiple times...    
+    s.save()   
+    
+def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
+    s = M.Source.objects.get(pk=id)
+    if ( not s.numpages): 
+        insert_pdf_metadata(id, pdf_dir)
+    s = M.Source.objects.get(pk=id)    
+    d_ref = 72
+    density = (int(res)*int(scale))/100   
+    output_dir =  "%s/%s/%s" % (img_dir, res, scale)
+    if not os.path.exists( "%s/%s" % (img_dir, res)):
+        os.mkdir( "%s/%s" % (img_dir, res))        
+    if  not os.path.exists( "%s/%s/%s" % (img_dir, res, scale)):
+        os.mkdir( "%s/%s/%s" % (img_dir, res, scale))
+    output_file = ("%s_"+fmt+".png") % (id, page)
+    crop_params = ""
+    if s.x0 > 0 or s.y0 > 0:
+        crop_params = " -crop %sx%s+%s+%s " % (s.w*density/d_ref, s.h*density/d_ref,s.x0*density/d_ref,s.y0*density/d_ref)            
+    #now try w/ mu.pdf: 
+    src = "%s/%s" % (pdf_dir, id)
+    cmd_rasterize = "pdfdraw -o %s/%s -r %s -b 8 %s %s" % (output_dir, output_file, density, src, (page+1))            
+    cmd_crop =  "echo" if crop_params=="" else "nice convert -quality 100  %s  -density %s %s/%s %s/%s" % (crop_params, density,output_dir, output_file, output_dir, output_file)
+    cmd = "(%s) && (%s)" % (cmd_rasterize, cmd_crop)
+    print cmd
+    retval =  os.system(cmd)
+    return retval  
+
 @csrf_exempt
 def upload(req): 
     r = HttpResponse()
@@ -39,12 +113,8 @@ def upload(req):
         REPOSITORY_DIR = "%s/%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
         f2 = open("%s/%s" % (REPOSITORY_DIR, id_source,),"wb")    
         f2.write(f.read())
-        f2.close()
-        basedir = dirname(dirname(abspath(__file__)))
-        #do the rest in the background, so server remains responsive                
-        cmd = "(cd %s; python -m upload.jobs file_img %s >/tmp/uploadscript_%s.log 2>&1 &)" %(basedir, id_source,  id_log )
-        logging.info(cmd)
-        os.system(cmd)
+        f2.close()                 
+        insert_pdf_metadata(id_source,  REPOSITORY_DIR)                
         r.content =  UR.prepare_response({})
     else: 
         r.content =  UR.prepare_response({}, 1, "NOT ALLOWED to insert a file to this group")

@@ -127,6 +127,8 @@ class Source(models.Model):
     rotation            = IntegerField(default=0)                               # new
     version             = IntegerField(default=0)                               #incremented when adding src
     type                = IntegerField(choices=TYPES, default=TYPE_PDF)
+    x0                  = IntegerField(default=0)                               #x-coordinate of lower-left corner of trimbox 
+    y0                  = IntegerField(default=0)                               #y-coordinate of lower-left corner of trimbox 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.title)
     #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=1 at the SQL level for the 'type' field , so that we don't create null records if using the old framework 
