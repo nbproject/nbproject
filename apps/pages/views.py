@@ -68,6 +68,44 @@ def collage(req):
 def dev_desktop(req, n): 
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
+def ondemand(req, ensemble_id):
+    url = req.GET.get("url", None)
+    if url: 
+        try: 
+            source_info = M.OnDemandInfo.objects.get(url=url, ensemble_id=ensemble_id)
+            return HttpResponseRedirect("/f/%s" %(source_info.source_id,))
+        except M.OnDemandInfo.DoesNotExist:
+            import urllib2
+            from upload.views import insert_pdf_metadata
+            f = urllib2.urlopen(url)
+            s = None
+            try: 
+                s = f.read()
+                f.close()
+                source = M.Source()
+                uid = UR.getUserId(req);
+                source.submittedby_id = uid                
+                source.save();
+                sid = source.id
+                annotations.addOwnership(sid, ensemble_id)
+                REPOSITORY_DIR = "%s/%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
+                f2 = open("%s/%s" % (REPOSITORY_DIR, sid,),"wb")    
+                f2.write(s)
+                f2.close() 
+                insert_pdf_metadata(sid,  REPOSITORY_DIR)        
+                info = M.OnDemandInfo()
+                info.url = url
+                info.ensemble_id = ensemble_id
+                info.source_id = sid
+                info.save()        
+                return HttpResponseRedirect("/f/%s" %(sid,))
+            except Exception as e: 
+                return HttpResponse("URL Read Error: %s, %s " % (url,e))                                      
+    else:
+        return HttpResponse("Missing parameter: url")
+
+
+
 def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
     if source.type==M.Source.TYPE_YOUTUBE: 

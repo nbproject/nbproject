@@ -145,8 +145,11 @@ class HTML5Info(models.Model):
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.url)
     
-
-    
+class OnDemandInfo(models.Model): 
+    ensemble            = ForeignKey(Ensemble)
+    source              = OneToOneField(Source)
+    url                 = CharField(max_length=2048,blank=True, null=True)
+      
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake. 
 class Ownership(models.Model):                                                  # old: ownership
     source              = ForeignKey(Source)                                    # old: id_source integer
