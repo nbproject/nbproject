@@ -204,6 +204,7 @@ def get_ensembles(uid, payload):
         "allow_anonymous": "ensemble.allow_anonymous",
         "allow_guest": "ensemble.allow_guest", 
         "allow_download": "ensemble.allow_download", 
+        "allow_ondemand": "ensemble.allow_ondemand", 
          }
     my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid, deleted=False)
     if id is not None: 
@@ -694,6 +695,8 @@ def create_ensemble(uid, P): #name, description, uid, allow_staffonly, allow_ano
         ensemble.use_invitekey = P["use_invitekey"]
     if "allow_download" in P: 
         ensemble.allow_download = P["allow_download"]
+    if "allow_ondemand" in P: 
+        ensemble.allow_ondemand = P["allow_ondemand"]
     ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])      
     ensemble.save()
     id = ensemble.pk

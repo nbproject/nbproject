@@ -75,6 +75,13 @@ def ondemand(req, ensemble_id):
             source_info = M.OnDemandInfo.objects.get(url=url, ensemble_id=ensemble_id)
             return HttpResponseRedirect("/f/%s" %(source_info.source_id,))
         except M.OnDemandInfo.DoesNotExist:
+            ensemble = None
+            try: 
+                ensemble = M.Ensemble.objects.get(pk=ensemble_id)
+            except M.Ensemble.DoesNotExist: 
+                return HttpResponse("No such ensemble: %s " % (ensemble_id,))                                      
+            if not ensemble.allow_ondemand: 
+                return HttpResponse("ondemand uplaod not allowed for that ensemble: %s " % (ensemble_id,))                                      
             import urllib2
             from upload.views import insert_pdf_metadata
             f = urllib2.urlopen(url)
@@ -84,7 +91,8 @@ def ondemand(req, ensemble_id):
                 f.close()
                 source = M.Source()
                 uid = UR.getUserId(req);
-                source.submittedby_id = uid                
+                source.submittedby_id = uid     
+                source.title = url.rpartition("/")[2]           
                 source.save();
                 sid = source.id
                 annotations.addOwnership(sid, ensemble_id)
@@ -137,7 +145,7 @@ def newsite(req):
     ensemble_form       = None
     user_form           = None
     if auth_user is not None: 
-        return HttpResponseRedirect("/admin")
+        return HttpResponseRedirect("/")
     if req.method == 'POST':
         user            = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
         ensemble        = M.Ensemble()
@@ -313,7 +321,7 @@ def properties_ensemble(req, id):
         ensemble_form = forms.EnsembleForm(req.POST, instance=ensemble)  
         if ensemble_form.is_valid(): 
             ensemble_form.save()   
-            return HttpResponseRedirect('/admin')   
+            return HttpResponseRedirect('/')   
     else: 
         ensemble_form = forms.EnsembleForm(instance=ensemble)
     return render_to_response("web/properties_ensemble.html", {"form": ensemble_form, "conf_url":  "%s://%s/subscribe?key=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, ensemble.invitekey)})

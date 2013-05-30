@@ -67,7 +67,8 @@ class Ensemble(models.Model):                                                   
     allow_guest         = BooleanField(default=False, verbose_name="Allow guests (i.e. non-members) to access the site")      
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
-    allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
+    allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")   
+    allow_ondemand      = BooleanField(default=False, verbose_name="Allow users to add any PDF accessible on the internet by pointing to its URL")                 
     section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
