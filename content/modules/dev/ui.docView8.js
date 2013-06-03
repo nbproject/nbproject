@@ -29,6 +29,7 @@
         self._page =  null; 
         self._id_source =  null;
         self._scrollTimerID =  null;
+        self._scrollCounter = 0;
         self._id_location       = null; //location_id of selected thread
 
         },
@@ -60,6 +61,7 @@
         break;
         case "zoom": 
         self.___best_fit =  false;
+        self._generate_contents();
         self._render();
         self._scroll_to_page();
         break;
@@ -153,13 +155,14 @@
                     var area_indicator = (prem-0.5*evt.currentTarget.clientHeight)>0;
                     var pbar_old = self.___pbar_old;
                     if ( (area_indicator !== self._area_indicator) || (pbar !== pbar_old)){
-                    var newpage = (area_indicator) ?  pbar: pbar+1;
-                    self._in_page_transition =  true; //prevent animation 
-                    $.concierge.trigger({type: "page_peek", value:newpage});
-                    self._in_page_transition =  false;
+                        var newpage = (area_indicator) ?  pbar: pbar+1;
+                        self._in_page_transition =  true; //prevent animation 
+                        $.concierge.trigger({type: "page_peek", value:newpage});
+                        self._in_page_transition =  false;
                     }
                     self.___pbar_old =  pbar;
                     self._area_indicator =  area_indicator;                            
+                    $.concierge.logHistory("scrolling", ["s",self.element.scrollTop(),self.element.height(),  self._scrollCounter++].join(","));
                 }, 300);
                 self._scrollTimerID =  timerID;    
             }
@@ -179,6 +182,8 @@
         _keydown: function(event){
         var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
         var scroll_codes = {38: "-=", 40: "+="};
+        var zoom_codes = {189: 0.8, 187: 1.25}; //webkit (shiftKey insensitive)
+        var zoom_charcodes = {45: 0.8, 43: 1.25}; //FF (shiftKey sensitive)
         var new_sel, id_item, id_new;
         if (event.keyCode in thread_codes){
             var sel = $("div.selection.selected", this.element);
@@ -211,6 +216,12 @@
             //$.concierge.trigger({type:scroll_codes[event.keyCode], value: 0});
             var H = this.element.height();
             this.element.stop(true).animate({scrollTop: scroll_codes[event.keyCode]  + H/3  + 'px'}, 200);     
+        }
+        else if (event.keyCode in zoom_codes){
+            $.concierge.trigger({type:"zoom", value: zoom_codes[event.keyCode] * ($.concierge.get_state("zoom") || this.___best_fit_zoom)});
+        }
+        else if (event.keyCode ===0 && event.charCode in zoom_charcodes){ //FF
+            $.concierge.trigger({type:"zoom", value: zoom_charcodes[event.charCode] * ($.concierge.get_state("zoom") || this.___best_fit_zoom)});
         }
         else{
             return true; // let the event be captured for other stuff
@@ -457,7 +468,8 @@
             self._v_margin =  parseInt($material.css("margin-bottom") +  parseInt($material.css("margin-top"), 10), 10 );
 
         }
-        self._render();
+        self._render();        
+        $.concierge.logHistory("scrolling", ["u",self._id_source, self.element.scrollTop(),self.element.height(), self._scrollCounter++, self.element.children(".contents").height()].join(","));
         }, 
         _render: function(){
         /*

@@ -82,6 +82,14 @@
         self._update();
     },
     _update: function(){
+            /*
+             * If you override this function in your view, don't forget to either: 
+             * - to call this method to automatically use all the available space: 
+             *   $.ui.view.prototype._update.call(this);
+             * - or to expand your view manually to fit the new space in the way you need
+             * 
+             */
+              
         this.element.height(this.element.parent().height());
         this.element.width(this.element.parent().width());
         this._expand();

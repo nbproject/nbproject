@@ -51,9 +51,6 @@
                                                      "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
                                                      "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>"+
                                                      "</div><div class='notepaneView-pages'/>");
-        $.mods.declare({
-            contextmenu: {js:["/content/modules/contextmenu/jquery.contextMenu.js"] , css: ["/content/modules/contextmenu/jquery.contextMenu.css"]}});
-        $.mods.ready("contextmenu", function(){});
         $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
         _defaultHandler: function(evt){
         var self=this;

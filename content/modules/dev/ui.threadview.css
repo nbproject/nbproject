@@ -60,14 +60,60 @@ color: #000000;
 }
 
 div.threadview span.author{
-color: #a0a0a0;
-font-style: italic;
-margin-left: 10px;
+    color: #a0a0a0;
+    font-style: italic;
+    margin-left: 10px;
 }
 
 div.threadview span.created{
 color: #a0a0a0;
 }
+
+div.threadview div.commentlabel_container{
+    position: absolute;
+    right: 42px;    
+    margin-top: -15px;
+    opacity: 0.3;
+    z-index: 0;
+    padding: 5px;
+    border: thin solid transparent;    
+}
+
+div.threadview div.commentlabel_container:hover{
+    background-color: #fbfbfb;
+    color: #303030;
+    opacity: 1.0;
+    border-color: #a0a0a0;
+    
+}
+
+
+div.threadview  span.cat_elt{
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 3px;
+    cursor: pointer;
+    border: thin solid transparent;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+div.threadview  span.cat_elt.selected{
+    color: #ffffff;
+    border-color: #777777;
+    background-color: #70A0F0;
+}
+
+div.threadview  span.cat_elt:hover{
+    background-color: #FFFFD0;
+}
+
+
+div.threadview div.cat_name{
+    display: inline-block;
+    width: 60px;
+}
+
 
 div.threadview div.stat-count{
     background-color: #EEE;

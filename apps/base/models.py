@@ -69,6 +69,7 @@ class Ensemble(models.Model):                                                   
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
     section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
+    metadata            = TextField(null=True, blank=True) #data in json format to help processing. 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
     class Meta: 
@@ -344,4 +345,28 @@ class AssignmentGradeHistory(models.Model):
     ctime               = DateTimeField(default=datetime.now())
     grade               = IntegerField()
     source              = ForeignKey(Source)
+
+class LabelCategory(models.Model):
+    TYPE_USER           = 1
+    TYPE_ADMIN          = 2
+    TYPE_SUPERADMIN     = 3
+    TYPES               = ((TYPE_USER, "USER"), (TYPE_ADMIN, "ADMIN"), (TYPE_SUPERADMIN, "SUPERADMIN"))     
+    visibility          = IntegerField(choices=TYPES, default=TYPE_ADMIN)
+    pointscale          = IntegerField()
+    name                = CharField(max_length=1024) 
+    ensemble            = ForeignKey(Ensemble)
     
+class CommentLabel(models.Model): 
+    """Used for finer grain grading or categorizing comments"""
+    grader              = ForeignKey(User)       
+    ctime               = DateTimeField(default=datetime.now())
+    grade               = IntegerField()
+    category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post. 
+    comment             = ForeignKey(Comment)
+
+class CommentLabelHistory(models.Model):
+    grader              = ForeignKey(User)       
+    ctime               = DateTimeField(default=datetime.now())
+    grade               = IntegerField()
+    category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post. 
+    comment             = ForeignKey(Comment)

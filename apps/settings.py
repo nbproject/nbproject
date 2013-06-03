@@ -236,3 +236,42 @@ FACEBOOK_SCOPE = 'email'
 
 #Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS). 
 ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'scrolling': {
+            'format': '%(message)s'
+            },
+        },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+            }, 
+        'scrolling': {
+            'level': 'INFO',
+            'class' : 'logging.FileHandler',
+            'formatter': 'scrolling',
+            'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
+            }
+        },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'scrolling':{
+            'handlers': ['scrolling'], 
+            'level': 'INFO'
+            }
+        }
+    }

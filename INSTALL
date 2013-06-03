@@ -21,7 +21,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * python-setuptools (used for 'easy_install pytz' in make prereqs as well)
    To make sure you have the above packages installed, you can run 'sudo make prereqs'
    Then, you need to install packages that might not be part of ubuntu (at least in the required version)
-   * django (>=1.3.1): download and follow instructions from https://www.djangoproject.com/download/
+   * django (>=1.5): download and follow instructions from https://www.djangoproject.com/download/
    * python-django-openid-auth (for OpenId authentication) 
        Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4), not w/ the ubuntu package:
        - Download the tarball from https://launchpad.net/django-openid-auth
@@ -72,10 +72,6 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
      -pg_dump -U nbadmin -h nb.csail.mit.edu -Fc notabene > nb.backup.YYYYMMDD
    - uploaded PDF files: Use your favorite file backup technique (tar, rdiff-backup, unison etc...) to backup the directory: 
      "%s%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) (cf your settings.py files for actual values). 
-
-6- Notes: 
-    Note that at the time of this writing, ubuntu 10.04 and Debian 5.0.7 still hasn't the Django 1.3.1 version so it can be installed from the the Django website
-
 
 Questions: Use our forum at http://nbproject.vanillaforums.com/
 Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above). 

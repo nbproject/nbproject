@@ -72,20 +72,66 @@ def serve_doc(req, id_source, annotated=False):
         logging.info("missing "+id_source)
         return HttpResponse("Error - No such file: #%s %s" % (id_source, qual) )
 
-def serve_grades_spreadsheet(req, id_ensemble): 
-    uid = UR.getUserId(req)
-    if not auth.canSeeGrades(uid, id_ensemble):
-        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+def add_labeledcomments_sheet(uid, id_ensemble, workbook): 
+    lcs = M.LabelCategory.objects.filter(ensemble__id=id_ensemble).order_by("id")
+    lcs_ids = list(lcs.values_list('id', flat=True))
+    cls = M.CommentLabel.objects.select_related("comment", "location").filter(category__in=lcs, grader__id=uid).order_by("comment__location__source__id", "comment__id", "category__id")
+    if len(cls)>0:
+        s_lc = workbook.add_sheet("labeled_comments")
+        #Header row: 
+        row=0
+        col=0
+        s_lc.write(row, col,"SOURCE_ID")
+        col+=1
+        s_lc.write(row, col,"COMMENT_ID")
+        col+=1
+        s_lc.write(row, col,"PARENT_ID")
+        col+=1
+        s_lc.write(row, col,"LOCATION_ID")
+        col+=1
+        s_lc.write(row, col,"AUTHOR_ID")
+        col+=1
+        s_lc.write(row, col,"BODY")
+        for i in xrange(0,len(lcs)):
+            col+=1
+            s_lc.write(row, col,"%s - [0:%s]" %(lcs[i].name, lcs[i].pointscale))       
+        #Data Rows: 
+        previous_comment_id=0
+        for j in xrange(0, len(cls)):
+            rec = cls[j]
+            if previous_comment_id == rec.comment.id:
+                #We just need to complete the data that we missed on the previous row. 
+                col_grade = col+lcs_ids.index(rec.category_id) #move to the column for the next category for which we have data
+                s_lc.write(row, col_grade, rec.grade)
+            else: 
+                row+=1
+                col=0
+                s_lc.write(row, col,rec.comment.location.source_id)
+                col+=1
+                s_lc.write(row, col,rec.comment.id)
+                col+=1
+                s_lc.write(row, col,rec.comment.parent_id)
+                col+=1
+                s_lc.write(row, col,rec.comment.location_id)
+                col+=1
+                s_lc.write(row, col, rec.comment.author_id)
+                col+=1
+                s_lc.write(row, col, rec.comment.body)
+                col+=1
+                col_grade = col+lcs_ids.index(rec.category_id) #move to the column for the next category for which we have data
+                s_lc.write(row, col_grade, rec.grade) 
+            previous_comment_id = rec.comment.id
+
+def add_count_sheets(id_ensemble, workbook): 
     a  = annotations.get_stats_ensemble({"id_ensemble": id_ensemble})    
     files = a["files"]
     stats = a["stats"]
     users = a["users"]
     sections = a["sections"]
-    import xlwt
-    wbk = xlwt.Workbook()
-    s_wd = wbk.add_sheet("word_count")
-    s_ch = wbk.add_sheet("char_count")
-    s_cm = wbk.add_sheet("comments_count")
+  
+    s_wd = workbook.add_sheet("word_count")
+    s_ch = workbook.add_sheet("char_count")
+    s_cm = workbook.add_sheet("comments_count")
 
     # Default order: file id and user email 
     file_ids = sorted(files)
@@ -128,6 +174,156 @@ def serve_grades_spreadsheet(req, id_ensemble):
             s_cm.write(row, col, stats[stat_id]["cnt"] if stat_id in stats else "")
             col+=1
         row+=1
+    return a 
+
+
+def __socialgraph_helper(users, data, s, label): 
+    user_ids = sorted(users, key=lambda o:users[o]["email"])
+    #Header row: 
+    row=0
+    col=0
+    s.write(row, col,label)     
+    col+=1
+    for id1 in user_ids: 
+        #val = users[id1]["email"]
+        val = id1
+        s.write(row, col, val)
+        col+=1
+    row+=1    
+    #now real data: 
+    for id2 in user_ids: 
+        col=0
+        #val = users[id2]["email"]
+        val = id2
+        s.write(row, col, val)
+        col+=1
+        for id1 in user_ids: 
+            id = "%s_%s" % (id2, id1)
+            if id in data: 
+                val = data[id]["cnt"]
+                s.write(row, col, val)
+            col+=1            
+        row+=1    
+
+def add_socialgraph_sheets(id_ensemble, users, workbook): 
+    a  = annotations.get_social_interactions(id_ensemble)
+    __socialgraph_helper(users, 
+                         a["oneway"], 
+                         workbook.add_sheet("interaction_oneway"),
+                         'replier \ initiator')
+    __socialgraph_helper(users, 
+                         a["twoway"], 
+                         workbook.add_sheet("interaction_twoway"),
+                         'pos2 \ pos1,3')
+
+def spreadsheet_cluster(req, id_ensemble): 
+    uid = UR.getUserId(req)
+    if not auth.canSeeGrades(uid, id_ensemble):
+        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+    import xlwt, json
+    workbook = xlwt.Workbook()
+    a  = annotations.get_social_interactions_clusters(id_ensemble)
+    ensemble = M.Ensemble.objects.get(pk=id_ensemble)
+    clusters = json.loads(ensemble.metadata)["groups"]
+    ### info sheet ###
+    s = workbook.add_sheet("information")
+    row=0
+    col=0
+    for i in xrange(0, len(clusters)): 
+        cluster = clusters[i]
+        s.write(row, col, "cluster")
+        col +=1
+        s.write(row, col, i)
+        col = 0
+        row+=1
+        s.write(row, col, "sources")
+        s.write(row, col+1, "id")
+        s.write(row, col+2, "title")
+        s.write(row, col+3, "class")
+        row+=1
+        for source_id  in cluster["source"]:
+            col = 0
+            source = M.Source.objects.get(pk=source_id)
+            s.write(row, col+1, source_id)
+            s.write(row, col+2, source.title)
+            s.write(row, col+3, source.ownership_set.all()[0].ensemble.name)
+            row+=1
+        col = 0
+        s.write(row, col, "buddy groups")
+        s.write(row, col+1, "group id")
+        s.write(row, col+2, "user id")
+        s.write(row, col+3, "firstname")
+        s.write(row, col+4, "lastname")
+        s.write(row, col+5, "email")
+        row+=1
+        for j in xrange(0, len(cluster["buddylists"])):
+            for user_id in cluster["buddylists"][j]:
+                user = M.User.objects.get(pk=user_id)
+                s.write(row, col+1, j)
+                s.write(row, col+2, user_id)
+                s.write(row, col+3, user.firstname)
+                s.write(row, col+4, user.lastname)
+                s.write(row, col+5, user.email)
+                row+=1
+        row+=1
+    ##data sheets:
+    for i in xrange(0, len(clusters)):
+        data = a[i] 
+        cluster = clusters[i]
+        user_ids = []
+        for buddylist in cluster["buddylists"]:
+            user_ids.extend(buddylist)          
+        s = workbook.add_sheet("cluster %s" %(i,))         
+        #Header row: 
+        row=0
+        col=0
+        s.write(row, col,"replier \ initiator")     
+        col+=1
+        for id1 in user_ids:         
+            val = id1
+            s.write(row, col, val)
+            col+=1
+        row+=1    
+        #now real data: 
+        for id2 in user_ids: 
+            col=0        
+            val = id2
+            s.write(row, col, val)
+            col+=1
+            for id1 in user_ids: 
+                id = "%s_%s" % (id2, id1)
+                if id in data: 
+                    val = data[id]["cnt"]
+                    s.write(row, col, val)
+                col+=1            
+            row+=1    
+
+    import datetime
+    a = datetime.datetime.now()
+    fn = "stats_cluster_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
+    workbook.save("/tmp/%s" %(fn,))
+    response = serve(req, fn,"/tmp/")
+    os.remove("/tmp/%s" %(fn,))
+    response["Content-Type"]='application/vnd.ms-excel'   
+    response['Content-Disposition'] = "attachment; filename=%s" % (fn, )
+    return response
+
+def serve_grades_spreadsheet(req, id_ensemble): 
+    uid = UR.getUserId(req)
+    if not auth.canSeeGrades(uid, id_ensemble):
+        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+    import xlwt
+    wbk = xlwt.Workbook()
+
+    #first, generate the sheets with comment, words, char counts: 
+    stats = add_count_sheets(id_ensemble, wbk)
+ 
+    #now add a sheet for labeled comments if there are any: 
+    add_labeledcomments_sheet(uid, id_ensemble, wbk)
+    
+    #now add sheets for the social graph
+    add_socialgraph_sheets(id_ensemble, stats["users"], wbk)
+
     import datetime
     a = datetime.datetime.now()
     fn = "stats_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)

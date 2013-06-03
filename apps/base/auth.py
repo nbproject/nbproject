@@ -241,6 +241,11 @@ def canEdit(uid, id_ann):
 def canDelete(uid, id_ann):    
     return canEdit(uid, id_ann)
 
+def canLabelComment(uid, cid): 
+    #need to be an admin for the ensemble containing that comment. 
+    m = M.Membership.objects.filter(ensemble__location__comment__id = cid, user__id=uid, deleted=False, admin=True)
+    return m.count()>0
+
 def canMarkThread(uid, id_location):
     #user needs to be able to read root comment in that location
     location = M.Location.objects.get(pk=id_location)

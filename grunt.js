@@ -67,6 +67,10 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView10.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     };  
+     MODS.DOCVIEW_YOUTUBE = {
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView11.js" ]),
+        src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
+    }; 
     
     MODS.NOTEPANEVIEW_DOC = {
         src_js: [].concat(
@@ -93,6 +97,14 @@ module.exports = function(grunt) {
                            MODS.CONTEXTMENU.src_css, 
                            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
     };
+    MODS.NOTEPANEVIEW_YOUTUBE = {
+        src_js: [].concat(
+                          MODS.CONTEXTMENU.src_js, 
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView11.js"])),
+        src_css:   [].concat(
+                             MODS.CONTEXTMENU.src_css, 
+                             addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
+    };
 
     MODS.THREADVIEW = {
         src_js: [].concat(
@@ -103,6 +115,7 @@ module.exports = function(grunt) {
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.threadview.css"]))
     };
+
     MODS.EDITORVIEW = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.editorview.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.editorview.css"])
@@ -225,6 +238,31 @@ module.exports = function(grunt) {
                             ), 
         dest_js:  DEST_DIR+"pdfviewer_NB.js",
         dest_css:  DEST_DIR+"pdfviewer.css"
+    };    
+
+ TARGETS.YOUTUBEVIEWER = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
+                          TARGETS.API.src_js,
+                          MODS.DOCVIEW_YOUTUBE.src_js, 
+                          MODS.NOTEPANEVIEW_YOUTUBE.src_js,
+                          MODS.THREADVIEW.src_js,
+                          MODS.EDITORVIEW.src_js,
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers.js"]), 
+                          addPrefix(UI_DIR, ["step22.js", "launch.js"])
+                          ), 
+        src_css: [].concat( 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.DOCVIEW_YOUTUBE.src_css, 
+                           MODS.NOTEPANEVIEW_YOUTUBE.src_css, 
+                           MODS.THREADVIEW.src_css, 
+                           MODS.EDITORVIEW.src_css
+                            ), 
+        dest_js:  DEST_DIR+"youtubeviewer_NB.js",
+        dest_css:  DEST_DIR+"youtubeviewer.css"
         
     };    
 

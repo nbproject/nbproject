@@ -263,7 +263,43 @@ def get_stats_ensemble(payload):
     retval["grades"] = UR.qs2dict(grades, __NAMES["assignment_grade"], "id")
     retval["sections"] = UR.qs2dict(sections)
     return retval
-     
+
+def get_social_interactions(id_ensemble): 
+    # Generate how many times each student communicated with another student for a given group. 
+    import db
+    names = {
+        "cnt":None,     
+        "id": None
+        }
+    #for one-way a1 initiates and a2 replies. 
+    from_clause = """
+     (select count(id) as cnt, a2||'_'||a1 as id  from (select c1.id, c1.author_id as a1, c2.author_id as a2 from base_v_comment c1, base_v_comment c2 where c2.parent_id=c1.id and c1.ensemble_id=?) as v1 group by a1, a2) as v2"""
+    output = {}
+    output["oneway"] = db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,))
+    #for two-way, a1 initiates, a2 replies, and a1 re-replies. 
+    from_clause = """
+     (select count(id) as cnt, a2||'_'||a1 as id  from (select c1.id, c1.author_id as a1, c2.author_id as a2 from base_v_comment c1, base_v_comment c2, base_v_comment c3 where c3.parent_id=c2.id and c3.author_id=c1.author_id and c2.parent_id=c1.id and c1.ensemble_id=?) as v1 group by a1, a2) as v2"""
+    output["twoway"] = db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,))
+    return output
+
+def get_social_interactions_clusters(id_ensemble): 
+    # Generate how many times each student communicated with another student using the clusters given in that group metadata. 
+    import db, json
+    names = {
+        "cnt":None,     
+        "id": None
+        }
+    ensemble = M.Ensemble.objects.get(pk=id_ensemble)
+    clusters = json.loads(ensemble.metadata)["groups"]
+    output = []
+    for cluster in clusters: 
+    #for one-way a1 initiates and a2 replies. 
+        from_clause = """
+     (select count(id) as cnt, a2||'_'||a1 as id  from (select c1.id, c1.author_id as a1, c2.author_id as a2 from base_v_comment c1, base_v_comment c2 where c2.parent_id=c1.id and c1.ensemble_id=? and c1.source_id in (%s)) as v1 group by a1, a2) as v2""" %(",".join([str(j) for j in cluster["source"]]),)
+        output.append(db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,)))
+    return output
+
+
 def set_grade_assignment(uid, P):
     id_user = P["id_user"]
     id_source = P["id_source"]

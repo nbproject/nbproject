@@ -358,26 +358,29 @@
             for (var i = 1;i<=items.length;i++){
             $pane.append("<div class='notepaneView-comments' page='"+i+"'/>");
             }
-            this._update();    
             if (this._page === null){
             this._page = 1;
             }
             if (items.length>0){
+            this._update();    
             this._render();
             }
         }, 
+        _update: function(){
+            $.ui.view.prototype._update.call(this);
+        },
         update: function(action, payload, items_fieldname){
-             if (action === "add" && this._rendered){
-             if (items_fieldname === "grade"){
-                 this._render();
-             }
-             else if (items_fieldname === "comment"){
-                 this._pages = {};
-                 this._render();
-             }
-             }
+            if (action === "add" && this._rendered){
+                if (items_fieldname === "grade"){
+                    this._render();
+                }
+                else if (items_fieldname === "comment"){
+                    this._pages = {};
+                    this._render();
+                }
+            }
         }
-        });
+            });
     $.widget("ui.notepaneView",V_OBJ );
     $.ui.notepaneView.prototype.options = {
         loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
