@@ -70,6 +70,7 @@ class Ensemble(models.Model):                                                   
     allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")   
     allow_ondemand      = BooleanField(default=False, verbose_name="Allow users to add any PDF accessible on the internet by pointing to its URL")                 
     section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
+    metadata            = TextField(null=True, blank=True) #data in json format to help processing. 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
     class Meta: 

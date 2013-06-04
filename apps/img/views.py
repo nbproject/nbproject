@@ -227,6 +227,98 @@ def add_socialgraph_sheets(id_ensemble, users, workbook):
                          workbook.add_sheet("interaction_twoway"),
                          'pos2 \ pos1,3')
 
+def spreadsheet_cluster(req, id_ensemble): 
+    uid = UR.getUserId(req)
+    if not auth.canSeeGrades(uid, id_ensemble):
+        return HttpResponse("Error: You don't have credentials to see grades for class %s" % (id_ensemble,))
+    import xlwt, json
+    workbook = xlwt.Workbook()
+    a  = annotations.get_social_interactions_clusters(id_ensemble)
+    ensemble = M.Ensemble.objects.get(pk=id_ensemble)
+    clusters = json.loads(ensemble.metadata)["groups"]
+    ### info sheet ###
+    s = workbook.add_sheet("information")
+    row=0
+    col=0
+    for i in xrange(0, len(clusters)): 
+        cluster = clusters[i]
+        s.write(row, col, "cluster")
+        col +=1
+        s.write(row, col, i)
+        col = 0
+        row+=1
+        s.write(row, col, "sources")
+        s.write(row, col+1, "id")
+        s.write(row, col+2, "title")
+        s.write(row, col+3, "class")
+        row+=1
+        for source_id  in cluster["source"]:
+            col = 0
+            source = M.Source.objects.get(pk=source_id)
+            s.write(row, col+1, source_id)
+            s.write(row, col+2, source.title)
+            s.write(row, col+3, source.ownership_set.all()[0].ensemble.name)
+            row+=1
+        col = 0
+        s.write(row, col, "buddy groups")
+        s.write(row, col+1, "group id")
+        s.write(row, col+2, "user id")
+        s.write(row, col+3, "firstname")
+        s.write(row, col+4, "lastname")
+        s.write(row, col+5, "email")
+        row+=1
+        for j in xrange(0, len(cluster["buddylists"])):
+            for user_id in cluster["buddylists"][j]:
+                user = M.User.objects.get(pk=user_id)
+                s.write(row, col+1, j)
+                s.write(row, col+2, user_id)
+                s.write(row, col+3, user.firstname)
+                s.write(row, col+4, user.lastname)
+                s.write(row, col+5, user.email)
+                row+=1
+        row+=1
+    ##data sheets:
+    for i in xrange(0, len(clusters)):
+        data = a[i] 
+        cluster = clusters[i]
+        user_ids = []
+        for buddylist in cluster["buddylists"]:
+            user_ids.extend(buddylist)          
+        s = workbook.add_sheet("cluster %s" %(i,))         
+        #Header row: 
+        row=0
+        col=0
+        s.write(row, col,"replier \ initiator")     
+        col+=1
+        for id1 in user_ids:         
+            val = id1
+            s.write(row, col, val)
+            col+=1
+        row+=1    
+        #now real data: 
+        for id2 in user_ids: 
+            col=0        
+            val = id2
+            s.write(row, col, val)
+            col+=1
+            for id1 in user_ids: 
+                id = "%s_%s" % (id2, id1)
+                if id in data: 
+                    val = data[id]["cnt"]
+                    s.write(row, col, val)
+                col+=1            
+            row+=1    
+
+    import datetime
+    a = datetime.datetime.now()
+    fn = "stats_cluster_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
+    workbook.save("/tmp/%s" %(fn,))
+    response = serve(req, fn,"/tmp/")
+    os.remove("/tmp/%s" %(fn,))
+    response["Content-Type"]='application/vnd.ms-excel'   
+    response['Content-Disposition'] = "attachment; filename=%s" % (fn, )
+    return response
+
 def serve_grades_spreadsheet(req, id_ensemble): 
     uid = UR.getUserId(req)
     if not auth.canSeeGrades(uid, id_ensemble):

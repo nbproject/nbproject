@@ -283,6 +283,23 @@ def get_social_interactions(id_ensemble):
     output["twoway"] = db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,))
     return output
 
+def get_social_interactions_clusters(id_ensemble): 
+    # Generate how many times each student communicated with another student using the clusters given in that group metadata. 
+    import db, json
+    names = {
+        "cnt":None,     
+        "id": None
+        }
+    ensemble = M.Ensemble.objects.get(pk=id_ensemble)
+    clusters = json.loads(ensemble.metadata)["groups"]
+    output = []
+    for cluster in clusters: 
+    #for one-way a1 initiates and a2 replies. 
+        from_clause = """
+     (select count(id) as cnt, a2||'_'||a1 as id  from (select c1.id, c1.author_id as a1, c2.author_id as a2 from base_v_comment c1, base_v_comment c2 where c2.parent_id=c1.id and c1.ensemble_id=? and c1.source_id in (%s)) as v1 group by a1, a2) as v2""" %(",".join([str(j) for j in cluster["source"]]),)
+        output.append(db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,)))
+    return output
+
 
 def set_grade_assignment(uid, P):
     id_user = P["id_user"]
