@@ -23,6 +23,8 @@ logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(mess
 
 def insert_pdf_metadata(id, pdf_dir):
     import pyPdf, sys
+    from django.template.loader import render_to_string
+
     #insert metadata if not there: 
     filename = "%s/%s" % (pdf_dir, id)
     #this is where we test for good PDF: 
@@ -69,11 +71,13 @@ def insert_pdf_metadata(id, pdf_dir):
     s.y0 = y0
     #version is set up somewhere else, so it doesn't get called multiple times...    
     s.save()   
-    
+    return True
+
 def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
     s = M.Source.objects.get(pk=id)
-    if ( not s.numpages): 
+    if ( not s.numpages):
         insert_pdf_metadata(id, pdf_dir)
+        #TODO: Handle error cases using return value from insert_pdf_metadata 
     s = M.Source.objects.get(pk=id)    
     d_ref = 72
     density = (int(res)*int(scale))/100   
@@ -114,7 +118,28 @@ def upload(req):
         f2 = open("%s/%s" % (REPOSITORY_DIR, id_source,),"wb")    
         f2.write(f.read())
         f2.close()                 
-        insert_pdf_metadata(id_source,  REPOSITORY_DIR)                
+        if insert_pdf_metadata(id_source,  REPOSITORY_DIR):
+            #send confirmation email
+            pass
+        else:
+            #send email that stg didn't work and remove that document.
+            source = M.Source.objects.get(pk=id_source)
+            ownership = M.Ownership.objects.get(source__id=id_source)
+            V = {"reply_to": settings.SMTP_REPLY_TO,
+                     "email": source.submittedby.email,
+                     "source_id": id_source,
+                     "title": source.title, 
+                     "submitted": ownership.published, 
+                     "support":  settings.SUPPORT_LINK,
+                     "contact_email": settings.NBTEAM_EMAIL,
+                     "firstname": task.source.submittedby.firstname
+                     }
+            ownership.delete()
+            source.delete()
+            msg = render_to_string("email/msg_pdferror",V)
+                email = EmailMessage("NB was unable to read a PDF file that you've submitted", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
+                (V["email"], settings.SMTP_CC_PDFERROR ), (settings.EMAIL_BCC, ))
+                email.send()
         r.content =  UR.prepare_response({})
     else: 
         r.content =  UR.prepare_response({}, 1, "NOT ALLOWED to insert a file to this group")
