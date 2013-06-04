@@ -22,7 +22,7 @@ id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xr
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log_%s.log', filemode='a')
 
 def insert_pdf_metadata(id, pdf_dir):
-    import pyPdf
+    import pyPdf, sys
     #insert metadata if not there: 
     filename = "%s/%s" % (pdf_dir, id)
     #this is where we test for good PDF: 
