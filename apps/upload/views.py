@@ -9,7 +9,7 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
 
-import logging, json
+import logging
 from base import utils_response as UR
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,20 +18,19 @@ from base import auth, annotations, models as M
 from os.path import dirname, abspath
 import os
 import random, string
+from django.template.loader import render_to_string
+from django.core.mail.message import EmailMessage
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log_%s.log', filemode='a')
 
 def insert_pdf_metadata(id, pdf_dir):
     import pyPdf, sys
-    from django.template.loader import render_to_string
-
     #insert metadata if not there: 
     filename = "%s/%s" % (pdf_dir, id)
     #this is where we test for good PDF: 
     numpages = 0
     h = 0
     w = 0
-    do_crop = True
     ROTATE_KEY = "/Rotate"
     x0=y0=0
     try: 
@@ -47,8 +46,7 @@ def insert_pdf_metadata(id, pdf_dir):
         ht = int(box.getUpperRight_y() - box.getLowerLeft_y())
         wt = int(box.getUpperRight_x() - box.getLowerLeft_x())
         rotation = 0 if ROTATE_KEY not in p else int(p[ROTATE_KEY]) 
-        if wm<=wt or hm<=ht: #we have a doubt: use media_box
-            do_crop = False
+        if wm<=wt or hm<=ht: #we have a doubt: use media_box         
             w = wm
             h = hm
         else: #seems ok to use trimbox
@@ -113,18 +111,28 @@ def upload(req):
     if auth.canInsertFile(uid, id_ensemble, id_folder):
         #the followong data will be deleted in utils_pdf if an PDF error happens later...
         annotations.createSource(uid, payload)
-        annotations.addOwnership(id_source, id_ensemble, id_folder)
+        ownership = annotations.addOwnership(id_source, id_ensemble, id_folder)
+        source = ownership.source
         REPOSITORY_DIR = "%s/%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
         f2 = open("%s/%s" % (REPOSITORY_DIR, id_source,),"wb")    
         f2.write(f.read())
         f2.close()                 
         if insert_pdf_metadata(id_source,  REPOSITORY_DIR):
-            #send confirmation email
-            pass
+            V = {"reply_to": settings.SMTP_REPLY_TO,
+             "email": source.submittedby.email,
+             "title": source.title,  
+             "submitted": ownership.published, 
+             "protocol": settings.PROTOCOL, 
+             "hostname": settings.HOSTNAME, 
+             "id_source": id_source, 
+             "firstname": source.submittedby.firstname
+             }
+            msg = render_to_string("email/msg_pdfdone",V)
+            email = EmailMessage("The PDF file that you've submitted is now ready on NB.", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
+                (V["email"], settings.SMTP_CC_USER ), (settings.EMAIL_BCC, ))
+            email.send()
         else:
-            #send email that stg didn't work and remove that document.
-            source = M.Source.objects.get(pk=id_source)
-            ownership = M.Ownership.objects.get(source__id=id_source)
+            #send email that stg didn't work and remove that document.         
             V = {"reply_to": settings.SMTP_REPLY_TO,
                      "email": source.submittedby.email,
                      "source_id": id_source,
@@ -132,14 +140,14 @@ def upload(req):
                      "submitted": ownership.published, 
                      "support":  settings.SUPPORT_LINK,
                      "contact_email": settings.NBTEAM_EMAIL,
-                     "firstname": task.source.submittedby.firstname
+                     "firstname": source.submittedby.firstname
                      }
             ownership.delete()
             source.delete()
             msg = render_to_string("email/msg_pdferror",V)
-                email = EmailMessage("NB was unable to read a PDF file that you've submitted", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
+            email = EmailMessage("NB was unable to read a PDF file that you've submitted", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
                 (V["email"], settings.SMTP_CC_PDFERROR ), (settings.EMAIL_BCC, ))
-                email.send()
+            email.send()
         r.content =  UR.prepare_response({})
     else: 
         r.content =  UR.prepare_response({}, 1, "NOT ALLOWED to insert a file to this group")

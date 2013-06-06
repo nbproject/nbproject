@@ -833,6 +833,7 @@ def addOwnership(id_source, id_ensemble, id_folder=None):
     if id_folder is not None: 
         ownership.folder_id = id_folder
     ownership.save()
+    return ownership
 
 def markIdle(uid, id_session, o):   
     for id in o: 
