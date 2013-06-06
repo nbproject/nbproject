@@ -356,14 +356,18 @@ class LabelCategory(models.Model):
     TYPE_USER           = 1
     TYPE_ADMIN          = 2
     TYPE_SUPERADMIN     = 3
-    TYPES               = ((TYPE_USER, "USER"), (TYPE_ADMIN, "ADMIN"), (TYPE_SUPERADMIN, "SUPERADMIN"))     
+    TYPES               = ((TYPE_USER, "USER"), (TYPE_ADMIN, "ADMIN"), (TYPE_SUPERADMIN, "SUPERADMIN"))    
+    TYPE_COMMENT        = 1
+    TYPE_THREAD         = 2
+    TYPES_SCOPE         = ((TYPE_COMMENT, "COMMENT"), (TYPE_THREAD, "THREAD"),)
     visibility          = IntegerField(choices=TYPES, default=TYPE_ADMIN)
+    scope               = IntegerField(choices=TYPES_SCOPE, default=TYPE_COMMENT)
     pointscale          = IntegerField()
     name                = CharField(max_length=1024) 
     ensemble            = ForeignKey(Ensemble)
     
 class CommentLabel(models.Model): 
-    """Used for finer grain grading or categorizing comments"""
+    """Used for finer grain grading or categorizing comments or threads"""
     grader              = ForeignKey(User)       
     ctime               = DateTimeField(default=datetime.now())
     grade               = IntegerField()

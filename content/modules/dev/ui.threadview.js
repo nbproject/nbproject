@@ -88,37 +88,16 @@
             }    
         }    
         },
-        _lens: function(o){
-        var self        = this;
-        var m            = self._model;
-        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty()===false || o.id_author === self._me.id) ? "" : "note-bold";
-        var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
-        var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
-        var question_info_me    = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
-
-        var tms            = m.get("threadmark", {comment_id: o.ID,  active: true, type: self._QUESTION });        
-        var tms_me        = tms.intersect( self._me.id, "user_id");
-        var tms_me_label    = tms_me.is_empty() ? "" : ", including mine"; 
-        var tms_me_class    = tms_me.is_empty() ? "" : "active";
-        var question_info    = tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' /> "+tms.length()+" </div>";
-
-        var type_info        = "";
-        if (o.type === 1) {
-            type_info        = " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
-        }
-        else if (o.type === 2){
-            type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
-        }            
-        var author_name        = " <span class='author'>"+o.fullname+"</span> ";
-        var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
-        var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
-        var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&sdot;&sdot;&sdot;</div></a> ";
-        var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
-        var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
-        var commentlabels = "";
-        if (self.options.commentLabels){
-            var cl_container = ["<div style='position: relative'><div class='commentlabel_container'>"];
-            var cats = m.get("labelcategory", {}).items;
+        _commentLabelsFactory : function(o, scope ){
+            //o: comment for which to draw labels
+            //scope: 
+            //  1 to draw them for the specified comment 
+            //  2 to draw them for the whole thread. 
+            var self = this;
+            var m = self._model;
+             if (self.options.commentLabels){
+            var cl_container = ["<div style='position: relative'><div class='commentlabel_container' scope='"+scope+"' id_item='"+o.ID+"'>"];
+            var cats = m.get("labelcategory", {scope: scope}).items;
             var i, j, label, tags = [], cat; 
             //tags are categories for which pointgrade=2: we just want to display the tag,
             //instead of displaying the name and the list of grades, we just want to display the name and whether it's toggled or not.            
@@ -146,8 +125,39 @@
             }
             cl_container.push("</div>");            
             cl_container.push("</div></div>");
-            commentlabels = cl_container.join("");
+            return  cl_container.join("");
+             }
+            return "";
+        }, 
+        _lens: function(o){
+        var self        = this;
+        var m            = self._model;
+        var bold_cl        = (m.get("seen", {id: o.ID}).is_empty()===false || o.id_author === self._me.id) ? "" : "note-bold";
+        var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
+        var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
+        var question_info_me    = (m.get("threadmark", {comment_id: o.ID, user_id: self._me.id, active: true, type: self._QUESTION }).is_empty()) ? " " : " <div class='nbicon questionicon-hicontrast' title='I am requesting a reply on this comment'/> " ;
+
+        var tms            = m.get("threadmark", {comment_id: o.ID,  active: true, type: self._QUESTION });        
+        var tms_me        = tms.intersect( self._me.id, "user_id");
+        var tms_me_label    = tms_me.is_empty() ? "" : ", including mine"; 
+        var tms_me_class    = tms_me.is_empty() ? "" : "active";
+        var question_info    = tms.is_empty()  ? " " : "<div class='stat-count "+tms_me_class+"' title='"+tms.length()+" "+ $.pluralize(tms.length(), "replies", "reply") +" requested on this comment"+tms_me_label+" '><div class='nbicon questionicon' /> "+tms.length()+" </div>";
+
+        var type_info        = "";
+        if (o.type === 1) {
+            type_info        = " <div class='nbicon privateicon' title='[me] This comment is private'/> ";
         }
+        else if (o.type === 2){
+            type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
+        }            
+        var author_name        = " <span class='author'>"+o.fullname+"</span> ";
+        var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
+        var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
+        var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&sdot;&sdot;&sdot;</div></a> ";
+        var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
+        var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
+        var commentlabels = self._commentLabelsFactory(o,1 );
+       
         return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>",commentlabels, "</div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
@@ -195,10 +205,11 @@
         $("div.threadview-header", self.element).show();
         self._render_header();
         var $pane    = $("div.threadview-pane", self.element).empty();
-        var root    = model.get("comment", {ID_location: self._location, id_parent: null}).sort(this._comment_sort_fct)[0];
+        var root    = model.get("comment", {ID_location: self._location, id_parent: null}).first();
         if (root === undefined){ //happens after deleting a thread that only contains 1 annotation
             return;
         }
+        $pane.append(this._commentLabelsFactory(root, 2));
         $pane.append(this._fill_tree(model, root));
         var f_on_delete = function(p){
             $.I("Note #"+p.id_comment+" has been deleted");
@@ -265,8 +276,7 @@
         };
         var f_comment_label = function(event){
             var t = $(event.target), 
-            comment_id = parseInt(t.closest("div.note-lens").attr("id_item"), 10), 
-            grade, category_id;
+            comment_id = parseInt(t.closest("div.commentlabel_container").attr("id_item"), 10), grade, category_id;
             if (t.hasClass("cat_elt")){
                 if (t.hasClass("tag")){
                     grade = t.hasClass("selected") ? 0 : 1; //toggle 
