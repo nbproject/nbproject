@@ -35,6 +35,7 @@ GLOB.files.set_model = function(model){
 "<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'>No</input>        </td></tr> "+
 "<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'>No</input>        </td></tr> "+
 "<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'>No</input>        </td></tr> "+
+"<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'>No</input>        </td></tr> "+
 "<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'>No</input>        </td></tr>"+
 "</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>").append("<div id='invite_users_dialog' > <div>To access the following group  <select id='invite_users_ensemble'/></div><br/><span class='fixdialog' >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/><textarea id='invite_users_emails'  rows='5' cols='50'/><br/><input type='checkbox' id='invite_users_admin' style='padding-left: 20px'></input> <label for='invite_users_admin'>Grant administrative rights to these users</label><br/><br/><span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/><textarea id='invite_users_msg'  rows='7' cols='50'/></div>").append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
 };
@@ -166,6 +167,7 @@ GLOB.files.addEnsemble = function(){
     $("input[name=allow_anonymous][value=1]")[0].checked="true";
     $("input[name=allow_guest][value=0]")[0].checked="true";
     $("input[name=allow_download][value=1]")[0].checked="true";
+    $("input[name=allow_ondemand][value=0]")[0].checked="true";
     $("input[name=use_invitekey][value=1]")[0].checked="true";
     $('#add_ensemble_dialog').dialog({
         title: "Create a new class...", 
@@ -175,7 +177,7 @@ GLOB.files.addEnsemble = function(){
             $(this).dialog("close");  
         },
             "Ok": function() { 
-            $.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value === "1", allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value === "1", allow_guest: $("input[name=allow_guest]:checked")[0].value === "1",  allow_download: $("input[name=allow_download]:checked")[0].value === "1", use_invitekey: $("input[name=use_invitekey]:checked")[0].value === "1" }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
+                $.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value === "1", allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value === "1", allow_guest: $("input[name=allow_guest]:checked")[0].value === "1",  allow_download: $("input[name=allow_download]:checked")[0].value === "1", allow_ondemand: $("input[name=allow_ondemand]:checked")[0].value === "1", use_invitekey: $("input[name=use_invitekey]:checked")[0].value === "1" }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
             $(this).dialog("destroy");
             }
         }

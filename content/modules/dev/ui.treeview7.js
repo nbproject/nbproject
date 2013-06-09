@@ -119,12 +119,6 @@
                 }
                 return children;        
             }, 
-            _update: function(){
-                /*
-                  var self = this;
-                  self.element.append("<p>_update request</p>");
-                */
-            },
             update: function(action, payload, items_fieldname){
                 if (action === "add" || action === "remove"){
                     this._render();

@@ -365,7 +365,7 @@
             VD[P.alloc][v] =  ((!(v in VD._transcient)) || VD._transcient[v]) ?  ((use_memorized && v in VD[P.mem]) ? VD[P.mem][v] : Math.floor(available*VD[P.d_min][v]/req)): 0;
             }            
             else if (v in  VD[P.scp]){ //this view has a sibling that's on the critical path for this orientation. Use sibling's size
-            VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ? Math.floor(available*VD[P.d_min][P.scp[v]]/req): 0;
+            VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ? Math.floor(available*VD[P.d_min][VD[P.scp][v]]/req): 0;
             }
             else{ //TODO: this is an approx. For now, just allocate desired size
             VD[P.alloc][v] = ((!(v in VD._transcient)) || VD._transcient[v]) ? VD[P.des][v]: 0;

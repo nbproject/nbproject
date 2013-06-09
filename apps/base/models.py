@@ -67,8 +67,10 @@ class Ensemble(models.Model):                                                   
     allow_guest         = BooleanField(default=False, verbose_name="Allow guests (i.e. non-members) to access the site")      
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
-    allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")                       
+    allow_download      = BooleanField(default=True, verbose_name="Allow users to download the PDFs")   
+    allow_ondemand      = BooleanField(default=False, verbose_name="Allow users to add any PDF accessible on the internet by pointing to its URL")                 
     section_assignment  = IntegerField(choices=SECTION_ASSGT_TYPES, default=SECTION_ASSGT_NULL, null=True)
+    metadata            = TextField(null=True, blank=True) #data in json format to help processing. 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
     class Meta: 
@@ -127,6 +129,8 @@ class Source(models.Model):
     rotation            = IntegerField(default=0)                               # new
     version             = IntegerField(default=0)                               #incremented when adding src
     type                = IntegerField(choices=TYPES, default=TYPE_PDF)
+    x0                  = IntegerField(default=0)                               #x-coordinate of lower-left corner of trimbox 
+    y0                  = IntegerField(default=0)                               #y-coordinate of lower-left corner of trimbox 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.title)
     #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=1 at the SQL level for the 'type' field , so that we don't create null records if using the old framework 
@@ -143,8 +147,11 @@ class HTML5Info(models.Model):
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.url)
     
-
-    
+class OnDemandInfo(models.Model): 
+    ensemble            = ForeignKey(Ensemble)
+    source              = OneToOneField(Source)
+    url                 = CharField(max_length=2048,blank=True, null=True)
+      
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake. 
 class Ownership(models.Model):                                                  # old: ownership
     source              = ForeignKey(Source)                                    # old: id_source integer
@@ -349,14 +356,18 @@ class LabelCategory(models.Model):
     TYPE_USER           = 1
     TYPE_ADMIN          = 2
     TYPE_SUPERADMIN     = 3
-    TYPES               = ((TYPE_USER, "USER"), (TYPE_ADMIN, "ADMIN"), (TYPE_SUPERADMIN, "SUPERADMIN"))     
+    TYPES               = ((TYPE_USER, "USER"), (TYPE_ADMIN, "ADMIN"), (TYPE_SUPERADMIN, "SUPERADMIN"))    
+    TYPE_COMMENT        = 1
+    TYPE_THREAD         = 2
+    TYPES_SCOPE         = ((TYPE_COMMENT, "COMMENT"), (TYPE_THREAD, "THREAD"),)
     visibility          = IntegerField(choices=TYPES, default=TYPE_ADMIN)
+    scope               = IntegerField(choices=TYPES_SCOPE, default=TYPE_COMMENT)
     pointscale          = IntegerField()
     name                = CharField(max_length=1024) 
     ensemble            = ForeignKey(Ensemble)
     
 class CommentLabel(models.Model): 
-    """Used for finer grain grading or categorizing comments"""
+    """Used for finer grain grading or categorizing comments or threads"""
     grader              = ForeignKey(User)       
     ctime               = DateTimeField(default=datetime.now())
     grade               = IntegerField()

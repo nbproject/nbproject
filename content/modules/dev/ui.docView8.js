@@ -61,6 +61,7 @@
         break;
         case "zoom": 
         self.___best_fit =  false;
+        self._generate_contents();
         self._render();
         self._scroll_to_page();
         break;
@@ -181,6 +182,8 @@
         _keydown: function(event){
         var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
         var scroll_codes = {38: "-=", 40: "+="};
+        var zoom_codes = {189: 0.8, 187: 1.25}; //webkit (shiftKey insensitive)
+        var zoom_charcodes = {45: 0.8, 43: 1.25}; //FF (shiftKey sensitive)
         var new_sel, id_item, id_new;
         if (event.keyCode in thread_codes){
             var sel = $("div.selection.selected", this.element);
@@ -213,6 +216,12 @@
             //$.concierge.trigger({type:scroll_codes[event.keyCode], value: 0});
             var H = this.element.height();
             this.element.stop(true).animate({scrollTop: scroll_codes[event.keyCode]  + H/3  + 'px'}, 200);     
+        }
+        else if (event.keyCode in zoom_codes){
+            $.concierge.trigger({type:"zoom", value: zoom_codes[event.keyCode] * ($.concierge.get_state("zoom") || this.___best_fit_zoom)});
+        }
+        else if (event.keyCode ===0 && event.charCode in zoom_charcodes){ //FF
+            $.concierge.trigger({type:"zoom", value: zoom_charcodes[event.charCode] * ($.concierge.get_state("zoom") || this.___best_fit_zoom)});
         }
         else{
             return true; // let the event be captured for other stuff
