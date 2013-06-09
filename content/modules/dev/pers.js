@@ -25,12 +25,15 @@
     // on firefox for now, so we match by filename. 
     var scriptname = "_NB.js";
     var nb_script = jQuery("script[src$='"+scriptname+"']");
-    if (nb_script.length!==1){
-        alert("Error: Couldn't find (unique) NB script, i.e ending in : "+ scriptname); 
+    if (nb_script.length===0){
+        alert("Error: Couldn't find  NB script, i.e ending in : "+ scriptname); 
         return;
     }
+    if (nb_script.length>1){
+        alert("Warning: Found more than one  NB script, i.e ending in : "+ scriptname + "using the last one: " + nb_script[nb_script.length-1] ); 
+    }
     GLOB.pers = {
-        currentScript: nb_script[0],
+        currentScript: nb_script[nb_script.length-1],
         embedded: false
     };
     var $str        = "NB$" in window ? "NB$" : "jQuery";
