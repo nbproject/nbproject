@@ -5,16 +5,18 @@ import  json, sys
 from django.views.decorators.csrf import csrf_exempt
 from base import  utils_response as UR
 import logging, random, string
+import models as M
 from base import db
 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_stats_%s.log' % ( id_log,), filemode='a')
 
 __EXPORTS = [
+    "report"
     "popular_groups2", 
     "distribution_first_hour",
  "distribution_first_minute", 
-
+"report", 
 "get_label", 
     "pages_by_day", 
     "authored_by_day", 
@@ -72,6 +74,13 @@ def api(req):
         return r
 
 
+def report(P, req): 
+    output = {}
+    report_id = int(P["id"])
+    report = M.Report.objects.get(pk=report_id)
+    output["sections"] = UR.qs2list(report.sectionunit_set.all().order_by("position"), {"name": "section.name", "description": "section.description"} );
+    return UR.prepare_response(output)
+
 def popular_groups2(P, req): 
     output = {"ID": P["ID"]}
     data = db.Db().getRows("""
@@ -90,6 +99,9 @@ e.id  from base_comment c, base_location l, base_ensemble e where  e.id=l.ensemb
 """, (P["after"],))
     output["data"] = data
     return UR.prepare_response(output)
+
+
+
 
 def distribution_first_hour(P, req): 
     output = {"ID": P["ID"]}

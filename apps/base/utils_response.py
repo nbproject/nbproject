@@ -72,9 +72,20 @@ def getUserInfo(req, allow_guest=False, extra_confkey_getter=None):
             info = newinfo
     return info
 
+def qs2list(qs, names=None, pk="id"):
+    """Converts a QuerySet into a list"""
+    output = []     
+    pk2 = pk if (names is None or names.get(pk, None) is None) else names.get(pk, pk)    
+    for r in qs:
+        rel_obj = r
+        for i in pk2.split("."):
+            rel_obj = getattr(rel_obj, i)            
+        output.append(model2dict(r, names))
+    return output
+
 
 def qs2dict(qs, names=None, pk="id"):
-    """Converts a QuerySet into a a dictionary"""
+    """Converts a QuerySet into a dictionary"""
     output = {}     
     pk2 = pk if (names is None or names.get(pk, None) is None) else names.get(pk, pk)    
     for r in qs:

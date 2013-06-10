@@ -15,6 +15,24 @@
     GLOB.stats.previousPoint = null;
     GLOB.stats.dependencies = {};
     GLOB.stats.id2mtype = {};
+    //util fcts: 
+    var findExtrema = function(d, j){
+                //j: column number
+                var xmin =Number.MAX_VALUE,
+                xmax = -Number.MAX_VALUE, 
+                i;
+                
+                for (i=0;i<d.length;i++){
+                    if (d[i][j]<xmin){
+                         xmin = d[i][j];
+                    }
+                    if (d[i][j]>xmax){
+                        xmax = d[i][j];
+                    }
+                }
+                return [xmin, xmax];
+            };
+            
     GLOB.stats.__populateDefaultTableData = function(media, id){
         media.data = [];
         if (!(id in GLOB.report.data)){
@@ -424,27 +442,39 @@
             //    $.plot(NB$("#"+id), M.data, M.opts);
             //            var initPlotParams = NB$.extend({}, {data: data}, M.opts), 
 
-            M.__plotobject = NB$.plot(NB$("#"+id), data, M.opts);
+            //sacha: continue here
+
+            var series = [];
+            for (i=0;i<data.length;i++){
+                series.push( data[i].data);
+            }
+            for (i=0;i< M.data.length;i++){                
+                if ("lm" in GLOB.stats.store.o[M.data[i].id]){
+                    //we have lin modeling for the data: plot lin modeling
+                    var extrema = findExtrema(data[0].data, 0);
+
+                    // var axes = M.__plotobject.getAxes();
+                    var x_min =extrema[0],// axes.xaxis.datamin, 
+                        x_max = extrema[1], //axes.xaxis.datamax, 
+                        lm=GLOB.stats.store.o[M.data[i].id].lm;                    
+                    //        initPlotParams = NB$.extend({}, {data: data}, M.opts), 
+                    //                    lmParams = NB$.extend({}, {data: [[x_min, lm[0]+lm[1]*x_min], [x_max, lm[0]+lm[1]*x_max]] }, M.opts); 
+                    series.push({data: [[x_min, lm[0]+lm[1]*x_min], [x_max, lm[0]+lm[1]*x_max]] });
+                    //                    M.__plotobject = NB$.plot(NB$("#"+id),[ initPlotParams, lmParams]);
+                }
+            }
+
+            //            M.__plotobject = NB$.plot(NB$("#"+id), data, M.opts);
+            M.__plotobject = NB$.plot(NB$("#"+id), series, M.opts);
+
             if ("compute_stats" in M.opts){
                 GLOB.stats.__compute_stats(id);
                 GLOB.stats.__plot_stats(id);
             }
             
-            /*
-            //sacha: continue here
-            for (i=0;i< M.data.length;i++){                
-                if ("lm" in GLOB.stats.store.o[M.data[i].id]){
-                    //we have lin modeling for the data: plot lin modeling
-                    var axes = M.__plotobject.getAxes();
-                    var x_min = axes.xaxis.datamin, 
-                    x_max = axes.xaxis.datamax, 
-                    lm=GLOB.stats.store.o[M.data[i].id].lm, 
-                    initPlotParams = NB$.extend({}, {data: data}, M.opts), 
-                    lmParams = NB$.extend({}, {data: [[x_min, lm[0]+lm[1]*x_min], [x_max, lm[0]+lm[1]*x_max]] }, M.opts); 
-                    M.__plotobject = NB$.plot(NB$("#"+id),[ initPlotParams, lmParams]);
-                }
-            }
-            */
+            
+           
+            
         }, 
         tables: function(id){
             var $elt= NB$("#"+id);
@@ -487,23 +517,7 @@
                 tbody.append(tr);
             }
             var facets = M.facets || [], l_min, l_max, cnt_max;
-            var findExtrema = function(d, j){
-                //j: column number
-                var xmin =Number.MAX_VALUE,
-                xmax = -Number.MAX_VALUE, 
-                i;
-                
-                for (i=0;i<d.length;i++){
-                    if (d[i][j]<xmin){
-                         xmin = d[i][j];
-                    }
-                    if (d[i][j]>xmax){
-                        xmax = d[i][j];
-                    }
-                }
-                return [xmin, xmax];
-            };
-            
+        
             var fillBins = function(d,j, d_min, d_max, NBINS){
                 var i, bins=[];
                 for (i=0;i<NBINS;i++){

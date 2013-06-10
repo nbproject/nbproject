@@ -35,19 +35,15 @@
         GLOB.report.media.plots[o.id] = lib.plots[o.id];
     };
     window.setTimeout(function(){
-            console.log("this fakes the callback being called from the server, telling us what to put into the report"); 
-            var P = {
-                visuals: [
-            {id: "a2"}, 
-            {id: "reply1"} 
-                           ]
-            };            
-            (function(payload){
-                for (var i=0;i<payload.visuals.length;i++){
-                    GLOB.report.visuals.push(P.visuals[i]);
-                    GLOB.report.buildVisual(i);
-                }                
-                GLOB.stats.run();
-            })(P);
-        }, 4000);
+            var auth_str = GLOB.conf.userinfo.guest ? "guest=1" : "ckey="+GLOB.conf.userinfo.ckey;                    
+            NB$.post(GLOB.conf.servers.rpc+"/stats/api?" + auth_str, {"f":  "report", "a": JSON.stringify({id: GLOB.pers.params["report"]})},function(payload){
+                    var sections = payload.payload.sections; 
+                    var visuals = [];
+                    for (var i=0;i<sections.length;i++){
+                        GLOB.report.visuals.push({id: sections[i].name});
+                        GLOB.report.buildVisual(i);
+                    }
+                    GLOB.stats.run();
+                }, "json");
+        }, 2000);
 })(NB);
