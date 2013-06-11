@@ -360,6 +360,12 @@
     }, 
     get_login_dialog_markup: function(P,cb){
         return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
+        }, 
+ get_sec_mult_factor: function(){
+	return 100;
+    }, 
+    get_metronome_period_s: function(){
+	return 1;
     }
     };
 })(NB);

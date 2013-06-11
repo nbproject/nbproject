@@ -102,6 +102,10 @@ GLOB.pers.init = function(){
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   
+    //start a metronome every second: 
+    var metronome = function(){
+	$.concierge.trigger({type: "player_at", value:0});
+    };
 };
     
 GLOB.pers.createStore = function(payload){
