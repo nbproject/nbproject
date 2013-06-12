@@ -365,6 +365,11 @@ class LabelCategory(models.Model):
     pointscale          = IntegerField()
     name                = CharField(max_length=1024) 
     ensemble            = ForeignKey(Ensemble)
+
+class LabelCategoryCaption(models.Model):
+    category       = ForeignKey(LabelCategory)
+    grade               = IntegerField()
+    caption             = CharField(max_length=127)
     
 class CommentLabel(models.Model): 
     """Used for finer grain grading or categorizing comments or threads"""

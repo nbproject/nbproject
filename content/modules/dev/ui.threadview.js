@@ -98,7 +98,7 @@
              if (self.options.commentLabels){
             var cl_container = ["<div style='position: relative'><div class='commentlabel_container' scope='"+scope+"' id_item='"+o.ID+"'>"];
             var cats = m.get("labelcategory", {scope: scope}).items;
-            var i, j, label, tags = [], cat; 
+            var i, j, label, tags = [], cat, caption; 
             //tags are categories for which pointgrade=2: we just want to display the tag,
             //instead of displaying the name and the list of grades, we just want to display the name and whether it's toggled or not.            
             for (i in cats){
@@ -110,7 +110,12 @@
                     label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
                     cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cat.name)+"</div>");
                     for (j=0;j<cat.pointscale;j++){
-                        cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===j)? " selected":"" )+"' val='"+j+"'>"+j+"</span>");
+                        try{
+                            caption = m.get("labelcategorycaption", {category_id: cat.id, grade: j}).first().caption;
+                        }catch(e){
+                            caption = j;
+                        }
+                        cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===j)? " selected":"" )+"' val='"+j+"'>"+caption+"</span>");
                     }
                     cl_container.push("</div>");
                 }              

@@ -348,6 +348,7 @@ def getCommentLabels(payload, req):
             output["labelcategories"] =  UR.qs2dict(lc)
             comments = M.Comment.objects.filter(location__source__id=id_source, deleted=False, moderated=False)
             output["commentlabels"] = UR.qs2dict(M.CommentLabel.objects.filter(category__in=lc, comment__in=comments, grader__id=uid))
+            output["labelcategorycaptions"] = UR.qs2dict(M.LabelCategoryCaption.objects.filter(category__in=lc))
             return UR.prepare_response(output)     
     return UR.prepare_response({}, 1, "NOT ALLOWED")
 

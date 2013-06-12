@@ -147,7 +147,8 @@
                     draft: {},
                     seen:{references: {id_location: "location"}}, 
                     labelcategory:{references: {ensemble_id: "ensemble"}}, 
-                    commentlabel: {references: {category_id: "labelcategory"}}
+                    commentlabel: {references: {category_id: "labelcategory"}},
+                    labelcategorycaption: {references: {category_id: "labelcategory"}}
                     });
         //here we override the callback so that we can get new notes.
         var cb2 = function(P2){    
@@ -214,6 +215,8 @@
                 $.concierge.get_component("commentlabels_loader")( {file:id_source }, function(P){
                         m.add("labelcategory", P["labelcategories"]);
                         m.add("commentlabel", P["commentlabels"]);
+                        m.add("labelcategorycaption", P["labelcategorycaptions"]);
+
                     });
                 }
             });
