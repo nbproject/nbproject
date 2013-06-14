@@ -72,8 +72,8 @@ color: #a0a0a0;
 div.threadview div.commentlabel_container{
     position: absolute;
     right: 42px;    
-    margin-top: -15px;
-    opacity: 0.3;
+    margin-top: 0px;
+    opacity: 0.2;
     z-index: 0;
     padding: 5px;
     border: thin solid transparent;    
@@ -84,7 +84,7 @@ div.threadview div.commentlabel_container:hover{
     color: #303030;
     opacity: 1.0;
     border-color: #a0a0a0;
-    
+    z-index: 3;
 }
 
 
