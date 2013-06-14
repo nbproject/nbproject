@@ -88,6 +88,7 @@ def do_pending_inserts(using):
             o.save(using=using)
         except IntegrityError as e: 
             new_pending.append(o)
+
                             
 def do_extract(t_args):
     objs = [(M.Ensemble, 237), ]
@@ -104,6 +105,59 @@ def do_extract(t_args):
     duplicate(objs_src, "default", "sel", {M.Comment: insert_parent_comments})
     objs_dest = [o[0].objects.using("sel").get(pk=o[1]) for o in objs]  
     
+
+def do_dumpensemble(t_args): 
+    ensemble_ids = (3756, 3840) #Add ensembles here. 
+    from django.core import serializers
+    
+    Serializer = serializers.get_serializer("json")
+    serializer = Serializer()
+    f = open("ensembles.json", "w");
+
+    ensembles = M.Ensemble.objects.filter(id__in=ensemble_ids).distinct()
+    serializer.serialize(ensembles, indent=1, stream=f)
+
+    o = M.User.objects.filter(membership__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f, fields=("id", "firstname", "lastname", "email", "guest", "valid"))  
+
+    o = M.Folder.objects.filter(ownership__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Section.objects.filter(membership__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Membership.objects.filter(ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Source.objects.filter(ownership__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.HTML5Info.objects.filter(source__ownership__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Ownership.objects.filter(ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Location.objects.filter(ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+    
+    o = M.HTML5Location.objects.filter(location__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.Comment.objects.filter(location__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.ThreadMark.objects.filter(comment__location__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+    o = M.ReplyRating.objects.filter(comment__location__ensemble__in=ensembles).distinct()
+    serializer.serialize(o,  indent=1, stream=f)  
+
+
+
+    f.close()
+
+
     
 
 def do_watchdog(t_args):
@@ -338,7 +392,8 @@ if __name__ == "__main__" :
         "immediate": do_immediate,
         "digest": do_digest, 
         "watchdog": do_watchdog,
-        "extract": do_extract
+        "extract": do_extract, 
+        "dumpensemble": do_dumpensemble
         }
     utils.process_cli(__file__, ACTIONS)
 
