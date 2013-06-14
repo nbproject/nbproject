@@ -128,7 +128,7 @@ INSTALLED_APPS = (
     'facebook',
     "base",
     "polls", 
-"fixture_magic"
+#"fixture_magic" #add this for 
 )
 
 AUTHENTICATION_BACKENDS = (
