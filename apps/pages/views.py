@@ -219,6 +219,59 @@ def add_html_doc(req, ensemble_id):
             return HttpResponseRedirect("/")         
     return render_to_response("web/add_html_doc.html", {"form": addform})
 
+def add_youtube_doc(req, ensemble_id): 
+    import base.models as M
+    from apiclient.discovery import build
+    from urlparse import urlparse, parse_qs
+    import re
+    re_iso8601 = re.compile("PT(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+)S)?")
+    youtube = build("youtube", "v3", developerKey=settings.GOOGLE_DEVELOPER_KEY)
+    user       = UR.getUserInfo(req, False)
+    if user is None:
+        redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
+        return HttpResponseRedirect(redirect_url)
+    if not auth.canEditEnsemble(user.id, ensemble_id):
+        return HttpResponseRedirect("/notallowed")
+    addform = forms.YoutubeForm()
+    if req.method == 'POST':
+        addform = forms.YoutubeForm(req.POST)
+        if addform.is_valid():             
+            source = M.Source()
+            source.numpages = 1
+            source.w = 0
+            source.h = 0
+            source.rotation = 0
+            source.version = 0
+            source.type = 2
+            source.submittedby=user
+            source.save()            
+            ownership = M.Ownership()
+            ownership.source = source
+            ownership.ensemble_id = ensemble_id
+            ownership.save()
+            info = M.YoutubeInfo()
+            info.source = source
+            url = addform.cleaned_data['url']
+            result = urlparse(url)
+            key = parse_qs(result.query)["v"][0]
+            info.key = key
+            info.save();
+            ginfo = youtube.videos().list(part="id,contentDetails,snippet", id=key).execute()
+            source.title = ginfo["items"][0]["snippet"]["title"]
+            matches_dict = re_iso8601.match(ginfo["items"][0]["contentDetails"]["duration"]).groupdict()
+            numsecs = 0
+            if matches_dict["hours"] is not None: 
+                numsecs += int(matches_dict["hours"])*3600
+            if matches_dict["minutes"] is not None: 
+                numsecs += int(matches_dict["minutes"])*60
+            if matches_dict["seconds"] is not None: 
+                numsecs += int(matches_dict["seconds"])
+            source.numpages = numsecs #we use 1/100 sec precision. 
+            source.save();
+            #addform.cleaned_data['title']
+
+            return HttpResponseRedirect("/")         
+    return render_to_response("web/add_youtube_doc.html", {"form": addform})
 
 def comment(req, id_comment): 
     #id_comment = int(id_comment)

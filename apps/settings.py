@@ -27,6 +27,7 @@ CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cro
 DATABASES       = settings_credentials.DATABASES 
 FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
+GOOGLE_DEVELOPER_KEY =  settings_credentials.__dict__.get("GOOGLE_DEVELOPER_KEY", "CHANGE_ME")
 
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     print msg_credentials()
@@ -126,7 +127,8 @@ INSTALLED_APPS = (
    # 'django_facebook',
     'facebook',
     "base",
-    "polls"
+    "polls", 
+"fixture_magic"
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -275,3 +277,21 @@ LOGGING = {
             }
         }
     }
+
+CUSTOM_DUMPS = {
+'ensemble':{# Initiate dump with: ./manage.py custom_dump ensemble ensemble_id
+'primary': 'base.Ensemble',  # This is our reference model.
+'dependents': [  # These are the attributes/methods of the model that we wish to dump.
+            'location_set.all',
+        ],
+'excludes': {
+            'base.user': ('password',)}
+
+}, 
+'comments':{
+'primary': 'base.Comment',  # This is our reference model.
+'dependents': [  # These are the attributes/methods of the model that we wish to dump.
+            'location.ensemble=3756',
+        ],
+}
+}

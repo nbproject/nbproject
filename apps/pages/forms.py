@@ -52,6 +52,12 @@ class Html5Form(Form):
     title = CharField(max_length=256)
     url = CharField(max_length=1024)
 
+
+class YoutubeForm(Form):
+    #title = CharField(max_length=256)
+    url = CharField(max_length=1024)
+
+
 class SourceForm(ModelForm): 
     class Meta: 
         model = M.Source

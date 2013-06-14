@@ -1,0 +1,47 @@
+{% extends "web/base.html" %}
+{% block title %}Add new YouTube video{% endblock %}
+{% block style %}
+ul.errorlist{
+	color: #ff0000;
+	font-weight: bold;
+	list-style: none;	
+}
+
+
+#intro{
+margin: 20px;
+padding: 10px;
+color: #505050; 	
+}
+
+#form{
+margin: 20px;
+padding: 10px;
+font-size: large; 	
+}
+
+{% endblock %} 
+{% block content %}
+  <div id="intro">
+  <h1>Add a new YouTube video to NB</h1>
+  This is an experimental feature...
+  </div>
+  <div id="form">
+    <form action="" method="post">
+      <table>
+	{% for field in form %}	
+	<tr>
+      <td>{{ field.label_tag }} </td>  <td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+      
+	</tr>
+	
+    {% endfor %}  
+      </table>
+      {{ form.non_field_errors }} 
+               
+<div><input style="margin-top: 10px", type="submit" value="Send" /></div>	   
+    </form>
+    </div>  
+
+{% endblock %}
+
