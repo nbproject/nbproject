@@ -49,3 +49,10 @@ width: 1024px;
 height: 300px;
 align: center;
 }
+
+div.plot_title{
+margin-top: 10px;
+margin-bottom: 20px;
+font-size: x-large;
+text-align: center;
+}

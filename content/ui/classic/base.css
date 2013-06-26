@@ -8,7 +8,7 @@ html, body {
 #content_main,
 header>div,
 footer>div {
-    max-width: 950px;
+    width: 1024px;
     margin: 0 auto;
 }
 

@@ -27,7 +27,7 @@
         lib = GLOB.report.library, 
         fragments = ['<div class="graphitem">'];
         fragments.push("<div class='plot' id='"+o.id+"'></div>");
-        fragments.push("<div class='caption'>+"+NB$.E(lib.plots[o.id].caption)+"</div>");        
+        fragments.push("<div align='center' class='plot_title'>"+NB$.E(lib.plots[o.id].caption)+"</div>");        
         fragments.push("</div>");
         $root.append(fragments.join(""));
 

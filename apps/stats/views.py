@@ -21,6 +21,13 @@ __EXPORTS = [
     "pages_by_day", 
     "authored_by_day", 
 "percentage_reply_by_day",
+"distribution_thread_length",
+"distribution_thread_numauthors", 
+"distribution_inside_discussion",
+"numthreads_student_admin",
+"faculty_reuse", 
+"comments_per_student_vs_class_size",
+"comments_per_week"
     ]
 
 #"desc" should be a valid SQL clause for a "select"
@@ -124,26 +131,88 @@ def get_label(P, req):
     output["data"] = [] if type(P["id"]) not in (str, unicode) else  db.Db().getRows( "select id, %s from %s where id = ?" % (S,F), (P["id"],))
     return UR.prepare_response(output)
 
+def buildquery(opts, loop_opts, P):
+    P_opts =  P.get("options",{})
+    output = {}
+    for k,v in opts.iteritems(): 
+        for i in xrange(0, len(v)): 
+            output["%s_%s"%(k,i)] = v[i] if k in P_opts else ""
+    for k,v in loop_opts.iteritems():
+        for i in xrange(0, len(v)): 
+            output["%s_%s"%(k,i)] = v[i] if k in P and P[k]!="0" else ""
+    return output
+
+def buildparams(params, opts,loop_opts, P): 
+    P_opts =  P.get("options",{})
+    output = []
+    for x in params: 
+        if type(x)==str and x.startswith("%"):
+            k = x[1:]
+            if k in P_opts: 
+                output.append(P_opts[k])
+            elif k in P and k in loop_opts and P[k]!="0":
+                output.append(P[k])
+        else:
+            output.append(x)
+    return output
+
 def pages_by_day(P, req):
     output = {"ID": P["ID"]}
-    if "admin" in P: 
-        output["data"] = db.Db().getRows("""
-select 1000*extract(epoch from date_trunc('day', h.ctime)) as date,
+    opts = {"admin":  ["and m.admin=?"], 
+            "after":  ["and h.ctime>?"]}
+    loop_opts = {"id_ensemble": ["and m.ensemble_id=?"]}
+    query = """select 1000*extract(epoch from date_trunc('day', h.ctime)) as date,
 count(h.*) as total 
 from base_pageseen h, base_session sh,  base_membership m , base_ownership o 
-where session_id is not null and h.session_id = sh.id and sh.user_id = m.user_id and m.admin=? and m.ensemble_id = o.ensemble_id and h.source_id = o.source_id  and m.ensemble_id = ? 
+where session_id is not null and h.session_id = sh.id and sh.user_id = m.user_id %(admin_0)s %(after_0)s and m.ensemble_id = o.ensemble_id and h.source_id = o.source_id %(id_ensemble_0)s
 group by date
-order by date;
-""", (P["admin"],P["ensemble_id"]))
-    else:         
-        output["data"]  =  db.Db().getRows("""
-select 1000*extract(epoch from date_trunc('day', h.ctime)) as date,
-count(h.*) as total 
-from  base_pageseen h, base_session sh, base_membership m, base_ownership o
-where h.session_id is not null and h.session_id = sh.id and sh.user_id = m.user_id and m.ensemble_id = o.ensemble_id and h.source_id = o.source_id  and m.ensemble_id = ? 
-group by date
-order by date;
-""", (P["id_ensemble"],))   
+order by date;""" % buildquery(opts, loop_opts, P)
+    params = buildparams(["%admin", "%after", "%id_ensemble"], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+
+
+#
+#
+#def distribution_thread_length(P, req):
+#    output = {"ID": P["ID"]}
+#    opts = {"ensemble":  ["and ensemble_id in (?,)"]}
+#    query = """
+#select numcomments, count(location_id) from (select count(cid) as numcomments, lid as location_id, eid as ensemble_id from v_comment group by eid, lid )as v_discuss where true %(ensemble_0)s group by numcomments order by numcomments
+#""" % buildquery(opts,P.get("options",{}))
+#    params =  buildparams(["%ensemble"], opts, P.get("options", {}))
+#    output["data"]  =  db.Db().getRows(query, params)
+#    return UR.prepare_response(output)
+#
+
+
+#
+#def distribution_thread_length(P, req):
+#    output = {"ID": P["ID"]}
+#    output["data"]  =  db.Db().getRows("""
+#select numcomments, count(location_id) from (select count(cid) as numcomments, lid as location_id, eid as ensemble_id from v_comment group by eid, lid )as v_discuss where ensemble_id=? group by numcomments order by numcomments
+#""", (P["id_ensemble"],))    
+#    return UR.prepare_response(output)
+#
+
+
+def distribution_thread_length(P, req):
+    output = {"ID": P["ID"]}
+    opts = {}
+    loop_opts = {"id_ensemble": ["and ensemble_id=?"]}
+    query = """select numcomments, count(location_id) from (select count(cid) as numcomments, lid as location_id, eid as ensemble_id from v_comment group by eid, lid )as v_discuss where true %(id_ensemble_0)s group by numcomments order by numcomments""" % buildquery(opts, loop_opts, P)
+    params = buildparams(["%id_ensemble"], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+
+def distribution_thread_numauthors(P, req):
+    output = {"ID": P["ID"]}
+    opts = {}
+    loop_opts = {"id_ensemble": ["and ensemble_id=?"]}
+    query = """select numauthors, count(location_id) from (select count(distinct uid) as numauthors, lid as location_id, eid as ensemble_id from v_comment group by eid, lid )as v_discuss where true %(id_ensemble_0)s group by numauthors order by numauthors
+""" % buildquery(opts, loop_opts, P)
+    params = buildparams(["%id_ensemble"], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
     return UR.prepare_response(output)
 
 def authored_by_day(P, req):
@@ -194,3 +263,54 @@ def distribution_first_minute(P, req):
 select floor(extract( epoch from tcorrected)) as bin, count(*) from tpage2 where tcorrected < '60 seconds'  and ensemble_id=? group by bin order by bin
 """, (P["id_ensemble"],))    
     return UR.prepare_response(output)
+
+#
+#def distribution_inside_discussion(P, req):
+#    output = {"ID": P["ID"]}
+#    opts = {}
+#    loop_opts = {}
+#    query = """select numcomments, count(location_id) from (select count(cid) as numcomments, lid as location_id, eid as ensemble_id from v_comment group by eid, lid )as v_discuss where true %(id_ensemble_0)s group by numcomments order by numcomments""" % buildquery(opts, loop_opts, P)
+#    params = buildparams([], opts, loop_opts, P)
+#    output["data"]  =  db.Db().getRows(query, params)
+#    return UR.prepare_response(output)
+#
+
+def numthreads_student_admin(P,req): 
+    output = {"ID": P["ID"]}
+    opts = {"initthread":  ["*cast(pid is null as integer)"]}
+    loop_opts = {}
+    query = """select sum(cast(admin=true as integer)%(initthread_0)s) as numcomments_admin,  sum(cast(admin=false as integer)) as numcomments_student, eid from v_comment c, base_membership m where m.ensemble_id = c.eid and m.user_id = c.uid group by eid""" % buildquery(opts, loop_opts, P)
+    params = buildparams([], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+
+def faculty_reuse(P,req): 
+    output = {"ID": P["ID"]}
+    opts = {}
+    loop_opts = {}
+    query = """
+select termsused, count(termsused) from  (select email, count(taughtwhen) as termsused from ( select email, year|| term as taughtwhen from (select k.* as ensemble_id, v.email  from karger_v_stats k , (select email, eid from v_membership where mid in (select min(mid) from v_membership where admin=true group by eid)) as v  where k.ensemble_id=v.eid and n_authors>1 and num_comments>99  and email not like ? order by num_comments desc) as v67 group by email, year ||term order by email) as v897 group by email) as v4390 group by termsused order by termsused""" % buildquery(opts, loop_opts, P)
+    params = buildparams(['planet%'], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+
+def comments_per_student_vs_class_size(P,req):
+    output = {"ID": P["ID"]}
+    opts = {"over": [" and num_comments>?"]}
+    loop_opts = {}
+    query = """
+select n_authors, cast(comments_per_author as integer)  from  karger_v_stats where true %(over_0)s""" % buildquery(opts, loop_opts, P)
+    params = buildparams(["%over"], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+
+
+def comments_per_week(P,req):
+    output = {"ID": P["ID"]}
+    opts = {}
+    loop_opts = {"id_ensemble": ["and eid=?"]}
+    query = """select numweeks, count(cid) from (select c1.cid, c1.eid, cast(extract(epoch from (c1.ctime-c0.ctime))/(3600*24*7) as integer) as numweeks from v_comment c1, (select min(ctime) as ctime, eid from v_comment group by eid) as c0 where c0.eid=c1.eid) as v2 where numweeks<30 %(id_ensemble_0)s group by numweeks order by numweeks""" % buildquery(opts, loop_opts, P)
+    params = buildparams(["%id_ensemble"], opts, loop_opts, P)
+    output["data"]  =  db.Db().getRows(query, params)
+    return UR.prepare_response(output)
+

@@ -13,7 +13,9 @@
 
 (function(GLOB){
     GLOB.report.library = {};
-    var O = GLOB.report.options, C = GLOB.report.captions;
+    var O = GLOB.report.options, 
+        C = GLOB.report.captions, 
+        P = GLOB.report.params;
     GLOB.report.library.plots = {
         a2:{
             caption: "Number of notes authored per day", 
@@ -29,7 +31,7 @@
         },
         pages_by_day:{
             caption: "Number of pages seen per day", 
-            auto_data: {fct: "pages_by_day", loop: "id_ensemble"},
+            auto_data: {fct: "pages_by_day", loop: "id_ensemble", options:{after:P["after"] }},
             opts: GLOB.report.options.evol_bars, 
             fct_label : C.f_x_y
         }, 
@@ -44,6 +46,45 @@
             auto_data: {fct: "distribution_first_hour", loop: "id_ensemble"},
             opts: GLOB.report.options.bars1, 
             fct_label : C.f_x_y
+        },
+        distribution_thread_length:{
+            caption: "Distribution of comments by thread length", 
+            //            auto_data: {fct: "distribution_thread_length", loop: "id_ensemble"},
+            auto_data: {fct: "distribution_thread_length", loop: "id_ensemble", options:{ensemble:P["ensemble"] }},
+
+            opts: GLOB.report.options.bars_nostack_ylog, 
+            fct_label : C.f_x_y
+        }, 
+        distribution_thread_numauthors:{
+            caption: "Distribution of comments by number of authors", 
+            auto_data: {fct: "distribution_thread_numauthors", loop: "id_ensemble"},
+            opts: GLOB.report.options.bars_nostack_ylog, 
+            fct_label : C.f_x_y
+        }, 
+        numthreads_student_admin: {
+            caption: "Comments by admin vs students", 
+            opts: GLOB.report.options.xy_plot, 
+            fct_label : C.f_x_y,
+            auto_data: {fct: "numthreads_student_admin", loop: "id_ensemble",options:{initthread:P["initthread"] } }
+        }, 
+        faculty_reuse:{
+            caption: "Distinct terms an instructor created a class", 
+            auto_data: {fct: "faculty_reuse", loop: "id_ensemble", options:{}},
+            opts: GLOB.report.options.bars1, 
+            fct_label : C.f_x_y
+        },
+        comments_per_student_vs_class_size: {
+            caption: "Number of Comments per student vs number of participants.", 
+            opts: GLOB.report.options.xy_plot, 
+            fct_label : C.f_x_y,
+            auto_data: {fct: "comments_per_student_vs_class_size", loop: "id_ensemble",options:{over:P["over"]}}
+        }, 
+        comments_per_week: {
+            caption: "Number of Comments per week", 
+            opts: GLOB.report.options.lines, 
+            fct_label : C.f_x_y,
+            auto_data: {fct: "comments_per_week", loop: "id_ensemble",options:{}}
         }
+
     };
 })(NB);

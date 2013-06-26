@@ -97,9 +97,11 @@
     };
 
     function nbcall(fctname, dict, callback, nowait){
+        /*
         if (!(nowait)){
             document.body.style.cursor="wait";
         }
+        */
         var auth_str = GLOB.conf.userinfo.guest ? "guest=1" : "ckey="+GLOB.conf.userinfo.ckey;        
         NB$.post(GLOB.conf.servers.rpc+"/stats/api?" + auth_str, {"f":  fctname, "a": JSON.stringify(dict)},callback, "json");
     }
@@ -296,7 +298,7 @@
             }
             var $tb = NB$("<div class='toolbox' id='tb_"+id+"'><a class='expandlink' href='javascript:GLOB.stats.expandTools(\""+id+"\")'>Options</a></div>");
             $tb.append($checkboxdiv);
-            $elt.after($tb);
+            $elt.parent().append($tb);
             NB$("input", $tb).click(function(){
                     GLOB.stats.render(id, M);
                 });

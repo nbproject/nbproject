@@ -28,4 +28,6 @@ class SectionUnit(models.Model):
     section             = ForeignKey(Section)
     comment             = TextField(blank=True, null=True)
     position            = IntegerField()
+    def __unicode__(self):
+        return "[%s %s]  %s[%s]=%s" % (self.__class__.__name__,self.id,  self.report.name, self.position, self.section.name)
 
