@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'facebook',
     "base",
     "polls", 
+    "edxforum"
 #"fixture_magic" #add this for 
 )
 
