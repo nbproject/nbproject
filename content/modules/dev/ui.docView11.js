@@ -17,7 +17,9 @@
 	PLAYING: 1, 
 	PAUSED: 2
     };
-
+    //youtube player seems to only support 16/9 parameters, and fills in with black bands when not the case: 
+    //cf https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_yt:aspectratio
+    var ASPECT_RATIO = 16.0/9;
     var pretty_print_time = function(t){
 	var n = Math.floor(t);
 	var n_minutes = Math.floor(n / 60);
@@ -72,8 +74,6 @@
 		self._scale = 33;
 		self.SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
 		self.T_METRONOME = $.concierge.get_component("get_metronome_period_s")();
-		self.___best_fit =  true;
-		self.___best_fit_zoom =  1.0; //this is computed later
 		self._page =  null; 
 		self._id_source =  null;
 		self._player = null;
@@ -91,10 +91,6 @@
          * From now on, we assume the event is directed to this view ! 
          */ 
 		switch (evt.type){
-		case "zoom": 
-		self.___best_fit =  false;
-		self._render();
-		break;
 		case "note_hover": 
 		$("div.selection[id_item="+evt.value+"]", self.element).addClass("hovered");
 		break;
@@ -158,7 +154,6 @@
 		self._id_source =  id_source; 
 		self._model =  model;
 		self.element.addClass("docView");
-		self._update_best_fit_zoom();
 		self._generate_contents();
 		self._render();
 		if (init_event){
@@ -231,63 +226,18 @@
         _update: function(){
 		$.ui.view.prototype._update.call(this);
 		var self = this;
-		self._update_best_fit_zoom();
-		//		self._render();
-		//		self._generate_contents();
+        /*
+          //TODO: If we just do this, we loose the place we were at in the video
+        self._generate_contents();
+		self._render();        
+        */
+
         },
-        _update_best_fit_zoom: function(){		
-		//best zoom: when the page fits in width with a 10% margin on the side
-		var file =  this._model.o.file[$.concierge.get_state("file")];
-		var w = file.rotation===90 || file.rotation===270 ? file.h : file.w;
-		this.___best_fit_zoom =  (this.element.width()+0.0)/(1.1 * w);
-        }, 
         close: function(){
 		var id =  this._id_source;
 		delete $.concierge.features["doc_viewer"][id];
 		$.ui.view.prototype.close.call(this);
 		$.L("closing docviewer",  id);
-        },
-        _generate_selections: function(){
-		/* 
-         *  unlike generate_contents, we always regenerate the selections, irrespective 
-         *  of whether they were there previously or not
-         */
-		var self = this;
-		var contents;
-		var id_source = self._id_source ;
-		var model = this._model;		
-		var numpages = model.o.file[id_source].numpages;
-		var t,l,w,h, ID, locs, o;
-		var s = ($.concierge.get_constant("res")*self._scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
-		var file = model.o.file[id_source];
-		var fudge = (file.rotation===90 || file.rotation===270 ? file.h : file.w)/612.0;
-		s=s*fudge; //for compatibility with old UI, but needs to be changed !!!
-		for (var p=1;p<=numpages;p++){            
-            contents="";
-            locs = model.get("location", {id_source: id_source, page: p}).sort(self.options.loc_sort_fct);
-            //facet_page._filter(p, "", true);
-            for (var i=0;i<locs.length;i++){
-			o = locs[i];
-			ID=o.ID;
-			t=o.top*s;
-			l=o.left*s;
-			w=o.w*s;
-			h=o.h*s;
-			contents+=("<div class='selection' id_item='"+ID+"' style='top: "+t+"px; left: "+l+"px; width: "+w+"px; height: "+h+"px'/>");
-            }
-            $("div.material[page="+p+"]>div.selections",  self.element).html(contents);
-		}
-		$("div.material>div.selections>div.selection", self.element).mouseover(function(evt){
-			var id_item = evt.currentTarget.getAttribute("id_item");
-			$.concierge.trigger({type:"note_hover", value: id_item});
-            }).mouseout(function(evt){
-                var id_item=evt.currentTarget.getAttribute("id_item");
-                $.concierge.trigger({type:"note_out", value: id_item});
-			}).click(function(evt){
-				var id_item=evt.currentTarget.getAttribute("id_item");
-				$.concierge.trigger({type:"select_thread", value: id_item});
-                });
-		
         },
         _generate_contents: function(){
 		/*
@@ -300,10 +250,12 @@
 		var model	= this._model;
 		var file	= model.o.file[id_source];
 		$.concierge.trigger({type: "scale", value: self._scale}); 
+        self._w     = this.element.width()-2; //remove 2px to account for border of "material" div 
+        self._h     = self._w/ASPECT_RATIO;
 		var w		= self._w;
 		var h		= self._h;
 		var style	= "width: "+w+"px;height: "+h+"px";
-		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_scrollbar'><span/ id='docview_scrollbar_elapsed'>0:00</span><span/ id='docview_scrollbar_total'>2:36</span><div id='docview_scrollbar_list'/><div id='docview_scrollbar_thumb'/></div><div id='docview_controls'> <button id='docview_button_sb'/><button id='docview_button_play'/><button id='docview_button_sf'/></div>";
+		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_scrollbar'><span/ id='docview_scrollbar_elapsed'>0:00</span><span/ id='docview_scrollbar_total'>?:??</span><div id='docview_scrollbar_list'/><div id='docview_scrollbar_thumb'/></div><div id='docview_controls'> <button id='docview_button_sb'/><button id='docview_button_play'/><button id='docview_button_sf'/></div>";
 		$("div.contents", self.element).html(contents);
 		var drag_helper = function($thumb, pos, make_new_req){
             var duration = self._player.getDuration();
@@ -316,7 +268,7 @@
                              stop: function(evt, ui) { drag_helper(ui.helper, ui.position.left, true);}, 
                              drag: function(evt, ui) { drag_helper(ui.helper, ui.position.left, false);}
             });
-		$("#docview_drawingarea").drawable({model: self._model});
+		$("#docview_drawingarea").drawable({model: model});
 		$("#docview_button_play").click(function(evt){
 			var $elt = $(evt.currentTarget);
 			if ($elt.hasClass("paused")){
@@ -343,9 +295,10 @@
 			});
 		self._v_margin =  parseInt($material.css("margin-bottom"), 10) +  parseInt($material.css("margin-top"), 10 );
 		self._player = new YT.Player('youtube_player', {
-			height: '390',
-			width: '640',
-			videoId: 'JtsyP0tnVRY',
+                height: ""+self._h,
+                width: ""+self._w,
+            //			videoId: 'JtsyP0tnVRY',
+            videoId: model.get("youtubeinfo", {}).first().key,
 			playerVars: {controls: 0}, 
 			events: {
                 'onReady': function(event){
@@ -387,21 +340,18 @@
 		var contents;
 		var id_source = self._id_source ;
 		var model = this._model;		
-		var t,l,w,h, ID, locs, o, sel_contents;
-		var s = ($.concierge.get_constant("res")*self._scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
-		var file = model.o.file[id_source];
-		var fudge = (file.rotation===90 || file.rotation===270 ? file.h : file.w)/612.0;
-		s=s*fudge; //BUG_226: for compatibility with old UI, but needs to be removed !!!
-		contents="";
+		var t,l,w,h, ID, locs, o, sel_contents, s_w=self._w/1000.0, s_h=self._h/1000.0;
+        var file = model.o.file[id_source];
+        contents="";
 		locs = model.get("location", {id_source: id_source, page: page}).sort(self.options.loc_sort_fct);
 		var me =  $.concierge.get_component("get_userinfo")();
 		for (var i=0;i<locs.length;i++){
             o = locs[i];
             ID=o.ID;
-            t=o.top*s;
-            l=o.left*s;
-            w=o.w*s;
-            h=o.h*s;
+            t=o.top*s_h;
+            l=o.left*s_w;
+            w=o.w*s_w;
+            h=o.h*s_h;
             sel_contents = "";
             if (!(model.get("comment", {ID_location: ID, admin: 1}).is_empty())){
 			sel_contents += "<div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/>";
@@ -436,7 +386,6 @@
 	loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
 	provides: ["doc"], 
 	listens: {
-        zoom: null, 
         note_hover: null, 
         note_out: null, 
         visibility: null, 

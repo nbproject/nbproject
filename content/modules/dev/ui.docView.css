@@ -106,8 +106,8 @@ bottom: 0px;
 }
 #docview_drawingarea{
 position: absolute; 
-width: 800px;
-height: 600px;
+width: 100%;
+height: 100%;
 }
 /* youtube viewer */
 
@@ -145,7 +145,6 @@ height: 600px;
 
 #docview_scrollbar{
 position: relative; 
-width: 800px; /*hardcode for now */
 height: 40px;
 margin-bottom: 25px;
 }

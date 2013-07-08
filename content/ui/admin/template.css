@@ -113,7 +113,11 @@ background-color: #000044;
 }
 
 .html5icon{
-    background-position: -484px 0;
+    background-position: -480px 0;
+}
+
+.youtubeicon{
+    background-position: -500px 0;
 }
 
 .adminicon{
