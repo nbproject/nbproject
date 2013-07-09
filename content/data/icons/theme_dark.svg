@@ -26,8 +26,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.0011122"
-     inkscape:cx="275.39004"
+     inkscape:zoom="5.66"
+     inkscape:cx="433.08617"
      inkscape:cy="9.5989616"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -6294,6 +6294,26 @@
        y1="131.22026"
        x2="191.14371"
        y2="186.68997" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4910"
+       id="linearGradient4940"
+       gradientUnits="userSpaceOnUse"
+       x1="191.14371"
+       y1="131.22026"
+       x2="191.14371"
+       y2="186.68997"
+       gradientTransform="matrix(0.19172333,0,0,0.23064663,473.78599,804.60058)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4910"
+       id="linearGradient4946"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.19172333,0,0,0.23064663,473.78599,804.60058)"
+       x1="191.14371"
+       y1="131.22026"
+       x2="191.14371"
+       y2="186.68997" />
   </defs>
   <metadata
      id="metadata5831">
@@ -7842,20 +7862,19 @@
       </g>
     </g>
     <g
-       id="g4932"
-       transform="matrix(0.19172333,0,0,0.19172333,473.77812,650.74814)">
+       id="g4942"
+       transform="translate(0.56729126,0)">
       <rect
-         rx="14.491948"
-         ry="13.492496"
-         transform="translate(3,830.35934)"
-         y="131.72026"
-         x="149.41692"
-         height="54.469715"
-         width="83.45359"
+         rx="2.7784445"
+         ry="3.1119986"
+         y="834.98145"
+         x="502.43271"
+         height="12.563256"
+         width="16"
          id="rect4136"
-         style="fill:url(#linearGradient4936);fill-opacity:1;stroke:none" />
+         style="fill:url(#linearGradient4946);fill-opacity:1;stroke:none" />
       <path
-         transform="matrix(0.86568676,0,0,0.86568676,135.60299,894.87938)"
+         transform="matrix(0.20501114,0,0,0.20501114,495.67239,818.86912)"
          d="m 53.894744,130.13614 0,-41.806766 36.205722,20.903386 -36.205722,20.90338 z"
          inkscape:randomized="0"
          inkscape:rounded="0"
