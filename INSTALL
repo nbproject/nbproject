@@ -36,7 +36,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
         npm install #in order to install specific grunt modules, such as grunt-css, execSync
-        make django #create configuration files. 
+        make django #create configuration files. You can safely ignore the "Error 127" message
         #[edit values in apps/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data
         make django       #one more time...
@@ -51,7 +51,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
    * Back to the regular user: 
    * 	  createdb -U nbadmin -h localhost notabene
    *	  cd apps
-   *	  ./manage.py syncdb base  #to actually create the tables. 
+   *	  ./manage.py syncdb   #to actually create the tables. 
    *      ./manage.py sqlcustom base | ./manage.py dbshell #to create custom views 
    *
    * You may also have to allow remote connections
