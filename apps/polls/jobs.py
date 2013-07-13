@@ -16,7 +16,7 @@ if "DJANGO_SETTINGS_MODULE" not in os.environ:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.conf import settings
 import base.utils as utils, base.models as M
-from polls.models import Message
+from polls.models import Message, Consent
 from django.template import Template, Context
 from django.core.mail import EmailMessage
 from django.db.models import Max
@@ -34,7 +34,8 @@ def do_pending(t_args):
 def do_pending_msg():
     msgs = Message.objects.filter(sent=None, draft=False)
     for o in msgs: 
-        recipients = o.ensemble.membership_set.filter(deleted=False)
+        #exclude clause in order not to spam people who have participated in the past. 
+        recipients = o.ensemble.membership_set.filter(deleted=False).exclude(user__in=Consent.objects.values_list("user"))
         if o.students and not o.admins:
             recipients = recipients.filter(admin=False)
         if o.admins and not o.students: 

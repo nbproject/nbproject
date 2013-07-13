@@ -8,8 +8,8 @@ from django.http import Http404
 from base import annotations
 from base import utils_response as UR
 from base import auth, models as M, signals
+from upload.views import process_page
 from os.path import dirname, abspath
-
 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_img_%s.log' % ( id_log,), filemode='a')
@@ -21,13 +21,18 @@ def on_file_download(sender, **payload):
 if settings.MONITOR.get("FILE_DOWNLOAD", False): 
     signals.file_downloaded.connect(on_file_download, weak=False)
 
+
+
+
+
 def serve_img(req, res, scale, id_source):
     #print "img request of page %s of file %s at res %s and scale %s w/ invite_key=%s and req=%s" % (req.GET["page"], id_file, res, scale, req.GET["invite_key"], req  )
     #TODO: check permissions. 
     uid = UR.getUserId(req);
     if not auth.canReadFile(uid, id_source): 
         return HttpResponse("Error: You don't have credentials to see this file %s " % (id_source,))
-    page_str =  settings.IMG_FMT_STRING %  (int(req.GET["page"])-1,)
+    page = int(req.GET["page"])-1
+    page_str =  settings.IMG_FMT_STRING %  (page,)
     filename = req.META["PATH_INFO"].rstrip('/')
     filename = "%s_%s.png" % (filename, page_str)
     response = None
@@ -35,13 +40,19 @@ def serve_img(req, res, scale, id_source):
         response = serve(req, filename,settings.HTTPD_MEDIA)
         return response
     except Http404: 
-        logging.info("missing "+filename)
-        basedir = dirname(dirname(dirname(abspath(__file__))))
-        #basedir =  sys.modules["servers"].__path__[0].rpartition("/")[0]
-        #TODO: would be better to do a redirect to the not_available page
-        f = open("%s/content/data/icons/png/not_available.png" % basedir)
-        s = f.read()
-        f.close()
+        #let's generate on demand
+        try: 
+            pdf_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
+            img_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.CACHE_DIR)
+            process_page(id_source, page,  res, scale, pdf_dir, img_dir, settings.IMG_FMT_STRING)
+            response = serve(req, filename,settings.HTTPD_MEDIA)
+            return response
+        except Http404:             
+            basedir = dirname(dirname(dirname(abspath(__file__))))
+            #TODO: would be better to do a redirect to the not_available page
+            f = open("%s/content/data/icons/png/not_available.png" % basedir)
+            s = f.read()
+            f.close()
         return HttpResponse(s)
 
 

@@ -14,6 +14,7 @@
 /*global jQuery:true NB$:true*/
 (function($) {
     var $str        = "NB$" in window ? "NB$" : "jQuery";
+    var FILETYPES = {TYPE_PDF: 1, TYPE_YOUTUBE: 2, TYPE_HTML5VIDEO: 3, TYPE_HTML5: 4};
     var V_OBJ = $.extend({},$.ui.view.prototype,{
             _create: function() {
                 $.ui.view.prototype._create.call(this);
@@ -219,10 +220,23 @@
                     }
                     var component_name;
                     if (!(self._note)){ //new note, local or global
-                        var file = model.o.file[self._file];
+                        var file = model.o.file[self._file], s_inv, fudge, drawingarea, s_inv_w, s_inv_h;
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
-                        if (self._html5range){
+                        switch (file.filetype){
+                        case FILETYPES.TYPE_PDF: 
+                            s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
+                            fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
+                            s_inv = s_inv/fudge;
+                            msg.top = self._sel ? s_inv*parseInt(self._sel.css("top"), 10):0;
+                            msg.left= self._sel ? s_inv*parseInt(self._sel.css("left"), 10):0;
+                            msg.w =  self._sel ? s_inv*self._sel.width():0;
+                            msg.h =  self._sel ? s_inv*self._sel.height():0;
+                            msg.x0= 0;
+                            msg.y0= 0;
+                            msg.page= self._sel ? self._sel.parent().attr("page"):0;
+                            break;
+                        case FILETYPES.TYPE_HTML5: 
                             msg.top = self._html5range.apparent_height;
                             msg.left= 0;
                             msg.w = 0;
@@ -232,18 +246,21 @@
                             msg.page= 1;
                             delete self._html5range.apparent_height;
                             msg.html5range = self._html5range;
-                        }
-                        else {
-                            var s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
-                            var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
-                            s_inv = s_inv/fudge;
-                            msg.top = self._sel ? s_inv*parseInt(self._sel.css("top"), 10):0;
-                            msg.left= self._sel ? s_inv*parseInt(self._sel.css("left"), 10):0;
-                            msg.w =  self._sel ? s_inv*self._sel.width():0;
-                            msg.h =  self._sel ? s_inv*self._sel.height():0;
+                            break;
+                        case FILETYPES.TYPE_HTML5VIDEO:
+                            throw "editorview: HTML5VIDEO not implemented";
+                        case FILETYPES.TYPE_YOUTUBE:
+                            drawingarea = self._sel.parent();
+                            s_inv_w = 1000.0/drawingarea.width();
+                            s_inv_h = 1000.0/drawingarea.height();
+                            msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
+                            msg.left= self._sel ? s_inv_w*parseInt(self._sel.css("left"), 10):0;
+                            msg.w =  self._sel ? s_inv_w*self._sel.width():0;
+                            msg.h =  self._sel ? s_inv_h*self._sel.height():0;
                             msg.x0= 0;
                             msg.y0= 0;
-                            msg.page= self._sel ? self._sel.parent().attr("page"):0;
+                            msg.page= self._sel ? drawingarea.attr("page"):0;
+                            break;
                         }
                         component_name =  "note_creator";
                     }

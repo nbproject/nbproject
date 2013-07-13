@@ -25,12 +25,15 @@
     // on firefox for now, so we match by filename. 
     var scriptname = "_NB.js";
     var nb_script = jQuery("script[src$='"+scriptname+"']");
-    if (nb_script.length!==1){
-        alert("Error: Couldn't find (unique) NB script, i.e ending in : "+ scriptname); 
+    if (nb_script.length===0){
+        alert("Error: Couldn't find  NB script, i.e ending in : "+ scriptname); 
         return;
     }
+    if (nb_script.length>1){
+        alert("Warning: Found more than one  NB script, i.e ending in : "+ scriptname + "using the last one: " + nb_script[nb_script.length-1] ); 
+    }
     GLOB.pers = {
-        currentScript: nb_script[0],
+        currentScript: nb_script[nb_script.length-1],
         embedded: false
     };
     var $str        = "NB$" in window ? "NB$" : "jQuery";
@@ -357,6 +360,12 @@
     }, 
     get_login_dialog_markup: function(P,cb){
         return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
+        }, 
+ get_sec_mult_factor: function(){
+	return 100;
+    }, 
+    get_metronome_period_s: function(){
+	return 1;
     }
     };
 })(NB);

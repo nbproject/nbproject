@@ -10,7 +10,7 @@
  Author 
  cf AUTHORS.txt 
 
- License
+ License 
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
@@ -30,11 +30,12 @@ GLOB.files.labelfields = {file: "title", folder: "name"};
 GLOB.files.set_model = function(model){
     GLOB.files.model = model;
     var $util_window = $.concierge.get_component("get_util_window")();
-    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
+    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form><div><a style='display:none' id='add_file_html' href='#'><b>New</b> Add a HTML page</a></div><div><a style='display:none' id='add_file_youtube' href='#'><b>New</b> Add a YouTube video</a></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
 "<tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'>No</input> </td></tr> "+
 "<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'>No</input>        </td></tr> "+
 "<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'>No</input>        </td></tr> "+
 "<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'>No</input>        </td></tr> "+
+"<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'>No</input>        </td></tr> "+
 "<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'>No</input>        </td></tr>"+
 "</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>").append("<div id='invite_users_dialog' > <div>To access the following group  <select id='invite_users_ensemble'/></div><br/><span class='fixdialog' >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/><textarea id='invite_users_emails'  rows='5' cols='50'/><br/><input type='checkbox' id='invite_users_admin' style='padding-left: 20px'></input> <label for='invite_users_admin'>Grant administrative rights to these users</label><br/><br/><span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/><textarea id='invite_users_msg'  rows='7' cols='50'/></div>").append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
 };
@@ -46,9 +47,11 @@ GLOB.files.addFile = function(id_ensemble, id_folder){
     var foldername = (id_folder === null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
     $("#add_file_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
+    $("#add_file_html").attr("href", "/addhtml/"+GLOB.files.currentEnsemble);
+    $("#add_file_youtube").attr("href", "/addyoutube/"+GLOB.files.currentEnsemble);
 
     $('#add_file_dialog').dialog({
-        title: "Add a PDF File...", 
+        title: "Add a File...", 
         width: 390,
         buttons: { 
         "Cancel": function() { 
@@ -166,6 +169,7 @@ GLOB.files.addEnsemble = function(){
     $("input[name=allow_anonymous][value=1]")[0].checked="true";
     $("input[name=allow_guest][value=0]")[0].checked="true";
     $("input[name=allow_download][value=1]")[0].checked="true";
+    $("input[name=allow_ondemand][value=0]")[0].checked="true";
     $("input[name=use_invitekey][value=1]")[0].checked="true";
     $('#add_ensemble_dialog').dialog({
         title: "Create a new class...", 
@@ -175,7 +179,7 @@ GLOB.files.addEnsemble = function(){
             $(this).dialog("close");  
         },
             "Ok": function() { 
-            $.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value === "1", allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value === "1", allow_guest: $("input[name=allow_guest]:checked")[0].value === "1",  allow_download: $("input[name=allow_download]:checked")[0].value === "1", use_invitekey: $("input[name=use_invitekey]:checked")[0].value === "1" }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
+                $.concierge.get_component("add_ensemble")({name: $("#add_ensemble_name")[0].value, description: $("#add_ensemble_description")[0].value, allow_staffonly:$("input[name=allow_staffonly]:checked")[0].value === "1", allow_anonymous: $("input[name=allow_anonymous]:checked")[0].value === "1", allow_guest: $("input[name=allow_guest]:checked")[0].value === "1",  allow_download: $("input[name=allow_download]:checked")[0].value === "1", allow_ondemand: $("input[name=allow_ondemand]:checked")[0].value === "1", use_invitekey: $("input[name=use_invitekey]:checked")[0].value === "1" }, function(p){GLOB.files.model.add("ensemble", p);$.I("Class created !");} );
             $(this).dialog("destroy");
             }
         }

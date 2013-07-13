@@ -110,7 +110,11 @@ box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
 }
 
 .html5icon{
-    background-position: -484px 0;
+    background-position: -480px 0;
+}
+
+.youtubeicon{
+    background-position: -500px 0;
 }
 
 .adminicon{

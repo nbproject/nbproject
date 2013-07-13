@@ -102,6 +102,10 @@ GLOB.pers.init = function(){
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   
+    //start a metronome every second: 
+    var metronome = function(){
+	$.concierge.trigger({type: "player_at", value:0});
+    };
 };
     
 GLOB.pers.createStore = function(payload){
@@ -110,6 +114,7 @@ GLOB.pers.createStore = function(payload){
         ensemble:    {pFieldName: "ensembles"}, 
         file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
         folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
+        youtubeinfo: {pFieldName: "youtubeinfos", references: {source_id: "file"}},
         comment:{references: {id_location: "location"}},
         location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
         link: {pFieldName: "links"}, 

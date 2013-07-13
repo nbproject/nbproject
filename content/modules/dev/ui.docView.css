@@ -108,6 +108,78 @@ bottom: 0px;
 }
 #docview_drawingarea{
 position: absolute; 
-width: 800px;
-height: 600px;
+width: 100%;
+height: 100%;
+}
+/* youtube viewer */
+
+#docview_controls > button{
+    background-image: url("/content/data/icons/png/theme_dark.png");
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 44px;
+    margin-right: 10px;
+}
+
+#docview_controls > button::-moz-focus-inner {
+  border: 0;
+}
+
+
+#docview_button_play{
+    background-position: -40px -20px;
+}
+
+#docview_button_play.paused{
+    background-position: 0px -20px;
+}
+
+#docview_button_sb{
+    background-position: -160px -20px;
+}
+
+#docview_button_sf{
+    background-position: -120px -20px;
+}
+#docview_button_stop{
+    background-position: -80px -20px;
+}
+
+#docview_scrollbar{
+position: relative; 
+height: 40px;
+margin-bottom: 25px;
+}
+
+#docview_scrollbar_list{
+width: 100%;
+height: 20px;
+margin-top: 10px;
+position: absolute;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+background-color: #000000;
+}
+
+#docview_scrollbar_thumb{
+height: 40px;
+width: 20px;
+/*position: absolute;*/
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+border-radius: 3px;
+background-color: #a0a0a0;
+border: thin solid #707070;
+/*left: 0px;*/
+}
+
+#docview_scrollbar_elapsed{
+color: #909090;
+
+}
+
+#docview_scrollbar_total{
+color: #909090;
+float: right
 }

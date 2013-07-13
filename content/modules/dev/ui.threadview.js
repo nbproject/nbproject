@@ -88,6 +88,52 @@
             }    
         }    
         },
+        _commentLabelsFactory : function(o, scope ){
+            //o: comment for which to draw labels
+            //scope: 
+            //  1 to draw them for the specified comment 
+            //  2 to draw them for the whole thread. 
+            var self = this;
+            var m = self._model;
+             if (self.options.commentLabels){
+            var cl_container = ["<div style='position: relative'><div class='commentlabel_container' scope='"+scope+"' id_item='"+o.ID+"'>"];
+            var cats = m.get("labelcategory", {scope: scope}).items;
+            var i, j, label, tags = [], cat, caption; 
+            //tags are categories for which pointgrade=2: we just want to display the tag,
+            //instead of displaying the name and the list of grades, we just want to display the name and whether it's toggled or not.            
+            for (i in cats){
+                cat = cats[i];
+                if (cat.pointscale === 2){
+                    tags.push(i);
+                }
+                else{
+                    label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
+                    cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cat.name)+"</div>");
+                    for (j=0;j<cat.pointscale;j++){
+                        try{
+                            caption = m.get("labelcategorycaption", {category_id: cat.id, grade: j}).first().caption;
+                        }catch(e){
+                            caption = j;
+                        }
+                        cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===j)? " selected":"" )+"' val='"+j+"'>"+caption+"</span>");
+                    }
+                    cl_container.push("</div>");
+                }              
+            }
+            //now display tags: 
+            cl_container.push("<div>");
+            for (j=0;j<tags.length;j++){
+                cat = cats[tags[j]];
+                label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
+                cl_container.push("<span id_item='"+tags[j]+"' class='tag cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===1)? " selected":"" )+"'>"+$.E(cat.name)+"</span>");
+
+            }
+            cl_container.push("</div>");            
+            cl_container.push("</div></div>");
+            return  cl_container.join("");
+             }
+            return "";
+        }, 
         _lens: function(o){
         var self        = this;
         var m            = self._model;
@@ -115,40 +161,9 @@
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&middot;&middot;&middot;</div></a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
         var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
-        var commentlabels = "";
-        if (self.options.commentLabels){
-            var cl_container = ["<div style='position: relative'><div class='commentlabel_container'>"];
-            var cats = m.get("labelcategory", {}).items;
-            var i, j, label, tags = [], cat; 
-            //tags are categories for which pointgrade=2: we just want to display the tag,
-            //instead of displaying the name and the list of grades, we just want to display the name and whether it's toggled or not.            
-            for (i in cats){
-                cat = cats[i];
-                if (cat.pointscale === 2){
-                    tags.push(i);
-                }
-                else{
-                    label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
-                    cl_container.push("<div class='commentlabel_cat' id_item='"+i+"'><div class='cat_name'>"+$.E(cat.name)+"</div>");
-                    for (j=0;j<cat.pointscale;j++){
-                        cl_container.push("<span class='cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===j)? " selected":"" )+"' val='"+j+"'>"+j+"</span>");
-                    }
-                    cl_container.push("</div>");
-                }              
-            }
-            //now display tags: 
-            cl_container.push("<div>");
-            for (j=0;j<tags.length;j++){
-                cat = cats[tags[j]];
-                label = m.get("commentlabel", {comment_id: o.ID, category_id: cat.id}).first();
-                cl_container.push("<span id_item='"+tags[j]+"' class='tag cat_elt"+((label !== null && label.category_id===cat.id &&  label.grade===1)? " selected":"" )+"'>"+$.E(cat.name)+"</span>");
-
-            }
-            cl_container.push("</div>");            
-            cl_container.push("</div></div>");
-            commentlabels = cl_container.join("");
-        }
-        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>",commentlabels, "</div>"].join("");
+        var commentlabels = self._commentLabelsFactory(o,1 );
+       
+        return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div>",commentlabels,"<span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>", "</div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
         _fill_tree: function(m, c){
@@ -195,10 +210,11 @@
         $("div.threadview-header", self.element).show();
         self._render_header();
         var $pane    = $("div.threadview-pane", self.element).empty();
-        var root    = model.get("comment", {ID_location: self._location, id_parent: null}).sort(this._comment_sort_fct)[0];
+        var root    = model.get("comment", {ID_location: self._location, id_parent: null}).first();
         if (root === undefined){ //happens after deleting a thread that only contains 1 annotation
             return;
         }
+        $pane.append(this._commentLabelsFactory(root, 2));
         $pane.append(this._fill_tree(model, root));
         var f_on_delete = function(p){
             $.I("Note #"+p.id_comment+" has been deleted");
@@ -265,8 +281,7 @@
         };
         var f_comment_label = function(event){
             var t = $(event.target), 
-            comment_id = parseInt(t.closest("div.note-lens").attr("id_item"), 10), 
-            grade, category_id;
+            comment_id = parseInt(t.closest("div.commentlabel_container").attr("id_item"), 10), grade, category_id;
             if (t.hasClass("cat_elt")){
                 if (t.hasClass("tag")){
                     grade = t.hasClass("selected") ? 0 : 1; //toggle 

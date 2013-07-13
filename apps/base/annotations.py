@@ -204,6 +204,7 @@ def get_ensembles(uid, payload):
         "allow_anonymous": "ensemble.allow_anonymous",
         "allow_guest": "ensemble.allow_guest", 
         "allow_download": "ensemble.allow_download", 
+        "allow_ondemand": "ensemble.allow_ondemand", 
          }
     my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid, deleted=False)
     if id is not None: 
@@ -331,6 +332,8 @@ def get_guestfileinfo(id_source):
          "ensembles": UR.qs2dict(ownership, __NAMES["ensembles2"] , "ID") ,
          "folders": UR.qs2dict(ownership, __NAMES["folders2"] , "ID") ,
          }
+    if len(ownership)==1 and ownership[0].source.type == M.Source.TYPE_YOUTUBE: 
+        o["youtubeinfos"]= UR.model2dict(ownership[0].source.youtubeinfo, None, "id")
     return o
    
 def get_files(uid, payload):
@@ -711,6 +714,8 @@ def create_ensemble(uid, P): #name, description, uid, allow_staffonly, allow_ano
         ensemble.use_invitekey = P["use_invitekey"]
     if "allow_download" in P: 
         ensemble.allow_download = P["allow_download"]
+    if "allow_ondemand" in P: 
+        ensemble.allow_ondemand = P["allow_ondemand"]
     ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])      
     ensemble.save()
     id = ensemble.pk
@@ -830,6 +835,7 @@ def addOwnership(id_source, id_ensemble, id_folder=None):
     if id_folder is not None: 
         ownership.folder_id = id_folder
     ownership.save()
+    return ownership
 
 def markIdle(uid, id_session, o):   
     for id in o: 

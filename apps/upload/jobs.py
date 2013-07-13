@@ -87,6 +87,31 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
             retval =  os.system(cmd)
     return True        
 
+def regenerate_pdf_metadata(*t_args): 
+    """
+    Regenerate metadata info of existing PDFs in the database
+    usage: utils_pdf metadata start_at_id [alternate_repository_dir] 
+    NOTE: This only takes the 1st page into consideration 
+    """
+    if len(t_args)>0:
+        args=t_args[0]
+        if (len(args)<1): 
+            print "usage: utils_pdf metadata start_at_id [alternate_pdf_dir] "
+            return
+        start_at_id  =  args[0]
+        rep_dir =  args[1] if len(args)==2 else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
+        if not os.path.exists(rep_dir): 
+            print "this repository dir doesn't exist: %s" % (rep_dir,)
+            return 
+        import views
+        sources = M.Source.objects.filter(id__gte=int(start_at_id))
+        for source in sources: 
+            print "BEGIN metadata id=%s" %(source.id,)
+            views.insert_pdf_metadata(source.id, rep_dir)
+            print "END metadata id=%s" %(source.id,)
+        print "ALL DONE."
+
+
 def update_rotation(*t_args):
     """
     Updates rotation info of existing PDFs in the database
@@ -373,7 +398,8 @@ if __name__ == "__main__" :
         "update_dims": update_dims, 
         "split_chapters": split_chapters,
         "upload_chapters": upload_chapters,
-        "update_rotation": update_rotation
+        "update_rotation": update_rotation,
+        "metadata": regenerate_pdf_metadata
 
         }
     utils.process_cli(__file__, ACTIONS)
