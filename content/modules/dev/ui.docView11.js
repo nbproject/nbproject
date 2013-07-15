@@ -232,7 +232,7 @@
 					var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0));
 					
 					var self = this;
-					var duration = self._player.getDuration(); //26200
+					var duration = self._player.getDuration()*100; //26200
 					var thumbPlace = total_w*newNoteObj.page/duration+"px";
 					//copy the htmlText - stores the current tick mark divs (if any)
 					var htmlText = $("#docview_scrollbar_tickholder").html();

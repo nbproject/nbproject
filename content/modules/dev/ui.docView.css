@@ -128,23 +128,18 @@ height: 100%;
 
 #docview_button_play{
     background-position: -40px -20px;
-    border-radius: 5px;
 }
 
 #docview_button_play.paused{
     background-position: 0px -20px;
-    border-radius: 5px;
-
 }
 
 #docview_button_sb{
     background-position: -160px -20px;
-    border-radius: 5px;
 }
 
 #docview_button_sf{
     background-position: -120px -20px;
-    border-radius: 5px;
 }
 #docview_button_stop{
     background-position: -80px -20px;
@@ -165,6 +160,7 @@ position: absolute;
 -webkit-border-radius: 10px;
 border-radius: 10px;
 background-color: #000000;
+overflow: none;
 }
 
 #docview_scrollbar_tickholder{
