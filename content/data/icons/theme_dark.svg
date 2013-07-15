@@ -4183,17 +4183,6 @@
        y1="21.550869"
        x2="21.941509"
        y2="18.037588" />
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3558-5"
-       id="radialGradient31250"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1,0,0,0.651376,0,10.75754)"
-       cx="22.571428"
-       cy="30.857143"
-       fx="22.571428"
-       fy="30.857143"
-       r="15.571428" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4116"
@@ -6323,7 +6312,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

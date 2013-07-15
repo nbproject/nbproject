@@ -360,12 +360,12 @@
 			sel_contents += "<div class='nbicon adminicon' title='An instructor/admin has participated to this thread'/>";
             }
             if (!(model.get("comment", {ID_location: ID, id_author: me.id}).is_empty())){
-			if (model.get("comment", {ID_location: ID, type: 1}).is_empty()){
-                sel_contents += "<div class='nbicon dark meicon' title='I participated to this thread'/>";
-			}
-			else{
-                sel_contents += "<div class='nbicon dark privateicon' title='I have private comments in this thread'/>";
-			}
+            if (model.get("comment", {ID_location: ID, type: 1}).is_empty()){
+                sel_contents += "<div class='nbicon meicon' title='I participated to this thread'/>";
+            }
+            else{
+                sel_contents += "<div class='nbicon privateicon' title='I have private comments in this thread'/>";
+            }
             }
             contents+=("<div class='selection' id_item='"+ID+"' style='top: "+t+"px; left: "+l+"px; width: "+w+"px; height: "+h+"px'>"+sel_contents+"</div>");
 		}    

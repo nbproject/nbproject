@@ -7,47 +7,29 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 
 div.editor{
 overflow-y: auto;
-background-color: #F0F0F0;
-padding: 5px;
+background-color: #FFF;
 }
 
+div.notebox {
+    padding: 8px 5px 0 5px;
+    border-left: 1px #ddd solid;
+    border-right: 1px #ddd solid;
+}
+
+div.editor textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 div.editor-header{
-color: #a0a0a0;
-}
-
-
-td.tablecontrols{
-border: thin solid #C0C0C0;
-border-radius: 5px;
-}
-
-div.editor div.button{
-border: thin solid #C0C0C0;
-border-radius: 5px;
-
-padding: 3px 0px 3px 35px;
-min-height: 32px;
-opacity: 0.8;
-background-repeat:no-repeat;
-}
-
-div.editor div.button:hover{
-opacity: 1.0;
-background-color: #FFFFC0;
-}
-
-div.editor div.button[action=save]{
-background-image:url(/content/data/icons/png/ok_32.png);
-font-weight: bold;
-font-size: large;
-}
-
-div.editor div.button[action=discard]{
-background-image:url(/content/data/icons/png/discard_24.png);
-min-height: 32px;
-padding-left: 27px;
-margin-right: 20px;
+    color: #606060;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 3px 5px 8px 3px;
+    box-shadow: 0 -1px 8px rgba(0,0,0,0.2);
+    background-color: #EFEBE7;
+    border-bottom: thin solid #DDD;
 }
 
 div.editor table.editorcontrols{
@@ -55,34 +37,25 @@ width: 100%;
 margin: 5px 0px 5px 0px;
 }
 
-
-div.editor span.editor-answerplease{
-background-image:url(/content/data/icons/png/question_16.png);
-background-repeat: no-repeat;
-padding-left: 18px;
-}
-
-div.editor select{
-margin-right: 10px;
-}
-
-div.editor span.replyrequested{
-float: right;
-margin-right: 35px;
-}
-
 div.editor button[action=save]{
-width: 60%;
-min-height: 50px;
-margin-left: 15px;
-margin-right: 20px;
-
+width: 100%;
+min-height: 40px;
+margin: 0;
 }
 
-div.editor_checkbox_options{
-padding: 5px 5px 10px 10px;
+div.editor button[action=discard]{
+margin: 0;
+margin-top: 4px;
+min-height: 28px;
 }
 
-#signoption{
-padding-left: 15px;
+.group {
+    background-color: #EFEBE7;
+    padding: 8px;
+}
+
+td.save-cancel {
+    width: 100%;
+    vertical-align: top;
+    padding-left: 8px;
 }

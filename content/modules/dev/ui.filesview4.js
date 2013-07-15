@@ -192,12 +192,11 @@
         }
         var s =  m.o.file[l.source_id];
         var scalefactor, doc, inner,  inner_top, sel, link, numvotes;
-        var body, comment_link, reply_link, ensemble_info, parity, lens;
+        var body, comment_link, reply_link, ensemble_info, lens;
         body = $.E(c.body).replace(/\n/g, " ");
         comment_link = "/c/"+c.id;
         reply_link = q === undefined ? "" : "<a target='_blank' href='/r/"+c.id+"'><button>Reply</button></a>";
         ensemble_info = id_ensemble === null ? ("<span class='filesView-item-ensembleinfo'>"+$.E(m.o.ensemble[l.ensemble_id].name)+"</span>") : "";
-        parity = ((i % 2) === 1) ? " class='filesView-item-odd' ":" class='filesView-item-even' ";
 
         scalefactor = 0.6334;
         //scalefactor = 0.4798
@@ -208,14 +207,14 @@
         link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>";
         numvotes = q === undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
         doc = "<div class='snippet-material' page='"+(i+1)+"'><div class='snippet-pagenumber pagenumbertop'>"+link+numvotes+reply_link+"  </div>"+inner+"</div>";
-        lens = $("<div "+parity+">"+doc+"<div class='filesView-question-body'><ul><li>"+body+"</li></ul></div> </div>");
+        lens = $("<div class='filesView-item'>"+doc+"<div class='filesView-question-body'><ul><li>"+body+"</li></ul></div> </div>");
         $("div.snippet-innermaterial", lens).draggable();
         return lens;
         },
         _draw_frame: function(){
         var self = this;
         self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
-        var header    = self._admin ? "<div class='filesView-header'><div class='nbicon blueadminicon'/><span id='adminconsole-label'>Admin Console</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : "";
+        var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : "";
         var opts    = self._admin ? "<th>Actions</th>" : "";
 
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
