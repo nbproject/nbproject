@@ -172,7 +172,7 @@ overflow: none;
 #docview_scrollbar_tick{
     position:absolute;
     background: blue;
-    width: 5px;
+    width: 2px;
     height: 20px;
 }
 

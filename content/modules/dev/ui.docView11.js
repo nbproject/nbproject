@@ -210,6 +210,29 @@
 		}
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
+        function createTicks(payload, self){
+			var newNoteObj;
+			console.log("here");
+			for (var id in payload.diff){
+				newNoteObj = payload.diff[id];
+				console.log("newNoteObj: ", newNoteObj);
+				//calculate the placement of the tickmark
+				var $thumb = $("#docview_scrollbar_thumb");
+				var thumbstyle = getComputedStyle($thumb[0]);
+				var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0));
+				//calculate
+				//var self = this;
+				var duration = self._player.getDuration()*100;
+				var thumbPlace = total_w*newNoteObj.page/duration+"px";
+				//copy the htmlText - stores the current tick mark divs (if any)
+				var htmlText = $("#docview_scrollbar_tickholder").html();
+				//clear the content in the tickholder div
+				$("#docview_scrollbar_tickholder").html("");
+				//get the html of the new tick mark as a string then insert it (bc .append was buggy)
+				htmlText += "<div id='docview_scrollbar_tick' style='left: "+thumbPlace+"' />";
+				$("#docview_scrollbar_tickholder").html(htmlText);
+			}
+        }
 
 		if (action === "add" && items_fieldname==="location"){
             var id_source	= this._id_source; 
@@ -218,31 +241,19 @@
 				//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
 				this._page =  1;
 				this._render();
-				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
+				//createTicks(payload, this);
+				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already.
+
+
             }
             else{
-
-				var newNoteObj;
-				for (var id in payload.diff){
-					newNoteObj = payload.diff[id];
-
-					//calculate the placement of the tickmark
-					var $thumb = $("#docview_scrollbar_thumb");
-					var thumbstyle = getComputedStyle($thumb[0]);
-					var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0));
-					
-					var self = this;
-					var duration = self._player.getDuration()*100; //26200
-					var thumbPlace = total_w*newNoteObj.page/duration+"px";
-					//copy the htmlText - stores the current tick mark divs (if any)
-					var htmlText = $("#docview_scrollbar_tickholder").html();
-					//clear the content in the tickholder div
-					$("#docview_scrollbar_tickholder").html("");
-					//get the html of the new tick mark as a string then insert it (bc .append was buggy)
-					htmlText += "<div id='docview_scrollbar_tick' style='left: "+thumbPlace+"' />";
-					$("#docview_scrollbar_tickholder").html(htmlText);
-				}
-
+				createTicks(payload, this);
+				for (var o in payload.diff){
+                    this._page = payload.diff[o].page;
+                    this._render();
+                }
+			}
+            
 				$.L("[docView11] TODO: update"); 
 			}
 		}
