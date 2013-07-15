@@ -277,6 +277,9 @@
      }, 
      _render_one: function(page){
      var self    = this;     
+     if (page > self._maxpage){
+         self._maxpage =  page;
+     }
      var m    = self._model; 
      var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
      var locs    = m.get("location", {id_source:    self._id_source });
@@ -327,7 +330,8 @@
     while ($pane.children().last().offset().top - $pane.offset().top - $pane.height() < 20){
     var maxpage = self._maxpage;
     $.L("scroll: maxpage="+maxpage);
-    if (maxpage < f.numpages){
+    //TODO: For video annotation, the whole video appears on one "page". 
+    if (maxpage < 1){
     self._render_one(maxpage+1);
     }
     else{
