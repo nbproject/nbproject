@@ -12,6 +12,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true NB$:true */
+/*global console:false*/
+
 (function($) {
     var $str     = "NB$" in window ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
@@ -181,6 +183,7 @@
      var self = this;
      var m = self._model;
      var me = $.concierge.get_component("get_userinfo")();
+    
      var numnotes = m.get("comment", {ID_location: l.ID}).length();
      var numseen = m.get("seen", {id_location: l.ID}).length();
      var numstar = m.get("threadmark",    {active: true, type: self._STAR, location_id: l.ID }).length();
@@ -196,7 +199,7 @@
      var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
      var root =    m.get("comment", {ID_location: l.ID, id_parent: null}).first();
      var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
-     return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
+     return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+" -l.ID: " + l.ID +"</div></div>";
      }, 
      _keydown: function(event){
      var self=this;

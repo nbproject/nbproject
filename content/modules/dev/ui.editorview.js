@@ -12,6 +12,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true NB$:true*/
+/*global console:false*/
+
 (function($) {
     var $str        = "NB$" in window ? "NB$" : "jQuery";
     var FILETYPES = {TYPE_PDF: 1, TYPE_YOUTUBE: 2, TYPE_HTML5VIDEO: 3, TYPE_HTML5: 4};
@@ -208,13 +210,14 @@
                 var f_save = function(evt){
                     $("button[action=save]", self.element).attr("disabled", "disabled");
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
-
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {}
                     };
+                    
+                    
                     if ($("input[value=question]:checked", self.element).length){
                         msg.marks.question = true;
                     }

@@ -12,6 +12,7 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global YT:true jQuery:true console:true*/
+
 (function($) {
     var METRONOME_STATES = {
 	PLAYING: 1, 
@@ -135,6 +136,11 @@
 		var thumbstyle = getComputedStyle($thumb[0]);
 		var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0)); 
 		$thumb.css({left: total_w*evt.value/self._player.getDuration()+"px"});
+                
+        // var thumbNailPlace = total_w*evt.value/self._player.getDuration();
+        // console.log("Test value: "+ thumbNailPlace);
+        // $("#docview_scrollbar_tick").css({left: 150 + "px"});
+                
 		$("#docview_scrollbar_elapsed").text(pretty_print_time(evt.value));
 		break;
 		}
@@ -209,17 +215,36 @@
             var id_source	= this._id_source; 
             var page		= this._page;
             if (page == null || id_source == null ){
-                //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
-                this._page =  1;
-                this._render();
-                //TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
+				//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
+				this._page =  1;
+				this._render();
+				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already. 
             }
             else{
-                for (var o in payload.diff){
-                    this._page = payload.diff[o].page;
-                    this._render();
-                }
-            }
+
+				var newNoteObj;
+				for (var id in payload.diff){
+					newNoteObj = payload.diff[id];
+
+					//calculate the placement of the tickmark
+					var $thumb = $("#docview_scrollbar_thumb");
+					var thumbstyle = getComputedStyle($thumb[0]);
+					var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0));
+					
+					var self = this;
+					var duration = self._player.getDuration(); //26200
+					var thumbPlace = total_w*newNoteObj.page/duration+"px";
+					//copy the htmlText - stores the current tick mark divs (if any)
+					var htmlText = $("#docview_scrollbar_tickholder").html();
+					//clear the content in the tickholder div
+					$("#docview_scrollbar_tickholder").html("");
+					//get the html of the new tick mark as a string then insert it (bc .append was buggy)
+					htmlText += "<div id='docview_scrollbar_tick' style='left: "+thumbPlace+"' />";
+					$("#docview_scrollbar_tickholder").html(htmlText);
+				}
+
+				$.L("[docView11] TODO: update"); 
+			}
 		}
 		else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
             var D		= payload.diff;
@@ -244,7 +269,7 @@
         },
         _generate_contents: function(){
 		/*
-         * either generates or updates contents
+         * either generates or updates contents of the scrollbar
          * we don't systematically generate it so we can keep the editors, drawables etc...
          */
 		var self	= this;
@@ -258,7 +283,7 @@
 		var w		= self._w;
 		var h		= self._h;
 		var style	= "width: "+w+"px;height: "+h+"px";
-		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_scrollbar'><span/ id='docview_scrollbar_elapsed'>0:00</span><span/ id='docview_scrollbar_total'>?:??</span><div id='docview_scrollbar_list'/><div id='docview_scrollbar_thumb'/></div><div id='docview_controls'> <button id='docview_button_sb'/><button id='docview_button_play'/><button id='docview_button_sf'/></div>";
+		contents+="<div class='material' style='"+style+"'><div id='docview_drawingarea'/><div class='selections'/><div id='youtube_player'/></div><div id='docview_scrollbar'><span/ id='docview_scrollbar_elapsed'>0:00</span><span/ id='docview_scrollbar_total'>?:??</span><div id='docview_scrollbar_list'><div id='docview_scrollbar_tickholder'></div></div><div id='docview_scrollbar_thumb'/></div><div id='docview_controls'> <button id='docview_button_sb'/><button id='docview_button_play'/><button id='docview_button_sf'/></div>";
 		$("div.contents", self.element).html(contents);
 		var drag_helper = function($thumb, pos, make_new_req){
             var duration = self._player.getDuration();
