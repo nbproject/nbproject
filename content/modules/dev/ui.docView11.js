@@ -80,11 +80,13 @@
 		self._player = null;
 		self._id_location       = null; //location_id of selected thread
 		self._metronome = null;
+		self._ignoremetronome = false;
         },
         _defaultHandler: function(evt){
 		var self	= this;
 		var id_source	= self._id_source;
 		var model	= self._model;
+		var $thumb, thumbstyle, total_w;
 		if (id_source !== $.concierge.get_state("file")){
             return;
 		}
@@ -116,6 +118,10 @@
             self._player.seekTo(self._page/self.SEC_MULT_FACTOR);
 		}
 		self._render();
+		$thumb = $("#docview_scrollbar_thumb");
+		thumbstyle = getComputedStyle($thumb[0]);
+		total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0)); 
+		$thumb.css({left: total_w*self._page/(self._player.getDuration()*self.SEC_MULT_FACTOR)+"px"});
 		break;
 		case "doc_scroll_down": 
 		$.L("[docView11] TODO: doc_scroll_down");		
@@ -132,9 +138,10 @@
 		self._player.playVideo();
 		break;
 		case "metronome": 
-		var $thumb = $("#docview_scrollbar_thumb");
-		var thumbstyle = getComputedStyle($thumb[0]);
-		var total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0)); 
+		if (!self._ignoremetronome){
+		$thumb = $("#docview_scrollbar_thumb");
+		thumbstyle = getComputedStyle($thumb[0]);
+		total_w = $thumb.parent().width() - $thumb.width() - ((parseInt(thumbstyle.getPropertyValue('border-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('border-right-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-left-width'), 10) || 0) + (parseInt(thumbstyle.getPropertyValue('margin-right-width'), 10) || 0)); 
 		$thumb.css({left: total_w*evt.value/self._player.getDuration()+"px"});
                 
         // var thumbNailPlace = total_w*evt.value/self._player.getDuration();
@@ -142,6 +149,7 @@
         // $("#docview_scrollbar_tick").css({left: 150 + "px"});
                 
 		$("#docview_scrollbar_elapsed").text(pretty_print_time(evt.value));
+		}
 		break;
 		}
         },
@@ -210,12 +218,13 @@
 		}
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
-        function createTicks(payload, self){
+		var self = this;
+        function createTicks(payload){
 			var newNoteObj;
-			console.log("here");
+			//console.log("here");
 			for (var id in payload.diff){
 				newNoteObj = payload.diff[id];
-				console.log("newNoteObj: ", newNoteObj);
+				//console.log("newNoteObj: ", newNoteObj);
 				//calculate the placement of the tickmark
 				var $thumb = $("#docview_scrollbar_thumb");
 				var thumbstyle = getComputedStyle($thumb[0]);
@@ -241,13 +250,34 @@
 				//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
 				this._page =  1;
 				this._render();
+<<<<<<< HEAD
 				//createTicks(payload, this);
+=======
+				var autoProgress = $.Deferred();
+				var f_poll = function(){
+					if ("getDuration" in self._player){
+						autoProgress.resolve();
+					}
+					else{
+						setTimeout(f_poll, 100);
+					}
+				};
+				f_poll(); //initiate polling 
+				autoProgress.done(function () {
+				createTicks(payload);
+				});
+				//window.setTimeout(function(){createTicks(payload, self);}, 10000);
+
+				//$.when(this._player.getDuration()).then(function(){
+				// createTicks(payload, this);
+				// });
+>>>>>>> ff49718... tick marks appear when rendering! And made sure the thumb moves to the selected thread position
 				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already.
 
 
             }
             else{
-				createTicks(payload, this);
+				createTicks(payload);
 				for (var o in payload.diff){
                     this._page = payload.diff[o].page;
                     this._render();
@@ -348,14 +378,16 @@
 
                 },
                 'onStateChange': function(event){
-				if (event.data === 1){
+				if (event.data === YT.PlayerState.PLAYING){
                     // TODO: put this at init time once we have the length metadata
                     $("#docview_scrollbar_total").text(pretty_print_time(self._player.getDuration()));
 
                     self._metronome.play();
                     $("#docview_button_play").removeClass("paused");
+                    self._ignoremetronome = false;
 				}
 				else{
+					self._ignoremetronome = true;
                     self._metronome.pause();
                     $("#docview_button_play").addClass("paused");
 				}

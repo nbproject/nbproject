@@ -160,20 +160,22 @@ position: absolute;
 -webkit-border-radius: 10px;
 border-radius: 10px;
 background-color: #000000;
-overflow: none;
+overflow: hidden;
 }
 
 #docview_scrollbar_tickholder{
     width: 100%;
     height: 100%;
     position: relative;
+    overflow: hidden;
 }
 
 #docview_scrollbar_tick{
     position:absolute;
-    background: blue;
+    background: red;
     width: 2px;
     height: 20px;
+    opacity: .4;
 }
 
 #docview_scrollbar_thumb{
