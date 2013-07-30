@@ -15,7 +15,7 @@ MIGRATEDBFILE	= conf/migratedb.sh
 MIGRATEDBSKEL	= conf/migratedb.sh.skel
 OLD_DB		= notabene
 NEW_DB		= nb3
-CONF_LOCAL		= content/ui/admin/conf_local.js
+CONF_LOCAL	= content/ui/admin/conf_local.js
 SETTINGSFILE	= $(SITEDIR)/settings.py
 DBNAME		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print DATABASES["default"]["NAME"]')
 DBUSER		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print DATABASES["default"]["USER"]')
@@ -31,14 +31,12 @@ HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
 HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
 HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
-
 SERVER_USERNAME = $(shell python -c 'from  $(SITEDIR_DOT).settings import SERVER_USERNAME;print SERVER_USERNAME')
 NB_SERVERNAME  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_SERVERNAME;print NB_SERVERNAME')
 NB_HTTP_PORT  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
-
 NB		= nb
 NB_ARCHIVE	= nb_stats_`date`_.tgz
-
+SCROLL_LOGFILE	= $(SITEDIR)/scrolling.log
 
 check_settings: 
 	echo ''
@@ -78,6 +76,8 @@ django: check_settings
 	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' -e 's|NB_STATICURL|$(NB_STATICURL)|g' -e 's|NB_STATIC_MEDIA_DIR|$(NB_STATIC_MEDIA_DIR)|g' $(APACHESKEL)   > $(APACHEFILE)
 	touch $(CONF_LOCAL)
 	if [ -s $(CONF_LOCAL) ]; then echo "local conf exists and not empty"; else echo "//your local conf here" >> $(CONF_LOCAL) ;  fi
+	touch $(SCROLL_LOGFILE)
+	chmod ugo+rw $(SCROLL_LOGFILE)
 	echo ''
 	echo '--------- Apache configuration file ------------'
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'
