@@ -42,7 +42,9 @@ if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATAB
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = None
-# USE_TZ = True TODO: use when we upgrade to Django 1.4
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -67,13 +69,36 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/admin_media/'
+ROOTDIR = dirname(abspath(__file__))
+ROOTDIR_BASENAME = basename(ROOTDIR)
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/var/www/example.com/static/"
+STATIC_ROOT = "%s/" % (abspath("%s/../static" % (ROOTDIR, )),)
+
+# URL prefix for static files.
+# Example: "http://example.com/static/", "http://static.example.com/"
+STATIC_URL = "/static/"
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'hvle945h4ik%%%%%fvf9f00988fjd;sith'
+SECRET_KEY = settings_credentials.__dict__.get("SECRET_KEY", "CHANGE_ME")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -88,22 +113,18 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
-ROOTDIR = dirname(abspath(__file__))
-ROOTDIR_BASENAME = basename(ROOTDIR)
-#ROOT_URLCONF = "%s.urls" % (ROOTDIR_BASENAME,)
-ROOT_URLCONF = "urls"
 
-#ROOT_URLCONF = 'servers.urls'
+ROOT_URLCONF = "nbsite.urls"
 
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'nbsite.wsgi.application'
 
-STATIC_ROOT = "%s/" % (abspath("%s/../static" % (ROOTDIR, )),)
-STATIC_URL = "/static/"
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    abspath("%s/../templates" % (ROOTDIR, ))
+    abspath("%s/../../templates" % (ROOTDIR, ))
 )
 ALLOWED_INCLUDE_ROOT = (abspath("%s/../templates/web" % (ROOTDIR, )),)
 
@@ -112,7 +133,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 "django.contrib.auth.context_processors.auth",
 #'django_facebook.context_processors.facebook',
 )
-
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -130,6 +150,46 @@ INSTALLED_APPS = (
     "polls", 
 #"fixture_magic" #add this for 
 )
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'scrolling': {
+            'format': '%(message)s'
+            },
+        },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+            }, 
+        'scrolling': {
+            'level': 'INFO',
+            'class' : 'logging.FileHandler',
+            'formatter': 'scrolling',
+            'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
+            }
+        },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'scrolling':{
+            'handlers': ['scrolling'], 
+            'level': 'INFO'
+            }
+        }
+    }
 
 AUTHENTICATION_BACKENDS = (
     'django_openid_auth.auth.OpenIDBackend',
@@ -239,44 +299,6 @@ FACEBOOK_SCOPE = 'email'
 #Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS). 
 ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'scrolling': {
-            'format': '%(message)s'
-            },
-        },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-            }, 
-        'scrolling': {
-            'level': 'INFO',
-            'class' : 'logging.FileHandler',
-            'formatter': 'scrolling',
-            'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
-            }
-        },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'scrolling':{
-            'handlers': ['scrolling'], 
-            'level': 'INFO'
-            }
-        }
-    }
 
 CUSTOM_DUMPS = {
 'ensemble':{# Initiate dump with: ./manage.py custom_dump ensemble ensemble_id

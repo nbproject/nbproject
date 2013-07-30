@@ -1,9 +1,11 @@
 #use the following to configure the 'nb3' server: 
 SRCDIR		= apps
+SITEDIR		= $(SRCDIR)/nbsite
+SITEDIR_DOT	= $(shell echo $(SITEDIR) | sed 's|/|.|g')
 PWD		= $(shell pwd)
 PREFIXDIR	= $(PWD)
-WSGIDIR		= $(SRCDIR)/apache
-WSGIFILE	= $(WSGIDIR)/django.wsgi
+WSGIDIR		= $(SITEDIR)
+WSGIFILE	= $(WSGIDIR)/wsgi.py
 WSGISKEL	= $(WSGIFILE).skel
 APACHEFILE	= conf/nb_apache
 APACHESKEL	= $(APACHEFILE).skel
@@ -14,25 +16,25 @@ MIGRATEDBSKEL	= conf/migratedb.sh.skel
 OLD_DB		= notabene
 NEW_DB		= nb3
 CONF_LOCAL		= content/ui/admin/conf_local.js
-SETTINGSFILE	= $(SRCDIR)/settings.py
-DBNAME		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["NAME"]')
-DBUSER		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["USER"]')
-DBPASS		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;print DATABASES["default"]["PASSWORD"]')
-DBHOST		= $(shell python -c 'from  $(SRCDIR).settings import DATABASES;a=DATABASES["default"]["HOST"];a="localhost" if a=="" else a;print a')
-CRON_EMAIL	= $(shell python -c 'from  $(SRCDIR).settings import CRON_EMAIL;print CRON_EMAIL')
+SETTINGSFILE	= $(SITEDIR)/settings.py
+DBNAME		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print DATABASES["default"]["NAME"]')
+DBUSER		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print DATABASES["default"]["USER"]')
+DBPASS		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print DATABASES["default"]["PASSWORD"]')
+DBHOST		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;a=DATABASES["default"]["HOST"];a="localhost" if a=="" else a;print a')
+CRON_EMAIL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import CRON_EMAIL;print CRON_EMAIL')
 CONTENTDIR	= $(PWD)/content
-HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SRCDIR).settings import HTTPD_MEDIA;print HTTPD_MEDIA')
-NB_STATIC_MEDIA_DIR= $(shell python -c 'from  $(SRCDIR).settings import STATIC_ROOT;print STATIC_ROOT')
-NB_STATICURL	= $(shell python -c 'from  $(SRCDIR).settings import STATIC_URL;print STATIC_URL')
+HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA;print HTTPD_MEDIA')
+NB_STATIC_MEDIA_DIR= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_ROOT;print STATIC_ROOT')
+NB_STATICURL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_URL;print STATIC_URL')
 HTTPD_PDF_DIR	= $(HTTPD_MEDIA_DIR)/pdf
 HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
 HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
 HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
 
-SERVER_USERNAME = $(shell python -c 'from  $(SRCDIR).settings import SERVER_USERNAME;print SERVER_USERNAME')
-NB_SERVERNAME  	= $(shell python -c 'from  $(SRCDIR).settings import NB_SERVERNAME;print NB_SERVERNAME')
-NB_HTTP_PORT  	= $(shell python -c 'from  $(SRCDIR).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
+SERVER_USERNAME = $(shell python -c 'from  $(SITEDIR_DOT).settings import SERVER_USERNAME;print SERVER_USERNAME')
+NB_SERVERNAME  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_SERVERNAME;print NB_SERVERNAME')
+NB_HTTP_PORT  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
 
 NB		= nb
 NB_ARCHIVE	= nb_stats_`date`_.tgz
@@ -41,10 +43,10 @@ NB_ARCHIVE	= nb_stats_`date`_.tgz
 check_settings: 
 	echo ''
 	echo '********************************************************************************************'
-	echo '* Please edit your DB connections parameters in $(SRCDIR)/settings_credentials.py, if needed *'
+	echo '* Please edit your DB connections parameters in $(SITEDIR)/settings_credentials.py, if needed *'
 	echo '********************************************************************************************'
 	echo '' 
-	$(shell python -c 'import $(SRCDIR).settings')
+	$(shell python -c 'import $(SITEDIR_DOT).settings')
 
 
 create_dirs: 
@@ -72,7 +74,6 @@ all:
 	echo $(DBNAME)
 
 django: check_settings
-	sed 's|@@SRC_DIR@@|$(PREFIXDIR)/$(SRCDIR)|g' $(WSGISKEL)   > $(WSGIFILE)
 	sed -e 's|@@NB_DIR@@|$(PWD)|g' -e 's|@@SRCDIR@@|$(SRCDIR)|g'  -e 's|@@NB_CRON_EMAIL@@|$(CRON_EMAIL)|g' $(CRONSKEL) > $(CRONFILE)
 	sed -e 's|NB_CONTENTDIR|$(CONTENTDIR)|g' -e 's|NB_WSGIDIR|$(PWD)/$(WSGIDIR)|g' -e 's|NB_SERVERNAME|$(NB_SERVERNAME)|g' -e 's|NB_HTTP_PORT|$(NB_HTTP_PORT)|g' -e 's|NB_STATICURL|$(NB_STATICURL)|g' -e 's|NB_STATIC_MEDIA_DIR|$(NB_STATIC_MEDIA_DIR)|g' $(APACHESKEL)   > $(APACHEFILE)
 	touch $(CONF_LOCAL)
@@ -119,5 +120,5 @@ apidev:
 	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 prereqs:
-	apt-get install python postgresql imagemagick postgresql-plpython-8.4 python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools python-setuptools python-xlwt
+	apt-get install python postgresql imagemagick python-pypdf context python-numpy apache2 python-psycopg2 libapache2-mod-wsgi python-openid mupdf-tools python-setuptools python-xlwt g++ python-pip
 	easy_install pytz

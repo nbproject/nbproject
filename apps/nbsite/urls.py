@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 # MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 from os.path import abspath, dirname, basename 
-from django.conf.urls import *
+from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib import admin
 import rpc.urls
@@ -112,7 +112,7 @@ urlpatterns += patterns('',
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
 urlpatterns += patterns('', 
     (r'^content/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root':  abspath("%s/../content/" % (ROOTDIR, ))})
+     {'document_root':  abspath("%s/../../content/" % (ROOTDIR, ))})
 
      )    
 
