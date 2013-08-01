@@ -248,6 +248,7 @@ def getParams(payload, req):
 
 def presearch(payload, req):
     #cid = req.getConnectionId()
+    return UR.prepare_response(["chou", "cachou"])
     cid = UR.CID
     uid = UR.getUserId(req);
     id_search = annotations.save_presearch(cid, payload)

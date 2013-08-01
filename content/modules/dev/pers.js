@@ -108,8 +108,21 @@
         $("#login-window").remove();
         var $login_window = $("<div id='login-window'/>");
         $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='/tutorial'>Tutorial</a></li><li><a href='/faq'>FAQ</a></li><li><a href='/contact'>Contact Us</a></li><li><a href='/disclaimer'>Disclaimer</a></li></ul></li>"));
+	$login_window.append("<input id='searchfield'><span id='searchfield_label'>Search...</span></input>");
         $login_window.append($login_contents);
+	
         $("body").append($login_window);
+        $("#searchfield").focus(function(evt){
+           $("#searchfield_label").hide();
+        }).blur(function(evt){
+if (evt.currentTarget.value===""){
+           $("#searchfield_label").show();
+}
+        }).autocomplete({
+           source: function(request,response){
+GLOB.pers.call("presearch", request, response);
+ }
+        });
     }
     GLOB.pers.params = GLOB.dom.getParams();
     };
