@@ -248,11 +248,11 @@ def getParams(payload, req):
 
 def presearch(payload, req):
     #cid = req.getConnectionId()
-    return UR.prepare_response(["chou", "cachou"])
-    cid = UR.CID
+    #return UR.prepare_response(["chou", "cachou"])
+    #cid = UR.CID
     uid = UR.getUserId(req);
-    id_search = annotations.save_presearch(cid, payload)
-    output = annotations.presearch(uid, id_search, payload) #{"total": 130, "items": "blahblah"}
+    #id_search = annotations.save_presearch(cid, payload)
+    output = annotations.presearch(uid, payload) #{"total": 130, "items": "blahblah"}
     return UR.prepare_response(output)
 
 def getGuestFileInfo(payload, req):

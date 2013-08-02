@@ -300,6 +300,33 @@ def get_social_interactions_clusters(id_ensemble):
         output.append(db.Db().getIndexedObjects(names, "id", from_clause, "true" , (id_ensemble,)))
     return output
 
+def presearch(uid, payload): 
+    import db
+    id_ensemble =  "(%s)" % (",".join([str(int(i)) for i in payload["id_ensemble"]]), ) if "id_ensemble" in payload else None
+    page_offset = int(payload["page_offset"]) if "page_offset" in payload else 0    
+    limit = 20
+    offset = page_offset*limit
+    text =  payload["term"].replace("'", "")
+    names = {
+        "ID": "id", 
+        "body": None, 
+        "id_location": "location_id", 
+        "page": None, 
+        "id_source": "source_id", 
+        "id_ensemble" :"ensemble_id", 
+        "id_parent": "parent_id",
+        }
+    #cnt = DB().getVal("select count(c.id) from nb2_comment c, nb2_location l where l.id=c.id_location and l.id_ensemble in %s and  to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (id_author=? or type>2 or (type>1 and id_ensemble in ( select id_ensemble from v_membership where id_user=? and admin=1))) " % (id_ensemble, "'"+DB().escape_string(text)+"'",), (uid, uid)) ;
+    query_part_ensemble = 'ensemble_id in %s and ' % id_ensemble if id_ensemble is not None else ""
+    items = db.Db().getIndexedObjects(names, "ID", "(select c.id, c.body, c.location_id, c.parent_id, l.page, l.source_id, l.ensemble_id, c.author_id, c.type from base_comment c, base_location l where l.id=c.location_id) as V1 ", "%s to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (author_id=? or type>2 or (type>1 and ensemble_id in ( select eid from v_membership where uid=? and admin=true))) limit ? offset ?" % (query_part_ensemble, "'"+db.Db().escape_string(text)+"'",),  (uid, uid, limit, offset))
+    #id_parents = []
+    #for i in items:
+    #    if items[i]["id_parent"] is not None: 
+    #        id_parents.append( items[i]["id_parent"])            
+    return {"items": items}
+    #parents =  None if len(id_parents)==0 else DB().getIndexedObjects({"ID": "id", "body": None}, "ID", "nb2_v_comment", "id in (%s)" % (str(id_parents)[1:-1], ), ())            
+    #    return {"total": cnt, "items": items, "begin": min(offset+1, cnt), "end": min(cnt, offset+limit), "parents": parents }
+
 
 def set_grade_assignment(uid, P):
     id_user = P["id_user"]
