@@ -323,7 +323,7 @@ def presearch(uid, payload):
     #for i in items:
     #    if items[i]["id_parent"] is not None: 
     #        id_parents.append( items[i]["id_parent"])            
-    return {"items": items}
+    return {"items": items};
     #parents =  None if len(id_parents)==0 else DB().getIndexedObjects({"ID": "id", "body": None}, "ID", "nb2_v_comment", "id in (%s)" % (str(id_parents)[1:-1], ), ())            
     #    return {"total": cnt, "items": items, "begin": min(offset+1, cnt), "end": min(cnt, offset+limit), "parents": parents }
 
