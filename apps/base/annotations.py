@@ -302,23 +302,27 @@ def get_social_interactions_clusters(id_ensemble):
 
 def presearch(uid, payload): 
     import db
-    id_ensemble =  "(%s)" % (",".join([str(int(i)) for i in payload["id_ensemble"]]), ) if "id_ensemble" in payload else None
+    #ensemble_id =  "(%s)" % (",".join([str(int(i)) for i in payload["ensemble_id"]]), ) if "ensemble_id" in payload else None
+    ensemble_id = int(payload["ensemble_id"]) if "ensemble_id" in payload else None
+    folder_id = int(payload["folder_id"]) if "folder_id" in payload else None
+    source_id = int(payload["source_id"]) if "source_id" in payload else None
     page_offset = int(payload["page_offset"]) if "page_offset" in payload else 0    
     limit = 20
     offset = page_offset*limit
-    text =  payload["term"].replace("'", "")
+    qry_text = "'%s'" % (db.Db().escape_string(payload["term"].replace("'", "")),)
     names = {
         "ID": "id", 
         "body": None, 
-        "id_location": "location_id", 
-        "page": None, 
-        "id_source": "source_id", 
-        "id_ensemble" :"ensemble_id", 
-        "id_parent": "parent_id",
         }
-    #cnt = DB().getVal("select count(c.id) from nb2_comment c, nb2_location l where l.id=c.id_location and l.id_ensemble in %s and  to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (id_author=? or type>2 or (type>1 and id_ensemble in ( select id_ensemble from v_membership where id_user=? and admin=1))) " % (id_ensemble, "'"+DB().escape_string(text)+"'",), (uid, uid)) ;
-    query_part_ensemble = 'ensemble_id in %s and ' % id_ensemble if id_ensemble is not None else ""
-    items = db.Db().getIndexedObjects(names, "ID", "(select c.id, c.body, c.location_id, c.parent_id, l.page, l.source_id, l.ensemble_id, c.author_id, c.type from base_comment c, base_location l where l.id=c.location_id) as V1 ", "%s to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (author_id=? or type>2 or (type>1 and ensemble_id in ( select eid from v_membership where uid=? and admin=true))) limit ? offset ?" % (query_part_ensemble, "'"+db.Db().escape_string(text)+"'",),  (uid, uid, limit, offset))
+    #cnt = DB().getVal("select count(c.id) from nb2_comment c, nb2_location l where l.id=c.id_location and l.ensemble_id in %s and  to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (id_author=? or type>2 or (type>1 and ensemble_id in ( select ensemble_id from v_membership where id_user=? and admin=1))) " % (ensemble_id, "'"+DB().escape_string(qry_text)+"'",), (uid, uid)) ;
+    query_part_ensemble = 'and ensemble_id=?' if ensemble_id is not None else "and ensemble_id in ( select eid from v_membership where uid=?)"
+    query_part_folder = 'and l.source_id in (select fid from v_ownership where sid=l.source_id)' if folder_id is not None else ""
+    query_part_source = 'and l.source_id=?' if source_id is not None else ""
+    query_params = [ensemble_id] if ensemble_id is not None else [uid]
+    if source_id is not None:
+        query_params.append(source_id)
+    query_params.extend((uid, uid, limit, offset))
+    items = db.Db().getIndexedObjects(names, "ID", "(select id, ts_headline('english',body,plainto_tsquery(%s)) as body from (select c.id, c.body, c.location_id, c.parent_id, l.page, l.source_id, l.ensemble_id, c.author_id, c.type from base_comment c, base_location l where l.id=c.location_id %s %s %s and to_tsvector('english' ,body) @@ plainto_tsquery(%s) and (author_id=? or type>2 or (type>1 and ensemble_id in ( select eid from v_membership where uid=? and admin=true))) order by  ts_rank_cd(tsvec, plainto_tsquery(%s)) limit ? offset ?) as V1) as V2" % (qry_text, query_part_ensemble, query_part_source, query_part_folder, qry_text, qry_text), "true" , query_params)
     #id_parents = []
     #for i in items:
     #    if items[i]["id_parent"] is not None: 

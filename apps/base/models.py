@@ -202,7 +202,7 @@ class Comment(models.Model):                                                    
    
     @property
     def created(self):
-        return str(time.mktime(timezone(time.tzname[0]).localize(self.ctime).timetuple()))
+        return str(time.mktime(self.ctime.timetuple()))
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark

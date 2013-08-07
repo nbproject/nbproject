@@ -52,6 +52,7 @@ color: #a0a0a0;
 position: absolute;
 left: 4px;
 top: 3px;
+pointer-events: none;
 }
 
 ul.dropdown-menu{

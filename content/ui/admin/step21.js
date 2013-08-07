@@ -120,6 +120,13 @@ GLOB.pers.init = function(){
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   
+    
+     $.concierge.addListeners(GLOB.pers, {               
+            search_select_comment: function(evt){
+                var id=evt.value;
+                document.location.pathname="/c/"+id;
+            }
+            }, "globalPersObject");
 };
 
 

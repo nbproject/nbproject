@@ -119,19 +119,42 @@
                 }
             }).autocomplete({
                 source: function(request,response){
+                    var source_id, ensemble_id, folder_id;
+                    source_id = $.concierge.get_state("source");
+                    if (source_id !== undefined){
+                        request.source_id = source_id;
+                    }
+                    folder_id = $.concierge.get_state("folder");
+                    if (folder_id !== undefined){
+                        request.folder_id = folder_id;
+                    }
+                    ensemble_id = $.concierge.get_state("ensemble");
+                    if (ensemble_id !== undefined && ensemble_id!=="0"){
+                        request.ensemble_id = ensemble_id;
+                    }
                     GLOB.pers.call("presearch", request, function(P){
-                        var values = {}, labels = {}, item, args=[], o;
+                        var values = {}, labels = {}, item, args=[], o;                        
                         for (item in P.items){
+                            var isEmpty = false;
                             o = P.items[item];
-                            args.push({value: o["ID"], label: o["body"]});
+                            // args.push({value: o["ID"], label: "<span>"+o["body"]+"</span>"});
+                            args.push({value: request.term, label: "<span>"+o["body"]+"</span>", id_item: o["ID"]});
+                        }
+                        if (args.length === 0){
+                            args.push({value: request.term, label: "<i>No results found</i>", id_item:null});
                         }
                         response(args);
                     });
                 }, 
                 select: function(event, ui){
-                    document.location.pathname="/c/"+ui.item.value;
+                    if (ui.item.id_item!==null){
+                        $.concierge.trigger({type:"search_select_comment", value:ui.item.id_item });
+                        //                        document.location.pathname="/c/"+ui.item.id_item;
+                    }
                 }
-            });
+            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                return $( "<li>" ).append( "<a>" + item.label +"</a>" ).appendTo( ul );
+            };
         }
         GLOB.pers.params = GLOB.dom.getParams();
     };

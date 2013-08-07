@@ -26,6 +26,7 @@
             alert("Can't open file b/c URL pathname doesn't have an integer: "+document.location.pathname);
         }
         GLOB.pers.id_source =  matches[1];
+        $.concierge.trigger({type:"source", value:GLOB.pers.id_source});        //set the state to that source: 
         GLOB.pers.call("getParams",{name: ["RESOLUTIONS", "RESOLUTION_COORDINATES"], clienttime: (new Date()).getTime()},function(p){
                 $.concierge.addConstants(p.value);
             });
@@ -34,7 +35,12 @@
                     GLOB.auth.set_cookie("ckey", evt.value.ckey);
                     document.location = document.location.protocol+"//"+document.location.host+document.location.pathname;
                     $.I("Welcome !");
-                }
+                }, 
+            search_select_comment: function(evt){
+                var id=evt.value;
+                var c = GLOB.pers.store.get("comment", {ID: id}).items[id];
+                $.concierge.trigger({type: "select_thread",value: c.ID_location});
+            }
             }, "globalPersObject");
     
         //Factories: methods called if an event calls for a function that's not yet present
@@ -181,13 +187,13 @@
         var f = GLOB.pers.store.o.file[id_source];
         document.title = $.E(f.title + " ("+f.numpages +" pages)");
         $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
-                var m = GLOB.pers.store;
-                m.add("seen", P["seen"]);
-                m.add("comment", P["comments"]);
-                m.add("location", P["locations"]);
-                m.add("link", P["links"]);
-                m.add("threadmark", P["threadmarks"]);
-                //now check if need to move to a given annotation: 
+            var m = GLOB.pers.store;
+            m.add("seen", P["seen"]);
+            m.add("comment", P["comments"]);
+            m.add("location", P["locations"]);
+            m.add("link", P["links"]);
+            m.add("threadmark", P["threadmarks"]);
+            //now check if need to move to a given annotation: 
                 if ("c" in GLOB.pers.params){
                     window.setTimeout(function(){
                             var id =  GLOB.pers.params.c;
