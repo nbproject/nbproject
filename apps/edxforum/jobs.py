@@ -2,7 +2,7 @@ import json, re,sys,os,datetime
 if "" not in sys.path: 
     sys.path.append("")
 if "DJANGO_SETTINGS_MODULE" not in os.environ: 
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
 from django.conf import settings
 from base import utils
 import models as M
@@ -30,6 +30,24 @@ def try_add_comment(x, o, cnt):
         c.ctime = datetime.datetime.fromtimestamp(int(x["created_at"]["$date"])/1000)
         c.save()
         return newcnt+1
+
+def match_ids(*t_args):
+    if len(t_args)>0:
+        args=t_args[0]
+        if (len(args)<1): 
+            print "usage: jobs.py match_ids csv_dump_file"
+            return
+    filename = args[0]
+    import csv
+    import db 
+    with open(filename) as f: 
+        csvreader = csv.reader(f)
+        for row in csvreader: 
+            railsapp_id = row[0]            
+            if row[1] != "": 
+                db.Db().execute("update copyx_student set edx_id=? where id=?", (row[1], railsapp_id))
+            if row[2] != "": 
+                db.Db().execute("update copyx_student set nb_id=? where id=?", (row[2], railsapp_id))
 
 def do_forum(*t_args):
     if len(t_args)>0:
@@ -100,5 +118,6 @@ def do_forum(*t_args):
 if __name__ == "__main__": 
    ACTIONS = {
         "forum": do_forum,
+        "match_ids": match_ids
         }
    utils.process_cli(__file__, ACTIONS)
