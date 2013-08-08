@@ -99,7 +99,7 @@
     indexes = {}, 
     rangeindexes = {}, 
     tabledef = self.schema[type_name], 
-    ref, i;
+    ref,refs, i;
     if ("references" in tabledef){
         for (i in tabledef.references){
         ref =  tabledef.references[i];
@@ -111,15 +111,17 @@
     if ("__ref" in tabledef){
         var r=/__in(\d*)$/;
         for (i in tabledef.__ref){
-        ref =  tabledef.__ref[i];
-        if (ref in self.indexes && type_name in self.indexes[ref]){
-            if (r.exec(ref)==null){
-            indexes[i]=  self.indexes[ref][type_name];
+            refs =  tabledef.__ref[i];
+            for (ref in refs){
+                if (ref in self.indexes && type_name in self.indexes[ref]){
+                    if (r.exec(ref)==null){
+                        indexes[i]=  self.indexes[ref][type_name];
+                    }
+                    else{
+                        rangeindexes[i] = {index: self.indexes[ref][type_name], info: self.rangeindex_info[ref]};
+                    }
+                }
             }
-            else{
-            rangeindexes[i] = {index: self.indexes[ref][type_name], info: self.rangeindex_info[ref]};
-            }
-        }
         } 
     }
     return [indexes, rangeindexes];
@@ -283,25 +285,27 @@
     };
 
     GLOB.models.Store.prototype.__dropIndexes = function(type_name){
-    var self = this;
-    var tabledef = self.schema[type_name];
-    var ref, i;
-    if ("references" in tabledef){
-        for (i in tabledef.references){
-        ref =  tabledef.references[i];
-        if (ref in self.indexes && type_name in self.indexes[ref]){
-            delete self.indexes[ref][type_name];
+        var self = this;
+        var tabledef = self.schema[type_name];
+        var ref, i, j, refs;
+        if ("references" in tabledef){
+            for (i in tabledef.references){
+                ref =  tabledef.references[i];
+                if (ref in self.indexes && type_name in self.indexes[ref]){
+                    delete self.indexes[ref][type_name];
+                }
+            }
         }
+        if ("__ref" in tabledef){
+            for (i in tabledef.__ref){
+                refs =  tabledef.__ref[i];
+                for (ref in refs){
+                    if (ref in self.indexes && type_name in self.indexes[ref]){
+                        delete self.indexes[ref][type_name];
+                    }
+                }
+            } 
         }
-    }
-    if ("__ref" in tabledef){
-        for (i in tabledef.__ref){
-        ref =  tabledef.__ref[i];
-        if (ref in self.indexes && type_name in self.indexes[ref]){
-            delete self.indexes[ref][type_name];
-        }
-        } 
-    }
     };
 
 
@@ -326,11 +330,14 @@
     
     if (table.substring(0,2) === "__"){
         if (!("__ref" in self.schema[o])){
-        self.schema[o].__ref = {};
+            self.schema[o].__ref = {};
         }    
-        self.schema[o].__ref[fieldname] = table;
+        if (!(self.schema[o].__ref[fieldname])){
+            self.schema[o].__ref[fieldname] = {};
+        } 
+        self.schema[o].__ref[fieldname][table] = null;
     }
-
+    
     if (!(table in self.indexes)){
         self.indexes[table]={};
     }
@@ -357,7 +364,10 @@
     if (!("__ref" in self.schema[o])){
         self.schema[o].__ref = {};
     }    
-    self.schema[o].__ref[fieldname] = table;
+    if (!(self.schema[o].__ref[fieldname])){
+        self.schema[o].__ref[fieldname] = {};
+    }
+     self.schema[o].__ref[fieldname][table] = null;
     
     if (!(table in self.indexes)){
         self.indexes[table]={};

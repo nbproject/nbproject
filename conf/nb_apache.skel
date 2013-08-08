@@ -1,3 +1,6 @@
+# Uncomment this if you're listening on a non standard port: 
+# Listen NB_HTTP_PORT
+
 NameVirtualHost *:NB_HTTP_PORT
 
 <VirtualHost *:NB_HTTP_PORT>
@@ -18,7 +21,7 @@ Order deny,allow
 Allow from all
 </Directory>
 
-WSGIScriptAlias / NB_WSGIDIR/django.wsgi
+WSGIScriptAlias / NB_WSGIDIR/wsgi.py
 
 <Directory NB_WSGIDIR/>
 Order allow,deny

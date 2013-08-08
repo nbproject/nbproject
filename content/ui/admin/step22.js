@@ -114,6 +114,7 @@ GLOB.pers.createStore = function(payload){
         ensemble:    {pFieldName: "ensembles"}, 
         file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
         folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
+        youtubeinfo: {pFieldName: "youtubeinfos", references: {source_id: "file"}},
         comment:{references: {id_location: "location"}},
         location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
         link: {pFieldName: "links"}, 
