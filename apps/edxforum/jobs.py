@@ -4,7 +4,7 @@ if "" not in sys.path:
 if "DJANGO_SETTINGS_MODULE" not in os.environ: 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
 from django.conf import settings
-from base import utils
+from base import utils, db
 import models as M
 
 def try_add_comment(x, o, cnt): 
@@ -39,16 +39,19 @@ def match_ids(*t_args):
             return
     filename = args[0]
     import csv
-    import db 
     with open(filename) as f: 
         csvreader = csv.reader(f)
         for row in csvreader: 
-            railsapp_id = row[0]            
-            if row[1] != "": 
-                db.Db().execute("update copyx_student set edx_id=? where id=?", (row[1], railsapp_id))
-            if row[2] != "": 
-                db.Db().execute("update copyx_student set nb_id=? where id=?", (row[2], railsapp_id))
-
+            try: 
+                railsapp_id = int(row[0])
+                if row[1] != "": 
+                    print "edx_id %s for railsapp_id %s" %(row[1], railsapp_id)
+                    db.Db().doTransaction("update copyx_student set edx_id=? where id=?", (row[1], railsapp_id))
+                if row[2] != "": 
+                    print "nb_id %s for railsapp_id %s" %(row[2], railsapp_id)
+                    db.Db().doTransaction("update copyx_student set nb_id=? where id=?", (row[2], railsapp_id))
+            except: 
+                print "can't convert to integer"
 def do_forum(*t_args):
     if len(t_args)>0:
         args=t_args[0]
