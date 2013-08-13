@@ -20,7 +20,7 @@ table{
 <div class='section'>
 	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
       <table>
-      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Section</th><th>Actions</th></tr></thead>
       	<tbody>
 	{% for o in memberships %}	
 		<tr>
@@ -28,6 +28,16 @@ table{
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
 			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+			<td>
+				<form method="POST" action="?action=setsection&membership_id={{o.id}}">
+				<select name="section_id">
+					<option value="None" {% if o.section == None %} selected="selected" {%endif %}>No Section</option>
+					{% for s in sections %}
+						<option value='{{s.id}}' {% if o.section == s %} selected="selected" {%endif%} >{{s.name}}</option>
+					{% endfor %}
+				</select><input type="submit" value="Change"/>
+				</form>
+			</td>
             <td><a style='margin-right: 10px' href='?action=delete&membership_id={{o.id}}'>Delete</a>
               {% if o.admin %}
               <a href='?action=unadmin&membership_id={{o.id}}'>Remove staff status</a>

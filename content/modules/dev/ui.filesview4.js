@@ -214,7 +214,7 @@
         _draw_frame: function(){
         var self = this;
         self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
-        var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : "";
+        var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_sections' target='_blank'>Sections</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : "";
         var opts    = self._admin ? "<th>Actions</th>" : "";
 
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
@@ -294,6 +294,7 @@
             */
         
             $("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
+            $("#group_sections").attr("href", "/properties/ensemble_sections/" + self._id_ensemble);
             $("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
             $("#spreadsheet").attr("href", "/spreadsheet?id_ensemble="+self._id_ensemble);
             $("#spreadsheet_download").attr("href", "/spreadsheet/download/"+self._id_ensemble);

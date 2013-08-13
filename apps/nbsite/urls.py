@@ -51,6 +51,7 @@ urlpatterns = patterns("",
                        (r'^enteryourname$', 'pages.views.enter_your_name'), 
                        (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'), 
                        (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
+                       (r'^properties/ensemble_sections/(\d+)$', 'pages.views.properties_ensemble_sections'),
                        (r'^addhtml/(\d+)$', 'pages.views.add_html_doc'),
                        (r'^addyoutube/(\d+)$', 'pages.views.add_youtube_doc'),
 

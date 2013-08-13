@@ -387,6 +387,7 @@ def properties_ensemble_users(req, id):
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
+    sections = M.Section.objects.filter(ensemble=ensemble)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
     pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)    
@@ -421,7 +422,47 @@ def properties_ensemble_users(req, id):
                 m.admin = False
                 m.save()
                 return HttpResponseRedirect(req.path)
-    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations, "deleted_memberships": deleted_memberships})
+        elif req.GET["action"] == "setsection":
+            m = real_memberships.filter(id=req.GET["membership_id"])
+            if req.POST["section_id"] == "None":
+		s = None
+            else:
+                s = sections.filter(id=req.POST["section_id"])[0]
+            if len(m):
+                m = m[0]
+                m.section = s
+                m.save()
+                return HttpResponseRedirect(req.path)
+
+    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations, "deleted_memberships": deleted_memberships, "sections": sections})
+
+def properties_ensemble_sections(req, id):
+    user       = UR.getUserInfo(req)
+    if user is None: 
+        return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
+    if not auth.canEditEnsemble(user.id, id):
+        return HttpResponseRedirect("/notallowed")
+    ensemble = M.Ensemble.objects.get(pk=id)
+    sections = M.Section.objects.filter(ensemble=ensemble)
+    err = ""
+    if "action" in req.GET: 
+        if req.GET["action"] == "create" and "name" in req.POST:
+            s = M.Section(name=req.POST["name"], ensemble=ensemble)
+            s.save()
+        elif req.GET["action"] == "delete" and "section_id" in req.GET:
+            s = sections.filter(id=req.GET["section_id"])
+            if len(s):
+                s = s[0]
+                if ( len(M.Membership.objects.filter(section=s)) > 0):
+                    err = "The section you are trying to delete is not empty."
+                else:
+                    s.delete()
+                    return HttpResponseRedirect(req.path)
+        else:
+           err = "Unrecognized Command"
+
+    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "error_message": err })
+
 
 def spreadsheet(req):
     return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")

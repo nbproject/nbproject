@@ -23,7 +23,7 @@
         self._id_folder        = null;
         self._admin        = self.options.admin;
         var splashtext="<div style='padding: 30px; font-size: x-large; color: #a0a0a0;'>Please select a class or folder...</div>";
-        var header    = self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
+        var header    = self._admin ? "<div class='filesView-header'><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_sections' target='_blank'>Sections</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a></div>" : "";
         var opts    = self._admin ? "<th>Actions</th>" : "";
         self.element.addClass("filesView").html("<div id='filesview-splash'>"+splashtext+"</div>"+header+"<div class='filesView-ensemble'/><div class='filesView-files'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody/></table></div>");
         $("button[action=add_file]", self.element).click(function(){
@@ -131,6 +131,7 @@
         }
         */
         $("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
+        $("#group_sections").attr("href", "/properties/ensemble_sections/"+self._id_ensemble);
         $("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
         $("#spreadsheet").attr("href", "/spreadsheet?id_ensemble="+self._id_ensemble);
         }, 
