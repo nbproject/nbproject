@@ -4,7 +4,10 @@ from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.utils.tzinfo import FixedOffset, LocalTimezone
 from datetime import datetime
 import time
-from pytz import timezone
+import pytz
+import calendar
+from django.utils import timezone
+
 
 ### TODO continue porting with schema in main_dir/schema
 
@@ -202,7 +205,10 @@ class Comment(models.Model):                                                    
    
     @property
     def created(self):
-        return str(time.mktime(timezone(time.tzname[0]).localize(self.ctime).timetuple()))
+        if (timezone.is_naive(self.ctime)):
+            return str(calendar.timegm(pytz.utc.localize(self.ctime).timetuple()))
+        else:
+            return str(calendar.timegm(self.ctime.astimezone(pytz.utc).timetuple()))
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
