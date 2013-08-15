@@ -24,7 +24,16 @@ font-size: large;
 {% block content %}
   <div id="intro">
   <h1>Add a new webpage to NB</h1>
-  This is an experimental feature...
+  This is an experimental feature... NB can be used to comment simple HTML pages. 
+<ul>
+<li>Use this form to indicate the page that you'd like to comment with NB</li>
+<li>That page needs to contain our embedded NB viewer. To do so, you need to insert the following snippet into the &lt;head&gt; section of your page:<br/><pre>&lt;script src='<span id="hostname1">HOSTNAME</span>/embed_NB.js' type='text/javascript'&gt; &lt;/script&gt;</pre></li>
+<script>document.getElementById("hostname1").innerHTML=document.location.protocol+"//"+document.location.host;</script>
+<li>If you can't add the embedded NB viewer for any reason (for instance, you don't own the page), you can use the following bookmarklet to insert the script. Note that you need to communicate this bookmarklet to your users (and explain them how to use <a href="http://en.wikipedia.org/wiki/Bookmarklet">bookmarklets</a>...): <br/>
+<pre style="font-size: xx-small">javascript:c=document.createElement("script");c.setAttribute("type", "text/javascript");c.setAttribute("src", "<span id="hostname2">HOSTNAME</span>/embed_NB.js");document.getElementsByTagName("head")[0].appendChild(c);</pre>
+<script>document.getElementById("hostname2").innerHTML=document.location.protocol+"//"+document.location.host;</script>
+</li>
+</ul>
   </div>
   <div id="form">
     <form action="" method="post">
