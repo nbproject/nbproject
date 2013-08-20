@@ -1,0 +1,46 @@
+{% extends "web/base.html" %}
+{% block title %}Properties for {{ensemble.name}}{% endblock %}
+{% block style %}
+span.lowcontrast{
+	color: #a0a0a0;
+}
+div.section{
+	color: #404040;
+	margin-left: 30px;	
+}
+table{
+	border-spacing: 15px 3px;	
+}
+{% endblock %} 
+{% block content %}
+
+  <h1>Sections for {{ensemble.name}}</h1>
+
+<div class='section'>
+<p>{{error_message}}</p>
+	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
+      <table>
+      	<thead><tr><th>Section Name</th><th>Actions</th></tr></thead>
+      	<tbody>
+	{% for o in sections %}	
+		<tr>
+			<td>{{o.name|default:'<span class="lowcontrast">untitled</span>'}}</td>
+            <td><a style='margin-right: 10px' href='?action=delete&section_id={{o.id}}'>Delete</a>
+            </td>
+		</tr>
+        {% endfor %}
+	
+	</tbody>
+      </table>
+      </div>
+
+<div class='section'>
+<h3>Create a new section</h3>
+<form method="POST" action="?action=create">
+<label for="name">Section Name</label> <input type="text" name="name" value="" /><input type="submit" value="Create Section" />
+</form>
+
+</div>
+
+{% endblock %}
+

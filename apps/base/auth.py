@@ -22,6 +22,7 @@ def confirmInvite(id):
         membership.user = invite.user
         membership.ensemble = invite.ensemble
         membership.admin = invite.admin
+        membership.section = invite.section
         membership.save()
     return invite
     
@@ -125,8 +126,11 @@ def addUser(email, password, conf, valid=0, guest=0):
     return o
 
 
-def addInvite(key, id_user, id_ensemble, admin):
-    o = M.Invite(key=key, user_id=id_user, ensemble_id=id_ensemble, admin=admin)
+def addInvite(key, id_user, id_ensemble, id_section, admin):
+    if id_section == 'None':
+        o = M.Invite(key=key, user_id=id_user, ensemble_id=id_ensemble, admin=admin)
+    else:
+        o = M.Invite(key=key, user_id=id_user, ensemble_id=id_ensemble, section_id=id_section, admin=admin)
     o.save()
     
 def createGuest():

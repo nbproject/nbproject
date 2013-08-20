@@ -37,7 +37,19 @@ GLOB.files.set_model = function(model){
 "<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'>No</input>        </td></tr> "+
 "<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'>No</input>        </td></tr> "+
 "<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'>No</input>        </td></tr>"+
-"</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>").append("<div id='invite_users_dialog' > <div>To access the following group  <select id='invite_users_ensemble'/></div><br/><span class='fixdialog' >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/><textarea id='invite_users_emails'  rows='5' cols='50'/><br/><input type='checkbox' id='invite_users_admin' style='padding-left: 20px'></input> <label for='invite_users_admin'>Grant administrative rights to these users</label><br/><br/><span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/><textarea id='invite_users_msg'  rows='7' cols='50'/></div>").append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
+"</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>")
+    .append(
+        "<div id='invite_users_dialog' >" +
+        "<div>To access the following group  <select id='invite_users_ensemble'/></div>" +
+        "<div>For a particular section  <select id='invite_users_section'/> <em>(Optional)</em></div>" +
+        "<br/><span class='fixdialog' >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/>" +
+        "<textarea id='invite_users_emails'  rows='5' cols='50'/><br/>" +
+        "<input type='checkbox' id='invite_users_admin' style='padding-left: 20px'></input>" +
+        "<label for='invite_users_admin'>Grant administrative rights to these users</label><br/><br/>" +
+        "<span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/>" +
+        "<textarea id='invite_users_msg'  rows='7' cols='50'/>" +
+        "</div>")
+    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
 };
 
 
@@ -141,7 +153,20 @@ GLOB.files.proceedUpdate = function(payload){
 
 GLOB.files.inviteUsers = function(id_ensemble){
     GLOB.files.currentEnsemble = id_ensemble;
+
     $("#invite_users_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
+
+    var sections_html = "<option value='None'>None</option>";
+    var sections = GLOB.pers.store.get("section", {id_ensemble:GLOB.files.currentEnsemble}).items;
+
+    for (var key in sections) {
+        if (sections.hasOwnProperty(key)) {
+            var section = sections[key];
+            sections_html += "<option value='" + section.ID + "'>" + section.name + "</option>";
+        }
+    }
+
+    $("#invite_users_section").html(sections_html);
     $('#invite_users_dialog').dialog({
         title: "Send an invitation...", 
         width: 550,
@@ -153,7 +178,8 @@ GLOB.files.inviteUsers = function(id_ensemble){
             var to = $("#invite_users_emails")[0].value;
             var msg = $("#invite_users_msg")[0].value;
             var admin = $("#invite_users_admin:checked").length;
-            $.concierge.get_component("invite_users")({id_ensemble: id_ensemble, to: to, msg: msg, admin: admin}, function(){$.I("Your invitation has been sent !");});
+            var section = $("#invite_users_section").val();
+            $.concierge.get_component("invite_users")({id_ensemble: id_ensemble, id_section: section, to: to, msg: msg, admin: admin}, function(){$.I("Your invitation has been sent !");});
             $(this).dialog("destroy");
             }
         }

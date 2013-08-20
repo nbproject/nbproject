@@ -225,6 +225,19 @@ def get_folders(uid, payload):
         my_folders = my_folders.filter(id=id)    
     return UR.qs2dict(my_folders, names, "ID")
 
+def get_sections(uid, payload):
+    id = payload["id"] if "id" in payload else None
+    names = {
+        "ID": "id",
+        "id_ensemble": "ensemble_id",
+        "name": None}
+    my_memberships = M.Membership.objects.filter(user__id=uid, deleted=False)
+    my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
+    my_sections = M.Section.objects.filter(ensemble__in=my_ensembles)
+    if id is not None: 
+        my_sections = my_sections.filter(id=id)    
+    return UR.qs2dict(my_sections, names, "ID")
+
 def get_file_stats(uid, payload):
     import db
     id_ensemble = payload["id_ensemble"] 
