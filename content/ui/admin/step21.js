@@ -89,7 +89,7 @@ GLOB.pers.init = function(){
     });
     
     //get data: 
-    var payload_objects = {types: ["ensembles", "folders", "files"]};
+    var payload_objects = {types: ["ensembles", "folders", "files", "sections"]};
     if ("id_ensemble" in GLOB.pers.params){
     payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
     }
@@ -128,6 +128,7 @@ GLOB.pers.createStore = function(payload){
     GLOB.pers.store = new GLOB.models.Store();
     GLOB.pers.store.create(payload, {
         ensemble:    {pFieldName: "ensembles"}, 
+        section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},
         file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
         folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
         comment:{references: {id_location: "location"}},

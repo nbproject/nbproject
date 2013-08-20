@@ -63,7 +63,7 @@ __EXPORTS = [
     "getPending", 
     "rate_reply"
     ]
-__AVAILABLE_TYPES = set(["folders", "ensembles", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
+__AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
 __AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search", "collection" ]
 
@@ -121,8 +121,10 @@ def rate_reply(P,req):
     
 def sendInvites(payload, req): 
     from django.core.mail import EmailMessage
+
     uid = UR.getUserId(req);
     id_ensemble = payload["id_ensemble"]
+    id_section = payload["id_section"]
     admin = 0 if "admin" not in payload else payload["admin"]
     if not auth.canSendInvite(uid,id_ensemble):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")      
@@ -142,9 +144,10 @@ def sendInvites(payload, req):
             password    = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
             user     = auth.addUser(email, password, ckey)
         invite_key      = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
-        auth.addInvite(invite_key, user.id, id_ensemble, admin)
+        auth.addInvite(invite_key, user.id, id_ensemble, id_section, admin)
         link = "http://%s/confirm_invite?invite_key=%s" % (settings.HOSTNAME, invite_key,)
         ensemble = M.Ensemble.objects.get(pk=id_ensemble)
+
         p = {"name": ensemble.name, "description": ensemble.description, "link": link, "contact": user.firstname if user.firstname != None else user.email }
         if payload["msg"] != "": 
             p["msg_perso"] = payload["msg"]
