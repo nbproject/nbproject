@@ -129,14 +129,6 @@ def your_settings(req):
 
 def embedopenid(req): 
     return __serve_page(req, 'web/embedopenid.html', mimetype="text/html")
-
-
-def draft(req, tplname):
-    try:
-        r = render_to_response("drafts/%s.html" % tplname, {}, mimetype='application/xhtml+xml')
-        return r
-    except TemplateDoesNotExist:
-        raise Http404()
  
 def newsite(req):
     import base.models as M, random, string 
