@@ -250,9 +250,6 @@
 				//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
 				this._page =  1;
 				this._render();
-<<<<<<< HEAD
-				//createTicks(payload, this);
-=======
 				var autoProgress = $.Deferred();
 				var f_poll = function(){
 					if ("getDuration" in self._player){
@@ -266,15 +263,7 @@
 				autoProgress.done(function () {
 				createTicks(payload);
 				});
-				//window.setTimeout(function(){createTicks(payload, self);}, 10000);
-
-				//$.when(this._player.getDuration()).then(function(){
-				// createTicks(payload, this);
-				// });
->>>>>>> ff49718... tick marks appear when rendering! And made sure the thumb moves to the selected thread position
 				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already.
-
-
             }
             else{
 				createTicks(payload);
@@ -283,14 +272,11 @@
                     this._render();
                 }
 			}
-            
-				$.L("[docView11] TODO: update"); 
-			}
 		}
-		else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
-            var D		= payload.diff;
-            $.L("[docView11] TODO: remove");
-		}
+            else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
+                var D		= payload.diff;
+                $.L("[docView11] TODO: remove");
+            }
         }, 
         _update: function(){
 		$.ui.view.prototype._update.call(this);
