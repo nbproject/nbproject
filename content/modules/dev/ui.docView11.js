@@ -218,9 +218,16 @@
 		}
         }, 
         update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
-		var self = this;
-        function createTicks(payload){
-			var newNoteObj;
+            var self = this;            
+            var warnIfUsingFlash = function(){
+                if ("cueVideoByFlashvars" in self._player && $(".nb-flash-warning", self.element).length===0){
+                    // http://stackoverflow.com/questions/12486655/detect-if-client-using-html5-youtube-player                    
+                    $("div.contents", self.element).prepend("<div class='nb-flash-warning'>NB detected that you are using the Flash version of the YouTube player. You need to be using the HTML5 YouTube player in otder to be able to annotate YouTube videos and see other's annotations. To do so, visit <a href='http://youtube.com/html5'>http://youtube.com/html5</a> and click on the <b>Join the HTML5 Trial</b> button.</div>");
+                }
+            };
+            
+            var createTicks = function(payload){
+                var newNoteObj;
 			//console.log("here");
 			for (var id in payload.diff){
 				newNoteObj = payload.diff[id];
@@ -241,7 +248,7 @@
 				htmlText += "<div id='docview_scrollbar_tick' style='left: "+thumbPlace+"' />";
 				$("#docview_scrollbar_tickholder").html(htmlText);
 			}
-        }
+        };
 
 		if (action === "add" && items_fieldname==="location"){
             var id_source	= this._id_source; 
@@ -261,7 +268,8 @@
 				};
 				f_poll(); //initiate polling 
 				autoProgress.done(function () {
-				createTicks(payload);
+                    warnIfUsingFlash();
+                    createTicks(payload);
 				});
 				//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already.
             }
