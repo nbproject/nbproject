@@ -222,7 +222,7 @@
             var warnIfUsingFlash = function(){
                 if ("cueVideoByFlashvars" in self._player && $(".nb-flash-warning", self.element).length===0){
                     // http://stackoverflow.com/questions/12486655/detect-if-client-using-html5-youtube-player                    
-                    $("div.contents", self.element).prepend("<div class='nb-flash-warning'>NB detected that you are using the Flash version of the YouTube player. You need to be using the HTML5 YouTube player in otder to be able to annotate YouTube videos and see other's annotations. To do so, visit <a href='http://youtube.com/html5'>http://youtube.com/html5</a> and click on the <b>Join the HTML5 Trial</b> button.</div>");
+                    $("div.contents", self.element).prepend("<div class='nb-flash-warning'>NB detected that you are using the Flash version of the YouTube player. You need to be using the HTML5 YouTube player in order to be able to annotate YouTube videos and see other's annotations. To do so, visit <a href='http://youtube.com/html5'>http://youtube.com/html5</a> and click on the <b>Join the HTML5 Trial</b> button.</div>");
                 }
             };
             
