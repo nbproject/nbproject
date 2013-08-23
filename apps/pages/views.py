@@ -129,14 +129,6 @@ def your_settings(req):
 
 def embedopenid(req): 
     return __serve_page(req, 'web/embedopenid.html', mimetype="text/html")
-
-
-def draft(req, tplname):
-    try:
-        r = render_to_response("drafts/%s.html" % tplname, {}, mimetype='application/xhtml+xml')
-        return r
-    except TemplateDoesNotExist:
-        raise Http404()
  
 def newsite(req):
     import base.models as M, random, string 
@@ -444,6 +436,10 @@ def properties_ensemble_sections(req, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     sections = M.Section.objects.filter(ensemble=ensemble)
+    all_students = M.Membership.objects.filter(ensemble=ensemble)
+    students = {}
+    for s in sections:
+        students[s] = all_students.filter(section=s)
     err = ""
     if "action" in req.GET: 
         if req.GET["action"] == "create" and "name" in req.POST:
@@ -461,7 +457,7 @@ def properties_ensemble_sections(req, id):
         else:
            err = "Unrecognized Command"
 
-    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "error_message": err })
+    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "error_message": err })
 
 
 def spreadsheet(req):
