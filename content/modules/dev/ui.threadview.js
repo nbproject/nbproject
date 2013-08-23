@@ -34,7 +34,7 @@
           alert("todo");
           });
         */
-        self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-filter-controls'> <div class='nbicon questionicon' /><button class='mark-toggle' arg='add' action='question'>+</button><span class='n_question'>...</span><button class='mark-toggle' arg='remove' action='question'>-</button> <span id='thread_request_reply'>replies requested</span>  <!--<button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' /><span class='n_star'>...</span><span id='thread_mark_favorite'>Mark as Favorite.</span></button>--></div></div><div class='threadview-pane'/>");
+        self.element.addClass("threadview").append("<div class='threadview-header'><div class='threadview-header-sectioninfo'/><div class='threadview-filter-controls'> <div class='nbicon questionicon' /><button class='mark-toggle' arg='add' action='question'>+</button><span class='n_question'>...</span><button class='mark-toggle' arg='remove' action='question'>-</button> <span id='thread_request_reply'>replies requested</span>  <!--<button class='mark-toggle' action='star'><div class='nbicon staricon-hicontrast' /><span class='n_star'>...</span><span id='thread_mark_favorite'>Mark as Favorite.</span></button>--></div></div><div class='threadview-pane'/>");
         var star_button = $("button.mark-toggle[action=star]", self.element).click(function(event){
             var comment_id = self._model.get("comment", {ID_location: self._location, id_parent: null }).first().ID;
             $.concierge.get_component("mark_thread")({comment_id: comment_id, id_location: self._location, type: self._STAR}, function(p){                
@@ -197,7 +197,16 @@
         }
         $("span.n_question", header).text(tm_question.length());
         $("#thread_request_reply").text($.pluralize(tm_question.length(), "replies requested", "reply requested"));
-
+            //indicate the section name if this thread is section-based: 
+            var section_header =  $(".threadview-header-sectioninfo", header);
+            section_header.text("");
+            var section_id = m.o.location[self._location].section_id;
+            if (section_id !== null){
+                var section = m.o.section[section_id];
+                if (section){
+                    section_header.text(section.name);
+                }              
+            }
         }, 
         _render: function(){    
         var self    = this;

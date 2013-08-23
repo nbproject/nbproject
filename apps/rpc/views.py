@@ -33,6 +33,7 @@ __EXPORTS = [
     "getMyNotes", 
     "getCommentLabels", 
     "getGuestFileInfo", 
+    "getSectionsInfo", 
     "getHTML5Info",
     "markNote", 
     "request_source_id",
@@ -313,6 +314,16 @@ def getGradees(payload, req):
     output={"gradees": annotations.getGradees(uid)}
     return UR.prepare_response(output)
     
+def getSectionsInfo(payload, req): 
+    uid = UR.getUserId(req)
+    if "id_ensemble" not in payload: 
+        return UR.prepare_response({}, 1, "MISSING id_ensemble")
+    id_ensemble = payload["id_ensemble"]
+    if auth.canGetSectionsInfo(uid, id_ensemble):  
+        m = M.Membership.objects.filter(user__id=uid, ensemble__id=id_ensemble, deleted=False)
+        output={"sections": UR.qs2dict(m[0].ensemble.section_set.all())};
+        return UR.prepare_response(output)
+    return UR.prepare_response({}, 1, "NOT ALLOWED")
 
 def editPoll(payload, req): 
     uid = UR.getUserId(req)

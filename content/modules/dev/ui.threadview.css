@@ -250,3 +250,11 @@ background-image: url("/content/data/icons/png/theme_light.png");
     background-position: -339px 1px;
 }
 
+.threadview-header-sectioninfo{
+    color: #707070;
+    font-size: large;
+    max-width: 100px;
+    overflow: hidden;
+    position: absolute;
+    right: 20px;
+}

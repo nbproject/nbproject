@@ -47,6 +47,7 @@
                        //TODO: refactor (same as in step16.js:createStore)
                        GLOB.pers.store.create(payload, {
                                ensemble:    {pFieldName: "ensembles"}, 
+            section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
                                    file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
                                    folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
                                    comment:{references: {id_location: "location"}},
@@ -58,7 +59,14 @@
                                    draft: {},
                                    seen:{references: {id_location: "location"}}
                            });
-                           
+                       
+                       //get the section info as well as info whether user is admin: 
+                       GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+                           var m = GLOB.pers.store;
+                           m.add("section", P3["sections"]);
+                           NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
+                       });
+                       
                        //TODO: Take something else than first id_source
                        var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
                        if (source === null){

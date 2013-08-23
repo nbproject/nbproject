@@ -226,6 +226,9 @@ def canEditEnsemble(uid, eid):
 def canSeeGrades(uid, eid):
     return canSendInvite(uid, eid)
 
+def canGetSectionsInfo(uid, eid): 
+    return canSendInvite(uid, eid)
+
 def canGrade(uid, id_source, id_student):
     """Need to be admin on ensemble that contains file and student needs to be a member of that ensemble"""
     o = M.Ownership.objects.filter(source__id=id_source)

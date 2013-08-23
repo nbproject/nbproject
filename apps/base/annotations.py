@@ -65,6 +65,7 @@ __NAMES = {
         "w": "location.w",
         "h": "location.h",
         "body": None,
+        "section_id": "location.section_id",
 },
        "html5location":{
         "ID": "id", 
@@ -345,8 +346,9 @@ def get_guestfileinfo(id_source):
          "ensembles": UR.qs2dict(ownership, __NAMES["ensembles2"] , "ID") ,
          "folders": UR.qs2dict(ownership, __NAMES["folders2"] , "ID") ,
          }
-    if len(ownership)==1 and ownership[0].source.type == M.Source.TYPE_YOUTUBE: 
-        o["youtubeinfos"]= UR.model2dict(ownership[0].source.youtubeinfo, None, "id")
+    if len(ownership)==1:
+        if ownership[0].source.type == M.Source.TYPE_YOUTUBE: 
+            o["youtubeinfos"]= UR.model2dict(ownership[0].source.youtubeinfo, None, "id")        
     return o
    
 def get_files(uid, payload):
