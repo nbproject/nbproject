@@ -42,5 +42,21 @@ table{
 
 </div>
 
+<div class='section'>
+<h2>Section Student Listing</h2>
+{% for key, value in students.items %}
+<h3>{{key.name|default:'untitled'}}</h3>
+<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody>
+    {% for o in value %}
+		<tr>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+		</tr>
+    {% endfor %}
+</tbody></table>
+{% endfor %}
+</div>
+
 {% endblock %}
 

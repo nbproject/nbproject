@@ -30,12 +30,12 @@ table{
 			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
 			<td>
 				<form method="POST" action="?action=setsection&membership_id={{o.id}}">
-				<select name="section_id">
+				<select name="section_id" data_membership_id="{{o.id}}">
 					<option value="None" {% if o.section == None %} selected="selected" {%endif %}>No Section</option>
 					{% for s in sections %}
 						<option value='{{s.id}}' {% if o.section == s %} selected="selected" {%endif%} >{{s.name}}</option>
 					{% endfor %}
-				</select><input type="submit" value="Change"/>
+				</select><noscript><input type="submit" value="Change" /></noscript>
 				</form>
 			</td>
             <td><a style='margin-right: 10px' href='?action=delete&membership_id={{o.id}}'>Delete</a>
@@ -109,11 +109,20 @@ table{
 
 		</tr>
         {% endfor %}
-	
 	</tbody>
       </table>
       </div>
 {% endif %}
 
+<script type="text/javascript">
+$("select[name=section_id]").change(function(){
+   var membership_id = $(this).attr("data_membership_id");
+   var section_id = $(this).val();
+   $.post(
+      "?action=setsection&membership_id=" + membership_id,
+      {section_id: section_id} );
+
+});
+</script>
 {% endblock %}
 
