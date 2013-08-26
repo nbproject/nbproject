@@ -72,6 +72,7 @@ p.error-message:not(:empty) {
 
 <div class='section'>
 <h2>Section Student Listing</h2>
+<p>You can assign students to sections by dragging student names between each section.</p>
 {% for key, value in students.items %}
 <h3>{{key.name|default:'untitled'}}</h3>
 <div class="section-assign" data-section="{{key.id}}">
@@ -86,14 +87,27 @@ p.error-message:not(:empty) {
     {% endfor %}
 </tbody></table>
 {%else%}
-<div><em>There are no students in this section</em></div>
+<div><em>There are no students in this section. Drag students here to assign them to this section.</em></div>
 {% endif %}
 </div>
 {% endfor %}
 
+<h3>Unassigned</h3>
+<div class="section-assign" data-section="None">
 {%if no_section%}
-<h3>No Section</h3>
+<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody>
+    {% for o in no_section %}
+		<tr data-membership-id='{{o.id}}' data-user-firstname='{{o.user.firstname}}' class='student-record'>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+		</tr>
+    {% endfor %}
+</tbody></table>
+{%else%}
+<div><em>No student is unassigned. Drag students here to remove their section assignment.</em></div>
 {%endif%}
+</div>
 
 </div>
 

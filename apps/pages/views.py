@@ -461,7 +461,10 @@ def properties_ensemble_sections(req, id):
             else:
                 err = "Cannot find section"
         elif req.GET["action"] == "reassign" and "membership_id" in req.POST and "section_id" in req.POST:
-            s = sections.filter(id=req.POST["section_id"]);
+            if req.POST["section_id"] == "None":
+                s = [None]
+            else:
+                s = sections.filter(id=req.POST["section_id"]);
             if len(s):
                 s = s[0];
                 m = M.Membership.objects.filter(id=req.POST["membership_id"])
