@@ -29,7 +29,7 @@ font-size: large;
 <li>Use this form to indicate the page that you'd like to comment with NB</li>
 <li>That page needs to contain our embedded NB viewer. To do so, you need to insert the following snippet into the &lt;head&gt; section of your page:<br/><pre>&lt;script src='<span id="hostname1">HOSTNAME</span>/embed_NB.js' type='text/javascript'&gt; &lt;/script&gt;</pre></li>
 <script>document.getElementById("hostname1").innerHTML=document.location.protocol+"//"+document.location.host;</script>
-<li>If you can't add the embedded NB viewer for any reason (for instance, you don't own the page), you can tell your users to drag the  <a id="bookmarklet" href="">NB bookmarklet</a> into threir bookmarks toolbar to insert the script. In order to communicate this bookmarklet to your users, you can give them <a href="/faq_student/#nb_bookmarklet"> this link to our FAQ</a>.
+<li>If you can't add the embedded NB viewer for any reason (for instance, you don't own the page), you can tell your users to drag the  <a id="bookmarklet" href="">NB bookmarklet</a> into their bookmarks toolbar to insert the script. In order to communicate this bookmarklet to your users, you can give them <a href="/faq_student/#nb_bookmarklet"> this link to our FAQ</a>.
 <script>document.getElementById("bookmarklet").href='javascript:((function(){c=document.createElement("script");c.setAttribute("type", "text/javascript");c.setAttribute("src", "'+document.location.protocol+"//"+document.location.host+'/embed_NB.js");document.getElementsByTagName("head")[0].appendChild(c);})())'
 </script>
 </li>
