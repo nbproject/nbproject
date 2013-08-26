@@ -11,14 +11,42 @@ div.section{
 table{
 	border-spacing: 15px 3px;	
 }
+
+p.error-message:not(:empty) {
+  border: 1px solid #C22;
+  background-color: #FCC;
+  padding: 8px;
+}
+
+.section-assign {
+  border: 2px rgba(0,0,0,0) solid;
+  padding: 8px;
+}
+
+.section-assign.active {
+  border: 2px rgba(32, 255, 32, 1) solid;
+}
+
+.student-record-helper {
+  display: inline-block;
+  padding: 6px;
+  line-height: 1em;
+  font-size: 0.7em;
+  color: #555;
+  background-color: #EEE;
+}
+
+.section-assign-space {
+  height: 1.5em;
+}
+
 {% endblock %} 
 {% block content %}
 
   <h1>Sections for {{ensemble.name}}</h1>
 
 <div class='section'>
-<p>{{error_message}}</p>
-	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
+<p class="error-message">{{error_message}}</p>
       <table>
       	<thead><tr><th>Section Name</th><th>Actions</th></tr></thead>
       	<tbody>
@@ -46,17 +74,66 @@ table{
 <h2>Section Student Listing</h2>
 {% for key, value in students.items %}
 <h3>{{key.name|default:'untitled'}}</h3>
+<div class="section-assign" data-section="{{key.id}}">
+{% if value %}
 <table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody>
     {% for o in value %}
-		<tr>
+		<tr data-membership-id='{{o.id}}' data-user-firstname='{{o.user.firstname}}' class='student-record'>
 			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
 		</tr>
     {% endfor %}
 </tbody></table>
-{% endfor %}
+{%else%}
+<div><em>There are no students in this section</em></div>
+{% endif %}
 </div>
+{% endfor %}
+
+{%if no_section%}
+<h3>No Section</h3>
+{%endif%}
+
+</div>
+
+<script type="text/javascript">
+$(".student-record").each(function() {
+  $(this).draggable({
+    helper: function() { return $("<div>").addClass("student-record-helper").attr("data-membership-id", $(this).attr("data-membership-id")).text($(this).attr("data-user-firstname") ); } ,
+    revert: "invalid",
+    start: function(even, ui) {
+      $(".section-assign").addClass("active");
+    },
+    stop: function(event, ui) {
+      $(".section-assign").removeClass("active");
+    },
+  });
+});
+
+$(".section-assign").each(function() {
+  $(this).droppable({
+    drop: function(event, ui) {
+      if ( $(this).find("tr[data-membership-id=" + ui.draggable.attr("data-membership-id") + "]").length > 0) return;
+      if ( $(this).find("table").length == 0) {
+        // create new table
+        $(this).find("div").remove();
+        $(this).append("<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody></tbody></table>");
+      }
+      var membership = ui.draggable.attr("data-membership-id");
+      var section = $(this).attr("data-section");
+      $(this).find("tbody").append(ui.draggable);
+      $.post("?action=reassign&json", {section_id: section, membership_id: membership}, function(data) {
+        var e= data.error_message;
+        if (e != "") alert("Operation failed: " + e + " Please try to reload your page before doing anything else.");
+      });
+    },
+  });
+});
+
+</script>
+
+
 
 {% endblock %}
 

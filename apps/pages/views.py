@@ -440,11 +440,15 @@ def properties_ensemble_sections(req, id):
     students = {}
     for s in sections:
         students[s] = all_students.filter(section=s)
+    no_section = all_students.filter(section=None)
     err = ""
     if "action" in req.GET: 
         if req.GET["action"] == "create" and "name" in req.POST:
-            s = M.Section(name=req.POST["name"], ensemble=ensemble)
-            s.save()
+            if M.Section.objects.filter(ensemble=ensemble, name=req.POST["name"]).exists():
+                err = "Could not create section: a section with the same name already exists."
+            else:
+                s = M.Section(name=req.POST["name"], ensemble=ensemble)
+                s.save()
         elif req.GET["action"] == "delete" and "section_id" in req.GET:
             s = sections.filter(id=req.GET["section_id"])
             if len(s):
@@ -454,10 +458,26 @@ def properties_ensemble_sections(req, id):
                 else:
                     s.delete()
                     return HttpResponseRedirect(req.path)
+            else:
+                err = "Cannot find section"
+        elif req.GET["action"] == "reassign" and "membership_id" in req.POST and "section_id" in req.POST:
+            s = sections.filter(id=req.POST["section_id"]);
+            if len(s):
+                s = s[0];
+                m = M.Membership.objects.filter(id=req.POST["membership_id"])
+                if len(m):
+                    m = m[0]
+                    m.section = s
+                    m.save()
+                else:
+                  err = "Cannot find member"
+            else:
+                err = "Cannot find section"
         else:
            err = "Unrecognized Command"
-
-    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "error_message": err })
+    if "json" in req.GET:        
+        return HttpResponse(json.dumps({"error_message": err}), mimetype="application/json")
+    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "no_section": no_section, "error_message": err })
 
 
 def spreadsheet(req):
