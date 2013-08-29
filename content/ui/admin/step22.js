@@ -162,7 +162,7 @@ GLOB.pers.createStore = function(payload){
     var id_source =  GLOB.pers.id_source;
     $.concierge.trigger({type:"file", value: id_source});
     var f = GLOB.pers.store.o.file[id_source];
-    document.title = $.E(f.title + " ("+f.numpages +" pages)");
+    document.title = $.E(f.title);
     $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
