@@ -110,5 +110,5 @@ NOTE:  - packages in square brackets are optional)
         apachectl restart
         grunt      
 
-Questions: Use our forum at http://nbproject.vanillaforums.com/
+Questions (including how to install NB on other linux distributions): Use our forum at http://nbproject.vanillaforums.com/ more specifically, the deployers section: http://nbproject.vanillaforums.com/categories/deployers
 Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above). 
