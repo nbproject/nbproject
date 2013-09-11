@@ -107,6 +107,7 @@ def add_allcomments_sheet(source_id, workbook):
     #Data Rows: 
     for j in xrange(0, len(comments)):
         rec = comments[j]
+        ctime = rec.ctime.replace(tzinfo=None)-epoch
         row+=1
         col=0
         s_c.write(row, col,rec.location.page)
@@ -119,7 +120,7 @@ def add_allcomments_sheet(source_id, workbook):
         col+=1
         s_c.write(row, col, rec.author_id)
         col+=1
-        s_c.write(row, col, (rec.ctime.replace(tzinfo=None)-epoch).total_seconds())
+        s_c.write(row, col, ctime.seconds + 3600*24*ctime.days)
         col+=1
         s_c.write(row, col, rec.body)
 
