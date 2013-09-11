@@ -83,6 +83,46 @@ def serve_doc(req, id_source, annotated=False):
         logging.info("missing "+id_source)
         return HttpResponse("Error - No such file: #%s %s" % (id_source, qual) )
 
+def add_allcomments_sheet(source_id, workbook): 
+    import datetime
+    epoch = datetime.datetime.utcfromtimestamp(0)
+    comments = M.Comment.objects.select_related("location").filter(deleted=False, moderated=False, type__gt=1, location__source__id=source_id).order_by("location__page", "location__id", "id")
+    s_c = workbook.add_sheet("comments")
+    #Header row: 
+    row=0
+    col=0
+    s_c.write(row, col,"PAGE")
+    col+=1
+    s_c.write(row, col,"LOCATION_ID")
+    col+=1
+    s_c.write(row, col,"COMMENT_ID")
+    col+=1
+    s_c.write(row, col,"PARENT_ID")
+    col+=1       
+    s_c.write(row, col,"AUTHOR_ID")
+    col+=1
+    s_c.write(row, col,"CTIME")
+    col+=1
+    s_c.write(row, col,"BODY")
+    #Data Rows: 
+    for j in xrange(0, len(comments)):
+        rec = comments[j]
+        row+=1
+        col=0
+        s_c.write(row, col,rec.location.page)
+        col+=1
+        s_c.write(row, col,rec.location_id)
+        col+=1
+        s_c.write(row, col,rec.id)
+        col+=1
+        s_c.write(row, col,rec.parent_id)
+        col+=1
+        s_c.write(row, col, rec.author_id)
+        col+=1
+        s_c.write(row, col, (rec.ctime.replace(tzinfo=None)-epoch).total_seconds())
+        col+=1
+        s_c.write(row, col, rec.body)
+
 def add_labeledcomments_sheet(uid, id_ensemble, workbook): 
     lcs = M.LabelCategory.objects.filter(ensemble__id=id_ensemble).order_by("id")
     lcs_ids = list(lcs.values_list('id', flat=True))
@@ -338,6 +378,28 @@ def serve_grades_spreadsheet(req, id_ensemble):
     import datetime
     a = datetime.datetime.now()
     fn = "stats_%s_%04d%02d%02d_%02d%02d.xls" % (id_ensemble,a.year, a.month, a.day, a.hour, a.minute)
+    wbk.save("/tmp/%s" %(fn,))
+    response = serve(req, fn,"/tmp/")
+    os.remove("/tmp/%s" %(fn,))
+    response["Content-Type"]='application/vnd.ms-excel'   
+    response['Content-Disposition'] = "attachment; filename=%s" % (fn, )
+    return response
+
+
+
+def spreadsheet_comments(req, id_source): 
+    uid = UR.getUserId(req)
+    if not auth.canDownloadFileComments(uid, id_source):
+        return HttpResponse("Error: You don't have credentials to download comment for that file %s" % (id_source,))
+    import xlwt
+    wbk = xlwt.Workbook()
+
+    #now add a sheet for labeled comments if there are any: 
+    add_allcomments_sheet(id_source, wbk)
+    
+    import datetime
+    a = datetime.datetime.now()
+    fn = "comments_%s_%04d%02d%02d_%02d%02d.xls" % (id_source, a.year, a.month, a.day, a.hour, a.minute)
     wbk.save("/tmp/%s" %(fn,))
     response = serve(req, fn,"/tmp/")
     os.remove("/tmp/%s" %(fn,))
