@@ -57,6 +57,7 @@ urlpatterns = patterns("",
                        (r'^fbchannel$', 'pages.views.fbchannel'),  #TODO: not sure this is needed anymore. 
                        (r'^spreadsheet$', 'pages.views.spreadsheet'),
                        (r'^spreadsheet_cluster/download/(\d+)$', 'img.views.spreadsheet_cluster'),
+                       (r'^spreadsheet_comments/download/(\d+)$', 'img.views.spreadsheet_comments'),
                        (r'^spreadsheet/download/(\d+)$', 'img.views.serve_grades_spreadsheet'),
                        (r'^debug', 'pages.views.debug'),
                        (r'^polls', include(polls.urls)),  
