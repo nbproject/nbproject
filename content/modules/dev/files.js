@@ -268,10 +268,10 @@ GLOB.files.edit_assignment = function(id){
         "Ok": function() { 
             var v_date = $('#due_date')[0].value;
             var v_time = $('#due_time')[0].value;
-
             //TODO: validate form
             var due_datetime = v_date === "" ? null : v_date.substring(10, 6)+"-"+v_date.substring(2, 0)+"-"+v_date.substring(5, 3)+" "+v_time.substring(2,0)+":"+v_time.substring(5,3);
-            $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value === "1", due:due_datetime}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
+            var d = new Date(due_datetime);
+            $.concierge.get_component("edit_assignment")({id: id, assignment:  $("input[name=is_assignment]:checked")[0].value === "1", due:d.toJSON()}, function(p){GLOB.files.model.add("file", p.files);$.I("Changes Saved");} );
             $(this).dialog("destroy");
         }
         }

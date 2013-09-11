@@ -68,7 +68,11 @@
         _filelens: function(f){
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
-        var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
+        var d = null;
+           if (f.assignment){
+               d = new Date(f.due);
+           }           
+        var assignment_info = f.assignment ? ("Yes - due "+d.toLocaleDateString()+" at "+ d.toLocaleTimeString())  :"<span>No</span>";
         var download = "";
         if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download ){
             download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
