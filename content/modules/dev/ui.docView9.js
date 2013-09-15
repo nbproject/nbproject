@@ -293,10 +293,15 @@
         if (self._in_page_transition === false){
             self._in_page_transition =  true;
             var divOffset = self.element.offset().top;
-            var imgOffset =     $("div.material[page="+self._page+"]", self.element).offset().top;
-            self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
-                self._in_page_transition =  false;
-            });
+
+            var materialPage = $("div.material[page="+self._page+"]", self.element);
+            if (materialPage.offset() !== undefined) {
+               var imgOffset = materialPage.offset().top;
+               self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
+                   self._in_page_transition =  false;
+               });
+            }
+
         }
         else{
             $.L("animation to page "+self._page+" prevented");
