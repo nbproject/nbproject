@@ -297,7 +297,7 @@ def confirm_invite(req):
         m = m[0]
     else: 
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
-    m.admin = invite.admin
+    m.admin = invite.admin or m.admin #'or'-clause so that admins don't inadventertly lose their admin privileges by clicking on a non-admin invite. 
     m.section = invite.section
     m.save()
     if invite.user.valid == False:

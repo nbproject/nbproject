@@ -45,7 +45,8 @@ NOTE:  - packages in square brackets are optional)
 
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
-	cd nbproject #(or whaever name you may have choosen for the root NB code directory).         npm install #in order to install specific grunt modules, such as grunt-css, execSync
+	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
+        npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
         #[edit values in apps/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data
@@ -109,5 +110,5 @@ NOTE:  - packages in square brackets are optional)
         apachectl restart
         grunt      
 
-Questions: Use our forum at http://nbproject.vanillaforums.com/
+Questions (including how to install NB on other linux distributions): Use our forum at http://nbproject.vanillaforums.com/ more specifically, the deployers section: http://nbproject.vanillaforums.com/categories/deployers
 Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above). 

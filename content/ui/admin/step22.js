@@ -20,7 +20,9 @@
     if ("NB$" in window){
     var $ = NB$;
     }
-    
+
+    var $str        = "NB$" in window ? "NB$" : "jQuery";
+
 GLOB.pers.init = function(){
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches==null || matches.length !== 2){
@@ -162,7 +164,7 @@ GLOB.pers.createStore = function(payload){
     var id_source =  GLOB.pers.id_source;
     $.concierge.trigger({type:"file", value: id_source});
     var f = GLOB.pers.store.o.file[id_source];
-    document.title = $.E(f.title + " ("+f.numpages +" pages)");
+    document.title = $.E(f.title);
     $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
@@ -207,7 +209,7 @@ GLOB.pers.on_fileinfo_error = function(P){
     name = (me.firstname !== null && me.lastname !== null) ?  me.firstname + " " + me.lastname + " (" +me.email + ") ": me.email;
     }
     else{
-    loginmenu = "Would you like to  <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
+            loginmenu = "Would you like to  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login as another NB User</a>, maybe ?";
     }
     $("<div><div id=\"splash-welcome\">Welcome to NB !</div> <br/>You're currently logged in as <b>"+$.E(name)+"</b>, which doesn't grant you sufficient privileges to see this page. <br/><br/>"+loginmenu+"</div>").dialog({title: "Access Restricted...", closeOnEscape: false,   open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }, width: 600, buttons: {"Take me back to NB's home page": function(){
             GLOB.auth.delete_cookie("userinfo");

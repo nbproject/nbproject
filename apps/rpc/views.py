@@ -122,10 +122,9 @@ def rate_reply(P,req):
     
 def sendInvites(payload, req): 
     from django.core.mail import EmailMessage
-
     uid = UR.getUserId(req);
     id_ensemble = payload["id_ensemble"]
-    id_section = payload["id_section"]
+    id_section = payload.get("id_section", None)
     admin = 0 if "admin" not in payload else payload["admin"]
     if not auth.canSendInvite(uid,id_ensemble):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")      
