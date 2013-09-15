@@ -1,8 +1,8 @@
 /*global module:false console:true require:false*/
 module.exports = function(grunt) {
     var execSync = require('execSync');
-    var servername = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
-    var serverport = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
+    var servername = execSync.exec("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
+    var serverport = execSync.exec("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
     if (serverport !== "80"){
         servername += ":"+serverport;
     }
