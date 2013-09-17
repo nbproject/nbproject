@@ -1,5 +1,7 @@
 *.pyc
 *~
+#*
+*#
 .project
 .pydevproject
 apps/apache/django.wsgi
