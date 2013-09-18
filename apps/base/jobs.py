@@ -205,10 +205,10 @@ def do_auth_immediate():
     for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet       
         msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type]})
         email = EmailMessage("You've posted a new note on NB...",
-                msg,  
-                "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (c.author.email, ), 
-                (settings.EMAIL_BCC, ))
+                             msg, 
+                             settings.EMAIL_FROM,
+                             (c.author.email, ), 
+                             (settings.EMAIL_BCC, ))
         email.send()
         try: 
             print msg
@@ -229,10 +229,10 @@ def do_all_immediate():
         for m in (o for o in memberships if o.setting_value==2): #django doesn't let us filter by extra parameters yet
             msg = render_to_string("email/msg_all_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type], "m": m})    
             email = EmailMessage("%s %s just wrote a comment on %s" % (c.author.firstname, c.author.lastname, c.location.source.title),
-                msg,  
-                "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (m.user.email, ), 
-                (settings.EMAIL_BCC, ))
+                                 msg, 
+                                 settings.EMAIL_FROM,
+                                 (m.user.email, ), 
+                                 (settings.EMAIL_BCC, ))
             email.send()              
             try: 
                 print msg
@@ -258,7 +258,7 @@ def do_reply_immediate():
                 emailed_uids.append(c.author_id)
                 msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
-                msg, "NB Notifications <no-reply@notabene.csail.mit.edu>", (c.author.email, ),(settings.EMAIL_BCC, ))
+                msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
                 email.send()
                 try: 
                     print msg
@@ -277,10 +277,10 @@ def do_watchdog_longpdfprocess():
             msg = render_to_string("email/msg_watchdog_longpdf",V)
             recipients = [i[1] for i in settings.ADMINS]
             email = EmailMessage("NB Watchdog warning: long pdf process",
-                msg,  
-                "NB Watchdog <no-reply@notabene.csail.mit.edu>", 
-                recipients, 
-                (settings.EMAIL_BCC, ))
+                                 msg,  
+                                 settings.EMAIL_WATCHDOG,
+                                 recipients, 
+                                 (settings.EMAIL_BCC, ))
             email.send()
             print msg
         
@@ -293,10 +293,10 @@ def do_watchdog_notstartedpdfprocess():
             msg = render_to_string("email/msg_watchdog_notstartedpdf",V)
             recipients = [i[1] for i in settings.ADMINS]
             email = EmailMessage("NB Watchdog warning: some pdf processes haven't started yet",
-                msg,  
-                "NB Watchdog <no-reply@notabene.csail.mit.edu>", 
-                recipients, 
-                (settings.EMAIL_BCC, ))
+                                 msg,  
+                                 settings.EMAIL_WATCHDOG,
+                                 recipients, 
+                                 (settings.EMAIL_BCC, ))
             email.send()
             print msg
     
