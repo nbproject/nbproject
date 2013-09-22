@@ -1,12 +1,16 @@
 *.pyc
 *~
+#*
+*#
 .project
 .pydevproject
 apps/apache/django.wsgi
 apps/nbsite/settings_credentials.py
+apps/nbsite/scrolling.log
 conf/nb_apache
 conf/nb_crontab
 content/compiled
 content/ui/admin/conf_local.js
 content/data
 content/.settings
+node_modules/

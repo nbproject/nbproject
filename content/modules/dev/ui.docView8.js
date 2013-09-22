@@ -301,10 +301,14 @@
         if ((self._in_page_transition === false) && (pbar !== current_page)){
             self._in_page_transition =  true;
             var divOffset = self.element.offset().top;
-            var imgOffset =     $("img.material[page="+current_page+"]", self.element).parent().offset().top;
-            self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
-                self._in_page_transition =  false;
-            });
+            var imgElement = $("img.material[page="+current_page+"]", self.element).parent();
+
+            if (imgElement.offset() !== undefined) {
+                var imgOffset = imgElement.offset().top;
+                self.element.animate({scrollTop: '+=' + (imgOffset-divOffset) + 'px'}, 500, function(){
+                    self._in_page_transition =  false;
+                });
+            }
         }
         else{
             $.L("animation to page "+current_page+" prevented, pbar="+pbar);

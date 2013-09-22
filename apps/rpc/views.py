@@ -157,7 +157,7 @@ def sendInvites(payload, req):
         msg = render_to_string("email/msg_invite",p)
         e = EmailMessage("You're invited on the %s channel !" % (p["name"],), 
                          msg, 
-                         "NB Notifications <no-reply@notabene.csail.mit.edu>",
+                         settings.EMAIL_FROM,
                          (email, ), 
                          (settings.SMTP_CC_USER,))
         e.send()
@@ -175,11 +175,11 @@ def register_user(P, req):
     p2.update(P)
     msg = render_to_string("email/confirm_guest_registration",p2)
     email = EmailMessage(
-                "Welcome to NB, %s !" % (p2["firstname"], ),
-                msg,  
-                "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (P["email"], ), 
-                (settings.EMAIL_BCC, ))
+        "Welcome to NB, %s !" % (p2["firstname"], ),
+        msg, 
+        settings.EMAIL_FROM,
+        (P["email"], ), 
+        (settings.EMAIL_BCC, ))
     email.send()
     #__send_email([P["email"], settings.SMTP_CC_USER], tpl.render(c))
     return UR.prepare_response({"uid": user.id})
@@ -499,7 +499,7 @@ def passwordLost(payload, req):
         e = EmailMessage(
                 "Password reminder for your NB account",
                 msg,  
-                "NB Password Reminder Bot <no-reply@notabene.csail.mit.edu>", 
+                "NB Password Reminder Bot <nbnotifications@csail.mit.edu>", 
                 (email, ), 
                 (settings.SMTP_CC_LOSTPASSWORD, ))
         e.send()     

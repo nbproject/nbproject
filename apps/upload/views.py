@@ -128,8 +128,12 @@ def upload(req):
              "firstname": source.submittedby.firstname
              }
             msg = render_to_string("email/msg_pdfdone",V)
-            email = EmailMessage("The PDF file that you've submitted is now ready on NB.", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (V["email"], settings.SMTP_CC_USER ), (settings.EMAIL_BCC, ))
+            email = EmailMessage(
+                "The PDF file that you've submitted is now ready on NB.", 
+                msg,
+                settings.EMAIL_FROM,
+                (V["email"], settings.SMTP_CC_USER ), 
+                (settings.EMAIL_BCC, ))
             email.send()
         else:
             #send email that stg didn't work and remove that document.         
@@ -145,7 +149,10 @@ def upload(req):
             ownership.delete()
             source.delete()
             msg = render_to_string("email/msg_pdferror",V)
-            email = EmailMessage("NB was unable to read a PDF file that you've submitted", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
+            email = EmailMessage(
+                "NB was unable to read a PDF file that you've submitted", 
+                msg,  
+                settings.EMAIL_FROM,
                 (V["email"], settings.SMTP_CC_PDFERROR ), (settings.EMAIL_BCC, ))
             email.send()
         r.content =  UR.prepare_response({})

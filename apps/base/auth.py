@@ -40,6 +40,16 @@ def canReadFile(uid, id_source, req=None):
     o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source,  deleted=False))).filter(user__id=uid,  deleted=False, guest=False)
     return len(o)>0 or canGuestReadFile(uid, id_source, req)
 
+def canDownloadFileComments(uid, id_source):
+    """need to be an admin for the ensemble that contains that source"""
+    try: 
+        id_source = int(id_source)
+    except ValueError:
+        return False
+    o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid, deleted=False)
+    return len(o)>0 and o[0].admin 
+
+
 def canDownloadPDF(uid, id_source):
     try: 
         id_source = int(id_source)

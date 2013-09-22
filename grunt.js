@@ -1,8 +1,9 @@
 /*global module:false console:true require:false*/
 module.exports = function(grunt) {
     var execSync = require('execSync');
-    var servername = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
-    var serverport = execSync.stdout("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
+    var execFct = execSync.exec || execSync.stdout; // in order to be compatible with both grunt 0.3 and 0.4
+    var servername = execFct("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
+    var serverport = execFct("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
     if (serverport !== "80"){
         servername += ":"+serverport;
     }
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
     MODS.NOTEPANEVIEW_DOC = {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js, 
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView8.js"])),
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.doc.js"])),
         src_css:   [].concat(
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
@@ -83,7 +84,7 @@ module.exports = function(grunt) {
     MODS.NOTEPANEVIEW_COLLAGE = {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js, 
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView9.js"])),
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.collage.js"])),
         src_css:   [].concat(
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
@@ -92,7 +93,7 @@ module.exports = function(grunt) {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js,
                           addPrefix(MODULE_DIR,["dateformat/date.format.js"]),
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView10.js"])),
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.spreadsheet.js"])),
         src_css: [].concat(
                            MODS.CONTEXTMENU.src_css, 
                            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
@@ -100,7 +101,7 @@ module.exports = function(grunt) {
     MODS.NOTEPANEVIEW_YOUTUBE = {
         src_js: [].concat(
                           MODS.CONTEXTMENU.src_js, 
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView11.js"])),
+                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.video.js"])),
         src_css:   [].concat(
                              MODS.CONTEXTMENU.src_css, 
                              addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
