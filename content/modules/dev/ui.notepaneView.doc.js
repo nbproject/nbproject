@@ -37,22 +37,35 @@
         var self = this;
         self._pages =  {}; //pages that have been rendered
         self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
-        self._page =  null; 
-        self._scrollTimerID    =  null;
-        self._seenTimerID    = null;
-        self._id_location    = null; //location_id of selected thread
-        self._is_first_stroke    = true;
-        self._rendered        = false;
-        self._filters        = {me: false, star: false, question: false};
-        self.QUESTION        = null;
-        self.STAR        = null;
-        self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>"+
-                                                     "<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> "+
-                                                     "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
-                                                     "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
-                                                     "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
-                                                     "</div><div class='notepaneView-pages'/>");
-        $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
+        self._page = null; 
+        self._scrollTimerID = null;
+        self._seenTimerID = null;
+        self._id_location = null; //location_id of selected thread
+        self._is_first_stroke = true;
+        self._rendered = false;
+        self._filters = {me: false, star: false, question: false};
+        self.QUESTION = null;
+        self.STAR = null;
+        self.element.addClass("notepaneView").append(
+            "<div class='notepaneView-header'><div class='filter-controls'>"+
+            "<a title='toggle filter: threads I participated in' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> "+
+            "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
+            "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
+            "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
+            "</div><div class='notepaneView-pages'/>");
+        $("body").append(
+            "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
+            "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
+            "<li class='context export-all'><a href='#export-all'>Export Entire Thread</a></li>"+
+            "</ul>");
+        $("#contextmenu_notepaneView").bind("beforeShow", function(event, el) {
+            var id_item = el.closest("div.location-lens").attr("id_item");
+            var m = self._model;
+            var c = m.o.comment[id_item];
+            $("li", this).show();
+        });
+
+        },
         _defaultHandler: function(evt){
         var self=this;
         if (self._id_source ===  $.concierge.get_state("file")){
@@ -353,10 +366,26 @@
             if (locs_array.length && !nosummary){
             $pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+" on page "+page+"</div>");
             }
-            for (var i=0;i<locs_array.length;i++){
-            o = locs_array[i];
-            $pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
-            }
+
+            var admin = m.get("ensemble", {}).first().admin === true;
+
+            locs_array.forEach(function(o) {
+                var loc_lens =
+                    $("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
+                $pane.append(loc_lens);
+
+                if (admin === true) {
+                    loc_lens.contextMenu({menu: "contextmenu_notepaneView"}, function(action, el, pos) {
+                        var $loc = $(el).closest("div.location-lens");
+                        var id_item = $loc.attr("id_item");
+                        if (action === "export-top" || action === "export-all") {
+                            var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
+                            window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+                        }
+                    });
+                }
+            });
+
             $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
             if (self._id_location in locs.items && locs.items[self._id_location].page === page){//highlight selection
             $("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
