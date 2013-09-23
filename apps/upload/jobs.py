@@ -332,8 +332,11 @@ def process_next(args=[]):
                 M.Ownership.objects.get(source__id=id_source).delete()
                 M.Source.objects.get(pk=id_source).delete()
                 msg = render_to_string("email/msg_pdferror",V)
-                email = EmailMessage("NB was unable to read a PDF file that you've submitted", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (V["email"], settings.SMTP_CC_PDFERROR ), (settings.EMAIL_BCC, ))
+                email = EmailMessage("NB was unable to read a PDF file that you've submitted", 
+                                     msg,  
+                                     settings.EMAIL_FROM,
+                                     (V["email"], settings.SMTP_CC_PDFERROR ), 
+                                     (settings.EMAIL_BCC, ))
                 email.send()
                 print msg                
                 return 
@@ -353,8 +356,12 @@ def process_next(args=[]):
              "firstname": task.source.submittedby.firstname
              }
         msg = render_to_string("email/msg_pdfdone",V)
-        email = EmailMessage("The PDF file that you've submitted is now ready on NB.", msg,  "NB Notifications <no-reply@notabene.csail.mit.edu>", 
-                (V["email"], settings.SMTP_CC_USER ), (settings.EMAIL_BCC, ))
+        email = EmailMessage(
+            "The PDF file that you've submitted is now ready on NB.", 
+            msg,  
+            settings.EMAIL_FROM,
+            (V["email"], settings.SMTP_CC_USER ), 
+            (settings.EMAIL_BCC, ))
         email.send()
         try: 
             print msg

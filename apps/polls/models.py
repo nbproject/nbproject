@@ -18,7 +18,7 @@ class SurveyVisit(models.Model):
 
 class Message(models.Model):
     ensemble        = ForeignKey(Ensemble)
-    author          = CharField(max_length=255, default="The NB Team<no-reply@notabene.csail.mit.edu>")
+    author          = CharField(max_length=255, default="The NB Team<nbnotifications@csail.mit.edu>")
     title           = CharField(max_length=512, default="untitled")
     body            = TextField()
     ctime           = DateTimeField(default=datetime.now)
