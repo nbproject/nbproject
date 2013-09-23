@@ -409,7 +409,7 @@ def getLocation(id):
     return (loc_dict, h5l_dict)
 def getComment(id, uid):
     names = __NAMES["comment2"]
-    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)       
+    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
     return UR.model2dict(comment, names, "ID")
     
 def getCommentsByFile(id_source, uid, after):
@@ -661,7 +661,7 @@ def addNote(payload):
         if similar_comments.count():
             return None
 
-        location.save()    
+        location.save()
         #do we need to add an html5 location ?    
         if "html5range" in payload: 
                 h5range = payload["html5range"]
@@ -671,18 +671,56 @@ def addNote(payload):
                 h5l.offset1 = h5range["offset1"]
                 h5l.offset2 = h5range["offset2"]
                 h5l.location = location  
-                h5l.save()            
-    comment = M.Comment()
-    comment.parent = parent
-    comment.location = location
-    comment.author = author
-    comment.body = payload["body"]
-    comment.type = payload["type"]
-    comment.signed = payload["signed"] == 1
-    comment.save()
-    return comment
-    #return {"id_location": location.id, "id_comment": comment.id}
+                h5l.save()
 
+    # Should we import this comment from somewhere?
+    body = payload["body"]
+    matchObj = re.match( r'@import\((\d+), *(.*)\)', body)
+    
+    if (matchObj):
+        importId = int(matchObj.group(1))
+        importType = matchObj.group(2)
+
+        # First, import body text of the comment
+        comment = M.Comment.objects.get(location = importId, parent__isnull = True)
+        importPk = comment.pk
+        comment.pk = None
+        comment.location = location
+        comment.signed = False
+        comment.save()
+
+        oldToNew = {}
+
+        # If we need to import the whole thread, do that
+        if importType == "all":
+            oldToNew[importPk] = comment.pk
+            toVisit = [ importPk ]
+
+            while len(toVisit) > 0:
+                visiting = toVisit.pop()
+                comments = M.Comment.objects.filter(location = importId, parent = visiting)
+                for c in comments:
+                    toVisit.append(c.pk)
+                    oldPk = c.pk
+                    c.pk = None
+                    c.location = location
+                    c.signed = False
+                    c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
+                    c.save()
+                    oldToNew[oldPk] = c.pk
+
+        return comment
+    else:
+        comment = M.Comment()
+        comment.parent = parent
+        comment.location = location
+        comment.author = author
+        comment.body = payload["body"]
+        comment.type = payload["type"]
+        comment.signed = payload["signed"] == 1
+        comment.save()
+        return comment
+    #return {"id_location": location.id, "id_comment": comment.id}
 
 def editNote(payload):
     id_type = payload["type"]
