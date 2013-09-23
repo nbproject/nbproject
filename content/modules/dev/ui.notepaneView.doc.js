@@ -380,7 +380,7 @@
                         var id_item = $loc.attr("id_item");
                         if (action === "export-top" || action === "export-all") {
                             var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
-                            window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+                            window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
                         }
                     });
                 }
