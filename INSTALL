@@ -48,7 +48,7 @@ NOTE:  - packages in square brackets are optional)
 	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
         npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
-        #[edit values in apps/settings_credentials.py, following the direction there]
+        #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data
         make django       #one more time...
         #[If you're deploying a production environmant, use the cmds given in output in order to configure apache]
