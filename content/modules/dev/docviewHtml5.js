@@ -79,7 +79,11 @@
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
 
                     var viewTop = $(window).scrollTop();
-                    var viewBottom = viewTop + $(window).height() * 0.9;
+                    // use window.innerHeight if available, else use document.body.clientHeight,
+                    // else use documentElement.clientHeight
+                    var viewBottom =
+                        viewTop +
+                        (window.innerHeight || document.body.clientHeight || window.document.documentElement.clientHeight) * 0.9;
                     var elementTop = $(".nb-comment-highlight[id_item="+event.value+"]").offset().top;
 
                     if (viewTop > elementTop || viewBottom < elementTop) {
