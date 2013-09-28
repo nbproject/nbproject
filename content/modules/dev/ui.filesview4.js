@@ -71,11 +71,11 @@
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
         var download = "";
         var f_stats =  this._model.o.file_stats[f.ID];
-        if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download ){
-            download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
-            //for now only admin can download annotated PDF:
-            if (this._admin){
-                if (f.filetype === 1 && f_stats !== undefined) {
+        if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download){
+            if (f.filetype === 1){
+                download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
+                //for now only admin can download annotated PDF:
+                if (this._admin && f_stats !== undefined){
                     download += " <a target='_blank' href='"+this.options.img_server+"/pdf/annotated/"+f.ID+"?ckey="+ckey+"'>annotated</a>";
                 }
             }
