@@ -4,8 +4,8 @@
  *     ui.view.js
  *
 
- Author 
- cf AUTHORS.txt 
+ Author
+ cf AUTHORS.txt
 
  License
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -30,7 +30,7 @@
         //self._firstrender = true;
         self._defaultopen = null;
 
-        
+
         self.element.addClass("filesView");
         $(document.body).on("click", "button[action=add_file]", function(){
             $.concierge.get_component("add_file_menu")({id_ensemble: self._id_ensemble, id_folder:  self._id_folder});
@@ -41,28 +41,28 @@
         $(document.body).on("click","button[action=invite_users]", function(){
             $.concierge.get_component("invite_users_menu")({id_ensemble: self._id_ensemble});
             });
-    
+
         },
         _defaultHandler: function(evt){
         switch (evt.type){
-        case "folder": 
+        case "folder":
         this._id_ensemble    = this._model.o.folder[evt.value].id_ensemble;
         this._id_folder        = evt.value;
         break;
-        case "ensemble": 
+        case "ensemble":
         this._id_ensemble    = evt.value === 0 ? null : evt.value;
         this._id_folder        = null;
         break;
-        case "home": 
+        case "home":
         this._id_ensemble    = null;
         this._id_folder        = null;
         break;
         /*
-        case "rate_reply": 
+        case "rate_reply":
         $("#filesView-pending-list li[comment_id="+evt.value.comment_id+"] button").attr("disabled", "disabled");
         break;
         */
-        }        
+        }
         this._render();
         },
         _filelens: function(f){
@@ -70,27 +70,28 @@
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
         var download = "";
-        if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download ){
-            download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
-        
-            //for now only admin can download annotated PDF:
-            if (this._admin){
-            download += " <a target='_blank' href='"+this.options.img_server+"/pdf/annotated/"+f.ID+"?ckey="+ckey+"'>annotated</a>";
+        var f_stats =  this._model.o.file_stats[f.ID];
+        if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download){
+            if (f.filetype === 1){
+                download = "<a target='_blank' href='"+this.options.img_server+"/pdf/repository/"+f.ID+"?ckey="+ckey+"'>original</a>";
+                //for now only admin can download annotated PDF:
+                if (this._admin && f_stats !== undefined){
+                    download += " <a target='_blank' href='"+this.options.img_server+"/pdf/annotated/"+f.ID+"?ckey="+ckey+"'>annotated</a>";
+                }
             }
             download = "<td>"+download+"</td>";
         }
-        var f_stats =  this._model.o.file_stats[f.ID];
         var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":"<td/>";
         var type_class = 'pdficon';
         if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
         return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
 
-        }, 
+        },
         _folderlens: function(f){
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
         return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
-        }, 
+        },
         _draw_pending: function(){
         var self = this;
         var m = self._model;
@@ -103,10 +104,10 @@
         var viewall_url = "/collage?q=pending";
         if (id_ensemble !== null){
             query_params["ensemble_id"] = id_ensemble;
-            viewall_url+="&amp;id_ensemble="+id_ensemble; 
+            viewall_url+="&amp;id_ensemble="+id_ensemble;
         }
         $("#filesView-allpending-link").attr("href", viewall_url);
-        
+
         var questions    = m.get("question", {user_id: self._me.id}).intersect(m.get("location", query_params).items, "location_id").sort(f_question_sort);
         if (questions.length){
             $("#filesView-pending-header-total").text(questions.length);
@@ -128,7 +129,7 @@
             if (!((q.comment_id === null && c.parent_id === null) || q.comment_id === c.id)){
                 //only display real answers, not the original comment
                 body = $.E(c.body).replace(/\n/g, " ");
-                reply_link = "/r/"+c.id;   
+                reply_link = "/r/"+c.id;
                 when = "<span class='filesView-when'>"+$.concierge.get_component("pretty_print_timedelta")({t: c.ctime})+"</span>";
                 rating = m.get("replyrating", {comment_id: c.id});
                 buttons =  rating.length() ? "<span class='reply-rated-as'>Reply rated as <button disabled='disabled'>"+self._RATING_LABELS[rating.first().status]+"</button></span>" : "<button onclick='NB$.concierge.trigger({type:\"rate_reply\", value:{status: 3, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'>"+self._RATING_LABELS[3]+"</button> <button onclick='NB$.concierge.trigger({type:\"rate_reply\", value:{status: 2, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[2]+"</button> <button onclick='NB$.concierge.trigger({type:\"rate_reply\", value:{status: 1, comment_id:"+ c.id +", threadmark_id: " + q.id + "}})'  >"+self._RATING_LABELS[1]+"</button>";
@@ -142,7 +143,7 @@
             $list.append(lens);
         }
         return questions.length;
-        }, 
+        },
         _draw_questions: function(){
         var self = this;
         var m = self._model;
@@ -155,7 +156,7 @@
         var viewall_url = "/collage?q=questions";
         if (id_ensemble !== null){
             query_params["ensemble_id"] = id_ensemble;
-            viewall_url+="&amp;id_ensemble="+id_ensemble; 
+            viewall_url+="&amp;id_ensemble="+id_ensemble;
         }
         $("#filesView-allquestions-link").attr("href", viewall_url);
         var locs = m.get("location", query_params).intersect(m.get("question").exclude({user_id: self._me.id}).values("location_id")).sort(f_location_sort);
@@ -169,7 +170,7 @@
         }
         $("#filesView-question-header-total").text(locs.length ? locs.length : " no "  );
         $("#filesView-question-header-plural").text($.pluralize(locs.length));
-        
+
 
         var i,l,c,q, snippet;
         for (i in locs){
@@ -178,12 +179,12 @@
             q = m.get("question", {location_id: l.id});
             snippet = self.img_snippet(i,l,c,q);
             if (snippet){
-                $list.append(snippet);        
+                $list.append(snippet);
             }
         }
         return locs.length;
         },
-        img_snippet: function(i, l, c, q){            
+        img_snippet: function(i, l, c, q){
         var self = this;
         var id_ensemble = self._id_ensemble;
         var m = self._model;
@@ -200,9 +201,9 @@
 
         scalefactor = 0.6334;
         //scalefactor = 0.4798
-        inner_top = Math.min(0, 50-l.y*scalefactor);        
+        inner_top = Math.min(0, 50-l.y*scalefactor);
         sel = "<div class='snippet-selection' id_item='"+l.id+"' style='top: "+l.y*scalefactor+"px; left: "+l.x*scalefactor+"px; width: "+l.w*scalefactor+"px; height: "+l.h*scalefactor+"px'/>";
-            
+
         inner = "<div class='snippet-innermaterial' style='top: "+inner_top+"px'><div class='snippet-selections'>"+sel+"</div><img class='snippet-material' page='"+(Number(i)+1)+"' src2='"+self.options.img_server+"/pdf/cache2/288/33/"+l.source_id+"?ckey="+self._me.ckey+"&amp;page="+l.page+"'/></div>";
         link =" <a target='_blank' href='"+comment_link+"'>"+ $.E(m.o.ensemble[l.ensemble_id].name+" - "+s.title +" (p.  "+l.page+")") +"</a>";
         numvotes = q === undefined ? "": "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>"+q.length()+"</span>";
@@ -231,19 +232,19 @@
         },
         _draw_files : function(){
         var self=this;
-        var id_ensemble = self._id_ensemble;        
+        var id_ensemble = self._id_ensemble;
         var id_folder = self._id_folder;
-        var model = self._model; 
+        var model = self._model;
         if (id_ensemble === null){
             // TODO: put drawing code here.
         }
         else{
             var $tbody = $("#filesView-file-list", self.element);
-            //remove download header for users is not in admin mode and download isn't allowed. 
+            //remove download header for users is not in admin mode and download isn't allowed.
             if (self._admin === false && model.o.ensemble[id_ensemble].allow_download === false){
             $("#th_download").remove();
             }
-            //first files: 
+            //first files:
             var elts = model.get("file", {id_ensemble: id_ensemble, id_folder: id_folder});
             var name = (id_folder==null) ?  model.o.ensemble[id_ensemble].name : model.o.folder[id_folder].name;
             $("#filesView-files-header-name").text($.E(name));
@@ -252,7 +253,7 @@
             for (i in items){
             $tbody.append(self._filelens(items[i]));
             }
-            //now folders: 
+            //now folders:
             elts =  model.get("folder", {id_ensemble: id_ensemble, id_parent: id_folder});
             items = elts.items;
             for (i in items){
@@ -261,15 +262,15 @@
             if ($tbody.children().length === 0){
             $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
             }
-            $("table.tablesorter", self.element).trigger("update"); 
-            var f_context = function(action, el, pos){            
+            $("table.tablesorter", self.element).trigger("update");
+            var f_context = function(action, el, pos){
             switch (action){
-            case "open": 
+            case "open":
             $.concierge.get_component("file_open")({id: el.attr("id_item")});
             break;
             case "foo":
             break;
-            default: 
+            default:
                 $.concierge.get_component(action+"_file_menu")({item_type: el.attr("item_type"), id: el.attr("id_item")});
             break;
             }
@@ -287,12 +288,12 @@
             });
             /*
               $e_info = $("div.filesView-ensemble").empty();
-              if (id_folder==null && self._admin){ 
+              if (id_folder==null && self._admin){
               var e = model.o.ensemble[id_ensemble];
               $e_info.append("Allow staffonly ? ") //SACHA CONTINUE HERE
               }
             */
-        
+
             $("#group_props").attr("href", "/properties/ensemble/"+self._id_ensemble);
             $("#group_sections").attr("href", "/properties/ensemble_sections/" + self._id_ensemble);
             $("#see_users").attr("href", "/properties/ensemble_users/"+self._id_ensemble);
@@ -300,15 +301,15 @@
             $("#spreadsheet_download").attr("href", "/spreadsheet/download/"+self._id_ensemble);
 
         }
-        }, 
-        _render: function(){        
+        },
+        _render: function(){
         var self=this;
         self._draw_frame();
         var open_candidate =  "#filesView-files-header";
         open_candidate = "#filesView-files-header";
         if (self._draw_questions()){
-            open_candidate = "#filesView-question-header"; 
-        }        
+            open_candidate = "#filesView-question-header";
+        }
         if (self._draw_pending()){
             open_candidate = "#filesView-pending-header";
         }
@@ -317,13 +318,13 @@
         }
         self._draw_files();
         $("#filesView-accordion").accordion({
-            autoHeight: false, 
+            autoHeight: false,
                 collapsible: true,
                 change: function(event, ui){
-                //simulate scroll event to display img if not there already. 
+                //simulate scroll event to display img if not there already.
                 self.element.scroll();
                 self._defaultopen = "#" + ui.newHeader.attr("id");
-            }, 
+            },
                 active: self._defaultopen
                 });
 
@@ -349,26 +350,26 @@
                     }
                 });
             }, scroll_timeout);
-            self._scrollTimerID =  timerID;   
+            self._scrollTimerID =  timerID;
         };
-        self.element.scroll(scroll_handler).scroll();    
+        self.element.scroll(scroll_handler).scroll();
         /*
-        $("#filesView-panel-question").scroll(scroll_handler).scroll();           
+        $("#filesView-panel-question").scroll(scroll_handler).scroll();
 
-        window.setTimeout(function(){ //so that both can be initialized. 
-            $("#filesView-panel-pending").scroll(scroll_handler).scroll();         
+        window.setTimeout(function(){ //so that both can be initialized.
+            $("#filesView-panel-pending").scroll(scroll_handler).scroll();
             }, scroll_timeout+200);
         */
 
-        }, 
+        },
         set_model: function(model){
         var self=this;
         self._model = model;
         model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
-        $("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) { 
+        $("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) {
                     var $n = $(node);
                     if ($n.hasClass("filesview_ftitle")){
-                    return node.childNodes[1].innerHTML; 
+                    return node.childNodes[1].innerHTML;
                     }
                     else{
                     return node.innerHTML;
@@ -389,22 +390,22 @@
             */
         }
         //        console.log("model update !", action, payload, items_fieldname);
-        }, 
-        _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Dismiss", 
-                 2: "<div class='nbicon checkicon'/>Accept", 
+        },
+        _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Dismiss",
+                 2: "<div class='nbicon checkicon'/>Accept",
                  3: "<div class='nbicon thankscheckicon'/> Thanks, this <i>really</i> helped !"
         }
     });
-             
+
     $.widget("ui.filesView",V_OBJ );
     $.ui.filesView.prototype.options = {
-    img_server: "http://localhost", 
-    sort_list: [[0,0]], 
+    img_server: "http://localhost",
+    sort_list: [[0,0]],
     listens: {
-        folder:null, 
-        ensemble: null, 
+        folder:null,
+        ensemble: null,
         home: null
-    }, 
+    },
     admin: false
     };
 })(jQuery);
