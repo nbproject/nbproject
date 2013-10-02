@@ -44,6 +44,13 @@
                         tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
                     }           
                     break;
+                case "file":
+                    tree = $("div.jstree");
+                    if (self._selection.rel !== "file" || self._selection.id_item !== evt.value){
+                        tree.jstree("deselect_all");
+                        tree.jstree("select_node", $("li[rel=file][id_item="+evt.value+"]"));
+                    }
+                    break;
                 }
             },
             set_model: function(model){
@@ -69,23 +76,55 @@
                 var ensemble = model.get("ensemble", params).items;
                 var data = [];
                 var subfolders = null;
+                var subfiles = null;
                 var children = null;
                 var s_numfiles = null;
                 var qry = null;
                 for (var i in ensemble){
                     children = [];
                     subfolders  = model.get("folder", {id_ensemble: i}).items; 
+                    subfiles = model.get("file", {id_ensemble: i}).items;
+
                     for (var j in subfolders){
                         if (subfolders[j].id_parent==null){
                             s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_folder: j}).length() +"</span>" : "";
-                            children.push({data: $.E(subfolders[j].name) + s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
+                            children.push({
+                                data: $.E(subfolders[j].name) + s_numfiles,
+                                attr: {rel: "folder", id_item: j},
+                                children: this._build_children(model, j)
+                            });
                         }
                     }
+
+                    if (self.options.showfiles) {
+                        for (j in subfiles) {
+                            if (subfiles[j].id_folder == null) {
+                                children.push({
+                                    data: {
+                                        title: $.E(subfiles[j].title),
+                                        icon: "jstree_icon file" + subfiles[j].filetype
+                                    },
+                                    attr: {rel: "file", id_item: j},
+                                    children: []
+                                });
+                            }
+                        }
+                    }
+
                     children.sort(self._f_sort_tree);
                     s_numfiles = (self.options.filestats) ? " <span class='numfiles'>"+model.get("file", {id_ensemble: i, id_folder: null }).length() +"</span>" : "";
                     data.push({data:  {title: $.E(ensemble[i].name)+s_numfiles, icon: "jstree_icon "+(ensemble[i].admin ? "admin":"reg")}, children: children, attr: {title: $.E(ensemble[i].description),  rel: "ensemble", id_item: i}});
                 }
-                data.push({data: {title: "<b>Home</b>",  icon:"jstree_icon home"}, children: [], attr: {title: "Home",  rel: "ensemble", id_item: 0}});
+
+                data.push({
+                    data: {
+                        title: "<strong>Home</strong>",
+                        icon:"jstree_icon home"
+                    },
+                    children: [],
+                    attr: {title: "Home",  rel: "ensemble", id_item: 0}
+                });
+
                 data.sort(self._f_sort_tree);
                 var tree_data = {
                     plugins : [ "themes", "json_data", "ui" ],
@@ -110,15 +149,35 @@
         
             },
             _build_children:  function(model, id_folder){
-                var subfolders =  model.get("folder", {id_parent: id_folder}).items; 
+                var subfolders =  model.get("folder", {id_parent: id_folder}).items;
+                var subfiles = model.get("file", {id_folder: id_folder}).items;
                 var children = [];
                 var s_numfiles = null;
-                for (var j in subfolders){
+
+                for (var j in subfolders) {
                     s_numfiles = (this.options.filestats) ? " <span class='numfiles'>"+ model.get("file", {id_folder: j}).length()+"</span>" : "";
-                    children.push({data: $.E(subfolders[j].name)+s_numfiles, attr: {rel: "folder", id_item: j}, children: this._build_children(model, j)});
+                    children.push({
+                        data: $.E(subfolders[j].name)+s_numfiles,
+                        attr: {rel: "folder", id_item: j},
+                        children: this._build_children(model, j)
+                    });
                 }
+
+                if (this.options.showfiles) {
+                    for (j in subfiles) {
+                        children.push({
+                            data: {
+                                title: $.E(subfiles[j].title),
+                                icon: "jstree_icon file" + subfiles[j].filetype
+                            },
+                            attr: {rel: "file", id_item: j},
+                            children: []
+                        });
+                    }
+                }
+
                 return children;        
-            }, 
+            },
             update: function(action, payload, items_fieldname){
                 if (action === "add" || action === "remove"){
                     this._render();
@@ -129,9 +188,10 @@
     $.widget("ui.treeView",V_OBJ );
     $.ui.treeView.prototype.options = {
         listens: {
-            hello:null, folder: null, ensemble: null
+            hello:null, folder: null, ensemble: null, file: null
         },        
         admin: true, 
-        "filestats": false
+        filestats: false,
+        showfiles: false
     };
 })(jQuery);
