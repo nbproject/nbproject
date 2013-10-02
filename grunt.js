@@ -185,7 +185,7 @@ module.exports = function(grunt) {
                           MODS.FILESVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers.js", "dev/files.js"]), 
-                          addPrefix(UI_DIR, ["step21.js", "launch.js"])
+                          addPrefix(UI_DIR, ["init.desktop.js", "launch.js"])
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
@@ -227,7 +227,7 @@ module.exports = function(grunt) {
                           MODS.EDITORVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers.js"]), 
-                          addPrefix(UI_DIR, ["step16.js", "launch.js"])
+                          addPrefix(UI_DIR, ["init.pdfviewer.js", "launch.js"])
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
@@ -252,7 +252,7 @@ module.exports = function(grunt) {
                           MODS.EDITORVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers.js"]), 
-                          addPrefix(UI_DIR, ["step22.js", "launch.js"])
+                          addPrefix(UI_DIR, ["init.youtubeviewer.js", "launch.js"])
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
@@ -278,7 +278,7 @@ module.exports = function(grunt) {
                           MODS.EDITORVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers.js"]), 
-                          addPrefix(UI_DIR, ["step18.js", "launch.js"])
+                          addPrefix(UI_DIR, ["init.collage.js", "launch.js"])
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
@@ -329,7 +329,7 @@ module.exports = function(grunt) {
                           MODS.EDITORVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
                           addPrefix(MODULE_DIR, ["dev/pers.js"]), 
-                          addPrefix(UI_DIR, ["step19.js", "launch.js"])
+                          addPrefix(UI_DIR, ["init.spreadsheet.js", "launch.js"])
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
