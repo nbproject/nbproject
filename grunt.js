@@ -45,7 +45,7 @@ module.exports = function(grunt) {
         src_css:  addPrefix(MODULE_DIR, ["contextmenu/jquery.contextMenu.css"])
     };
     MODS.TREEVIEW = {
-        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview7.js"]), 
+        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
         src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview.css"])
     };  
     MODS.FILESVIEW = {
