@@ -137,6 +137,7 @@
         _lens: function(o){
         var self        = this;
         var m            = self._model;
+        var is_admin    = m.get("ensemble", {}).first().admin;
         var bold_cl        = (m.get("seen", {id: o.ID}).is_empty()===false || o.id_author === self._me.id) ? "" : "note-bold";
         var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
         var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
@@ -155,13 +156,12 @@
         else if (o.type === 2){
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
-        var author_classes;
-        if (!o.signed && m.get("ensemble", {}).first().admin) {
-            author_classes = "author author-revealed";
+        var author_name;
+        if (!o.signed && is_admin) {
+            author_name = " <span class='author author-revealed' title='anonymous comment'>"+o.fullname+"</span> ";
         } else {
-            author_classes = "author";
+            author_name = " <span class='author'>"+o.fullname+"</span> ";
         }
-        var author_name =  " <span class='" + author_classes + "'>"+o.fullname+"</span> ";
         var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
         var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&middot;&middot;&middot;</div></a> ";
