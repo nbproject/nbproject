@@ -137,7 +137,6 @@
         _lens: function(o){
         var self        = this;
         var m            = self._model;
-        var is_admin    = m.get("ensemble", {}).first().admin;
         var bold_cl        = (m.get("seen", {id: o.ID}).is_empty()===false || o.id_author === self._me.id) ? "" : "note-bold";
         var admin_info        = o.admin ? " <div class='nbicon adminicon'  title='This user is an instructor/admin for this class' /> ": " ";
         var me_info        = (o.id_author === self._me.id) ? " <div class='nbicon meicon' title='I am the author of this comment'/> ":" ";
@@ -157,7 +156,7 @@
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
         var author_name;
-        if (!o.signed && is_admin) {
+        if (!o.signed && self.is_admin) {
             author_name = " <span class='author author-revealed' title='anonymous comment'>"+o.fullname+"</span> ";
         } else {
             author_name = " <span class='author'>"+o.fullname+"</span> ";
@@ -222,6 +221,7 @@
             return;
         }
         var model    = self._model;     
+        self.is_admin    = model.get("ensemble", {}).first().admin;
         $("div.threadview-header", self.element).show();
         self._render_header();
         var $pane    = $("div.threadview-pane", self.element).empty();
