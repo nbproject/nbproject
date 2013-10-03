@@ -156,7 +156,7 @@
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
         var author_classes;
-        if (!o.signed && m.get("ensemble", {}).first().admin) { // better way to tell if user is admin?
+        if (!o.signed && m.get("ensemble", {}).first().admin) {
             author_classes = "author author-revealed";
         } else {
             author_classes = "author";
