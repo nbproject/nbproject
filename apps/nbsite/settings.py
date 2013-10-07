@@ -254,8 +254,8 @@ SMTP_CC_LOSTPASSWORD =  "planet.nb+lostpassword@gmail.com"
 
 #For Using Django's email framework
 EMAIL_HOST              = settings_credentials.__dict__.get("EMAIL_HOST", 'localhost')
-EMAIL_FROM              = settings_credentials.__dict__.get("EMAIL_FROM", "NB Notifications <no-reply@notabene.csail.mit.edu>")
-EMAIL_WATCHDOG          = settings_credentials.__dict__.get("EMAIL_WATCHDOG", "NB Watchdog <no-reply@notabene.csail.mit.edu>")
+EMAIL_FROM              = settings_credentials.__dict__.get("EMAIL_FROM", "NB Notifications <nbnotifications@csail.mit.edu>")
+EMAIL_WATCHDOG          = settings_credentials.__dict__.get("EMAIL_WATCHDOG", "NB Watchdog <nbnotifications@csail.mit.edu>")
 
 EMAIL_BCC               = settings_credentials.__dict__.get("EMAIL_BCC",  "planet.nb+bcc@gmail.com")
 

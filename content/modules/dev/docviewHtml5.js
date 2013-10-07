@@ -79,12 +79,20 @@
                     $(".nb-comment-highlight[id_item="+event.value+"]").addClass("selected");
 
                     var viewTop = $(window).scrollTop();
-                    var viewBottom = viewTop + $(window).height() * 0.9;
+                    // use window.innerHeight if available, else use document.body.clientHeight,
+                    // else use documentElement.clientHeight
+                    var viewHeight =
+                        window.innerHeight || document.body.clientHeight || window.document.documentElement.clientHeight;
+                    var viewBottom =
+                        viewTop +
+                        (viewHeight) * 0.9;
                     var elementTop = $(".nb-comment-highlight[id_item="+event.value+"]").offset().top;
 
                     if (viewTop > elementTop || viewBottom < elementTop) {
 
-                        $("body, html").animate({scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - $(window).height() / 4});
+                        $("body, html").animate({
+                            scrollTop: $(".nb-comment-highlight[id_item="+event.value+"]").offset().top - viewHeight / 4
+                        });
                      }
                 }
             }, 
