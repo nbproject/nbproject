@@ -168,6 +168,7 @@ GLOB.pers.createStore = function(payload){
     GLOB.pers.store = new GLOB.models.Store();
     GLOB.pers.store.create(payload, {
         ensemble:    {pFieldName: "ensembles"}, 
+        section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
         file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
         folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
         comment:{pFieldName: "comments", references: {id_location: "location"}},
@@ -178,6 +179,14 @@ GLOB.pers.createStore = function(payload){
         draft: {},
         seen:{pFieldName: "seen", references: {id_location: "location"}}
     });
+
+    //get the section info as well as info whether user is admin: 
+    GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+        var m = GLOB.pers.store;
+        m.add("section", P3["sections"]);
+        GLOB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
+    });
+    
     GLOB.pers.sequence = payload.sequence;
     //generate collection: 
     var ids_location = [];
