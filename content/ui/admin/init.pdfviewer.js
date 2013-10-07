@@ -116,11 +116,6 @@
             });
     
         //get data: 
-        var payload_objects = {types: ["ensembles", "folders", "files", "sections"]};
-        if ("id_ensemble" in GLOB.pers.params){
-            payload_objects["payload"]={id_ensemble: GLOB.pers.params.id_ensemble};
-        }
-        
         GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
@@ -139,26 +134,26 @@
         GLOB.pers.store.create(payload, {
                 ensemble:    {pFieldName: "ensembles"}, 
             section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
-                    file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
-                    folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
-                    comment:{references: {id_location: "location"}},
-                    location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
-                    link: {pFieldName: "links"}, 
-                    mark: {}, 
-                    threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
-                    draft: {},
-                    seen:{references: {id_location: "location"}}, 
-                    labelcategory:{references: {ensemble_id: "ensemble"}}, 
-                    commentlabel: {references: {category_id: "labelcategory"}},
-                    labelcategorycaption: {references: {category_id: "labelcategory"}}
-                    });
+            file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
+            folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
+            comment:{references: {id_location: "location"}},
+            location:{references: {id_ensemble: "ensemble", id_source: "file"}}, 
+            link: {pFieldName: "links"}, 
+            mark: {}, 
+            threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
+            draft: {},
+            seen:{references: {id_location: "location"}}, 
+            labelcategory:{references: {ensemble_id: "ensemble"}}, 
+            commentlabel: {references: {category_id: "labelcategory"}},
+            labelcategorycaption: {references: {category_id: "labelcategory"}}
+        });
         //get the section info as well as info whether user is admin: 
-         GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+        GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
             var m = GLOB.pers.store;
-             m.add("section", P3["sections"]);
-             NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
-});
-
+            m.add("section", P3["sections"]);
+            GLOB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
+        });
+        
         //here we override the callback so that we can get new notes.
         var cb2 = function(P2){    
             var m = GLOB.pers.store;
