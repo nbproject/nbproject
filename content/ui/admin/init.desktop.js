@@ -40,10 +40,10 @@ GLOB.pers.init = function(){
                 min_width: 200, 
                 desired_width: 25, 
                 content: function($div){
-                    $div.treeView({admin:GLOB.pers.admin});
-                    $div.treeView("set_model",GLOB.pers.store );
+                    $div.treeView({admin: GLOB.pers.admin});
+                    $div.treeView("set_model", GLOB.pers.store );
                     //default behavior: select the "home" screen. 
-                    $.concierge.trigger({type:"ensemble", value:0});
+                    $.concierge.trigger({type:"ensemble", value: 0});
                 }
             };
             var filesview    =  {

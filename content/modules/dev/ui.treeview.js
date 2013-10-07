@@ -13,7 +13,7 @@
 */
 /*global jQuery:true*/
 (function($) {
-    var V_OBJ = $.extend({},$.ui.view.prototype,{
+    var V_OBJ = $.extend({}, $.ui.view.prototype, {
             _create: function() {
                 $.ui.view.prototype._create.call(this);
                 var self    = this;
@@ -35,14 +35,14 @@
                     if (self._selection.rel !== "ensemble" || self._selection.id_item !== evt.value){
                         tree.jstree("deselect_all");
                         tree.jstree("select_node", $("li[rel=ensemble][id_item="+evt.value+"]"));
-                    }           
+                    }
                     break;
                 case "folder": 
                     tree = $("div.jstree");
                     if (self._selection.rel !== "folder" || self._selection.id_item !== evt.value){
                         tree.jstree("deselect_all");
                         tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
-                    }           
+                    }
                     break;
                 case "file":
                     tree = $("div.jstree");
@@ -136,9 +136,15 @@
                         var id_item = o.attr("id_item");
                         var rel = o.attr("rel");
                         self._selection =  {rel: rel, id_item: id_item};
-                        $.concierge.trigger({type:rel, value:id_item});
+
+                        if (self.options.callbacks[rel]) {
+                            (self.options.callbacks[rel])({type: rel, value:id_item});
+                        } else {
+                            $.concierge.trigger({type:rel, value:id_item});
+                        }
+
                         $.jstree._reference(o).toggle_node(o);
-                    }); 
+                    });
                 //restore selection of there was any: 
                 var sel = self._selection; 
                 if (sel.rel){
@@ -189,9 +195,12 @@
     $.ui.treeView.prototype.options = {
         listens: {
             hello:null, folder: null, ensemble: null, file: null
-        },        
+        },
         admin: true, 
         filestats: false,
-        showfiles: false
+        showfiles: false,
+        callbacks: {
+          folder: null, ensemble: null, file: null
+        }
     };
 })(jQuery);
