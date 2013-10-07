@@ -155,7 +155,12 @@
         else if (o.type === 2){
             type_info        = " <div class='nbicon stafficon' title='[staff] This comment is for Instructors and TAs'/> ";
         }            
-        var author_name        = " <span class='author'>"+o.fullname+"</span> ";
+        var author_name;
+        if (!o.signed && self.is_admin) {
+            author_name = " <span class='author author-revealed' title='anonymous comment'>"+o.fullname+"</span> ";
+        } else {
+            author_name = " <span class='author'>"+o.fullname+"</span> ";
+        }
         var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
         var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&middot;&middot;&middot;</div></a> ";
@@ -216,6 +221,7 @@
             return;
         }
         var model    = self._model;     
+        self.is_admin    = model.get("ensemble", {}).first().admin;
         $("div.threadview-header", self.element).show();
         self._render_header();
         var $pane    = $("div.threadview-pane", self.element).empty();
