@@ -135,6 +135,12 @@
                         var o = data.rslt.obj;
                         var id_item = o.attr("id_item");
                         var rel = o.attr("rel");
+
+                        var id_changed = true;
+                        if (self._selection && self._selection.id_item) {
+                            id_changed = (id_item !== self._selection.id_item);
+                        }
+
                         self._selection =  {rel: rel, id_item: id_item};
 
                         if (self.options.callbacks[rel]) {
@@ -143,7 +149,9 @@
                             $.concierge.trigger({type:rel, value:id_item});
                         }
 
-                        $.jstree._reference(o).toggle_node(o);
+                        if (id_changed === false) {
+                            $.jstree._reference(o).toggle_node(o);
+                        }
                     });
                 //restore selection of there was any: 
                 var sel = self._selection; 
