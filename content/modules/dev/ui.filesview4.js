@@ -68,6 +68,8 @@
         _filelens: function(f){
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
+        var d = new Date(f.date_published);
+        var date_added = d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2);
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
         var download = "";
         var f_stats =  this._model.o.file_stats[f.ID];
@@ -85,7 +87,7 @@
         var type_class = 'pdficon';
         if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
-        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
+        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td>"+date_added+"</td><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
 
         },
         _folderlens: function(f){
@@ -221,13 +223,14 @@
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
         var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
-        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
+        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table id='contents-table' class='tablesorter'><thead><tr><th>Date Added</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
 
         var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>" : "";
         self._menu_items.remove();
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
+        self.set_tablesort();
         $("body").append(self._menu_items);
         },
         _draw_files : function(){
@@ -366,16 +369,17 @@
         var self=this;
         self._model = model;
         model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
-        $("table.tablesorter", self.element).tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) {
-                    var $n = $(node);
-                    if ($n.hasClass("filesview_ftitle")){
-                    return node.childNodes[1].innerHTML;
-                    }
-                    else{
-                    return node.innerHTML;
-                    }
-                }});
-
+        },
+        set_tablesort: function(){
+                $("table.tablesorter").tablesorter({headers: {2:{sorter: false}, 3:{sorter:false}, 4:{sorter:false}}, textExtraction: function(node) {
+                var $n = $(node);
+                if ($n.hasClass("filesview_ftitle")){
+                return node.childNodes[1].innerHTML;
+                }
+                else{
+                return node.innerHTML;
+                }
+            }});
         },
         update: function(action, payload, items_fieldname){
         if (action === "add" || action === "remove"){

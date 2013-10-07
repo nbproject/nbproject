@@ -150,7 +150,8 @@ __NAMES = {
         "rotation": "source.rotation",
         "assignment": None, 
         "due": None, 
-        "filetype": "source.type"
+        "filetype": "source.type",
+        "date_published": "published"
 },
            "ensembles2": {
                           "ID": "ensemble_id",
