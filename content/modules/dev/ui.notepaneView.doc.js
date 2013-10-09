@@ -110,6 +110,10 @@
             $header.append($filters).append($filtered_message).append($unfiltered_message);
             self.element.append($header).append($notepaneView_pages);
 
+            if (window.location.href.indexOf("?filter") === -1) {
+                $filter_advanced.remove();
+            }
+
             $("body").append(
                 "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
                 "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
