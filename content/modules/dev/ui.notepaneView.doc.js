@@ -13,7 +13,7 @@
 */
 /*global jQuery:true NB$:true*/
 (function($) {
-    var $str        = "NB$" in window ? "NB$" : "jQuery";
+    var $str = "NB$" in window ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _f_location_seen: function(id_location){
         var self = this;
@@ -43,16 +43,72 @@
             self._id_location = null; //location_id of selected thread
             self._is_first_stroke = true;
             self._rendered = false;
-            self._filters = {me: false, star: false, question: false};
+            self._filters = {me: false, star: false, question: false, advanced: false};
             self.QUESTION = null;
             self.STAR = null;
-            self.element.addClass("notepaneView").append(
-                "<div class='notepaneView-header'><div class='filter-controls'>"+
-                "<a title='toggle filter: threads I participated in' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> " +
-                "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
-                "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
-                "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
-                "</div><div class='notepaneView-pages'/>");
+
+            self.element.addClass("notepaneView");
+
+            var $header = $("<div>").addClass("notepaneView-header");
+            var $filters = $("<div>").addClass("filter-controls");
+            var $filter_me = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: threads I participated in")
+                .attr("action", "me")
+                .html("<span>me</span><div class='filter-count'>...</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'me'
+                    });
+                });
+            var $filter_star = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: starred threads")
+                .attr("action", "star")
+                .html("<span><div class='nbicon staricon' /></span><div class='filter-count'>...</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'star'
+                    });
+                });
+            var $filter_question = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: threads with standing questions")
+                .attr("action", "question")
+                .html("<span><div class='nbicon questionicon' /></span><div class='filter-count'>...</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'question'
+                    });
+                });
+            var $filter_advanced = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: threads with standing questions")
+                .attr("action", "advanced")
+                .html("<span>advanced</span>")
+                .click(function() {
+                    if ($(this).hasClass("active")) {
+                        $(this).removeClass("active");
+                        self._filters.advanced = false;
+                        self._page = 1;
+                        self._pages = {};
+                        self._maxpage = 0;
+                        self._render(true);
+                    } else {
+                        $wizard.dialog("open");
+                    }
+                });
+
+            var $filtered_message = $("<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span>");
+            var $unfiltered_message = $("<span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>");
+            var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
+
+            $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
+            $header.append($filters).append($filtered_message).append($unfiltered_message);
+            self.element.append($header).append($notepaneView_pages);
 
             $("body").append(
                 "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
@@ -73,7 +129,8 @@
             }).dialog({
                 width: 800,
                 height: 400,
-                modal: true
+                modal: true,
+                autoOpen: false
             });
 
             $("#contextmenu_notepaneView").bind("beforeShow", function(event, el) {
@@ -99,6 +156,22 @@
             delta_top = sel.offset().top - container.offset().top;
             container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
             }
+            break;
+            case "filter_threads":
+                // TODO: fix "NB" global
+                NB.pers.call("advanced_filter", {
+                    id_source: self._id_source,
+                    n: evt.value.n,
+                    r: evt.value.r,
+                    type: evt.value.type
+                }, function(result) {
+                    self._filters.advanced = result.locs;
+                    self._page = 1;
+                    self._pages = {};
+                    self._maxpage = 0;
+                    self._render(true);
+                });
+
             break;
             case "filter_toggle": 
             if (evt.value in self._filters){
@@ -195,6 +268,7 @@
         var $filter_me = $filters.filter("[action=me]");
         var $filter_star = $filters.filter("[action=star]");
         var $filter_question = $filters.filter("[action=question]");
+        var $filter_advanced = $filters.filter("[action=advanced]");
 
         var locs_me        = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
         var locs_star        = m.get("threadmark", {active: true, type: self._STAR });
@@ -215,6 +289,9 @@
             $filter_question.addClass("active");
             filters_on = true;
             locs_filtered = locs_filtered.intersect(locs_question.values("location_id"));
+        }
+        if (self._filters.advanced) {
+            $filter_advanced.addClass("active");
         }
         var n_me =  locs_me;
         var n_star = locs_star;
@@ -366,7 +443,7 @@
         }
 
         if (!(page in self._pages)){
-            var m    = self._model; 
+            var m    = self._model;
             var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
             var locs    = m.get("location", {id_source:  self._id_source, page: page });
             var me = $.concierge.get_component("get_userinfo")();
@@ -378,6 +455,9 @@
             }
             if (self._filters.question){
             locs = locs.intersect(m.get("threadmark", {active: true, type: self._QUESTION }).values("location_id"));
+            }
+            if (self._filters.advanced){
+                locs = locs.intersect(self._filters.advanced);
             }
             var locs_array = locs.sort(self.options.loc_sort_fct);
             var o;
@@ -536,7 +616,8 @@
         select_thread: null, 
         warn_page_change: null, 
         keydown: null,
-        filter_toggle: null
+        filter_toggle: null,
+	filter_threads: null
     }            
     };
 })(jQuery);

@@ -405,19 +405,20 @@ def getLocation(id):
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
     return (loc_dict, h5l_dict)
 
-def getAdvancedFilteredLocationsByFile(id_source, uid, n, r, filterType):
+def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
 
-    source_locations = M.Location.objects.\
-        filter(source__id=id_source, deleted=False, moderated=False, type__gte=2)
+    source_locations = M.Location.objects.filter(source__id=id_source)
 
-    if filterType == "responses":
-        filter_locations=source_locations.annotate(responses=Count('comment')).order_by('-responses')
-    elif filterType == "participation":
-        filter_locations=source_locations.annotate(participation=Count('comment__author',distinct=True)).order_by('-participation')
-    elif filterType == "length":
-        pass
+    if filterType == "reply":
+        filter_locations=source_locations.annotate(reply=Count('comment')).order_by('-reply')
+    elif filterType == "students":
+        filter_locations=source_locations.annotate(students=Count('comment__author',distinct=True)).order_by('-students')
+    elif filterType == "longest":
+        return {}
+        #TODO: fix
+        #filter_locations=source_locations.annotate(body=Q(comment__parent=None)).extra(select={'length':'Length(body)'}).order_by('-length')
     elif filterType == "random":
-        pass
+        filter_locations=source_locations.order_by('?')
 
     if r == "threads":
         filter_locations = filter_locations[:n]
@@ -427,11 +428,11 @@ def getAdvancedFilteredLocationsByFile(id_source, uid, n, r, filterType):
 
     print filter_locations
 
-    return_list = []
+    retval = {}
     for loc in filter_locations:
-        return_list.append(loc.id)
+        retval[loc.id] = loc.id
 
-    return return_list
+    return retval
 
 def getComment(id, uid):
     names = __NAMES["comment2"]
