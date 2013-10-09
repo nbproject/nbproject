@@ -57,13 +57,15 @@
                 var r = $r.val();
                 var filterType = $filterType.val();
 
+                $(".input-error", self.element).removeClass("input-error");
+
                 if (isNaN(n) || n < 0) {
                     $n.addClass("input-error");
                     $e.text("You must enter a valid number or percentage of posts.");
                     return;
                 }
 
-                if (r === "precent") {
+                if (r === "percent") {
                     if (n > 100) {
                         $n.addClass("input-error");
                         $e.text("You must enter a valid percentage between 0 and 100.");
