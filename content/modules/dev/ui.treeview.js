@@ -27,30 +27,27 @@
                 var tree;
                 // by default we listen to events directed to everyone
                 switch (evt.type){
-                case "hello": 
-                    self.element.append("got a hello event with value:"+evt.value +"<br/>" );
-                    break;
-                case "ensemble":
-                    tree = $("div.jstree");
-                    if (self._selection.rel !== "ensemble" || self._selection.id_item !== evt.value){
-                        tree.jstree("deselect_all");
-                        tree.jstree("select_node", $("li[rel=ensemble][id_item="+evt.value+"]"));
-                    }
-                    break;
-                case "folder": 
-                    tree = $("div.jstree");
-                    if (self._selection.rel !== "folder" || self._selection.id_item !== evt.value){
-                        tree.jstree("deselect_all");
-                        tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
-                    }
-                    break;
-                case "file":
-                    tree = $("div.jstree");
-                    if (self._selection.rel !== "file" || self._selection.id_item !== evt.value){
-                        tree.jstree("deselect_all");
-                        tree.jstree("select_node", $("li[rel=file][id_item="+evt.value+"]"));
-                    }
-                    break;
+                    case "ensemble":
+                        tree = $("div.jstree");
+                        if (self._selection.rel !== "ensemble" || self._selection.id_item !== evt.value){
+                            tree.jstree("deselect_all");
+                            tree.jstree("select_node", $("li[rel=ensemble][id_item="+evt.value+"]"));
+                        }
+                        break;
+                    case "folder": 
+                         tree = $("div.jstree");
+                        if (self._selection.rel !== "folder" || self._selection.id_item !== evt.value){
+                            tree.jstree("deselect_all");
+                            tree.jstree("select_node", $("li[rel=folder][id_item="+evt.value+"]"));
+                        }
+                        break;
+                    case "file":
+                        tree = $("div.jstree");
+                        if (self._selection.rel !== "file" || self._selection.id_item !== evt.value){
+                            tree.jstree("deselect_all");
+                            tree.jstree("select_node", $("li[rel=file][id_item="+evt.value+"]"));
+                        }
+                        break;
                 }
             },
             set_model: function(model){

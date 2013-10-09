@@ -33,37 +33,55 @@
         };
         },
         _create: function() {
-        $.ui.view.prototype._create.call(this);
-        var self = this;
-        self._pages =  {}; //pages that have been rendered
-        self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
-        self._page = null; 
-        self._scrollTimerID = null;
-        self._seenTimerID = null;
-        self._id_location = null; //location_id of selected thread
-        self._is_first_stroke = true;
-        self._rendered = false;
-        self._filters = {me: false, star: false, question: false};
-        self.QUESTION = null;
-        self.STAR = null;
-        self.element.addClass("notepaneView").append(
-            "<div class='notepaneView-header'><div class='filter-controls'>"+
-            "<a title='toggle filter: threads I participated in' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> "+
-            "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
-            "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
-            "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
-            "</div><div class='notepaneView-pages'/>");
-        $("body").append(
-            "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
-            "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
-            "<li class='context export-all'><a href='#export-all'>Export Entire Thread</a></li>"+
-            "</ul>");
-        $("#contextmenu_notepaneView").bind("beforeShow", function(event, el) {
-            var id_item = el.closest("div.location-lens").attr("id_item");
-            var m = self._model;
-            var c = m.o.comment[id_item];
-            $("li", this).show();
-        });
+            $.ui.view.prototype._create.call(this);
+            var self = this;
+            self._pages =  {}; //pages that have been rendered
+            self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
+            self._page = null; 
+            self._scrollTimerID = null;
+            self._seenTimerID = null;
+            self._id_location = null; //location_id of selected thread
+            self._is_first_stroke = true;
+            self._rendered = false;
+            self._filters = {me: false, star: false, question: false};
+            self.QUESTION = null;
+            self.STAR = null;
+            self.element.addClass("notepaneView").append(
+                "<div class='notepaneView-header'><div class='filter-controls'>"+
+                "<a title='toggle filter: threads I participated in' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> " +
+                "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
+                "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
+                "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
+                "</div><div class='notepaneView-pages'/>");
+
+            $("body").append(
+                "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
+                "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
+                "<li class='context export-all'><a href='#export-all'>Export Entire Thread</a></li>"+
+                "</ul>");
+
+            $("body").append(
+                $("<div>").attr("id", "filterWizardDialog")
+                );
+
+            var $wizard = $("#filterWizardDialog");
+            $wizard.filterWizard({
+                admin: true, // TODO: use 'admin' variable
+                callbacks: {
+                    onOk: function() { $wizard.dialog("close"); }
+                }
+            }).dialog({
+                width: 800,
+                height: 400,
+                modal: true
+            });
+
+            $("#contextmenu_notepaneView").bind("beforeShow", function(event, el) {
+                var id_item = el.closest("div.location-lens").attr("id_item");
+                var m = self._model;
+                var c = m.o.comment[id_item];
+                $("li", this).show();
+            });
 
         },
         _defaultHandler: function(evt){

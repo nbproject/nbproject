@@ -44,6 +44,10 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["contextmenu/jquery.contextMenu.js"]),
         src_css:  addPrefix(MODULE_DIR, ["contextmenu/jquery.contextMenu.css"])
     };
+    MODS.FILTERWIZARD = {
+        src_js: addPrefix(MODULE_DIR, ["dev/ui.filterwizard.js" ]),
+        src_css: addPrefix(MODULE_DIR, ["dev/ui.filterwizard.css" ])
+    };
     MODS.TREEVIEW = {
         src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
         src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview.css"])
@@ -68,26 +72,28 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView10.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     };  
-     MODS.DOCVIEW_YOUTUBE = {
+    MODS.DOCVIEW_YOUTUBE = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView11.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     }; 
     
     MODS.NOTEPANEVIEW_DOC = {
         src_js: [].concat(
-                          MODS.CONTEXTMENU.src_js, 
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.doc.js"])),
+            MODS.CONTEXTMENU.src_js,
+            MODS.FILTERWIZARD.src_js,
+            addPrefix(MODULE_DIR,["dev/ui.notepaneView.doc.js"])),
         src_css:   [].concat(
-                             MODS.CONTEXTMENU.src_css, 
-                             addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
+            MODS.CONTEXTMENU.src_css, 
+            MODS.FILTERWIZARD.src_css,
+            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
     };
     MODS.NOTEPANEVIEW_COLLAGE = {
         src_js: [].concat(
-                          MODS.CONTEXTMENU.src_js, 
-                          addPrefix(MODULE_DIR,["dev/ui.notepaneView.collage.js"])),
-        src_css:   [].concat(
-                             MODS.CONTEXTMENU.src_css, 
-                             addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
+            MODS.CONTEXTMENU.src_js,
+            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.collage.js"] )),
+        src_css: [].concat(
+            MODS.CONTEXTMENU.src_css, 
+            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
     };
     MODS.NOTEPANEVIEW_SPREADSHEET = {
         src_js: [].concat(
@@ -121,6 +127,7 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.editorview.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.editorview.css"])
     };
+
     MODS.RANGY = {
         src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-cssclassapplier.js", "rangy-textrange.js", "termfix.js" ]),
         src_css:  []
@@ -149,6 +156,7 @@ module.exports = function(grunt) {
                           ), 
         dest_js:  DEST_DIR+"buildTrail_NB.js"
     };
+
     TARGETS.EMBED = {
         src_js: [].concat(
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
