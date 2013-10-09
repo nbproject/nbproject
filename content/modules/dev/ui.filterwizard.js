@@ -57,7 +57,7 @@
                 var r = $r.val();
                 var filterType = $filterType.val();
 
-                if (isNan(n) || n < 0) {
+                if (isNaN(n) || n < 0) {
                     $n.addClass("input-error");
                     $e.text("You must enter a valid number or percentage of posts.");
                     return;
