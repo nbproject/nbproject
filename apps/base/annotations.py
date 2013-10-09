@@ -8,6 +8,7 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
 from django.db.models import Q
+from django.db.models import Count
 from django.db import transaction
 import datetime, os, re, json 
 import models as M
@@ -211,7 +212,7 @@ def get_ensembles(uid, payload):
     if id is not None: 
         my_memberships = my_memberships.filter(ensemble__id=id)
     return UR.qs2dict(my_memberships, names, "ID")
-    
+
 def get_folders(uid, payload):
     id = payload["id"] if "id" in payload else None
     names = {
@@ -402,11 +403,36 @@ def getLocation(id):
     except M.HTML5Location.DoesNotExist: 
         pass
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
-#    retval = {}
-#    retval["location"] = loc_dict
-#    retval["html5location"] = h5l_dict
-#    return retval
     return (loc_dict, h5l_dict)
+
+def getAdvancedFilteredLocationsByFile(id_source, uid, n, r, filterType):
+
+    source_locations = M.Location.objects.\
+        filter(source__id=id_source, deleted=False, moderated=False, type__gte=2)
+
+    if filterType == "responses":
+        filter_locations=source_locations.annotate(responses=Count('comment')).order_by('-responses')
+    elif filterType == "participation":
+        filter_locations=source_locations.annotate(participation=Count('comment__author',distinct=True)).order_by('-participation')
+    elif filterType == "length":
+        pass
+    elif filterType == "random":
+        pass
+
+    if r == "threads":
+        filter_locations = filter_locations[:n]
+    else:
+        nTotal = len(source_locations)
+        filter_locations = filter_locations[:nTotal * n / 100]
+
+    print filter_locations
+
+    return_list = []
+    for loc in filter_locations:
+        return_list.append(loc.id)
+
+    return return_list
+
 def getComment(id, uid):
     names = __NAMES["comment2"]
     comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
@@ -419,14 +445,16 @@ def getCommentsByFile(id_source, uid, after):
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
+
     if membership.section is not None:
         comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
+
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
+
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
-    if after is not None: 
-        comments = comments.filter(ctime__gt=after)    
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
@@ -440,7 +468,6 @@ def getCommentsByFile(id_source, uid, after):
             c["fullname"]="Anonymous"
             c["id_author"]=0             
     return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
-    #return __post_process_comments(o, uid)
 
 def get_comments_collection(uid, P):
     output = {}
