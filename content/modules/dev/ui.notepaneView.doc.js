@@ -158,8 +158,7 @@
             }
             break;
             case "filter_threads":
-                // TODO: fix "NB" global
-                NB.pers.call("advanced_filter", {
+                $.concierge.get_component("advanced_filter")({
                     id_source: self._id_source,
                     n: evt.value.n,
                     r: evt.value.r,

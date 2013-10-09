@@ -426,8 +426,6 @@ def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
         nTotal = len(source_locations)
         filter_locations = filter_locations[:nTotal * n / 100]
 
-    print filter_locations
-
     retval = {}
     for loc in filter_locations:
         retval[loc.id] = loc.id
