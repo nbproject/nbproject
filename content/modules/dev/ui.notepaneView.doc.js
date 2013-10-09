@@ -55,7 +55,7 @@
                 .addClass("filter")
                 .attr("title", "toggle filter: threads I participated in")
                 .attr("action", "me")
-                .html("<span>me</span><div class='filter-count'>...</div>")
+                .html("<span>me</span><div class='filter-count'>0</div>")
                 .click(function() {
                     $.concierge.trigger({
                         type: 'filter_toggle',
@@ -86,9 +86,9 @@
                 });
             var $filter_advanced = $("<a>")
                 .addClass("filter")
-                .attr("title", "toggle filter: threads with standing questions")
+                .attr("title", "toggle filter: toggle by advanced features")
                 .attr("action", "advanced")
-                .html("<span>advanced</span>")
+                .html("<div class='filter-count'>advanced</div>")
                 .click(function() {
                     if ($(this).hasClass("active")) {
                         $(this).removeClass("active");
@@ -128,7 +128,7 @@
                 }
             }).dialog({
                 width: 800,
-                height: 400,
+                height: 200,
                 modal: true,
                 autoOpen: false
             });
