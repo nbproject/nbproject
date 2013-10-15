@@ -357,11 +357,17 @@ def get_files(uid, payload):
     names = __NAMES["files2"]
     my_memberships = M.Membership.objects.filter(user__id=uid,  deleted=False)
     my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
-    my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False) 
+    my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False)
+    my_sources = M.Source.objects.filter(id__in=my_ownerships.values('source'))
+    my_pageviews = M.PageSeen.objects.filter(source__in=my_sources).order_by('source', '-ctime').distinct('source')
     if id is not None:
         my_ownerships = my_ownerships.filter(source__id=id)
-    return UR.qs2dict(my_ownerships, names, "ID")
-
+    files = UR.qs2dict(my_ownerships, names, "ID")
+    for v in my_pageviews:
+        source_id = v.source_id
+        print v.source_id, M.Source.objects.get(id=v.source_id).title, v.ctime.isoformat()
+        files[source_id]['last_seen'] = v.ctime.isoformat()
+    return files
 
 def save_settings(uid, payload): 
     #print "save settings w/ payload %s" % (payload, )
