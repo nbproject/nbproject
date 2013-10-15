@@ -70,10 +70,7 @@
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
         var d = new Date(f.date_published);
         var date_added = d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2);
-        d = f.last_seen ? new Date(f.last_seen) : null;
-        window.console.log(d);
-        //var last_seen = d ? d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2) : "-";
-        var last_seen = d ? d : "-";
+        var last_seen = f.last_seen ? new Date(f.last_seen) : "-";
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
         var download = "";
         var f_stats =  this._model.o.file_stats[f.ID];
@@ -91,7 +88,7 @@
         var type_class = 'pdficon';
         if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
-        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='hidden'>"+date_added+"</td><td>"+last_seen+"</td><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
+        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='hidden'>"+date_added+"</td><td class='hidden'>"+last_seen+"</td><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
 
         },
         _folderlens: function(f){
@@ -227,7 +224,7 @@
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
         var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
-        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='1' class='sort-option asc active'><span class='arrow'></span>last seen</a> <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='2' class='sort-option asc'><span class='arrow'></span>alphabetical</a> <table id='contents-table' class='tablesorter {sortList: [[1,1,]]}'><thead><tr><th class='hidden'>Date Added</th><th>Last Seen</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
+        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='1' class='sort-option asc active'><span class='arrow'></span>last seen</a> <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='2' class='sort-option asc'><span class='arrow'></span>alphabetical</a> <table id='contents-table' class='tablesorter'><thead><tr><th class='hidden'>Date Added</th><th class='hidden'>Last Seen</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
 
@@ -376,8 +373,8 @@
         },
         set_tablesort: function(){
             $("table.tablesorter").tablesorter({
-                headers: {4:{sorter: false}, 5:{sorter:false}, 6:{sorter:false}}, 
-                // sortList: [[1,1]], // default to most recently seen first
+                headers: {1:{sorter: 'isoDate'}, 4:{sorter: false}, 5:{sorter:false}, 6:{sorter:false}}, 
+                sortList: [[1,1]], // default to most recently seen first
                 textExtraction: function(node) {
                 var $n = $(node);
                 if ($n.hasClass("filesview_ftitle")){
