@@ -420,7 +420,8 @@ def getCommentsByFile(id_source, uid, after):
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
     if membership.section is not None:
-        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
+        seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
+        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)|Q(location__comment__in=seen.values_list("comment_id"))) 
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
