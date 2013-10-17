@@ -421,7 +421,15 @@ def getCommentsByFile(id_source, uid, after):
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
     if membership.section is not None:
         seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
-        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)|Q(location__comment__in=seen.values_list("comment_id"))) 
+        #idea: we let you see comments 
+        # - that are in your current section
+        # - that aren't in any section
+        # - that you've seen before
+        # - that you've authored.   
+        comments = comments.filter(Q(location__section=membership.section)|
+                                   Q(location__section=None)|
+                                   Q(location__comment__in=seen.values_list("comment_id"))|
+                                   Q(author__id=uid))
     threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
