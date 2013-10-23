@@ -420,13 +420,20 @@ def getCommentsByFile(id_source, uid, after):
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
     if membership.section is not None:
-        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
-    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
+        seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
+        #idea: we let you see comments 
+        # - that are in your current section
+        # - that aren't in any section
+        # - that you've seen before
+        # - that you've authored.   
+        comments = comments.filter(Q(location__section=membership.section)|
+                                   Q(location__section=None)|
+                                   Q(location__comment__in=seen.values_list("comment_id"))|
+                                   Q(author__id=uid))
+    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id"))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
-    if after is not None: 
-        comments = comments.filter(ctime__gt=after)    
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
@@ -435,12 +442,10 @@ def getCommentsByFile(id_source, uid, after):
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
-        #if c["type"] < 3 and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
     return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
-    #return __post_process_comments(o, uid)
 
 def get_comments_collection(uid, P):
     output = {}
