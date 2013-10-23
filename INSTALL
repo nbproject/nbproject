@@ -43,6 +43,12 @@ NOTE:  - packages in square brackets are optional)
      [optional] To annotate YouTube Videos: The google python library. 
      sudo pip install --upgrade google-api-python-client
 
+  ***A note about building on ubuntu 13.04*** 
+  Ubuntu 13.04 comes w/ a version of node that seems to cause problems. One solution is to use a more recent version, provided for example by this PPA: 
+  sudo add-apt-repository ppa:chris-lea/node.js
+  #see https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager for more details. 
+
+
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
 	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
