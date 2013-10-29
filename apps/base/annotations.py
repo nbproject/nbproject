@@ -708,12 +708,28 @@ def addNote(payload):
     # Should we import this comment from somewhere?
     body = payload["body"]
     matchObj = re.match( r'@import\((\d+), *(.*)\)', body)
-    
+
     if (matchObj):
         importId = int(matchObj.group(1))
         importType = matchObj.group(2)
 
-        # First, import body text of the comment
+        # First, are we allowed to do this (i.e., am I an admin in *BOTH* ?)
+        # am I an admin here {location->ensemble}
+        dst_admin = False
+        dst_membership = location.ensemble.membership_set.filter(user = author)
+        if dst_membership.count() > 0:
+            dst_admin = dst_membership[0].admin
+
+        # am I an admin in the source { loc{importId}->ensemble }
+        src_admin = False
+        src_membership = M.Location.objects.get(pk = importId).ensemble.membership_set.filter(user = author)
+        if src_membership.count() > 0:
+            src_admin = src_membership[0].admin
+
+        if (not src_admin) or (not dst_admin):
+            return None
+
+        # Now, import body text of the comment
         comment = M.Comment.objects.get(location = importId, parent__isnull = True)
         importPk = comment.pk
         comment.pk = None
@@ -752,7 +768,6 @@ def addNote(payload):
         comment.signed = payload["signed"] == 1
         comment.save()
         return comment
-    #return {"id_location": location.id, "id_comment": comment.id}
 
 def editNote(payload):
     id_type = payload["type"]
