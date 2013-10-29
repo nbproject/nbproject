@@ -13,7 +13,7 @@ import datetime
 if "." not in sys.path: 
     sys.path.append(".")
 if "DJANGO_SETTINGS_MODULE" not in os.environ or __name__=="__main__": 
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
 from django.conf import settings
 import base.utils as utils, base.models as M
 from django.template.loader import render_to_string

@@ -446,10 +446,17 @@ def getCommentsByFile(id_source, uid, after):
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
 
     if membership.section is not None:
-        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
-
-    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
-
+        seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
+        #idea: we let you see comments 
+        # - that are in your current section
+        # - that aren't in any section
+        # - that you've seen before
+        # - that you've authored.   
+        comments = comments.filter(Q(location__section=membership.section)|
+                                   Q(location__section=None)|
+                                   Q(location__comment__in=seen.values_list("comment_id"))|
+                                   Q(author__id=uid))
+    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id"))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
@@ -462,7 +469,6 @@ def getCommentsByFile(id_source, uid, after):
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
-        #if c["type"] < 3 and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
@@ -987,10 +993,8 @@ def getPending(uid, payload):
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     all_comments = M.Comment.objects.filter(location__in=locations)
-    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
-    
-    unrated_replies_ids = list(unrated_replies.values_list("id", flat=True))    
-    questions = questions.exclude(location__comment__in=unrated_replies_ids)
+    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=u0.location_id and base_threadmark.ctime<u0.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
+    questions = questions.exclude(location__comment__in=unrated_replies)
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))

@@ -76,3 +76,19 @@ position: absolute;
     text-align: center;
     vertical-align: middle;
 }
+
+/** make printing work properly */
+@media print { 
+    .nb_sidebar {
+        display: none;
+    }
+    
+    .nb-comment-highlight {
+        background-color: transparent;
+    }
+    
+    body,
+    body.nb-active {
+        margin: auto;
+    }
+}
