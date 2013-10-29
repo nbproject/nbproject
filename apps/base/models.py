@@ -187,8 +187,6 @@ class HTML5Location(models.Model):
     offset1               = IntegerField()
     offset2               = IntegerField()
 
-
-    
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
     location            = ForeignKey(Location)                                  # old: id_location integer

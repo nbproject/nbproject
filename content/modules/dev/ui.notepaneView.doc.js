@@ -13,7 +13,7 @@
 */
 /*global jQuery:true NB$:true*/
 (function($) {
-    var $str        = "NB$" in window ? "NB$" : "jQuery";
+    var $str = "NB$" in window ? "NB$" : "jQuery";
     var V_OBJ = $.extend({},$.ui.view.prototype,{
         _f_location_seen: function(id_location){
         var self = this;
@@ -33,26 +33,118 @@
         };
         },
         _create: function() {
-        $.ui.view.prototype._create.call(this);
-        var self = this;
-        self._pages =  {}; //pages that have been rendered
-        self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
-        self._page =  null; 
-        self._scrollTimerID    =  null;
-        self._seenTimerID    = null;
-        self._id_location    = null; //location_id of selected thread
-        self._is_first_stroke    = true;
-        self._rendered        = false;
-        self._filters        = {me: false, star: false, question: false};
-        self.QUESTION        = null;
-        self.STAR        = null;
-        self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'>"+
-                                                     "<a title='toggle filter: threads in which I participated' class='filter' action='me' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'me'})\"><span>me</span><div class='filter-count'>...</div></a> "+
-                                                     "<a title='toggle filter: starred threads' class='filter' action='star' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'star'})\"><span><div class='nbicon staricon' /></span><div class='filter-count'>...</div></a>"+
-                                                     "<a title='toggle filter: threads with standing questions' class='filter'  action='question' href=\"javascript:"+$str+".concierge.trigger({type: 'filter_toggle', value:'question'})\"><span>  <div class='nbicon questionicon' />      </span><div class='filter-count'>...</div></a></div>"+
-                                                     "<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span> "+
-                                                     "</div><div class='notepaneView-pages'/>");
-        $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
+            $.ui.view.prototype._create.call(this);
+            var self = this;
+            self._pages =  {}; //pages that have been rendered
+            self._maxpage =  0; //last (i.e. max page number of) page that has been rendered
+            self._page = null; 
+            self._scrollTimerID = null;
+            self._seenTimerID = null;
+            self._id_location = null; //location_id of selected thread
+            self._is_first_stroke = true;
+            self._rendered = false;
+            self._filters = {me: false, star: false, question: false, advanced: false};
+            self.QUESTION = null;
+            self.STAR = null;
+
+            self.element.addClass("notepaneView");
+
+            var $header = $("<div>").addClass("notepaneView-header");
+            var $filters = $("<div>").addClass("filter-controls");
+            var $filter_me = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: threads I participated in")
+                .attr("action", "me")
+                .html("<span>me</span><div class='filter-count'>0</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'me'
+                    });
+                });
+            var $filter_star = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: starred threads")
+                .attr("action", "star")
+                .html("<span><div class='nbicon staricon' /></span><div class='filter-count'>...</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'star'
+                    });
+                });
+            var $filter_question = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: threads with standing questions")
+                .attr("action", "question")
+                .html("<span><div class='nbicon questionicon' /></span><div class='filter-count'>...</div>")
+                .click(function() {
+                    $.concierge.trigger({
+                        type: 'filter_toggle',
+                        value: 'question'
+                    });
+                });
+            var $filter_advanced = $("<a>")
+                .addClass("filter")
+                .attr("title", "toggle filter: toggle by advanced features")
+                .attr("action", "advanced")
+                .html("<div class='filter-count'>advanced</div>")
+                .click(function() {
+                    if ($(this).hasClass("active")) {
+                        $(this).removeClass("active");
+                        self._filters.advanced = false;
+                        self._page = 1;
+                        self._pages = {};
+                        self._maxpage = 0;
+                        self._render(true);
+                    } else {
+                        $wizard.dialog("open");
+                    }
+                });
+
+            var $filtered_message = $("<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span>");
+            var $unfiltered_message = $("<span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>");
+            var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
+
+            $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
+            $header.append($filters).append($filtered_message).append($unfiltered_message);
+            self.element.append($header).append($notepaneView_pages);
+
+            if (window.location.href.indexOf("?filter") === -1) {
+                $filter_advanced.remove();
+            }
+
+            $("body").append(
+                "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
+                "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
+                "<li class='context export-all'><a href='#export-all'>Export Entire Thread</a></li>"+
+                "</ul>");
+
+            $("body").append(
+                $("<div>").attr("id", "filterWizardDialog")
+                );
+
+            var $wizard = $("#filterWizardDialog");
+            $wizard.filterWizard({
+                admin: true, // TODO: use 'admin' variable
+                callbacks: {
+                    onOk: function() { $wizard.dialog("close"); }
+                }
+            }).dialog({
+                width: 800,
+                height: 200,
+                modal: true,
+                autoOpen: false
+            });
+
+            $("#contextmenu_notepaneView").bind("beforeShow", function(event, el) {
+                var id_item = el.closest("div.location-lens").attr("id_item");
+                var m = self._model;
+                var c = m.o.comment[id_item];
+                $("li", this).show();
+            });
+
+        },
         _defaultHandler: function(evt){
         var self=this;
         if (self._id_source ===  $.concierge.get_state("file")){
@@ -68,6 +160,21 @@
             delta_top = sel.offset().top - container.offset().top;
             container.stop(true).animate({scrollTop: (delta_top>0?"+="+delta_top:"-="+(-delta_top))  + 'px'}, 300); 
             }
+            break;
+            case "filter_threads":
+                $.concierge.get_component("advanced_filter")({
+                    id_source: self._id_source,
+                    n: evt.value.n,
+                    r: evt.value.r,
+                    type: evt.value.type
+                }, function(result) {
+                    self._filters.advanced = result.locs;
+                    self._page = 1;
+                    self._pages = {};
+                    self._maxpage = 0;
+                    self._render(true);
+                });
+
             break;
             case "filter_toggle": 
             if (evt.value in self._filters){
@@ -164,6 +271,7 @@
         var $filter_me = $filters.filter("[action=me]");
         var $filter_star = $filters.filter("[action=star]");
         var $filter_question = $filters.filter("[action=question]");
+        var $filter_advanced = $filters.filter("[action=advanced]");
 
         var locs_me        = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
         var locs_star        = m.get("threadmark", {active: true, type: self._STAR });
@@ -184,6 +292,9 @@
             $filter_question.addClass("active");
             filters_on = true;
             locs_filtered = locs_filtered.intersect(locs_question.values("location_id"));
+        }
+        if (self._filters.advanced) {
+            $filter_advanced.addClass("active");
         }
         var n_me =  locs_me;
         var n_star = locs_star;
@@ -335,7 +446,7 @@
         }
 
         if (!(page in self._pages)){
-            var m    = self._model; 
+            var m    = self._model;
             var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
             var locs    = m.get("location", {id_source:  self._id_source, page: page });
             var me = $.concierge.get_component("get_userinfo")();
@@ -348,15 +459,34 @@
             if (self._filters.question){
             locs = locs.intersect(m.get("threadmark", {active: true, type: self._QUESTION }).values("location_id"));
             }
+            if (self._filters.advanced){
+                locs = locs.intersect(self._filters.advanced);
+            }
             var locs_array = locs.sort(self.options.loc_sort_fct);
             var o;
             if (locs_array.length && !nosummary){
             $pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+" on page "+page+"</div>");
             }
-            for (var i=0;i<locs_array.length;i++){
-            o = locs_array[i];
-            $pane.append("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
-            }
+
+            var admin = m.get("ensemble", {}).first().admin === true;
+
+            locs_array.forEach(function(o) {
+                var loc_lens =
+                    $("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
+                $pane.append(loc_lens);
+
+                if (admin === true) {
+                    loc_lens.contextMenu({menu: "contextmenu_notepaneView"}, function(action, el, pos) {
+                        var $loc = $(el).closest("div.location-lens");
+                        var id_item = $loc.attr("id_item");
+                        if (action === "export-top" || action === "export-all") {
+                            var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
+                            window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
+                        }
+                    });
+                }
+            });
+
             $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
             if (self._id_location in locs.items && locs.items[self._id_location].page === page){//highlight selection
             $("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
@@ -489,7 +619,8 @@
         select_thread: null, 
         warn_page_change: null, 
         keydown: null,
-        filter_toggle: null
+        filter_toggle: null,
+	filter_threads: null
     }            
     };
 })(jQuery);

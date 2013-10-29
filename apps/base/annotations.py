@@ -8,6 +8,7 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
 from django.db.models import Q
+from django.db.models import Count
 from django.db import transaction
 import datetime, os, re, json 
 import models as M
@@ -211,7 +212,7 @@ def get_ensembles(uid, payload):
     if id is not None: 
         my_memberships = my_memberships.filter(ensemble__id=id)
     return UR.qs2dict(my_memberships, names, "ID")
-    
+
 def get_folders(uid, payload):
     id = payload["id"] if "id" in payload else None
     names = {
@@ -402,14 +403,38 @@ def getLocation(id):
     except M.HTML5Location.DoesNotExist: 
         pass
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
-#    retval = {}
-#    retval["location"] = loc_dict
-#    retval["html5location"] = h5l_dict
-#    return retval
     return (loc_dict, h5l_dict)
+
+def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
+
+    source_locations = M.Location.objects.filter(source__id=id_source)
+
+    if filterType == "reply":
+        filter_locations=source_locations.annotate(reply=Count('comment')).order_by('-reply')
+    elif filterType == "students":
+        filter_locations=source_locations.annotate(students=Count('comment__author',distinct=True)).order_by('-students')
+    elif filterType == "longest":
+        return {}
+        #TODO: fix
+        #filter_locations=source_locations.annotate(body=Q(comment__parent=None)).extra(select={'length':'Length(body)'}).order_by('-length')
+    elif filterType == "random":
+        filter_locations=source_locations.order_by('?')
+
+    if r == "threads":
+        filter_locations = filter_locations[:n]
+    else:
+        nTotal = len(source_locations)
+        filter_locations = filter_locations[:nTotal * n / 100]
+
+    retval = {}
+    for loc in filter_locations:
+        retval[loc.id] = loc.id
+
+    return retval
+
 def getComment(id, uid):
     names = __NAMES["comment2"]
-    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)       
+    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
     return UR.model2dict(comment, names, "ID")
     
 def getCommentsByFile(id_source, uid, after):
@@ -419,6 +444,7 @@ def getCommentsByFile(id_source, uid, after):
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
+
     if membership.section is not None:
         seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
         #idea: we let you see comments 
@@ -434,6 +460,7 @@ def getCommentsByFile(id_source, uid, after):
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
@@ -666,7 +693,7 @@ def addNote(payload):
         if similar_comments.count():
             return None
 
-        location.save()    
+        location.save()
         #do we need to add an html5 location ?    
         if "html5range" in payload: 
                 h5range = payload["html5range"]
@@ -676,18 +703,71 @@ def addNote(payload):
                 h5l.offset1 = h5range["offset1"]
                 h5l.offset2 = h5range["offset2"]
                 h5l.location = location  
-                h5l.save()            
-    comment = M.Comment()
-    comment.parent = parent
-    comment.location = location
-    comment.author = author
-    comment.body = payload["body"]
-    comment.type = payload["type"]
-    comment.signed = payload["signed"] == 1
-    comment.save()
-    return comment
-    #return {"id_location": location.id, "id_comment": comment.id}
+                h5l.save()
 
+    # Should we import this comment from somewhere?
+    body = payload["body"]
+    matchObj = re.match( r'@import\((\d+), *(.*)\)', body)
+
+    if (matchObj):
+        importId = int(matchObj.group(1))
+        importType = matchObj.group(2)
+
+        # First, are we allowed to do this (i.e., am I an admin in *BOTH* ?)
+        # am I an admin here {location->ensemble}
+        dst_admin = False
+        dst_membership = location.ensemble.membership_set.filter(user = author)
+        if dst_membership.count() > 0:
+            dst_admin = dst_membership[0].admin
+
+        # am I an admin in the source { loc{importId}->ensemble }
+        src_admin = False
+        src_membership = M.Location.objects.get(pk = importId).ensemble.membership_set.filter(user = author)
+        if src_membership.count() > 0:
+            src_admin = src_membership[0].admin
+
+        if (not src_admin) or (not dst_admin):
+            return None
+
+        # Now, import body text of the comment
+        comment = M.Comment.objects.get(location = importId, parent__isnull = True)
+        importPk = comment.pk
+        comment.pk = None
+        comment.location = location
+        comment.signed = False
+        comment.save()
+
+        oldToNew = {}
+
+        # If we need to import the whole thread, do that
+        if importType == "all":
+            oldToNew[importPk] = comment.pk
+            toVisit = [ importPk ]
+
+            while len(toVisit) > 0:
+                visiting = toVisit.pop()
+                comments = M.Comment.objects.filter(location = importId, parent = visiting)
+                for c in comments:
+                    toVisit.append(c.pk)
+                    oldPk = c.pk
+                    c.pk = None
+                    c.location = location
+                    c.signed = False
+                    c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
+                    c.save()
+                    oldToNew[oldPk] = c.pk
+
+        return comment
+    else:
+        comment = M.Comment()
+        comment.parent = parent
+        comment.location = location
+        comment.author = author
+        comment.body = payload["body"]
+        comment.type = payload["type"]
+        comment.signed = payload["signed"] == 1
+        comment.save()
+        return comment
 
 def editNote(payload):
     id_type = payload["type"]

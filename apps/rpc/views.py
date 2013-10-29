@@ -62,7 +62,8 @@ __EXPORTS = [
     "set_comment_label", 
     "markThread", 
     "getPending", 
-    "rate_reply"
+    "rate_reply",
+    "advanced_filter"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -679,6 +680,11 @@ def set_comment_label(P, req):
     record.save()
     retval = {"commentlabels":{record.id: UR.model2dict(record)}}
     return UR.prepare_response(retval)    
+
+def advanced_filter(P, req):
+    retval = {}
+    retval["locs"] = annotations.getAdvancedFilteredLocationsByFile(P["id_source"], P["n"], P["r"], P["type"])
+    return UR.prepare_response(retval)
     
 @csrf_exempt
 def other(req):
