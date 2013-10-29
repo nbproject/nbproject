@@ -61,19 +61,19 @@ module.exports = function(grunt) {
                             addPrefix(MODULE_DIR, ["tablesorter/style.css", "calendrical/calendrical.css", "dev/ui.filesview.css"]))
     };  
     MODS.DOCVIEW = {
-        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView8.js" ]),
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.pdf.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     };  
     MODS.DOCVIEW_COLLAGE = {
-        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView9.js" ]),
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.collage.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     };  
     MODS.DOCVIEW_SPREADSHEET = {
-        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView10.js" ]),
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.spreadsheet.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     };  
     MODS.DOCVIEW_YOUTUBE = {
-        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView11.js" ]),
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.video.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     }; 
     
