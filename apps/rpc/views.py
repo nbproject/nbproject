@@ -349,6 +349,7 @@ def getNotes(payload, req):
             source_last_seen = SourceLastSeen.objects.get_or_create(source__id=id_source, user__id=uid)
             source_last_seen.ctime = datetime.datetime.now()
             source_last_seen.save()
+        else:
             return UR.prepare_response({}, 1, "NOT ALLOWED")
     return UR.prepare_response(output)
 
