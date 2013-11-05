@@ -359,7 +359,6 @@ def get_files(uid, payload):
     my_memberships = M.Membership.objects.filter(user__id=uid,  deleted=False)
     my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
     my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False).annotate(last_seen=Max('source__sourcelastseen__ctime'))
-    #my_ownerships = M.Ownership.objects.select_related("source__sourcelastseen").filter(ensemble__in=my_ensembles, deleted=False)
     return UR.qs2dict(my_ownerships, names, "ID")
 
 def save_settings(uid, payload): 
