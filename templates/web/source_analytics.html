@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<!--
+   Author: cf AUTHORS.txt 
+   License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+    <title>NB Analytics</title>
+    <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
+        <script type="text/template" id="page-template">
+          Page <%= page %>
+          <br/><%= num_annotations %> annotations
+          <br/><%= num_questions %> questions
+    </script>
+    <script>
+      var PageView = Backbone.View.extend({
+        initialize: function(){
+          this.render();
+        },
+
+        el: "#page-container",
+
+        template: _.template(jQuery("#page-template").html()),
+
+        render: function(){
+          // console.log(this.template(this.model.attributes));
+          jQuery(this.el).append(this.template(this.model.attributes));
+          return this;
+        }
+      });
+    </script>
+    <script>
+      (function($){
+        $(document).ready(function() {
+            var pages = {{ pages|safe }};
+            var doc = new Document();
+            var page;
+            for (var i=1; i <= {{ numpages }}; i++) {
+              if (i in pages) {
+                page = new Page(pages[i]);  
+              } else {
+                page = new Page({'page': i});
+              }
+              var page_view = new PageView({ model: page });
+              doc.add(page);
+            }
+        });
+      })(jQuery);
+    </script>
+
+  </head>
+  <body>
+    THIS IS THE ANALYTICS PAGE
+
+    <div id="page-container"></div>
+
+
+  </body>
+</html>
