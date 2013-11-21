@@ -10,9 +10,15 @@
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
         <script type="text/template" id="page-template">
-          Page <%= page %>
-          <br/><%= num_annotations %> annotations
-          <br/><%= num_questions %> questions
+          <div class="page-wrap">
+            <img class="page-img" src="<%= img_url %>">
+            <span class="page-num"><%= page %></span>
+            <div class="page-stats">
+              <%= num_annotations %> annotations
+              <br/><%= num_questions %> questions
+            </div>
+            <div class="clearfix"></div>
+          </div>
     </script>
     <script>
       var PageView = Backbone.View.extend({
@@ -20,7 +26,7 @@
           this.render();
         },
 
-        el: "#page-container",
+        el: "#pages-container",
 
         template: _.template(jQuery("#page-template").html()),
 
@@ -35,6 +41,7 @@
       (function($){
         $(document).ready(function() {
             var pages = {{ pages|safe }};
+            var img_server = "http://localhost:8000";
             var doc = new Document();
             var page;
             for (var i=1; i <= {{ numpages }}; i++) {
@@ -43,6 +50,9 @@
               } else {
                 page = new Page({'page': i});
               }
+              // TODO: don't hardcode the doc ID or concierge key
+              var img_url = img_server + "/pdf/cache2/288/33/8?ckey=Yl1vV4ddJ43qsAN8e0bgSmRE4nI4UaD5&amp;page=" + i;
+              page.set('img_url', img_url);
               var page_view = new PageView({ model: page });
               doc.add(page);
             }
@@ -54,7 +64,7 @@
   <body>
     THIS IS THE ANALYTICS PAGE
 
-    <div id="page-container"></div>
+    <div id="pages-container"></div>
 
 
   </body>

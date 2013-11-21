@@ -137,9 +137,9 @@ module.exports = function(grunt) {
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.spreadsheetView1.css"])
     };
 
-    // MODS.DOCANALYTICSVIEW = {
-    //   src_js: addPREFIX(MODULE_DIR, ["dev/"])
-    // }
+    MODS.DOCANALYTICSVIEW = {
+      src_css: addPrefix(MODULE_DIR, ["dev/ui.docAnalyticsView.css"])
+    };
 
 
 
@@ -266,7 +266,8 @@ module.exports = function(grunt) {
                           ), 
         src_css: [].concat( 
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
-                           addPrefix(UI_DIR, ["template.css"])
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.DOCANALYTICSVIEW.src_css
                             ), 
         dest_js:  DEST_DIR+"docanalytics_NB.js",
         dest_css:  DEST_DIR+"docanalytics.css"
