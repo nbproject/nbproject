@@ -10,6 +10,10 @@
 		window.console.log($.concierge.get_component("get_userinfo")().ckey);
 	};
 
+	var getUserInfo = function() {
+		return $.concierge.get_component("get_userinfo")().ckey;
+	};
+
 	GLOB.pers.createStore = function() {
 		GLOB.pers.store = new GLOB.models.Store();
 	};
@@ -23,6 +27,20 @@ var Page = Backbone.Model.extend({
 	}
 });
 
+var Highlight = Backbone.Model.extend();
+
 var Document = Backbone.Collection.extend({
-	model: Page
+	model: Page,
+
+	sort_key: 'page_num',
+
+	comparator: function(page) {
+		return page.get(this.sort_key);
+	},
+
+	sortByField: function(fieldName) {
+		this.sort_key = fieldName;
+		this.sort();
+	}
+
 });

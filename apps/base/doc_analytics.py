@@ -4,7 +4,7 @@ from django.core import serializers
 def get_num_annotations_stats(sid):
 	import db
 	attr = {
-		"page": None,
+		"page_num": "page",
 		"num_annotations": None
 	}
 	from_clause = """
@@ -13,12 +13,12 @@ def get_num_annotations_stats(sid):
 	WHERE source_id= ? 
 	GROUP BY page) as v1
 	"""
-	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
+	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
 
 def get_num_questions_stats(sid):
 	import db
 	attr = {
-		"page": None,
+		"page_num": "page",
 		"num_questions": None
 	}
 	from_clause = """
@@ -29,7 +29,24 @@ def get_num_questions_stats(sid):
 	AND c.source_id = ?
 	GROUP BY c.page) as v1
 	"""
-	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
+	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
+
+def get_highlights(sid):
+	import db
+	attr = {
+		"id": "id",
+		"page_num": "page",
+		"x": None,
+		"y": None,
+		"w": None,
+		"h": None
+	}
+	from_clause = """
+	(SELECT page, x, y, w, h, id
+	FROM base_v_comment
+	WHERE source_id = ?) as v1
+	"""
+	return db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 
 def get_page_stats(sid):
 	pages = get_num_annotations_stats(sid)
@@ -42,6 +59,10 @@ def get_page_stats(sid):
 	print pages
 	#return serializers.serialize("json", pages)
 	return json.dumps(pages)
+
+# def get_time_on_page(sid):
+# 	SELECT page, ctime
+# 	FROM page_seen
 
 # # number of questions per page
 # SELECT c.page, count(*) as get_num_questions
