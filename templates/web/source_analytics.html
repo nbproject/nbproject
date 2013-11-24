@@ -81,7 +81,6 @@
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
             console.log(highlights);
-            var img_server = "http://localhost:8000";
             var doc = new Document();
 
             var page;
@@ -91,8 +90,11 @@
               } else {
                 page = new Page({'page_num': i});
               }
-              // TODO: don't hardcode the doc ID or concierge key
-              var img_url = img_server + "/pdf/cache2/288/33/8?ckey=Yl1vV4ddJ43qsAN8e0bgSmRE4nI4UaD5&amp;page=" + i;
+
+              // TODO: better way to get the source ID/ckey?
+              var img_server = "http://localhost:8000";
+              var ckey = NB.conf.userinfo.ckey;
+              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source_id }}+"?ckey="+ckey+";page=" + i;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
               var page_view = new PageView({ model: page });
@@ -112,7 +114,7 @@
 
   </head>
   <body>
-    Analytics
+    Analytics 
 
     <div id="pages-container"></div>
 

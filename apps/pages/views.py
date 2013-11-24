@@ -141,6 +141,7 @@ def source_analytics(req, n):
     highlights = doc_analytics.get_highlights(n)
     source = M.Source.objects.get(pk=n)
     var_dict = {
+        'source_id': n,
         'pages': pages,
         'highlights': highlights,
         'numpages': source.numpages
