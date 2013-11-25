@@ -66,19 +66,8 @@
       });
 
       var DocumentView = Backbone.View.extend({
-        
 
         initialize: function() {
-          var _this = this;
-          this.setPageViews();
-
-          this.collection.on('all', function() {
-            _this.setPageViews();
-            _this.render();
-          });
-        },
-
-        setPageViews: function() {
           var _this = this;
           this._pageViews = [];
 
@@ -87,6 +76,18 @@
               model: page,
             }));
           });
+
+          this.collection.on('all', function() {
+            _this.reorder();
+          })
+        },
+
+        reorder: function() {
+          for(var i=0; i < this.collection.length; i++) {
+            var pg = this.collection.at(i).attributes.page_num;
+            var currentEl = jQuery("#page-"+pg);
+            jQuery(this.el).append(currentEl);            
+          }
         },
 
         render: function() {
@@ -99,13 +100,6 @@
           console.log(this._pageViews);
         }
       });
-
-      // var repaint = function(doc) {
-      //   var docFrag = ne
-      //   for (page in doc) {
-
-      //   }
-      // }
 
     </script>
     <script>
@@ -129,9 +123,8 @@
               var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + i;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
-              // var page_view = new PageView({ model: page });
               doc.add(page);
-            }
+            };
 
             var documentView = new DocumentView({
               collection: doc,
@@ -144,16 +137,9 @@
               var highlightView = new HighlightView({ model: highlight});
             }
 
-            // doc.sortByField('num_annotations');
-            // console.log(doc.toJSON());
-
             $("#sort-by").on('change', function() {
-              var _this = this;
               var attr = $(this).val();
               doc.sortByField(attr);
-              console.log(doc.sort_key);
-              console.log(doc.toJSON());
-              // console.log("changed");
             })
         });
       })(jQuery);

@@ -35,7 +35,12 @@ var Document = Backbone.Collection.extend({
 	sort_key: 'page_num',
 
 	comparator: function(page) {
-		return page.get(this.sort_key);
+		if (this.sort_key === "num_annotations" || this.sort_key === "num_questions") {
+			// most heavily annotated first
+			return -page.get(this.sort_key);
+		} else {
+			return page.get(this.sort_key);
+		}
 	},
 
 	sortByField: function(fieldName) {
