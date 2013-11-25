@@ -10,15 +10,13 @@
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-          <div class="page-wrap" id="page-<%= page_num %>">
-            <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
-            <span class="page-num"><%= page_num %></span>
-            <div class="page-stats">
-              <%= num_annotations %> annotations
-              <br/><%= num_questions %> questions
-            </div>
-            <div class="clearfix"></div>
-          </div>
+      <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+      <span class="page-num"><%= page_num %></span>
+      <div class="page-stats">
+        <%= num_annotations %> annotations
+        <br/><%= num_questions %> questions
+      </div>
+      <div class="clearfix"></div>
     </script>
     <script type="text/template" id="highlight-template">
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
@@ -26,18 +24,19 @@
 
     <script>
       var PageView = Backbone.View.extend({
-        initialize: function(){
-          this.render();
+        
+        tagName: 'div',
+        className: 'page-wrap',
+        id: function() {
+          return 'page-'+this.model.attributes.page_num;
         },
-
-        el: "#pages-container",
-
         template: _.template(jQuery("#page-template").html()),
 
         render: function(){
           jQuery(this.el).append(this.template(this.model.attributes));
           return this;
-        }
+        },
+
       });
 
       var HighlightView = Backbone.View.extend({
@@ -46,13 +45,12 @@
         },
         el: function() {
           if (this.model) {
-            console.log(this.model.attributes.page_num);
             return "#page-"+this.model.attributes.page_num;
           }
         },
         template: _.template(jQuery("#highlight-template").html()),
         render: function(){
-          // TODO: update attributes (x, y, h, w) to match doc size
+          // TODO: better way to calculate variables?
           var pgHtLg = 1045;
           var pgHtSm = 220; // set in ui.docAnalytiscView.css
           var s = 1.577; // calculated complicatedly
@@ -65,7 +63,29 @@
             'h': m.h*s2
           }));
         }
-      })
+      });
+
+      var DocumentView = Backbone.View.extend({
+        initialize: function() {
+          var _this = this;
+          this._pageViews = [];
+
+          this.collection.each(function(page) {
+            _this._pageViews.push(new PageView({
+              model: page,
+            }));
+          });
+        },
+
+        render: function() {
+          var _this = this;
+          var fragment = document.createDocumentFragment();
+          _(this._pageViews).each(function(pv) {
+            fragment.appendChild(pv.render().el);
+          })  
+          jQuery(_this.el).append(fragment);
+        }
+      });
 
       // var repaint = function(doc) {
       //   var docFrag = ne
@@ -80,7 +100,6 @@
         $(document).ready(function() {
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
-            console.log(highlights);
             var doc = new Document();
 
             var page;
@@ -92,30 +111,44 @@
               }
 
               // TODO: better way to get the source ID/ckey?
-              var img_server = "http://localhost:8000";
+              var img_server = "http://nb.mit.edu";
               var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source_id }}+"?ckey="+ckey+";page=" + i;
+              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + i;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
-              var page_view = new PageView({ model: page });
+              // var page_view = new PageView({ model: page });
               doc.add(page);
             }
+
+            var documentView = new DocumentView({
+              collection: doc,
+              el: $("#pages-container")
+            });
+            documentView.render();
 
             for (h in highlights) {
               var highlight = new Highlight(highlights[h]);
               var highlightView = new HighlightView({ model: highlight});
             }
 
-            doc.sortByField('num_annotations');
-            console.log(doc.toJSON());
+            // doc.sortByField('num_annotations');
+            // console.log(doc.toJSON());
         });
       })(jQuery);
     </script>
 
   </head>
   <body>
-    Analytics 
-
+    Analytics for {{ source.title }}
+    
+    <div class="controls">
+      <label>Sort by: </label>
+      <select id="sort-by">
+        <option value="page_num">Page number</option>
+        <option value="num_annotations">Number of annotations</option>
+        <option value="num_questions">Number of questions</option>
+      </select>
+    </div>
     <div id="pages-container"></div>
 
 
