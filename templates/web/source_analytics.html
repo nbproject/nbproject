@@ -66,7 +66,19 @@
       });
 
       var DocumentView = Backbone.View.extend({
+        
+
         initialize: function() {
+          var _this = this;
+          this.setPageViews();
+
+          this.collection.on('all', function() {
+            _this.setPageViews();
+            _this.render();
+          });
+        },
+
+        setPageViews: function() {
           var _this = this;
           this._pageViews = [];
 
@@ -83,7 +95,8 @@
           _(this._pageViews).each(function(pv) {
             fragment.appendChild(pv.render().el);
           })  
-          jQuery(_this.el).append(fragment);
+          jQuery(_this.el).html(fragment);
+          console.log(this._pageViews);
         }
       });
 
@@ -133,6 +146,15 @@
 
             // doc.sortByField('num_annotations');
             // console.log(doc.toJSON());
+
+            $("#sort-by").on('change', function() {
+              var _this = this;
+              var attr = $(this).val();
+              doc.sortByField(attr);
+              console.log(doc.sort_key);
+              console.log(doc.toJSON());
+              // console.log("changed");
+            })
         });
       })(jQuery);
     </script>
