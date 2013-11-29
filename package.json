@@ -8,9 +8,12 @@
     "test": "grunt qunit"
   },
   "devDependencies": {
+    "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-concat": "~0.3.0"
   },
   "dependencies": {
-    "grunt-css": "0.3.2", 
+    "grunt-css": "0.3.2",
     "execSync": ">= 0.0.0"
   }
 }
