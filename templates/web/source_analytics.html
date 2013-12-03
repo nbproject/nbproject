@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="nb_fullscreen">
   <head>
 <!--
    Author: cf AUTHORS.txt 
@@ -13,8 +13,8 @@
       <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
       <span class="page-num"><%= page_num %></span>
       <div class="page-stats">
-        <%= num_annotations %> annotations
-        <br/><%= num_questions %> questions
+        <span class="num-annotations"><%= num_annotations %></span> annotations
+        <br/><span class="num-questions"><%= num_questions %></span> questions
       </div>
       <div class="clearfix"></div>
     </script>
@@ -82,6 +82,19 @@
           })
         },
 
+        // type is 'annotations' or 'questions'
+        filterByPropertyAndNum: function(property, num) {
+          var tag = "."+property;
+          jQuery(".page-wrap").show()
+                              .each(function(index, value) {
+                                var el = jQuery(this);
+                                var val = el.find(tag).html();
+                                if (val <= num) {
+                                  el.hide();
+                                }
+                              });
+        },
+
         reorder: function() {
           for(var i=0; i < this.collection.length; i++) {
             var pg = this.collection.at(i).attributes.page_num;
@@ -141,24 +154,40 @@
               var attr = $(this).val();
               doc.sortByField(attr);
             })
+
+            $("#show-filter").on('change', function() {
+              var property = $(this).val();
+              var num = 0; // TODO: make this flexible (another HTML property?)
+              documentView.filterByPropertyAndNum(property, num);
+            })
         });
       })(jQuery);
     </script>
 
   </head>
   <body>
-    Analytics for {{ source.title }}
-    
-    <div class="controls">
-      <label>Sort by: </label>
-      <select id="sort-by">
-        <option value="page_num">Page number</option>
-        <option value="num_annotations">Number of annotations</option>
-        <option value="num_questions">Number of questions</option>
-      </select>
+    <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
+    <div class="main-wrapper">
+      <h1>{{ source.title }}</h1>
+      
+      <div class="controls">
+        <label>Show: </label>
+        <select id="show-filter">
+          <option value="all">All pages</option>
+          <option value="num-annotations">Pages with annotations</option>
+          <option value="num-questions">Pages with questions</option>
+        </select>
+      
+        <label>Sort by: </label>
+        <select id="sort-by">
+          <option value="page_num">Page number</option>
+          <option value="num_annotations">Number of annotations</option>
+          <option value="num_questions">Number of questions</option>
+        </select>
+      </div>
+      <div id="pages-container"></div>
+      <div class="clearfix"></div>
     </div>
-    <div id="pages-container"></div>
-
 
   </body>
 </html>
