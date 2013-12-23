@@ -13,7 +13,8 @@
       <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
       <span class="page-num"><%= page_num %></span>
       <div class="page-stats">
-        <span class="num-annotations"><%= num_annotations %></span> annotations
+        <span class="num-threads"><%= num_threads %></span> threads
+        <br/><span class="num-annotations"><%= num_annotations %></span> annotations
         <br/><span class="num-questions"><%= num_questions %></span> questions
       </div>
       <div class="clearfix"></div>
@@ -110,7 +111,6 @@
             fragment.appendChild(pv.render().el);
           })  
           jQuery(_this.el).html(fragment);
-          console.log(this._pageViews);
         }
       });
 
