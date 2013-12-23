@@ -22,6 +22,7 @@
     <script type="text/template" id="highlight-template">
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
     </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script>
       var PageView = Backbone.View.extend({
@@ -163,6 +164,22 @@
         });
       })(jQuery);
     </script>
+    <script type="text/javascript">
+      var chart_stats = {{ chart_stats|safe }};
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(chart_stats);
+
+        var options = {
+          title: 'Page Stats',
+          hAxis: {title: 'Page'}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
 
   </head>
   <body>
@@ -170,6 +187,8 @@
     <div class="main-wrapper">
       <h1>{{ source.title }}</h1>
       
+      <div id="chart_div"></div>
+
       <div class="controls">
         <label>Show: </label>
         <select id="show-filter">

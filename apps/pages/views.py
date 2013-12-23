@@ -137,12 +137,13 @@ def source(req, n, allow_guest=False):
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
 
 def source_analytics(req, n):
-    pages = doc_analytics.get_page_stats(n)
+    pages, chart_stats = doc_analytics.get_page_stats(n)
     highlights = doc_analytics.get_highlights(n)
     source = M.Source.objects.get(pk=n)
     var_dict = {
         'source': source,
         'pages': pages,
+        'chart_stats': chart_stats,
         'highlights': highlights,
         'numpages': source.numpages
     }
