@@ -79,7 +79,8 @@ def get_page_stats(sid):
 
 	pages = {}
 	numpages = get_num_pages(sid)
-	chart_array = [["Page", "Threads", "Annotations", "Questions"]]
+	# chart_array = [["Page", "Threads", "Annotations", "Questions"]]
+	chart_array = []
 	for p in range(1, numpages+1):
 		if p in a_stats:
 			a_stat = a_stats[p]["num_annotations"]
@@ -99,7 +100,7 @@ def get_page_stats(sid):
 			"num_annotations": a_stat, 
 			"num_questions": q_stat
 		}
-		chart_array.append([p, int(t_stat), int(a_stat), int(q_stat)])
+		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat)])
 
 	# print pages
 	print chart_array
