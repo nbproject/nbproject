@@ -8,10 +8,11 @@
   -->
     <title>NB Analytics</title>
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
+    <link type="text/css" href="/content/compiled/temp.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
       <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
-      <span class="page-num"><%= page_num %></span>
+      <span class="page-num page-label"><%= page_num %></span>
       <div class="page-stats">
         <span class="num-threads"><%= num_threads %></span> threads
         <br/><span class="num-annotations"><%= num_annotations %></span> annotations
@@ -43,100 +44,74 @@
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(data, options);
-      }
-    </script>
-    <script>
-      var PageView = Backbone.View.extend({
-        
-        tagName: 'div',
-        className: 'page-wrap',
-        id: function() {
-          return 'page-'+this.model.attributes.page_num;
-        },
-        template: _.template(jQuery("#page-template").html()),
 
-        render: function(){
-          jQuery(this.el).append(this.template(this.model.attributes));
-          return this;
-        },
+        var xDelta = 0;
+        var yDelta = 13;
+        var years = ['1', '2', '3', '4', '5'];
+        // jQuery('text').each(function(i, el) {
+        //   console.log('found text');
+        //   if (years.indexOf(el.textContent) != -1) {
+        //     var g = el.parentNode;
+        //     var x = el.getAttribute('x');
+        //     var y = el.getAttribute('y');
+        //     var width = el.getAttribute('width') || 50;
+        //     var height = el.getAttribute('height') || 15;
 
-      });
+        //     // A "ForeignObject" tag is how you can inject HTML into an SVG document.
+        //     var fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
+        //     fo.setAttribute('x', x - xDelta);
+        //     fo.setAttribute('y', y - yDelta);
+        //     fo.setAttribute('height', height);
+        //     fo.setAttribute('width', width);
+        //     var body = document.createElementNS("http://www.w3.org/1999/xhtml", "BODY");
+        //     var a = document.createElement("A");
+        //     a.href = "http://yahoo.com";
+        //     a.setAttribute("style", "color:blue;");
+        //     a.innerHTML = el.textContent;
+        //     body.appendChild(a);
+        //     fo.appendChild(body);
 
-      var HighlightView = Backbone.View.extend({
-        initialize: function() {
-          this.render();
-        },
-        el: function() {
-          if (this.model) {
-            return "#page-"+this.model.attributes.page_num;
-          }
-        },
-        template: _.template(jQuery("#highlight-template").html()),
-        render: function(){
-          // TODO: better way to calculate variables?
-          var pgHtLg = 1045;
-          var pgHtSm = 220; // set in ui.docAnalytiscView.css
-          var s = 1.577; // calculated complicatedly
-          var s2 = pgHtSm/(s*pgHtLg);
-          var m = this.model.attributes;
-          jQuery(this.el).append(this.template({
-            'x': m.x*s2,
-            'y': m.y*s2,
-            'w': m.w*s2,
-            'h': m.h*s2
-          }));
-        }
-      });
+        //     // Remove the original SVG text and replace it with the HTML.
+        //     g.removeChild(el);
+        //     g.appendChild(fo);
+        //   }
+        // });
+        (function($){
+          var pgLabelClass = 'page-label';
+          var pgPreviewClass = "pg-preview";
 
-      var DocumentView = Backbone.View.extend({
-
-        initialize: function() {
-          var _this = this;
-          this._pageViews = [];
-
-          this.collection.each(function(page) {
-            _this._pageViews.push(new PageView({
-              model: page,
-            }));
+          $('text').each(function(i, el) {
+            var obj = $(el);
+            var n = obj.text();
+            console.log(n);
+            if ($.isNumeric(n)) {
+              console.log("NUMERIC");
+              obj.attr('class', pgLabelClass);
+            }
           });
 
-          this.collection.on('all', function() {
-            _this.reorder();
-          })
-        },
+          $('.'+pgLabelClass).on({
+            mouseenter: function() {
+              console.log('hovered!');
+              var img_server = "http://nb.mit.edu";
+              var ckey = NB.conf.userinfo.ckey;
+              var num = $(this).text();
+              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
+              console.log(img_url);
+              $('.img-enlarged').attr('src', img_url);
+              $('.'+pgPreviewClass).show();
+            },
+            mouseleave: function() {
+              $('.'+pgPreviewClass).hide();
+            }
+          });
 
-        // type is 'annotations' or 'questions'
-        filterByPropertyAndNum: function(property, num) {
-          var tag = "."+property;
-          jQuery(".page-wrap").show()
-                              .each(function(index, value) {
-                                var el = jQuery(this);
-                                var val = el.find(tag).html();
-                                if (val <= num) {
-                                  el.hide();
-                                }
-                              });
-        },
-
-        reorder: function() {
-          for(var i=0; i < this.collection.length; i++) {
-            var pg = this.collection.at(i).attributes.page_num;
-            var currentEl = jQuery("#page-"+pg);
-            jQuery(this.el).append(currentEl);            
-          }
-        },
-
-        render: function() {
-          var _this = this;
-          var fragment = document.createDocumentFragment();
-          _(this._pageViews).each(function(pv) {
-            fragment.appendChild(pv.render().el);
-          })  
-          jQuery(_this.el).html(fragment);
-        }
-      });
+        })(jQuery); 
+      }
 
     </script>
+    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
+
     <script>
       (function($){
         $(document).ready(function() {
@@ -213,6 +188,9 @@
       <div id="pages-container"></div>
       <div class="clearfix"></div>
     </div>
+
+    <div class="pg-preview"><img class="img-enlarged" /></div>
+
 
   </body>
 </html>

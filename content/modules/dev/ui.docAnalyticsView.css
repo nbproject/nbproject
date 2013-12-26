@@ -1,0 +1,60 @@
+.nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
+	overflow: auto;
+}
+.main-wrapper {
+	margin: 10px 20px;
+}
+
+.controls {
+	margin-bottom: 10px;
+}
+
+.controls select {
+	margin-right: 20px;
+}
+
+#pages-container {
+	clear: both;
+
+}
+
+.page-wrap {
+	float: left;
+/*	width: 170px;
+	height: 220px;*/
+	/*text-align: center;*/
+	border: 1px solid;
+	font-size: 10px;
+	font-weight: bold;
+	position: relative;
+}
+
+.page-num {
+	font-size: 18px;
+	display: inline-block;
+	float: left;
+	margin: 4px;
+	clear: both;
+}
+
+.page-stats {
+	float: right;
+	margin: 4px;
+}
+
+.page-img {
+	width: 170px;
+	height: 220px;
+	float:left;
+}
+
+.clearfix {
+	clear: both;
+}
+
+.highlight {
+	opacity:0.15;
+	background:#FFF53A;
+	position: absolute;
+	z-index: 2;
+}
