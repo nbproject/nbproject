@@ -11,7 +11,9 @@
     <link type="text/css" href="/content/compiled/temp.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+      <div id="page-preview-<%= page_num %>">
+        <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+      </div>
       <span class="page-num page-label"><%= page_num %></span>
       <div class="page-stats">
         <span class="num-threads"><%= num_threads %></span> threads
@@ -83,22 +85,23 @@
           $('text').each(function(i, el) {
             var obj = $(el);
             var n = obj.text();
-            console.log(n);
             if ($.isNumeric(n)) {
-              console.log("NUMERIC");
               obj.attr('class', pgLabelClass);
             }
           });
 
           $('.'+pgLabelClass).on({
             mouseenter: function() {
-              console.log('hovered!');
-              var img_server = "http://nb.mit.edu";
-              var ckey = NB.conf.userinfo.ckey;
               var num = $(this).text();
-              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
-              console.log(img_url);
-              $('.img-enlarged').attr('src', img_url);
+              var contents = $('#page-preview-'+num).html();
+              $('.'+pgPreviewClass).html(contents);
+              $('.'+pgPreviewClass).children().each(function(i, el) {
+                var s = 3;  // scale factor
+                $(el).height($(el).height()*s);
+                $(el).width($(el).width()*s);
+                $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
+                $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
+              });
               $('.'+pgPreviewClass).show();
             },
             mouseleave: function() {
