@@ -15,19 +15,23 @@
       });
 
       var HighlightView = Backbone.View.extend({
+        // defaults: {
+        //   pgHeight: 220,
+        //   preview: false  // indicates whether it's for blown-up version or not
+        // },
         initialize: function() {
           this.render();
         },
         el: function() {
           if (this.model) {
-            return "#page-"+this.model.attributes.page_num;
+            return "#page-preview-"+this.model.attributes.page_num;
           }
         },
         template: _.template(jQuery("#highlight-template").html()),
         render: function(){
           // TODO: better way to calculate variables?
           var pgHtLg = 1045;
-          var pgHtSm = 220; // set in ui.docAnalytiscView.css
+          var pgHtSm = jQuery(this.el).find(".page-img").height(); // height of page image
           var s = 1.577; // calculated complicatedly
           var s2 = pgHtSm/(s*pgHtLg);
           var m = this.model.attributes;
