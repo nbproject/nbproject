@@ -16,9 +16,9 @@
       </div>
       <span class="page-num page-label"><%= page_num %></span>
       <div class="page-stats">
-        <span class="num-threads"><%= num_threads %></span> threads
-        <br/><span class="num-annotations"><%= num_annotations %></span> annotations
-        <br/><span class="num-questions"><%= num_questions %></span> questions
+        <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
+        <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
+        <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies requested</span>
       </div>
       <div class="clearfix"></div>
     </script>
@@ -36,7 +36,7 @@
         data.addColumn('string','Page');
         data.addColumn('number','Threads');
         data.addColumn('number','Annotations');
-        data.addColumn('number','Questions');
+        data.addColumn('number','Replies requested');
         data.addRows(chart_stats);
         
         var options = {
@@ -116,6 +116,51 @@
     <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
 
     <script>
+            // from http://css-tricks.com/snippets/javascript/lighten-darken-color/
+      function LightenDarkenColor(col, amt) {
+        
+          var usePound = false;
+        
+          if (col[0] == "#") {
+              col = col.slice(1);
+              usePound = true;
+          }
+       
+          var num = parseInt(col,16);
+       
+          var r = (num >> 16) + amt;
+       
+          if (r > 255) r = 255;
+          else if  (r < 0) r = 0;
+       
+          var b = ((num >> 8) & 0x00FF) + amt;
+       
+          if (b > 255) b = 255;
+          else if  (b < 0) b = 0;
+       
+          var g = (num & 0x0000FF) + amt;
+       
+          if (g > 255) g = 255;
+          else if (g < 0) g = 0;
+       
+          return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+        
+      }
+
+      var hexDigits = new Array
+              ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
+
+      //Function to convert hex format to a rgb color
+      function rgb2hex(rgb) {
+       rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+       return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+      }
+
+      function hex(x) {
+        return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+       }
+
+
       (function($){
         $(document).ready(function() {
             var pages = {{ pages|safe }};
@@ -123,21 +168,18 @@
             var doc = new Document();
 
             var page;
-            for (var i=1; i <= {{ numpages }}; i++) {
-              if (i in pages) {
-                page = new Page(pages[i]);  
-              } else {
-                page = new Page({'page_num': i});
-              }
+
+            for (p in pages) {
+              page = new Page(pages[p]);  
 
               // TODO: better way to get the source ID/ckey?
               var img_server = "http://nb.mit.edu";
               var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + i;
+              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
               doc.add(page);
-            };
+            }
 
             var documentView = new DocumentView({
               collection: doc,
@@ -160,6 +202,28 @@
               var num = 0; // TODO: make this flexible (another HTML property?)
               documentView.filterByPropertyAndNum(property, num);
             })
+
+            $(".color-stat").each(function(i, el) {
+              var val = $(el).find(".val").text();
+              var o = 1.0;
+              var c = rgb2hex($(el).css("color"));
+              var newC;
+              // gradients set by arbitrary intervals // TODO make them different for each metric?
+              if (val > 0) {
+                $(el).css("opacity", o);
+                if (val < 10) {
+                  newC = LightenDarkenColor(c, 20);
+                } else if (val < 20) {
+                  // newC = LightenDarkenColor(c, -20);
+                } else if (val < 30) {
+                  newC = LightenDarkenColor(c, -20);
+                } else {
+                  newC = LightenDarkenColor(c, -40);
+                }
+                console.log(newC);
+                $(el).css("color", newC);
+              }
+            });
         });
       })(jQuery);
     </script>
@@ -178,14 +242,14 @@
         <select id="show-filter">
           <option value="all">All pages</option>
           <option value="num-annotations">Pages with annotations</option>
-          <option value="num-questions">Pages with questions</option>
+          <option value="num-questions">Pages with replies requested</option>
         </select>
       
         <label>Sort by: </label>
         <select id="sort-by">
           <option value="page_num">Page number</option>
           <option value="num_annotations">Number of annotations</option>
-          <option value="num_questions">Number of questions</option>
+          <option value="num_questions">Number of replies requested</option>
         </select>
       </div>
       <div id="pages-container"></div>
