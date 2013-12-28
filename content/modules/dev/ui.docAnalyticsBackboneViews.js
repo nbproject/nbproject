@@ -1,93 +1,96 @@
-     var PageView = Backbone.View.extend({
-        
-        tagName: 'div',
-        className: 'page-wrap',
-        id: function() {
-          return 'page-'+this.model.attributes.page_num;
-        },
-        template: _.template(jQuery("#page-template").html()),
+/*global NB$:true NB:true PageView:true HighlightView:true DocumentView:true Backbone:true _:true jQuery:true */
 
-        render: function(){
-          jQuery(this.el).append(this.template(this.model.attributes));
-          return this;
-        },
 
-      });
+var PageView = Backbone.View.extend({
+  
+  tagName: 'div',
+  className: 'page-wrap',
+  id: function() {
+    return 'page-'+this.model.attributes.page_num;
+  },
+  template: _.template(jQuery("#page-template").html()),
 
-      var HighlightView = Backbone.View.extend({
-        // defaults: {
-        //   pgHeight: 220,
-        //   preview: false  // indicates whether it's for blown-up version or not
-        // },
-        initialize: function() {
-          this.render();
-        },
-        el: function() {
-          if (this.model) {
-            return "#page-preview-"+this.model.attributes.page_num;
-          }
-        },
-        template: _.template(jQuery("#highlight-template").html()),
-        render: function(){
-          // TODO: better way to calculate variables?
-          var pgHtLg = 1045;
-          var pgHtSm = jQuery(this.el).find(".page-img").height(); // height of page image
-          var s = 1.577; // calculated complicatedly
-          var s2 = pgHtSm/(s*pgHtLg);
-          var m = this.model.attributes;
-          jQuery(this.el).append(this.template({
-            'x': m.x*s2,
-            'y': m.y*s2,
-            'w': m.w*s2,
-            'h': m.h*s2
-          }));
-        }
-      });
+  render: function(){
+    jQuery(this.el).append(this.template(this.model.attributes));
+    return this;
+  }
 
-      var DocumentView = Backbone.View.extend({
+});
 
-        initialize: function() {
-          var _this = this;
-          this._pageViews = [];
+var HighlightView = Backbone.View.extend({
+  // defaults: {
+  //   pgHeight: 220,
+  //   preview: false  // indicates whether it's for blown-up version or not
+  // },
+  initialize: function() {
+    this.render();
+  },
+  el: function() {
+    if (this.model) {
+      return "#page-preview-"+this.model.attributes.page_num;
+    }
+  },
+  template: _.template(jQuery("#highlight-template").html()),
+  render: function(){
+    // TODO: better way to calculate variables?
+    var pgHtLg = 1045;
+    var pgHtSm = jQuery(this.el).find(".page-img").height(); // height of page image
+    var s = 1.577; // calculated complicatedly
+    var s2 = pgHtSm/(s*pgHtLg);
+    var m = this.model.attributes;
+    jQuery(this.el).append(this.template({
+      'x': m.x*s2,
+      'y': m.y*s2,
+      'w': m.w*s2,
+      'h': m.h*s2
+    }));
+  }
+});
 
-          this.collection.each(function(page) {
-            _this._pageViews.push(new PageView({
-              model: page,
-            }));
-          });
+var DocumentView = Backbone.View.extend({
 
-          this.collection.on('all', function() {
-            _this.reorder();
-          })
-        },
+  initialize: function() {
+    var _this = this;
+    this._pageViews = [];
 
-        // type is 'annotations' or 'questions'
-        filterByPropertyAndNum: function(property, num) {
-          var tag = "."+property;
-          jQuery(".page-wrap").show()
-                              .each(function(index, value) {
-                                var el = jQuery(this);
-                                var val = el.find(tag).html();
-                                if (val <= num) {
-                                  el.hide();
-                                }
-                              });
-        },
+    this.collection.each(function(page) {
+      _this._pageViews.push(new PageView({
+        model: page
+      }));
+    });
 
-        reorder: function() {
-          for(var i=0; i < this.collection.length; i++) {
-            var pg = this.collection.at(i).attributes.page_num;
-            var currentEl = jQuery("#page-"+pg);
-            jQuery(this.el).append(currentEl);            
-          }
-        },
+    this.collection.on('all', function() {
+      _this.reorder();
+    });
+  },
 
-        render: function() {
-          var _this = this;
-          var fragment = document.createDocumentFragment();
-          _(this._pageViews).each(function(pv) {
-            fragment.appendChild(pv.render().el);
-          })  
-          jQuery(_this.el).html(fragment);
-        }
-      });
+  // type is 'annotations' or 'questions'
+  filterByPropertyAndNum: function(property, num) {
+    var tag = "."+property;
+    jQuery(".page-wrap").show()
+                        .each(function(index, value) {
+                          var el = jQuery(this);
+                          var val = el.find(tag).html();
+                          if (val <= num) {
+                            el.hide();
+                          }
+                        });
+  },
+
+  reorder: function() {
+    for(var i=0; i < this.collection.length; i++) {
+      var pg = this.collection.at(i).attributes.page_num;
+      var currentEl = jQuery("#page-"+pg);
+      jQuery(this.el).append(currentEl);            
+    }
+  },
+
+  render: function() {
+    var _this = this;
+    var fragment = document.createDocumentFragment();
+    _(this._pageViews).each(function(pv) {
+      fragment.appendChild(pv.render().el);
+    });  
+    jQuery(_this.el).html(fragment);
+  }
+});

@@ -8,19 +8,20 @@
   -->
     <title>NB Analytics</title>
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
-    <link type="text/css" href="/content/compiled/temp.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <div id="page-preview-<%= page_num %>">
-        <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
-      </div>
-      <span class="page-num page-label"><%= page_num %></span>
-      <div class="page-stats">
-        <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
-        <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
-        <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies requested</span>
-      </div>
-      <div class="clearfix"></div>
+      <a href="http://nb.mit.edu/f/{{ source.id }}?p=<%=page_num%>">
+        <div id="page-preview-<%= page_num %>">
+          <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+        </div>
+      </a>
+        <span class="page-num page-label"><%= page_num %></span>
+        <div class="page-stats">
+          <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
+          <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
+          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies requested</span>
+        </div>
+        <div class="clearfix"></div>
     </script>
     <script type="text/template" id="highlight-template">
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
@@ -109,6 +110,16 @@
             }
           });
 
+          // to avoid flicker when preview overlaps page number 
+          $('.'+pgPreviewClass).on({
+            mouseenter: function() {
+              $('.'+pgPreviewClass).show();
+            },
+            mouseleave: function() {
+              $('.'+pgPreviewClass).hide();
+            }
+          });
+
         })(jQuery); 
       }
 
@@ -116,6 +127,8 @@
     <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
 
     <script>
+    //TO DO: move this!!!!!!!!
+  /////////////////////////////////////
             // from http://css-tricks.com/snippets/javascript/lighten-darken-color/
       function LightenDarkenColor(col, amt) {
         
@@ -160,7 +173,7 @@
         return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
        }
 
-
+/////////////////////////////////////////////////
       (function($){
         $(document).ready(function() {
             var pages = {{ pages|safe }};
