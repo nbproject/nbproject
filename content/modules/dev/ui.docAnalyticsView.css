@@ -7,6 +7,7 @@
 
 .controls {
 	margin-bottom: 10px;
+	display: inline-block;
 }
 
 .controls select {
@@ -117,4 +118,17 @@
 
 .num-questions, .questions {
 	color: #E19900;
+}
+
+.chart_div {
+	margin-bottom: 20px;
+}
+
+.tip {
+	margin-left: 30px;
+	background-color: #FFFFBA;
+	padding: 3px 10px;
+	font-style: italic;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
 }
