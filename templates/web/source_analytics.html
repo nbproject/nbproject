@@ -10,7 +10,7 @@
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <a href="http://nb.mit.edu/f/{{ source.id }}?p=<%=page_num%>">
+      <a href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
         <div id="page-preview-<%= page_num %>">
           <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
         </div>
@@ -246,7 +246,7 @@
   <body>
     <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
     <div class="main-wrapper">
-      <h1>{{ source.title }}</h1>
+      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
       <div id="chart_div"></div>
 
