@@ -30,6 +30,15 @@
 	background-color: #ebebeb;
 }
 
+.header-link {
+	text-decoration: none;
+	color: #000000;
+}
+
+.header-link:hover {
+	color: #6E97EB;
+}
+
 .page-num {
 	font-size: 18px;
 	display: inline-block;
