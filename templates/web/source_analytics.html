@@ -48,37 +48,6 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(data, options);
 
-        var xDelta = 0;
-        var yDelta = 13;
-        var years = ['1', '2', '3', '4', '5'];
-        // jQuery('text').each(function(i, el) {
-        //   console.log('found text');
-        //   if (years.indexOf(el.textContent) != -1) {
-        //     var g = el.parentNode;
-        //     var x = el.getAttribute('x');
-        //     var y = el.getAttribute('y');
-        //     var width = el.getAttribute('width') || 50;
-        //     var height = el.getAttribute('height') || 15;
-
-        //     // A "ForeignObject" tag is how you can inject HTML into an SVG document.
-        //     var fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject")
-        //     fo.setAttribute('x', x - xDelta);
-        //     fo.setAttribute('y', y - yDelta);
-        //     fo.setAttribute('height', height);
-        //     fo.setAttribute('width', width);
-        //     var body = document.createElementNS("http://www.w3.org/1999/xhtml", "BODY");
-        //     var a = document.createElement("A");
-        //     a.href = "http://yahoo.com";
-        //     a.setAttribute("style", "color:blue;");
-        //     a.innerHTML = el.textContent;
-        //     body.appendChild(a);
-        //     fo.appendChild(body);
-
-        //     // Remove the original SVG text and replace it with the HTML.
-        //     g.removeChild(el);
-        //     g.appendChild(fo);
-        //   }
-        // });
         (function($){
           var pgLabelClass = 'page-label';
           var pgPreviewClass = "pg-preview";
@@ -91,6 +60,7 @@
             }
           });
 
+          // TODO: move this out of drawChart() function
           $('.'+pgLabelClass).on({
             mouseenter: function() {
               var num = $(this).text();
@@ -127,53 +97,6 @@
     <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
 
     <script>
-    //TO DO: move this!!!!!!!!
-  /////////////////////////////////////
-            // from http://css-tricks.com/snippets/javascript/lighten-darken-color/
-      function LightenDarkenColor(col, amt) {
-        
-          var usePound = false;
-        
-          if (col[0] == "#") {
-              col = col.slice(1);
-              usePound = true;
-          }
-       
-          var num = parseInt(col,16);
-       
-          var r = (num >> 16) + amt;
-       
-          if (r > 255) r = 255;
-          else if  (r < 0) r = 0;
-       
-          var b = ((num >> 8) & 0x00FF) + amt;
-       
-          if (b > 255) b = 255;
-          else if  (b < 0) b = 0;
-       
-          var g = (num & 0x0000FF) + amt;
-       
-          if (g > 255) g = 255;
-          else if (g < 0) g = 0;
-       
-          return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
-        
-      }
-
-      var hexDigits = new Array
-              ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
-
-      //Function to convert hex format to a rgb color
-      function rgb2hex(rgb) {
-       rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-       return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-      }
-
-      function hex(x) {
-        return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
-       }
-
-/////////////////////////////////////////////////
       (function($){
         $(document).ready(function() {
             var pages = {{ pages|safe }};
@@ -205,17 +128,6 @@
               var highlightView = new HighlightView({ model: highlight});
             }
 
-            $("#sort-by").on('change', function() {
-              var attr = $(this).val();
-              doc.sortByField(attr);
-            })
-
-            $("#show-filter").on('change', function() {
-              var property = $(this).val();
-              var num = 0; // TODO: make this flexible (another HTML property?)
-              documentView.filterByPropertyAndNum(property, num);
-            })
-
             $(".color-stat").each(function(i, el) {
               var val = $(el).find(".val").text();
               var o = 1.0;
@@ -233,10 +145,22 @@
                 } else {
                   newC = LightenDarkenColor(c, -40);
                 }
-                console.log(newC);
                 $(el).css("color", newC);
               }
             });
+
+            /////////////// handlers
+
+            $("#sort-by").on('change', function() {
+              var attr = $(this).val();
+              doc.sortByField(attr);
+            })
+
+            $("#show-filter").on('change', function() {
+              var property = $(this).val();
+              var num = 0; // TODO: make this flexible (another HTML property?)
+              documentView.filterByPropertyAndNum(property, num);
+            })
         });
       })(jQuery);
     </script>
