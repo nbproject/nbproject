@@ -27,14 +27,22 @@
 	font-size: 10px;
 	font-weight: bold;
 	position: relative;
+	background-color: #ebebeb;
 }
 
 .page-num {
 	font-size: 18px;
 	display: inline-block;
 	float: left;
-	margin: 4px;
+	margin: 5px;
+	padding: 5px 10px;
 	clear: both;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	min-width: 20px;
+	text-align: center;
+	background-color: #FAFAF5;
+	font-weight:normal;
 }
 
 .page-stats {
@@ -57,4 +65,47 @@
 	background:#FFF53A;
 	position: absolute;
 	z-index: 2;
+}
+
+.pg-preview {
+	position:absolute;
+	z-index:3;
+	width:510px;
+	height:660px;
+	top: 50%;
+	left: 50%;
+	margin-top:-330px;
+	margin-left:-255px;
+	display:none;
+	border: 1px solid;
+}
+
+.img-enlarged {
+	width: 510px;
+}
+
+.page-label {
+	cursor: default;
+}
+
+/*.page-label:hover {
+	background-color:#e0e0e0;
+	margin:5px;
+	border-radius:50%;
+}*/
+
+.color-stat {
+	opacity: 0.7;
+}
+
+.num-threads, .threads {
+	color: #3366CC;
+}
+
+.num-annotations, .annotations {
+	color: #DC3912;
+}
+
+.num-questions, .questions {
+	color: #E19900;
 }
