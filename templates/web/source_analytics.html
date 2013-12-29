@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="nb_fullscreen">
+  <head>
+<!--
+   Author: cf AUTHORS.txt 
+   License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+    <title>NB Analytics</title>
+    <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
+    <script type="text/template" id="page-template">
+      <a href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
+        <div id="page-preview-<%= page_num %>">
+          <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+        </div>
+      </a>
+        <span class="page-num page-label"><%= page_num %></span>
+        <div class="page-stats">
+          <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
+          <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
+          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies requested</span>
+        </div>
+        <div class="clearfix"></div>
+    </script>
+    <script type="text/template" id="highlight-template">
+      <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      var chart_stats = {{ chart_stats|safe }};
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        // var data = google.visualization.arrayToDataTable(chart_stats, true);
+        var data = new google.visualization.DataTable();
+        data.addColumn('string','Page');
+        data.addColumn('number','Threads');
+        data.addColumn('number','Annotations');
+        data.addColumn('number','Replies requested');
+        data.addRows(chart_stats);
+        
+        var options = {
+          title: 'Page Stats',
+          hAxis: {title: 'Page'}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+        (function($){
+          var pgLabelClass = 'page-label';
+          var pgPreviewClass = "pg-preview";
+
+          $('text').each(function(i, el) {
+            var obj = $(el);
+            var n = obj.text();
+            if ($.isNumeric(n)) {
+              obj.attr('class', pgLabelClass);
+            }
+          });
+
+          // TODO: move this out of drawChart() function
+          $('.'+pgLabelClass).on({
+            mouseenter: function() {
+              var num = $(this).text();
+              var contents = $('#page-preview-'+num).html();
+              $('.'+pgPreviewClass).html(contents);
+              $('.'+pgPreviewClass).children().each(function(i, el) {
+                var s = 3;  // scale factor
+                $(el).height($(el).height()*s);
+                $(el).width($(el).width()*s);
+                $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
+                $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
+              });
+              $('.'+pgPreviewClass).show();
+            },
+            mouseleave: function() {
+              $('.'+pgPreviewClass).hide();
+            }
+          });
+
+          // to avoid flicker when preview overlaps page number 
+          $('.'+pgPreviewClass).on({
+            mouseenter: function() {
+              $('.'+pgPreviewClass).show();
+            },
+            mouseleave: function() {
+              $('.'+pgPreviewClass).hide();
+            }
+          });
+
+        })(jQuery); 
+      }
+
+    </script>
+    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
+
+    <script>
+      (function($){
+        $(document).ready(function() {
+            var pages = {{ pages|safe }};
+            var highlights = {{ highlights|safe }};
+            var doc = new Document();
+
+            var page;
+
+            for (p in pages) {
+              page = new Page(pages[p]);  
+
+              // TODO: better way to get the source ID/ckey?
+              var img_server = "http://nb.mit.edu";
+              var ckey = NB.conf.userinfo.ckey;
+              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
+              page.set('img_url', img_url); // TODO: put img url in PageView?
+
+              doc.add(page);
+            }
+
+            var documentView = new DocumentView({
+              collection: doc,
+              el: $("#pages-container")
+            });
+            documentView.render();
+
+            for (h in highlights) {
+              var highlight = new Highlight(highlights[h]);
+              var highlightView = new HighlightView({ model: highlight});
+            }
+
+            $(".color-stat").each(function(i, el) {
+              var val = $(el).find(".val").text();
+              var o = 1.0;
+              var c = rgb2hex($(el).css("color"));
+              var newC;
+              // gradients set by arbitrary intervals // TODO make them different for each metric?
+              if (val > 0) {
+                $(el).css("opacity", o);
+                if (val < 10) {
+                  newC = LightenDarkenColor(c, 20);
+                } else if (val < 20) {
+                  // newC = LightenDarkenColor(c, -20);
+                } else if (val < 30) {
+                  newC = LightenDarkenColor(c, -20);
+                } else {
+                  newC = LightenDarkenColor(c, -40);
+                }
+                $(el).css("color", newC);
+              }
+            });
+
+            /////////////// handlers
+
+            $("#sort-by").on('change', function() {
+              var attr = $(this).val();
+              doc.sortByField(attr);
+            })
+
+            $("#show-filter").on('change', function() {
+              var property = $(this).val();
+              var num = 0; // TODO: make this flexible (another HTML property?)
+              documentView.filterByPropertyAndNum(property, num);
+            })
+        });
+      })(jQuery);
+    </script>
+
+
+  </head>
+  <body>
+    <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
+    <div class="main-wrapper">
+      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
+      
+      <div id="chart_div"></div>
+      <hr>
+      <div class="controls">
+        <label>Show: </label>
+        <select id="show-filter">
+          <option value="all">All pages</option>
+          <option value="num-annotations">Pages with annotations</option>
+          <option value="num-questions">Pages with replies requested</option>
+        </select>
+      
+        <label>Sort by: </label>
+        <select id="sort-by">
+          <option value="page_num">Page number</option>
+          <option value="num_annotations">Number of annotations</option>
+          <option value="num_questions">Number of replies requested</option>
+        </select>
+      </div>
+
+      <span class="tip">
+        Hover over page numbers for enlarged views. Click page images to view annotations in NB.
+      </span>
+
+      <div id="pages-container"></div>
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="pg-preview"><img class="img-enlarged" /></div>
+
+
+  </body>
+</html>
