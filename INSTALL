@@ -38,13 +38,15 @@ NOTE:  - packages in square brackets are optional)
       - download the zip and unzip
             sudo python setup.py install
     - grunt: 
-        npm install -g grunt-cli 
+      # As of November 2013 we have been using grunt 0.4.X, but it should still work w/ grunt 0.3.X
+      # If questions on getting NB to work w/ grunt 0.3.X, plrease refer 
+      # to http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way. 
+        npm install grunt 
+        npm install -g grunt-cli
         npm install -g grunt-init
-    # Note: As of November 2013 we have been using grunt 0.4.X, but it should still work w/ 
-    #  grunt 0.3.X
-    # If questions on getting NB to work w/ grunt 0.3.X, plrease refer 
-    # to http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way. 
-
+        npm install grunt-contrib-jshint  --save-dev
+        npm install grunt-contrib-concat  --save-dev
+        npm install grunt-contrib-cssmin  --save-dev
    
      [optional] To annotate YouTube Videos: The google python library. 
         sudo pip install --upgrade google-api-python-client
@@ -52,7 +54,7 @@ NOTE:  - packages in square brackets are optional)
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
 	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
-        sudo npm install #in order to install dependencies (grunt, execsync, etc...)
+        sudo npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
         #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data
