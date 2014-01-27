@@ -48,6 +48,10 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR, ["dev/ui.filterwizard.js" ]),
         src_css: addPrefix(MODULE_DIR, ["dev/ui.filterwizard.css" ])
     };
+    MODS.DUPLICATEWIZARD = {
+        src_js: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.js" ]),
+        src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css" ])
+    };
     MODS.TREEVIEW = {
         src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
         src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview.css"])
@@ -189,6 +193,8 @@ module.exports = function(grunt) {
                           addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
                           addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
                           TARGETS.API.src_js,
+                          MODS.FILTERWIZARD.src_js,
+                          MODS.DUPLICATEWIZARD.src_js,
                           MODS.TREEVIEW.src_js, 
                           MODS.FILESVIEW.src_js,
                           addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
@@ -199,6 +205,8 @@ module.exports = function(grunt) {
                            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
 
                            addPrefix(UI_DIR, ["template.css"]),
+                           MODS.FILTERWIZARD.src_css,
+                           MODS.DUPLICATEWIZARD.src_css,
                            MODS.TREEVIEW.src_css, 
                            MODS.FILESVIEW.src_css
                             ), 

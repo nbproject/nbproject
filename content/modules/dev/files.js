@@ -49,7 +49,9 @@ GLOB.files.set_model = function(model){
         "<span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/>" +
         "<textarea id='invite_users_msg'  rows='7' cols='50'/>" +
         "</div>")
-    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
+    .append(
+        "<div id='duplicate_file_dialog'></div>")
+    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");
 };
 
 
@@ -293,7 +295,12 @@ GLOB.files.rename_file = function(id, item_type){
             $(this).dialog("close");  
         },
             "Ok": function() { 
-            $.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
+            $.concierge.get_component("rename_file")(
+                { item_type: item_type, id: id, title:  $filename[0].value },
+                function(p){
+                    GLOB.files.model.add(item_type, p[item_type+"s"]);
+                    $.I(item_type+" renamed");
+                });
             $(this).dialog("destroy");
             }
         }
@@ -302,7 +309,38 @@ GLOB.files.rename_file = function(id, item_type){
     $filename.focus();
 };
 
+GLOB.files.duplicate_file = function(id, item_type){
+    if (item_type !== "file") {
+        return;
+    }
+    var o = GLOB.files.model.o.file[id];
+    var $dialog = $('#duplicate_file_dialog');
+    $dialog.empty();
+    $dialog.duplicateWizard({
+        admin: true,
+        file_id: id,
+        callbacks: {
+            onOk: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
+            },
+            onCancel: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
+            }
+        }
+    });
+    $dialog.duplicateWizard("set_model", GLOB.pers.store);
 
+    $dialog.dialog({
+        title: "Duplicate file",
+        buttons: {},
+        width: 700,
+        height: 520
+    });
+    $dialog.dialog("open");
+
+};
 
 GLOB.files.delete_file = function(id, item_type){
     var m = GLOB.pers.store;

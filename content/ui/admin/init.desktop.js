@@ -105,6 +105,7 @@ GLOB.pers.init = function(){
                 delete_file:        function(P, cb){GLOB.pers.call("delete_file", P, cb);},
         move_file_menu:        function(P, cb){GLOB.files.move_file(P.id, P.item_type);},
         move_file:        function(P, cb){GLOB.pers.call("move_file", P, cb);},
+        duplicate_file_menu: function(P, cb){GLOB.files.duplicate_file(P.id, P.item_type);},
                 update_file_menu:    function(P, cb){GLOB.files.update_file(P.id);},        
         add_ensemble_menu:    function(P, cb){GLOB.files.addEnsemble();}, 
                 add_ensemble:        function(P, cb){GLOB.pers.call("add_ensemble", P, cb);},     
