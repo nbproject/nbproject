@@ -97,7 +97,7 @@
                                 type: type
                             },
                             function(result) {
-                                $threadSelect.text(JSON.stringify(result.locs));
+                                $threadSelect.threadselect("set_locs", result.locs);
                                 $next.removeAttr("disabled").click();
                             }
                         );
@@ -111,14 +111,38 @@
 
             // Step 3:
             var $step3 = $("<div>").addClass("wizard-step").attr("wizard-step", "3");
-            var $threadSelect = $("<div>"); // TODO: threadSelect here
+            var $threadSelect = $("<div>");
+            $threadSelect.threadselect({
+                callbacks: {
+                    onOk: function(locs) {
+                        self.locs = locs;
+                        $next.removeAttr("disabled").click();
+                    }
+                }
+            });
             $step3.append($threadSelect);
 
-            $wizard.append($step1).append($step2).append($step3);
+            // Confirmation
+            var $step4 = $("<div>").addClass("wizard-step").attr("wizard-step", "4");
+            var $s4h1 = $("<h3>").text("What to import?");
+            var $s4d1 = $("<p>").text(
+                "Please select whether you want to import only the " +
+                "comment of the annotations you selected, or to import " +
+                "the entire thread for each selected annotation.");
+            var $importType = $("<select>").
+                append("<option value='all' selected='selected'>Import entire thread</option>").
+                append("<option value='top'>Import top comment only</option>");
+            var $s4h2 = $("<h3>").text("Note");
+            var $confirmation = $("<p>").text(
+                "The selected file, along with the selected annotations " +
+                "will be duplicated when you proceed with this step."
+            );
+            $step4.append($s4h1).append($s4d1).append($importType).append($s4h2).append($confirmation);
+
+            $wizard.append($step1).append($step2).append($step3).append($step4);
             self.element.append($h).append($e).append($wizard).append($b);
 
             $next.click(function() {
-
 
                 // if done:
                 if (current_step === 1) {
@@ -135,16 +159,29 @@
 
                 } else if (current_step === 2) {
                     self.filter_args = filter_args;
+                    $next.attr("disabled", "disabled");
                 } else if (current_step === 3) {
                     
                 } else if (current_step === 4) {
-                    $.concierge.trigger({
-                        type: "duplicate_file",
-                        value: {
-                          // old_file id
-                          // new file name, folder (+ensemble?)
-                          // import_annotations list [ (loc ID, whole/top) ]
-                        }
+
+                    self.import_type = $importType.val();
+
+                    // Step 1: Duplicate the file
+                    $.concierge.get_component("copy_file")({
+                        source_id: self.options.file_id,
+                        target_name: self.target_filename,
+                        target_id: self.target_location_id,
+                        target_type: self.target_location_type
+                    }, function(copy_result) {
+                        // Step 2: Duplicate the annotations
+                        $.concierge.get_component("bulk_import_annotations")({
+                            locs_array: self.locs,
+                            from_source_id: self.options.file_id,
+                            to_source_id: copy_result.id_source,
+                            import_type: self.import_type
+                        }, function(import_result) {
+                            //
+                        });
                     });
 
                     if (self.options.callbacks.onSubmit) {

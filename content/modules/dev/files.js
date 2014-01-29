@@ -327,6 +327,10 @@ GLOB.files.duplicate_file = function(id, item_type){
             onCancel: function() {
                 $dialog.dialog("destroy");
                 $dialog.duplicateWizard("destroy");
+            },
+            onSubmit: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
             }
         }
     });

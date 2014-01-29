@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         src_css: addPrefix(MODULE_DIR, ["dev/ui.filterwizard.css" ])
     };
     MODS.DUPLICATEWIZARD = {
-        src_js: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.js" ]),
+        src_js: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.js", "dev/ui.threadselect.js" ]),
         src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css" ])
     };
     MODS.TREEVIEW = {

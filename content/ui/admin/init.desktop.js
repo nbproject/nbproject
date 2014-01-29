@@ -112,10 +112,28 @@
             invite_users_menu: function(P, cb){GLOB.files.inviteUsers(P.id_ensemble);}, 
             invite_users: function(P, cb){GLOB.pers.call("sendInvites", P, cb);},
             assignment_file_menu: function(P, cb){GLOB.files.edit_assignment(P.id);},
-            edit_assignment: function(P, cb){GLOB.pers.call("edit_assignment", P, cb);}
-
+            edit_assignment: function(P, cb){GLOB.pers.call("edit_assignment", P, cb);},
+            get_top_comments_from_locations: function(P, cb) {
+                GLOB.pers.call("get_top_comments_from_locations", P, cb);
+            },
+            copy_file: function(P, cb) {
+                GLOB.pers.call("copy_file", {
+                    source_id: P.source_id,
+                    target_name: P.target_name,
+                    target_id: P.target_id,
+                    target_type: P.target_type
+                }, cb);
+            },
+            bulk_import_annotations: function(P, cb) {
+                GLOB.pers.call("bulk_import_annotations", {
+                    locs_array: P.locs_array,
+                    from_source_id: P.from_source_id,
+                    to_source_id: P.to_source_id,
+                    import_type: P.import_type
+                }, cb);
+            }
         });
-        
+            
         $.concierge.addComponents({
             notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
             note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
