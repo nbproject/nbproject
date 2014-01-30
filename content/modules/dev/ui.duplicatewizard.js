@@ -63,7 +63,7 @@
             var $fileName = $("<input>").attr("type", "text").attr("name", "filename");
             var target_location_id = null;
             var target_location_type = null;
-            var $filesView = $("<div style='height: 300px;'>");
+            var $filesView = $("<div>").addClass("treeview");
             $filesView.treeView({
                 admin: self.options.admin,
                 callbacks: {

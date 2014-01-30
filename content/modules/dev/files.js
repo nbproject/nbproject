@@ -340,7 +340,7 @@ GLOB.files.duplicate_file = function(id, item_type){
         title: "Duplicate file",
         buttons: {},
         width: 700,
-        height: 520
+        height: 320
     });
     $dialog.dialog("open");
 
