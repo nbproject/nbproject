@@ -49,7 +49,7 @@ module.exports = function(grunt) {
     };
     MODS.DUPLICATEWIZARD = {
         src_js: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.js", "dev/ui.threadselect.js" ]),
-        src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css" ])
+        src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css", "dev/ui.threadselect.css" ])
     };
     MODS.TREEVIEW = {
         src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
