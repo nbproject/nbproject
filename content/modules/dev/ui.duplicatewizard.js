@@ -98,7 +98,7 @@
                             },
                             function(result) {
                                 $threadSelect.threadselect("set_locs", result.locs);
-                                $next.removeAttr("disabled").click();
+                                $next.removeAttr("disabled").show().click();
                             }
                         );
 
@@ -116,7 +116,7 @@
                 callbacks: {
                     onOk: function(locs) {
                         self.locs = locs;
-                        $next.removeAttr("disabled").click();
+                        $next.show().removeAttr("disabled").click();
                     }
                 }
             });
@@ -150,16 +150,17 @@
                     if ($fileName.val() === "" ||
                         target_location_id === null ||
                         target_location_type === null) {
+                        alert("You did not specify a target filename or location. Please do so before proceeding.");
                         return;
                     }
                     self.target_filename = $fileName.val();
                     self.target_location_id = target_location_id;
                     self.target_location_type = target_location_type;
-                    $next.attr("disabled", "disabled");
+                    $next.attr("disabled", "disabled").hide();
 
                 } else if (current_step === 2) {
                     self.filter_args = filter_args;
-                    $next.attr("disabled", "disabled");
+                    $next.attr("disabled", "disabled").hide();
                 } else if (current_step === 3) {
                     
                 } else if (current_step === 4) {
@@ -180,7 +181,7 @@
                             to_source_id: copy_result.id_source,
                             import_type: self.import_type
                         }, function(import_result) {
-                            //
+                            window.location.reload();
                         });
                     });
 
