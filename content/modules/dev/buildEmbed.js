@@ -254,6 +254,9 @@
         //sacha: disabled this as well for now. 
         GLOB.pers.openid_url="";
 
+        // Make sure concierge won't steal our keys!
+        $.concierge.keydown_block = false;
+
         //register for some events: 
         $.concierge.addListeners(GLOB.pers, {
                 successful_login: function(evt){

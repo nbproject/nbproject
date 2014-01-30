@@ -65,6 +65,10 @@ div.threadview span.author{
     margin-left: 10px;
 }
 
+.author-revealed {
+    text-decoration: line-through;
+}
+
 div.threadview span.created{
 color: #a0a0a0;
 }

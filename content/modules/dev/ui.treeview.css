@@ -42,3 +42,23 @@ background-position: -440px 0px !important;
 ins.jstree_icon.reg{
 background-position: -40px 0px !important;
 }
+
+/** PDF Files */
+ins.jstree_icon.file1{
+background-position: -60px -2px !important;
+}
+
+/** YOUTUBE Files */
+ins.jstree_icon.file2{
+background-position: -500px -3px !important;
+}
+
+/** HTML5VIDEO Files */
+ins.jstree_icon.file3{
+background-position: -500px -3px !important;
+}
+
+/** HTML5 Files */
+ins.jstree_icon.file4{
+background-position: -480px -2px !important;
+}

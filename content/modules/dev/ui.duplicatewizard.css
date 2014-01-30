@@ -1,0 +1,7 @@
+.wizard-step {
+    display: none;
+}
+
+.wizard-step.current {
+    display: block;
+}
