@@ -24,12 +24,19 @@
         self._admin        = self.options.admin;
         self._me        = $.concierge.get_component("get_userinfo")();
         self._menu_items    = $();
-        self._menu_items_reg    = $("<ul id='contextmenu_filesview' class='contextMenu'/>");
-        self._menu_items_admin    = $("<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>");
+        self._menu_items_reg = $("<ul id='contextmenu_filesview' class='contextMenu'/>");
+        self._menu_items_admin =
+            $("<ul id='contextmenu_filesview' class='contextMenu'>" +
+              "<li class='rename'><a href='#rename'>Rename</a></li>" +
+              "<li class='move'><a href='#move'>Move</a></li>" +
+              "<li class='update'><a href='#update'>Update</a></li>" +
+              "<li class='assignment'><a href='#assignment'>Edit Assignment</a></li>" +
+              "<li class='duplicate menu-separator'><a href='#duplicate'>Duplicate</a></li>" +
+              "<li class='delete menu-separator'><a href='#delete'>Delete</a></li>" +
+              "</ul>");
         self._scrollTimerID =  null;
         //self._firstrender = true;
         self._defaultopen = null;
-
 
         self.element.addClass("filesView");
         $(document.body).on("click", "button[action=add_file]", function(){
@@ -225,8 +232,6 @@
         var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
 
-
-        var contextmenu_items = self._admin ? "<ul id='contextmenu_filesview' class='contextMenu'><li class='rename'><a href='#rename'>Rename</a></li><li class='move'><a href='#move'>Move</a></li><li class='update'><a href='#update'>Update</a></li><li class='assignment'><a href='#assignment'>Edit Assignment</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>" : "";
         self._menu_items.remove();
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
         $("body").append(self._menu_items);
