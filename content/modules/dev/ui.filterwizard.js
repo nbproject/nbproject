@@ -79,15 +79,19 @@
                     return;
                 }
 
-                // Step 2: fire event
-                $.concierge.trigger({
-                    type: "filter_threads",
-                    value: {
-                        n: n,
-                        r: r,
-                        type: filterType
-                    }
-                });
+                // Step 2: fire event OR callback
+                if (self.options.callbacks.fireEvent) {
+                    self.options.callbacks.fireEvent(n, r, filterType);
+                } else {
+                    $.concierge.trigger({
+                        type: "filter_threads",
+                        value: {
+                            n: n,
+                            r: r,
+                            type: filterType
+                        }
+                    });
+                }
 
                 // Step 3: call callback if set
                 if (self.options.callbacks.onOk) {
@@ -122,7 +126,8 @@
 	},
 	admin: false,
         callbacks: {
-            onOk: null
+            onOk: null,
+            fireEvent: null
         }
     };
 })(jQuery);

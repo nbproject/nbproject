@@ -16,6 +16,8 @@ import constants as CST
 import utils_response as UR #, utils_format as UF
 from django.template import Template
 from django.core.exceptions import ValidationError
+from django.conf import settings
+import shutil
 
 #SINGLETONS:
 
@@ -405,12 +407,21 @@ def getLocation(id):
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
     return (loc_dict, h5l_dict)
 
-def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
+def getTopCommentsFromLocations(location_ids):
+    comments = {}
+    for loc_id in location_ids:
+        loc_comments = M.Comment.objects.filter(location_id=loc_id)
+        if loc_comments.count() > 0:
+            comments[loc_id] = {"replies": loc_comments.count(), "head_body": loc_comments[0].body}
+            # TODO: use .first() for above instead of [0] once we update to 1.6
 
-    source_locations = M.Location.objects.filter(source__id=id_source)
+    return comments
+
+def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
+    source_locations = M.Location.objects.filter(source__id=id_source).annotate(reply=Count('comment')).filter(reply__gt=0)
 
     if filterType == "reply":
-        filter_locations=source_locations.annotate(reply=Count('comment')).order_by('-reply')
+        filter_locations=source_locations.order_by('-reply')
     elif filterType == "students":
         filter_locations=source_locations.annotate(students=Count('comment__author',distinct=True)).order_by('-students')
     elif filterType == "longest":
@@ -710,54 +721,15 @@ def addNote(payload):
     matchObj = re.match( r'@import\((\d+), *(.*)\)', body)
 
     if (matchObj):
-        importId = int(matchObj.group(1))
-        importType = matchObj.group(2)
+        from_loc_id = int(matchObj.group(1))
+        import_type = matchObj.group(2)
 
-        # First, are we allowed to do this (i.e., am I an admin in *BOTH* ?)
-        # am I an admin here {location->ensemble}
-        dst_admin = False
-        dst_membership = location.ensemble.membership_set.filter(user = author)
-        if dst_membership.count() > 0:
-            dst_admin = dst_membership[0].admin
-
-        # am I an admin in the source { loc{importId}->ensemble }
-        src_admin = False
-        src_membership = M.Location.objects.get(pk = importId).ensemble.membership_set.filter(user = author)
+        # Am I allowed to do this? Am I an admin in the source?
+        src_membership = M.Location.objects.get(pk=from_loc_id).ensemble.membership_set.filter(user=author,admin=True)
         if src_membership.count() > 0:
-            src_admin = src_membership[0].admin
-
-        if (not src_admin) or (not dst_admin):
+            return importAnnotation(import_type, from_loc_id, location)
+        else:
             return None
-
-        # Now, import body text of the comment
-        comment = M.Comment.objects.get(location = importId, parent__isnull = True)
-        importPk = comment.pk
-        comment.pk = None
-        comment.location = location
-        comment.signed = False
-        comment.save()
-
-        oldToNew = {}
-
-        # If we need to import the whole thread, do that
-        if importType == "all":
-            oldToNew[importPk] = comment.pk
-            toVisit = [ importPk ]
-
-            while len(toVisit) > 0:
-                visiting = toVisit.pop()
-                comments = M.Comment.objects.filter(location = importId, parent = visiting)
-                for c in comments:
-                    toVisit.append(c.pk)
-                    oldPk = c.pk
-                    c.pk = None
-                    c.location = location
-                    c.signed = False
-                    c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
-                    c.save()
-                    oldToNew[oldPk] = c.pk
-
-        return comment
     else:
         comment = M.Comment()
         comment.parent = parent
@@ -768,6 +740,58 @@ def addNote(payload):
         comment.signed = payload["signed"] == 1
         comment.save()
         return comment
+
+def importAnnotation(import_type, from_loc_id, target_location):
+
+    # Now, import body text of the comment
+    comment = M.Comment.objects.get(location = from_loc_id, parent__isnull = True)
+    importPk = comment.pk
+    comment.pk = None
+    comment.location = target_location
+    comment.signed = False
+    comment.save()
+
+    oldToNew = {}
+
+    # If we need to import the whole thread, do that
+    if import_type == "all":
+        oldToNew[importPk] = comment.pk
+        toVisit = [ importPk ]
+
+        while len(toVisit) > 0:
+            visiting = toVisit.pop()
+            comments = M.Comment.objects.filter(location = from_loc_id, parent = visiting)
+            for c in comments:
+                toVisit.append(c.pk)
+                oldPk = c.pk
+                c.pk = None
+                c.location = target_location
+                c.signed = False
+                c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
+                c.save()
+                oldToNew[oldPk] = c.pk
+    return comment
+
+def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type):
+
+    from_source = M.Source.objects.get(pk=from_source_id)
+    to_source = M.Source.objects.get(pk=to_source_id)
+
+    for id_location in locs_array:
+        location = M.Location.objects.get(pk=id_location)
+
+        if location.source_id != from_source.pk:
+            return { "status": "Source File Mismatch locsrc: %s, src %s"%(location.source_id,from_source_id) }
+            
+            # Copy Location and update the source
+        location.pk = None
+        location.source_id = to_source_id
+        location.save()
+
+        # Arguments:                   old loc id  target loc
+        importAnnotation( import_type, id_location, location)
+
+    return {"status": "Success" }
 
 def editNote(payload):
     id_type = payload["type"]
@@ -867,6 +891,59 @@ def move_file(uid, P):
         o.parent_id = P["dest"]
         o.save()
         return get_folders(uid, {"id": id})
+
+def copy_file(uid, P):
+    new_source = M.Source.objects.get(pk=P["source_id"])
+    new_source.title = P["target_name"]
+    new_source.pk = None
+    new_source.submittedby_id = uid
+    new_source.save()
+
+    new_ownership = M.Ownership.objects.get(source__id=P["source_id"])
+    new_ownership.pk = None
+    new_ownership.source = new_source
+    new_ownership.published = datetime.datetime.now()
+    new_ownership.deleted = False
+    new_ownership.due = None
+
+    if P["target_type"] == "ensemble":
+        new_ownership.ensemble_id = P["target_id"]
+        new_ownership.folder = None
+    else: # target type is folder, we know for sure since it was validated before
+        folder = M.Folder.objects.get(pk=P["target_id"])
+        new_ownership.folder = folder
+        new_ownership.ensemble = folder.ensemble
+
+    new_ownership.save()
+
+    if new_source.type == 1: # ondemand pdf
+        try:
+            new_ondemand = M.OnDemandInfo.objects.get(source__pk=P["source_id"])
+            new_ondemand.pk = None
+            new_ondemand.ensemble = new_ownership.ensemble
+            new_ondemand.source = new_source
+            new_ondemand.save()
+        except M.OnDemandInfo.DoesNotExist:
+            pass
+        pdf_dir =  "%s/%s" % (settings.HTTPD_MEDIA, settings.REPOSITORY_DIR)
+        old_file = "%s/%s" % (pdf_dir, P["source_id"])
+        new_file = "%s/%s" % (pdf_dir, new_source.pk)
+        shutil.copyfile(old_file, new_file)
+
+    elif new_source.type == 2: # youtube
+        new_youtube = M.YoutubeInfo.objects.get(source__pk=P["source_id"])
+        new_youtube.pk = None
+        new_youtube.source = new_source
+        new_youtube.save()
+    elif new_source.type == 3: # html5 video
+        pass
+    elif new_source.type == 4: # html5
+        new_html5 = M.Html5Info.objects.get(source__pk=P["source_id"])
+        new_html5.pk = None
+        new_html5.save()
+
+    return new_source.pk
+    
 
 def createSource(uid, payload):
     """ 

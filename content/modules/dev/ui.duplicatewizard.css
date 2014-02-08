@@ -1,0 +1,13 @@
+.wizard-step {
+    display: none;
+}
+
+.wizard-step.current {
+    display: block;
+}
+
+.wizard-step .treeview {
+    height: 100px;
+    overflow-y: scroll !important;
+    width: 450px;
+}

@@ -55,7 +55,8 @@ __EXPORTS = [
     "add_ensemble", 
     "rename_file", 
     "delete_file", 
-    "move_file", 
+    "move_file",
+    "copy_file",
     "register_user", 
     "login_user", 
     "set_grade_assignment", 
@@ -63,7 +64,9 @@ __EXPORTS = [
     "markThread", 
     "getPending", 
     "rate_reply",
-    "advanced_filter"
+    "advanced_filter",
+    "get_top_comments_from_locations",
+    "bulk_import_annotations",
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -542,6 +545,24 @@ def move_file(P,req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({P["item_type"]+"s": annotations.move_file(uid, P)})
 
+def copy_file(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canMoveFile(uid, P["source_id"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    if P["target_type"] == "ensemble":
+        if not auth.canInsertFile(uid, P["target_id"]):
+            return UR.prepare_response({}, 1, "NOT ALLOWED")
+    elif P["target_type"] == "folder":
+        folder = M.Folder.objects.get(pk=P["target_id"])
+        if not auth.canInsertFile(uid, folder.ensemble.pk, folder.pk):
+            return UR.prepare_response({}, 1, "NOT ALLOWED")
+    else:
+        return UR.prepare_response({}, 1, "INVALID ARGUMENT")
+
+    new_source_id = annotations.copy_file(uid, P)
+
+    return UR.prepare_response({ "id_source": new_source_id })
+
 def add_ensemble(payload, req): 
     uid = UR.getUserId(req)
     if uid is None: 
@@ -685,7 +706,18 @@ def advanced_filter(P, req):
     retval = {}
     retval["locs"] = annotations.getAdvancedFilteredLocationsByFile(P["id_source"], P["n"], P["r"], P["type"])
     return UR.prepare_response(retval)
-    
+
+def get_top_comments_from_locations(P, req):
+    retval = {}
+    retval["comments"] = annotations.getTopCommentsFromLocations(P["id_locations"])
+    return UR.prepare_response(retval)
+
+def bulk_import_annotations(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canImportAnnotation(uid, P["from_source_id"], P["to_source_id"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    return UR.prepare_response( annotations.bulkImportAnnotations(P["from_source_id"], P["to_source_id"], P["locs_array"], P["import_type"]))
+
 @csrf_exempt
 def other(req):
     print "nb django doesn't have an URLconf for this yet: %s" % req.method

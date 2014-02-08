@@ -30,29 +30,31 @@ NOTE:  - packages in square brackets are optional)
    You now need to install packages that might not be part of ubuntu (at least in the required version): 
      django (>=1.5): download and follow instructions from https://www.djangoproject.com/download/
      python-django-openid-auth (for OpenId authentication) 
-       Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4 or 0.5), not w/ the ubuntu package:
+       - Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4 or 0.5), not w/ the ubuntu package:
        - Download the tarball from https://launchpad.net/django-openid-auth
-       - Untar and sudo python setup.py install
-     django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
+       - Untar and 
+            sudo python setup.py install
+     - django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
       - download the zip and unzip
-      - sudo python setup.py install
-     grunt: sudo npm install -g grunt
-     As of July 2013, we have been using grunt 0.3.XX
-       In the future, for grunt version >= 0.4, grunt-cli:  sudo npm install -g grunt-cli
-       but note that grunt0.4 is yet untested to build NB. 
+            sudo python setup.py install
+    - grunt: 
+      # As of November 2013 we have been using grunt 0.4.X, but it should still work w/ grunt 0.3.X
+      # If questions on getting NB to work w/ grunt 0.3.X, plrease refer 
+      # to http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way. 
+        npm install grunt 
+        npm install -g grunt-cli
+        npm install -g grunt-init
+        npm install grunt-contrib-jshint  --save-dev
+        npm install grunt-contrib-concat  --save-dev
+        npm install grunt-contrib-cssmin  --save-dev
+   
      [optional] To annotate YouTube Videos: The google python library. 
-     sudo pip install --upgrade google-api-python-client
-
-  ***A note about building on ubuntu 13.04*** 
-  Ubuntu 13.04 comes w/ a version of node that seems to cause problems. One solution is to use a more recent version, provided for example by this PPA: 
-  sudo add-apt-repository ppa:chris-lea/node.js
-  #see https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager for more details. 
-
+        sudo pip install --upgrade google-api-python-client
 
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
 	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
-        npm install #in order to install specific grunt modules, such as grunt-css, execSync
+        sudo npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
         #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data

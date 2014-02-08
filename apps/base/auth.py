@@ -120,7 +120,21 @@ def canAnnotate(uid, eid):
         u = M.User.objects.get(pk=uid)
         return not u.guest         
     return False
-     
+
+def canImportAnnotation(uid, from_id_source, to_id_source):
+    """Need to be an admin of the FROM ensemble, and canAnnotate in the TO ensemble"""
+    from_ownership = M.Ownership.objects.get(source__id=from_id_source)
+    from_ensemble = from_ownership.ensemble
+
+    to_ownership = M.Ownership.objects.get(source__id=to_id_source)
+    to_ensemble = to_ownership.ensemble
+
+    o = M.Membership.objects.filter(ensemble__id=from_ensemble.pk, user__id=uid, deleted=False, admin=True)
+    if len(o) == 0:
+        return False
+
+    return canAnnotate(uid, to_ensemble.pk)
+    
 
 def addUser(email, password, conf, valid=0, guest=0):
     o = M.User()
