@@ -42,7 +42,7 @@
             });   
         GLOB.pers.store = new GLOB.models.Store();
         GLOB.pers.call(
-                   "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href}, 
+            "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, "")},
                    function(payload){
                        //TODO: refactor (same as in step16.js:createStore)
                        GLOB.pers.store.create(payload, {
