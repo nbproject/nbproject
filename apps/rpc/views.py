@@ -159,11 +159,12 @@ def sendInvites(payload, req):
             p["password"] = password
             p["email"] = email
         msg = render_to_string("email/msg_invite",p)
+        bcc = [] if settings.SMTP_CC_USER is None else (settings.SMTP_CC_USER,)
         e = EmailMessage("You're invited on the %s channel !" % (p["name"],), 
                          msg, 
                          settings.EMAIL_FROM,
                          (email, ), 
-                         (settings.SMTP_CC_USER,))
+                         bcc)
         e.send()
         time.sleep(SLEEPTIME) #in order not to stress out the email server
     return UR.prepare_response({"msg": "Invite for %s sent to %s" % (ensemble.name, emails,)})
