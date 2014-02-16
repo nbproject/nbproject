@@ -166,11 +166,10 @@ def sendInvites(payload, req):
         e = EmailMessage("You're invited on the %s channel !" % (p["name"],), 
                          msg, 
                          settings.EMAIL_FROM,
-                         (email, ), 
-                         bcc,connection=connection)
-        emailmessages.append(e)
-        #time.sleep(SLEEPTIME) #in order not to stress out the email server
-    connection.send_messages(emailmessages)
+                         (email, ),
+                         bcc)
+        e.send()
+        time.sleep(SLEEPTIME) #in order not to stress out the email server
     return UR.prepare_response({"msg": "Invite for %s sent to %s" % (ensemble.name, emails,)})
        
 def register_user(P, req):
