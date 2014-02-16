@@ -52,7 +52,7 @@
             var $wizard = $("<div>").addClass("wizard-steps");
             var $b = $("<div>").addClass("wizard-buttons");
 
-            var $next = $("<input type=\"button\" value=\"Next\" />");
+            var $next = $("<input type=\"button\" value=\"Copy\" />");
             var $cancel = $("<input type=\"button\" value=\"Cancel\" />");
             $b.append($next).append($cancel);
 
@@ -82,64 +82,20 @@
 
             $step1.append($desc1).append($fileNameLabel).append($fileName).append($filesView);
 
-            // Step 2:
             var $step2 = $("<div>").addClass("wizard-step").attr("wizard-step", "2");
-            var $filterView = $("<div>"); // TODO: filterView here
-            var filter_args = null;
-            $filterView.filterWizard({
-                callbacks: {
-                    fireEvent: function(n, r, type) {
-                        filter_args = {n: n, r: r, type: type};
-                        $.concierge.get_component("advanced_filter")({
-                                id_source: self.options.file_id,
-                                n: n,
-                                r: r,
-                                type: type
-                            },
-                            function(result) {
-                                $threadSelect.threadselect("set_locs", result.locs);
-                                $next.removeAttr("disabled").show().click();
-                            }
-                        );
-
-                    }
-                }
-            });
-            self.__model_dependents.push( {m: $filterView, f: $filterView.filterWizard } );
-
-            $step2.append($filterView);
-
-            // Step 3:
-            var $step3 = $("<div>").addClass("wizard-step").attr("wizard-step", "3");
-            var $threadSelect = $("<div>");
-            $threadSelect.threadselect({
-                callbacks: {
-                    onOk: function(locs) {
-                        self.locs = locs;
-                        $next.show().removeAttr("disabled").click();
-                    }
-                }
-            });
-            $step3.append($threadSelect);
-
-            // Confirmation
-            var $step4 = $("<div>").addClass("wizard-step").attr("wizard-step", "4");
-            var $s4h1 = $("<h3>").text("What to import?");
-            var $s4d1 = $("<p>").text(
-                "Please select whether you want to import only the " +
-                "comment of the annotations you selected, or to import " +
-                "the entire thread for each selected annotation.");
-            var $importType = $("<select>").
-                append("<option value='all' selected='selected'>Import entire thread</option>").
-                append("<option value='top'>Import top comment only</option>");
-            var $s4h2 = $("<h3>").text("Note");
-            var $confirmation = $("<p>").text(
-                "The selected file, along with the selected annotations " +
-                "will be duplicated when you proceed with this step."
+            var $s2h1 = $("<h3>").text("File Copied...");
+            var $s2d1 = $("<p>").text(
+                "File copy complete. Would you like to import annotations " +
+                "into the document you just created?"
             );
-            $step4.append($s4h1).append($s4d1).append($importType).append($s4h2).append($confirmation);
 
-            $wizard.append($step1).append($step2).append($step3).append($step4);
+            var $s2b = $("<div>");
+            var $s2b1 = $("<a href=\"\" target=\"_blank\">Choose Annotations to Import</a>");
+
+            $s2b.append($s2b1);
+            $step2.append($s2h1).append($s2d1).append($s2b);
+            $wizard.append($step1).append($step2);
+
             self.element.append($h).append($e).append($wizard).append($b);
 
             $next.click(function() {
@@ -156,16 +112,9 @@
                     self.target_filename = $fileName.val();
                     self.target_location_id = target_location_id;
                     self.target_location_type = target_location_type;
-                    $next.attr("disabled", "disabled").hide();
 
-                } else if (current_step === 2) {
-                    self.filter_args = filter_args;
-                    $next.attr("disabled", "disabled").hide();
-                } else if (current_step === 3) {
-                    
-                } else if (current_step === 4) {
-
-                    self.import_type = $importType.val();
+                    $next.val("Done");
+                    $cancel.hide();
 
                     // Step 1: Duplicate the file
                     $.concierge.get_component("copy_file")({
@@ -174,20 +123,16 @@
                         target_id: self.target_location_id,
                         target_type: self.target_location_type
                     }, function(copy_result) {
-                        // Step 2: Duplicate the annotations
-                        $.concierge.get_component("bulk_import_annotations")({
-                            locs_array: self.locs,
-                            from_source_id: self.options.file_id,
-                            to_source_id: copy_result.id_source,
-                            import_type: self.import_type
-                        }, function(import_result) {
-                            window.location.reload();
-                        });
+                        $s2b1.attr("href", "/f/" + self.options.file_id + "#export_to=" + copy_result.id_source);
                     });
+
+                } else if (current_step === 2) {
 
                     if (self.options.callbacks.onSubmit) {
                         self.options.callbacks.onSubmit();
                     }
+                    window.location.reload();
+
                 }
 
                 $(".wizard-step[wizard-step=" + current_step + "]").removeClass("current");
