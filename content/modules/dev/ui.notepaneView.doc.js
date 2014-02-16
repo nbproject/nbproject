@@ -110,10 +110,6 @@
             $header.append($filters).append($filtered_message).append($unfiltered_message);
             self.element.append($header).append($notepaneView_pages);
 
-            if (window.location.href.indexOf("?filter") === -1) {
-                $filter_advanced.remove();
-            }
-
             $("body").append(
                 "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
                 "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
@@ -126,7 +122,7 @@
 
             var $wizard = $("#filterWizardDialog");
             $wizard.filterWizard({
-                admin: true, // TODO: use 'admin' variable
+                admin: true, // TODO: properly populate this value
                 callbacks: {
                     onOk: function() { $wizard.dialog("close"); }
                 }
@@ -539,6 +535,15 @@
         var self = this;
         var m = self._model;
         var i, D, loc, pages_done, id_source, page, pages, pages_to_render;
+
+        var admin = m.get("ensemble", {}).first().admin === true;
+
+        if (admin) {
+            self.element.addClass("admin");
+        } else {
+            self.element.removeClass("admin");
+        }
+
         if (action === "add" && items_fieldname === "location"){
             id_source    = self._id_source; 
             page        = self._page;

@@ -284,6 +284,14 @@ background-color: #F8F8F8;
 color: #707070;
 }
 
+div.filter-controls > a.filter[action=advanced] {
+display: none;
+}
+
+.admin div.filter-controls > a.filter[action=advanced] {
+display: inline-block;
+}
+
 div.filter-controls > a.filter.active{
 background-color: #70A0F0;
 color: #FCFCFC;
