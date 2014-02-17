@@ -20,7 +20,7 @@ import logging, random, string
 import urllib
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_rpc_%s.log' % ( id_log,), filemode='a')
-SLEEPTIME = 0.1
+SLEEPTIME = 0.2
 #The functions that are allowed to be called from a http client
 __EXPORTS = [
     "getObjects", 
@@ -125,6 +125,7 @@ def rate_reply(P,req):
 
     
 def sendInvites(payload, req): 
+    from django.core import mail
     from django.core.mail import EmailMessage
     uid = UR.getUserId(req);
     id_ensemble = payload["id_ensemble"]
@@ -139,6 +140,8 @@ def sendInvites(payload, req):
     emails = [o.replace("<", "").replace(">", "") for o in emails if "@" in o]          
     logging.info("to: %s, extracted: %s" %  (payload["to"], emails))
     #add new users to DB w/ pending status
+    connection = mail.get_connection()
+    emailmessages = []
     for email in emails:       
         user         = auth.user_from_email(email)
         password=""
@@ -164,9 +167,10 @@ def sendInvites(payload, req):
                          msg, 
                          settings.EMAIL_FROM,
                          (email, ), 
-                         bcc)
-        e.send()
-        time.sleep(SLEEPTIME) #in order not to stress out the email server
+                         bcc,connection=connection)
+        emailmessages.append(e)
+        #time.sleep(SLEEPTIME) #in order not to stress out the email server
+    connection.send_messages(emailmessages)
     return UR.prepare_response({"msg": "Invite for %s sent to %s" % (ensemble.name, emails,)})
        
 def register_user(P, req):
