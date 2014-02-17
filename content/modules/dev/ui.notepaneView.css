@@ -14,6 +14,7 @@ margin: 0px 0px 0px 0px;
 padding-top: 3px;
 padding-bottom: 3px;
 cursor: pointer;
+position: relative
 }
 
 div.notepaneView div.lens-odd{
@@ -119,10 +120,39 @@ overflow-y: auto;
     border-color: #DDD;
 }
 
+div.notepaneView-selected {
+    display: none;
+}
+
+div.notepaneView-selected span {
+    font-weight: bold;
+}
+
+div.mode-select div.notepaneView-selected {
+    display: block;
+    padding: 3px 5px;
+    color: #888;
+}
+
 div.location-flags{
 float: left;
 min-width: 60px;
 margin-left: 3px;
+}
+
+div.location-lens input[type=button].threadselect {
+    position: absolute;
+    right: 0;
+    height: 20px;
+    display: none;
+}
+
+div.mode-select div.location-lens:hover input[type=button].threadselect {
+    display: inline-block;
+}
+
+div.mode-select div.location-lens input[type=button].threadselect.selected {
+    display: inline-block;
 }
 
 ins.locationflag{

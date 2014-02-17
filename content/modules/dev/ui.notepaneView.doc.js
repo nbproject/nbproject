@@ -45,8 +45,25 @@
             self._filters = {me: false, star: false, question: false, advanced: false};
             self.QUESTION = null;
             self.STAR = null;
+            self._selected_locs = [];
+            self._mode_select = false;
+            self._export_id = null;
 
             self.element.addClass("notepaneView");
+
+            if (window.location.hash !== "") {
+                var match = window.location.hash.match(/#(.*[?&])?export_to=([0-9]+)(\?|&|$)/);
+                if (match) {
+                    self._export_id = parseInt( match[2], 10);
+                    if (isNaN(self._export_id) === false) {
+                        self._mode_select = true;
+                    }
+                }
+            }
+
+            if (self._mode_select) {
+                self.element.addClass("mode-select");
+            }
 
             var $header = $("<div>").addClass("notepaneView-header");
             var $filters = $("<div>").addClass("filter-controls");
@@ -103,11 +120,39 @@
 
             var $filtered_message = $("<span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span>");
             var $unfiltered_message = $("<span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span>");
+
+            var $selected_threads = $("<div>").
+                addClass("notepaneView-selected").
+                html("<span class='selected-count'>0</span> selected threads.");
             var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
+
+            var export_function = function(type) {
+                return function() {
+                    if (self._mode_select) {
+                        $.concierge.get_component("bulk_import_annotations")({
+                            locs_array: self._selected_locs,
+                            from_source_id: self._id_source,
+                            to_source_id: self._export_id,
+                            import_type: type
+                        }, function(import_result) {
+                            self._mode_select = false;
+                            self._selected_locs = [];
+                            self.element.removeClass("mode-select");
+                        });
+                    }
+                };
+            };
+
+            var $export_all_button = $("<input type=\"button\" value=\"Export entire threads\">").
+                click(export_function("all"));
+            var $export_top_button = $("<input type=\"button\" value=\"Export top-level comments\">").
+                click(export_function("top"));
+
+            $selected_threads.append($export_all_button).append($export_top_button);
 
             $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
             $header.append($filters).append($filtered_message).append($unfiltered_message);
-            self.element.append($header).append($notepaneView_pages);
+            self.element.append($header).append($selected_threads).append($notepaneView_pages);
 
             $("body").append(
                 "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
@@ -139,10 +184,31 @@
                 $("li", this).show();
             });
 
+            self.element.on("click", "input[type=button].threadselect", function() {
+                $(this).toggleClass("selected");
+
+                var loc_id = parseInt($(this).attr("data-loc"), 10);
+
+                self._selected_locs = self._selected_locs.filter(function(e) {
+                    return e !== loc_id;
+                });
+
+                if ($(this).hasClass("selected")) {
+                    // ensure self._selected_locs includes me
+                    self._selected_locs.push(loc_id);
+                    $(this).val("Unselect");
+                } else {
+                    $(this).val("Select");
+                }
+
+                $(".selected-count", self.element).text( self._selected_locs.length );
+
+            });
+
         },
         _defaultHandler: function(evt){
             var self=this;
-            if (self._id_source ===      $.concierge.get_state("file")){
+            if (self._id_source === $.concierge.get_state("file")){
                 var sel, container, delta_top, delta_bottom, o, h, H, scrollby;
                 switch (evt.type){
                 case "page":
@@ -207,7 +273,7 @@
                         if (delta_top > 0){ //selected note is not too high
                             if (delta_bottom > 0) {//but it's too low... scroll down
                                 scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
-                                container.stop(true).animate({scrollTop: '+=' + scrollby  + 'px'}, 300)
+                                container.stop(true).animate({scrollTop: '+=' + scrollby  + 'px'}, 300);
                             }
                         }
                         else{ //too high: recenter: 
@@ -251,8 +317,14 @@
                 case "keydown": 
                     self._keydown(evt.value);
                     break;
-                }        
-            }    
+                case "export_threads":
+                    self._export_id = evt.value.export_id;
+                    self._mode_select = true;
+                    self.element.addClass("mode-select");
+                    self._render(true);
+                    break;
+                }
+            }
         },
         _update_filters: function(){
             var self = this;
@@ -302,7 +374,7 @@
                 $("span.filter-msg-filtered", self.element).show();
                 $("span.n_total", self.element).text(n_unfiltered);
                 $("span.n_filtered", self.element).text(locs_filtered.length());
-            } 
+            }
             else{
                 $("span.filter-msg-unfiltered", self.element).show();
                 $("span.filter-msg-filtered", self.element).hide();    
@@ -329,15 +401,30 @@
             var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
             
             var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
-            return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
-        }, 
+
+            var selected = (self._selected_locs.indexOf(l.ID) !== -1);
+            var select_button =
+                self._mode_select ?
+                ("<input type=\"button\" " +
+                 (selected ?
+                  "class=\"threadselect selected\" value=\"Unselect\"" :
+                  "class=\"threadselect\" value=\"Select\"") +
+                 " data-loc=\""+l.ID+"\" value=\"Select\" />") :
+                ("");
+
+            return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div>" +
+                select_button +
+                "<div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'>" +
+                    "<div class='location-shortbody-text "+bold_cl+"'>"+body+"</div>" +
+                "</div>";
+        },
         _keydown: function(event){
             var self=this;
             var codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
             var new_sel, id_item, id_new;
 
             if (event.shiftKey || event.altKey || event.ctrlKey) {
-                // We aren ot expecting shift, alt, or ctrl with our key codes, so we let others handle this
+                // We are not expecting shift, alt, or ctrl with our key codes, so we let others handle this
                 return true;
             }
 
@@ -623,7 +710,8 @@
             warn_page_change: null, 
             keydown: null,
             filter_toggle: null,
-            filter_threads: null
-        }                
+            filter_threads: null,
+            export_threads: null,
+        }
     };
 })(jQuery);
