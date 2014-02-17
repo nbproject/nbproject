@@ -134,6 +134,10 @@ div.mode-select div.notepaneView-selected {
     color: #888;
 }
 
+.help-tip {
+    display: none;
+}
+
 div.location-flags{
 float: left;
 min-width: 60px;

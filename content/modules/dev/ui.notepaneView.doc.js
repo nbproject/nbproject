@@ -123,7 +123,15 @@
 
             var $selected_threads = $("<div>").
                 addClass("notepaneView-selected").
-                html("<span class='selected-count'>0</span> selected threads.");
+                html("<p class=\"help-tip\"><em>Hover over " +
+                     "the threads you are interested in and choose 'Select'. Once " +
+                     "you are done, choose to either export the selected threads " +
+                     "entirely to the target file, or alternatively to export the " +
+                     "initial comment in these threads.</em></p>" +
+                     "<p class=\"help-tip\"><em>You can use the advanced filter " +
+                     "above to view only threads with the most responses, or " +
+                     "active participation, etc.</em></p>" +
+                     "<div><span class='selected-count'>0</span> selected threads for export.</div>");
             var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
 
             var export_function = function(type) {
@@ -147,8 +155,11 @@
                 click(export_function("all"));
             var $export_top_button = $("<input type=\"button\" value=\"Export top-level comments\">").
                 click(export_function("top"));
+            var $export_help = $("<a>").text("[Toggle Help]").click(function() {
+                $selected_threads.find(".help-tip").toggle();
+            });
 
-            $selected_threads.append($export_all_button).append($export_top_button);
+            $selected_threads.append($export_all_button).append($export_top_button).append($export_help);
 
             $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
             $header.append($filters).append($filtered_message).append($unfiltered_message);
