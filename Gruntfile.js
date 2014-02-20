@@ -140,7 +140,9 @@ module.exports = function(grunt) {
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.spreadsheetView1.css"])
     };
 
-
+    MODS.DOCANALYTICSVIEW = {
+        src_css: addPrefix(MODULE_DIR, ["dev/ui.docAnalyticsView.css"])
+    };
 
     /* TARGETS are modules that are built (but they can also serve as building blocks) */
     var TARGETS = {};
@@ -387,6 +389,26 @@ module.exports = function(grunt) {
     dest_css: DEST_DIR+"settings.css"
     };
 
+    TARGETS.DOCANALYTICS = {
+        src_js: [].concat(
+                          addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
+                          addPrefix(MODULE_DIR, ["backbone/underscore.js", "backbone/backbone.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
+                          TARGETS.API.src_js,
+
+                          addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+                          addPrefix(MODULE_DIR, ["dev/pers.js"]), 
+                          addPrefix(UI_DIR, ["init.analytics.js", "launch.js"])
+                          ), 
+        src_css: [].concat( 
+                           addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
+                           addPrefix(UI_DIR, ["template.css"]),
+                           MODS.DOCANALYTICSVIEW.src_css
+                            ), 
+        dest_js:  DEST_DIR+"docanalytics_NB.js",
+        dest_css:  DEST_DIR+"docanalytics.css"
+    };
+
     var JS_TARGETS = {};
     var i, src;
     for (i in TARGETS){
@@ -439,6 +461,8 @@ module.exports = function(grunt) {
                     confirm: false,
                     rangy: false, 
                     wgxpath: false,
+                    Backbone: false,
+                    _: false,
                 __nb_userinfo:true
                 }, 
                 curly: true,
