@@ -6,10 +6,6 @@
     }
     var $str        = "NB$" in window ? "NB$" : "jQuery";
 
-    GLOB.pers.init = function() {
-		window.console.log($.concierge.get_component("get_userinfo")().ckey);
-	};
-
 	var getUserInfo = function() {
 		return $.concierge.get_component("get_userinfo")().ckey;
 	};
