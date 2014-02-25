@@ -27,12 +27,22 @@
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>
+      // For logging
+      window.onload = function() {
+        timeOpened = Date.now();
+      };
+
+      window.onunload = function() {
+        var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
+        jQuery.concierge.logHistory("analyticsVisit", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
+      };
+    </script>
     <script type="text/javascript">
       var chart_stats = {{ chart_stats|safe }};
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        // var data = google.visualization.arrayToDataTable(chart_stats, true);
         var data = new google.visualization.DataTable();
         data.addColumn('string','Page');
         data.addColumn('number','Threads');
@@ -50,7 +60,7 @@
 
         (function($){
           var pgLabelClass = 'page-label';
-          var pgPreviewClass = "pg-preview";
+          var pgPreviewClass = 'pg-preview';
 
           $('text').each(function(i, el) {
             var obj = $(el);
@@ -185,6 +195,7 @@
         <label>Sort by: </label>
         <select id="sort-by">
           <option value="page_num">Page number</option>
+          <option value="num_threads">Number of threads</option>
           <option value="num_annotations">Number of annotations</option>
           <option value="num_questions">Number of replies requested</option>
         </select>

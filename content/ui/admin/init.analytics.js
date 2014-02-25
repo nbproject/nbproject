@@ -6,10 +6,6 @@
     }
     var $str        = "NB$" in window ? "NB$" : "jQuery";
 
-    GLOB.pers.init = function() {
-		window.console.log($.concierge.get_component("get_userinfo")().ckey);
-	};
-
 	var getUserInfo = function() {
 		return $.concierge.get_component("get_userinfo")().ckey;
 	};
@@ -35,7 +31,7 @@ var Document = Backbone.Collection.extend({
 	sort_key: 'page_num',
 
 	comparator: function(page) {
-		if (this.sort_key === "num_annotations" || this.sort_key === "num_questions") {
+		if (this.sort_key === "num_annotations" || this.sort_key === "num_questions" || this.sort_key === "num_threads") {
 			// most heavily annotated first
 			return -page.get(this.sort_key);
 		} else {
