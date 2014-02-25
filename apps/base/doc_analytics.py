@@ -103,7 +103,8 @@ def get_page_stats(sid):
 		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat)])
 
 	# print pages
-	print chart_array
+	# print chart_array
+	# print get_time_stats(3343)
 	return (json.dumps(pages), chart_array)
 
 def markAnalyticsVisit(uid, o):
@@ -112,9 +113,98 @@ def markAnalyticsVisit(uid, o):
 		x = M.AnalyticsVisit(user_id=uid, source_id=id_source, duration=duration, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
 		x.save()
 
-# def get_time_on_page(sid):
-# 	SELECT page, ctime
-# 	FROM page_seen
+def get_time_stats(sid):
+# conn = DB.getNewConnection()
+	from django.db import connection
+	import db
+
+	try:
+		c = connection.cursor()
+		qry = "drop table if exists nb2_page_order cascade;"
+		c.execute(qry)
+
+		qry ="create table nb2_page_order(id serial primary key, source_id integer, user_id integer, page integer, ctime timestamp, session_id integer);"
+		c.execute(qry)
+		
+		qry ="""		
+			insert into nb2_page_order(source_id, user_id, page, ctime,
+			session_id) select source_id, user_id, page, ctime, session_id
+			from base_pageseen where session_id is not null and source_id
+			in (select sid from v_ownership where eid= ?) order by
+			session_id, ctime;
+			"""
+		c.execute(qry, [sid])
+
+		qry = "DROP INDEX IF EXISTS nb2_page_order_id_session_idx ;"
+		c.execute(qry)
+
+		qry = "DROP INDEX IF EXISTS nb2_page_order_ctime_idx ;"
+		c.execute(qry)
+
+		qry = "drop index if exists nb2_page_order_id_source_idx ;"
+		c.execute(qry)
+
+		qry = "drop index if exists nb2_page_order_id_user_idx ;"
+		c.execute(qry)
+
+		qry = "drop index if exists nb2_page_order_page_idx ;"
+		c.execute(qry)
+
+		qry = "CREATE INDEX nb2_page_order_id_session_idx ON nb2_page_order(session_id);"
+		c.execute(qry)
+
+		qry = "CREATE INDEX nb2_page_order_ctime_idx ON nb2_page_order(ctime);"
+		c.execute(qry)
+
+		qry = "create index nb2_page_order_id_source_idx on nb2_page_order(source_id);"
+		c.execute(qry)
+
+		qry = "create index nb2_page_order_id_user_idx on nb2_page_order(user_id);"
+		c.execute(qry)
+
+		qry = "create index nb2_page_order_page_idx on nb2_page_order(page);"
+		c.execute(qry)
+		
+		qry = "drop view if exists tpage;"
+		c.execute(qry)
+		
+		qry = """
+			create view tpage as 
+
+			SELECT o1.source_id, o1.user_id, o1.page, o1.ctime AS t1,
+			o2.ctime AS t2, o2.ctime - o1.ctime AS total, o1.session_id,
+			o.ensemble_id FROM nb2_page_order o1, nb2_page_order o2,
+			base_ownership o WHERE o1.id = (o2.id - 1) AND o1.session_id =
+			o2.session_id AND o1.source_id = o.source_id ORDER BY
+			o1.session_id, o1.ctime;
+			"""
+		c.execute(qry)
+		
+		qry = "drop table if exists tpage2;"
+		c.execute(qry)
+
+		qry = """
+			create table tpage2 as 
+
+			select t.*, (t.t2-t.t1)-coalesce((i.t2-i.t1), '0 seconds') as
+			tcorrected from tpage t left join base_idle i on
+			t.session_id=i.session_id and t.t1<i.t1 and t.t2>i.t2;
+			"""
+		c.execute(qry)
+	except:
+		print c.messages
+
+	attr = {
+		"page": None,
+		"total_time": None
+	}
+	from_clause = """
+	(SELECT page, sum(tcorrected) as total_time from tpage2
+	WHERE source_id = ?
+	GROUP BY page;) as v1
+	"""
+	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
+
 
 # # number of questions per page
 # SELECT c.page, count(*) as get_num_questions
