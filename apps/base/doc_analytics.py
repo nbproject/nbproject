@@ -11,7 +11,8 @@ def get_num_annotations_stats(sid):
 	from_clause = """
 	(SELECT page, count(*) as num_annotations 
 	FROM base_v_comment 
-	WHERE source_id= ? 
+	WHERE source_id= ?
+	AND type = 3 
 	GROUP BY page) as v1
 	"""
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
@@ -32,6 +33,11 @@ def get_num_questions_stats(sid):
 	"""
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
 
+	# (SELECT page, count(*) as num_threads
+	# FROM base_location
+	# WHERE source_id = ?
+	# AND type = 3
+	# GROUP BY page) as v1
 def get_num_threads_stats(sid):
 	import db
 	attr = {
@@ -39,9 +45,11 @@ def get_num_threads_stats(sid):
 		"num_threads": None
 	}
 	from_clause = """
-	(SELECT page, count(*) as num_threads
-	FROM base_location
+	(SELECT page, count(distinct(location_id)) as num_threads
+	FROM base_location l, base_comment c
 	WHERE source_id = ?
+	AND l.id = c.location_id
+	AND type = 3
 	GROUP BY page) as v1
 	"""
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
@@ -59,7 +67,8 @@ def get_highlights(sid):
 	from_clause = """
 	(SELECT page, x, y, w, h, id
 	FROM base_v_comment
-	WHERE source_id = ?) as v1
+	WHERE source_id = ?
+	AND type = 3) as v1
 	"""
 	return db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 
