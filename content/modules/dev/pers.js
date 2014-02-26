@@ -88,7 +88,7 @@
 
     GLOB.pers.__authenticate = function(init_ui){
     var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: true}; 
-    var nbhostname = GLOB.pers.embedded ? GLOB.pers.server_url:"";
+    var nbhostname = GLOB.pers.server_url;
     var $login_contents;
     if (uinfo.guest){
         $login_contents = $("<ul class='dropdown-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
@@ -318,11 +318,7 @@
     }, 
     mini_splashscreen: function(P,cb){
         var widget;
-<<<<<<< HEAD
-        var nbhostname  = GLOB.pers.server_url;
-=======
         var nbhostname = GLOB.pers.embedded ? GLOB.pers.server_url:"";
->>>>>>> fix broken links when NB is embedded in HTML doc
         if (GLOB.conf.userinfo.guest){ //splashscreen for non-registered user
         widget =  "<div class=\"minisplashscreen ui-corner-all\">  <div id=\"splash-welcome\">Welcome to NB !</div><div id=\"nb-def\">...a forum on top of every PDF.</div> <ul id=\"splash-list-instructions\"> <li>Use your mouse or the <span class=\"ui-icon ui-icon-circle-triangle-w\"></span> and <span class=\"ui-icon ui-icon-circle-triangle-e\"></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class=\"ui-icon ui-icon-circle-triangle-n\"></span> and  <span class=\"ui-icon ui-icon-circle-triangle-s\"></span> keys to scroll up and down the document.</li> <li>New user ? <a href='javascript:$.concierge.get_component(\"register_user_menu\")()'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a href='javascript:$.concierge.get_component(\"login_user_menu\")()'>Log in</a> now...</li> </ul>  <a target=\"_blank\" href=\""+nbhostname+"/help\">More help...</a>  </div>       ";
         }
@@ -368,21 +364,7 @@
         return s;
     }, 
     get_login_dialog_markup: function(P,cb){
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        var nbhostname = GLOB.pers.server_url;
-        return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='"+nbhostname+"/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
-=======
-        return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  style='display: none' title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
->>>>>>> fix openid google login
-=======
-        return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='/password_reminder'>Lost password ?</a></td></tr><tr><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\""+GLOB.pers.server_url+"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='"+GLOB.pers.server_url+"/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  style='display: none' title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/welcome" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
->>>>>>> use absolute URL for openid
-=======
-        var nbhostname = GLOB.pers.embedded ? GLOB.pers.server_url:"";
         return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='"+nbhostname+"/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location=\""+nbhostname+"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='"+nbhostname+"/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button style='display: none' title='Login using your Facebook account' onclick='document.location=\"/facebook/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\"'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
->>>>>>> fix broken links when NB is embedded in HTML doc
         }, 
     get_sec_mult_factor: function(){
 	return 100;
