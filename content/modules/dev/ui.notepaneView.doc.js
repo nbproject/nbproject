@@ -159,6 +159,8 @@
 
                                 self._mode_select = false;
                                 self.element.removeClass("mode-select");
+                                self._pages = {};
+                                self._render.call(self, true);
                             });
 
                         }
