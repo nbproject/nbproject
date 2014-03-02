@@ -45,10 +45,11 @@
             self._filters = {me: false, star: false, question: false, advanced: false};
             self.QUESTION = null;
             self.STAR = null;
-            self._selected_locs = [];
+            self._selected_locs = {all: [], top: []};
             self._mode_select = false;
             self._export_id = null;
 
+            self.locs = null;
             self.element.addClass("notepaneView");
 
             if (window.location.hash !== "") {
@@ -123,43 +124,163 @@
 
             var $selected_threads = $("<div>").
                 addClass("notepaneView-selected").
-                html("<p class=\"help-tip\"><em>Hover over " +
-                     "the threads you are interested in and choose 'Select'. Once " +
-                     "you are done, choose to either export the selected threads " +
-                     "entirely to the target file, or alternatively to export the " +
-                     "initial comment in these threads.</em></p>" +
-                     "<p class=\"help-tip\"><em>You can use the advanced filter " +
-                     "above to view only threads with the most responses, or " +
-                     "active participation, etc.</em></p>" +
-                     "<div><span class='selected-count'>0</span> selected threads for export.</div>");
+                html("<div class='action-bar'><span class='selected-count'>0</span> selected threads for export.</div>");
+
             var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
 
-            var export_function = function(type) {
-                return function() {
-                    if (self._mode_select) {
-                        $.concierge.get_component("bulk_import_annotations")({
-                            locs_array: self._selected_locs,
-                            from_source_id: self._id_source,
-                            to_source_id: self._export_id,
-                            import_type: type
-                        }, function(import_result) {
-                            self._mode_select = false;
-                            self._selected_locs = [];
-                            self.element.removeClass("mode-select");
-                        });
+            var $export_button = $("<input type=\"button\" value=\"Export\">").
+                click(function() {
+                    var to_export = [];
+                    if (self._selected_locs.all.length) {
+                        to_export.push("all");
                     }
-                };
+                    if (self._selected_locs.top.length) {
+                        to_export.push("top");
+                    }
+
+                    if (to_export.length === 0) {
+                        return;
+                    }
+
+                    var export_function = function(type) {
+                        if (self._mode_select) {
+                            $.concierge.get_component("bulk_import_annotations")({
+                                locs_array: self._selected_locs[type],
+                                from_source_id: self._id_source,
+                                to_source_id: self._export_id,
+                                import_type: type
+                            }, function(import_result) {
+                                self._selected_locs[type] = [];
+
+                                if (to_export.length) {
+                                    export_function(to_export.pop());
+                                    return;
+                                }
+
+                                self._mode_select = false;
+                                self.element.removeClass("mode-select");
+                            });
+
+                        }
+                    };
+
+                    export_function(to_export.pop());
+                }).attr("disabled", "disabled");
+
+            var $select_bar = $("<div>").addClass("select-bar").
+                html("<div class='labels'>" +
+                     "<abbr title='Import Top Comment for Selected Thread'>Top</abbr>" +
+                     "<abbr title='Import Entire Selected Thread'>Thread</abbr>" +
+                     "</div>" +
+                     "<div class='select-all'>" +
+                     "<span class='selectors'></span>" +
+                     "<label>Select All</label>" +
+                     "</div>");
+
+            var recalculate_selected = function() {
+                var count = self._selected_locs.all.length +
+                    self._selected_locs.top.length;
+
+                $(".selected-count", self.element).
+                    text(count);
+                
+                $export_button[0].disabled = (count === 0);
             };
 
-            var $export_all_button = $("<input type=\"button\" value=\"Export entire threads\">").
-                click(export_function("all"));
-            var $export_top_button = $("<input type=\"button\" value=\"Export top-level comments\">").
-                click(export_function("top"));
-            var $export_help = $("<a>").text("[Toggle Help]").click(function() {
-                $selected_threads.find(".help-tip").toggle();
-            });
+            var select_all = function(mode_select, what) {
+                var select_what;
+                var deselect_what;
+                var other;
+                var loc_id;
+                var other_index;
 
-            $selected_threads.append($export_all_button).append($export_top_button).append($export_help);
+                var checkme = function() {
+                    this.checked = true;
+                };
+
+                var uncheckme = function() {
+                    this.checked = false;
+                };
+
+                if (what === "all") {
+                    other = "top";
+                } else if (what === "top") {
+                    other = "all";
+                } else {
+                    return;
+                }
+
+                if (mode_select) {
+                    select_what = self._selected_locs[what];
+                    deselect_what = self._selected_locs[other];
+
+                    for (loc_id in self.locs.values("ID")) {
+                        loc_id = parseInt(loc_id, 10);
+
+                        // is it already selected? if so, do nothing
+                        if (select_what.indexOf(loc_id) > -1) {
+                            continue;
+                        }
+                        // we should select it, make sure other is unselected
+                        other_index = deselect_what.indexOf(loc_id);
+                        if (other_index > -1) {
+                            deselect_what.splice(other_index, 1);
+                            $("input[type=checkbox][data-type=" + other+ "][data-loc=" + loc_id + "]").each(uncheckme);
+                        }
+                        // now select the checkbox, if it exists, and add it
+                        $("input[type=checkbox][data-type="+what+"][data-loc="+loc_id+"]").each(checkme);
+                        select_what.push(loc_id);
+                    }
+
+                } else {
+                    deselect_what = self._selected_locs[what];
+                    for (loc_id in self.locs.values("ID")) {
+                        loc_id = parseInt(loc_id, 10);
+                        var my_index = deselect_what.indexOf(loc_id);
+                        if (my_index > -1) {
+                            deselect_what.splice(my_index, 1);
+                            $("input[type=checkbox][data-type="+what+"][data-loc="+loc_id+"]").each(uncheckme);
+                        }
+                    }
+
+                }
+
+                recalculate_selected();
+
+            };
+
+            var $selectall_top = $("<input type='checkbox'>").
+                change(function() {
+                    select_all(this.checked, "top");
+
+                    if (this.checked){
+                        var o = $selectall_thread[0];
+                        if (o.checked) {
+                            o.indeterminate = true;
+                        }
+                    }
+
+                });
+
+            var $selectall_thread = $("<input type='checkbox'>").
+                change(function() {
+                    select_all(this.checked, "all");
+
+                    if (this.checked) {
+                        var o = $selectall_top[0];
+                        if (o.checked) {
+                            o.indeterminate = true;
+                        }
+                    }
+
+                });
+
+            $select_bar.find('.selectors').
+                append( $("<span>").append($selectall_top) ).
+                append( $("<span>").append($selectall_thread) );
+
+            $selected_threads.find('.action-bar').append($export_button);
+            $selected_threads.append($select_bar);
 
             $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
             $header.append($filters).append($filtered_message).append($unfiltered_message);
@@ -195,24 +316,44 @@
                 $("li", this).show();
             });
 
-            self.element.on("click", "input[type=button].threadselect", function() {
-                $(this).toggleClass("selected");
+            self.element.on("change", ".location-lens .selectors input[type=checkbox]", function() {
 
                 var loc_id = parseInt($(this).attr("data-loc"), 10);
+                var select_type = $(this).attr("data-type");
+                var other_type;
+                var remove_type;
 
-                self._selected_locs = self._selected_locs.filter(function(e) {
-                    return e !== loc_id;
-                });
-
-                if ($(this).hasClass("selected")) {
-                    // ensure self._selected_locs includes me
-                    self._selected_locs.push(loc_id);
-                    $(this).val("Unselect");
+                if (select_type === "top") {
+                    other_type = "all";
+                } else if (select_type === "all") {
+                    other_type = "top";
                 } else {
-                    $(this).val("Select");
+                    return;
                 }
 
-                $(".selected-count", self.element).text( self._selected_locs.length );
+                var add_array;
+                var remove_array;
+
+                if (this.checked) {
+                    add_array = self._selected_locs[select_type];
+                    remove_array = self._selected_locs[other_type];
+                    remove_type = other_type;
+                } else {
+                    remove_array = self._selected_locs[select_type];
+                    remove_type = select_type;
+                }
+
+                add_array.push(loc_id);
+
+                if (remove_array) {
+                    var index = remove_array.indexOf(loc_id);
+                    if (index > -1) {
+                        remove_array.splice(index, 1);
+                        $("input[type=checkbox][data-loc="+loc_id+"][data-type="+remove_type+"]")[0].checked = false;
+                    }
+                }
+
+                recalculate_selected();
 
             });
 
@@ -343,54 +484,52 @@
             var locs = m.get("location", {id_source:  self._id_source});
             var me = $.concierge.get_component("get_userinfo")();
             var n_unfiltered = locs.length();
-            var filters_on = false;
             var $filters = $("a.filter", self.element).removeClass("active");
             var $filter_me = $filters.filter("[action=me]");
             var $filter_star = $filters.filter("[action=star]");
             var $filter_question = $filters.filter("[action=question]");
             var $filter_advanced = $filters.filter("[action=advanced]");
 
-            var locs_me        = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
-            var locs_star        = m.get("threadmark", {active: true, type: self._STAR });
-            var locs_question    = m.get("threadmark", {active: true, type: self._QUESTION });
+            var locs_me = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+            var locs_star = m.get("threadmark", {active: true, type: self._STAR });
+            var locs_question = m.get("threadmark", {active: true, type: self._QUESTION });
 
-            var locs_filtered = locs;
+            var filters_on = (self._filters.me || self._filters.star || self._filters.question || self._filters.advanced);
+
             if (self._filters.me){
                 $filter_me.addClass("active");
-                filters_on = true;
-                locs_filtered = locs_filtered.intersect(locs_me.items);
             }
             if (self._filters.star){
                 $filter_star.addClass("active");
-                filters_on = true;
-                locs_filtered = locs_filtered.intersect(locs_star.values("location_id"));
             }
             if (self._filters.question){
                 $filter_question.addClass("active");
-                filters_on = true;
-                locs_filtered = locs_filtered.intersect(locs_question.values("location_id"));
             }
             if (self._filters.advanced) {
                 $filter_advanced.addClass("active");
             }
-            var n_me =  locs_me;
-            var n_star = locs_star;
-            var n_question = locs_question;
 
-            $("div.filter-count", $filter_me).text(n_me.length());
-            $("div.filter-count", $filter_star).text(n_star.length());                               
-            $("div.filter-count", $filter_question).text(n_question.length());                               
+            var n_me =  locs_me.length();
+            var n_star = locs_star.length();
+            var n_question = locs_question.length();
+
+            $("div.filter-count", $filter_me).text(n_me);
+            $("div.filter-count", $filter_star).text(n_star);
+            $("div.filter-count", $filter_question).text(n_question);
             if (filters_on){
                 $("span.filter-msg-unfiltered", self.element).hide();
                 $("span.filter-msg-filtered", self.element).show();
                 $("span.n_total", self.element).text(n_unfiltered);
-                $("span.n_filtered", self.element).text(locs_filtered.length());
+                $("span.n_filtered", self.element).text( self.locs.length() );
             }
             else{
                 $("span.filter-msg-unfiltered", self.element).show();
                 $("span.filter-msg-filtered", self.element).hide();    
-                $("span.n_unfiltered", self.element).text(locs.length());
+                $("span.n_unfiltered", self.element).text( self.locs.length() );
             }
+
+            self._recalculate_locs();
+
         },
         _lens: function(l){
             var self = this;
@@ -413,15 +552,16 @@
             
             var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
 
-            var selected = (self._selected_locs.indexOf(l.ID) !== -1);
+            var selected_top = (self._selected_locs.top.indexOf(l.ID) !== -1);
+            var selected_all = (self._selected_locs.all.indexOf(l.ID) !== -1);
+
+            var select_top_box = "<input type='checkbox' data-loc='"+l.ID+"' data-type='top' "+(selected_top ? " checked='checked'" : "") + "/>";
+            var select_all_box = "<input type='checkbox' data-loc='"+l.ID+"' data-type='all' "+(selected_all ? " checked='checked'" : "") + "/>";
+
             var select_button =
                 self._mode_select ?
-                ("<input type=\"button\" " +
-                 (selected ?
-                  "class=\"threadselect selected\" value=\"Unselect\"" :
-                  "class=\"threadselect\" value=\"Select\"") +
-                 " data-loc=\""+l.ID+"\" value=\"Select\" />") :
-                ("");
+                ("<span class='selectors'><span>" + select_top_box + "</span><span>" + select_all_box + "</span></span>") :
+                "";
 
             return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div>" +
                 select_button +
@@ -491,6 +631,35 @@
             var id_item = event.currentTarget.getAttribute("id_item");
             $.concierge.trigger({type:"note_out", value: id_item});
         },
+        _recalculate_locs: function() {
+            var self = this;
+            var m = self._model;
+            var me = $.concierge.get_component("get_userinfo")();
+
+            self.locs = m.get("location", {id_source: self._id_source});
+
+            if (self._filters.me){
+                self.locs = self.locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+            }
+            if (self._filters.star){
+                self.locs = self.locs.intersect(m.get("threadmark", {active: true, type: self._STAR }).values("location_id"));
+            }
+            if (self._filters.question){
+                self.locs = self.locs.intersect(m.get("threadmark", {active: true, type: self._QUESTION }).values("location_id"));
+            }
+            if (self._filters.advanced){
+                self.locs = self.locs.intersect(self._filters.advanced);
+            }
+
+            if (self._mode_select) {
+                $(".select-all input[type=checkbox]").each(function() {
+                    if (this.checked) {
+                        this.indeterminate = true;
+                    }
+                });
+            }
+
+        },
         _render: function(do_erase){
             /*
              * this is where we implement the caching strategy we want...
@@ -499,15 +668,18 @@
             if (do_erase){
                 self.element.children("div.notepaneView-pages").children("div.notepaneView-comments").empty();
             }
+
+            self._recalculate_locs();
+
             //first, render the current page...
             var f = this._model.o.file[ this._id_source];
             var p = this._page;
             var p_after = p; 
             var p_before = p;
-            this._render_one(p);        
+            this._render_one(p);
             this._update_filters();
             //estimate how much space taken by annotations, and render 120% of a whole screen of them if not enough on current page
-            var container =     $("div.notepaneView-pages", this.element);        
+            var container = $("div.notepaneView-pages", this.element);
             while ( container.children().last().offset().top - container.offset().top < container.height() ){
                 p_after++;
                 if (p_after<=f.numpages){
@@ -519,9 +691,12 @@
                 }
                 if (p_before<1 && p_after >= f.numpages){
                     //There's just not enough annotations to render a whole screen 
-                    return;
+                    break;
                 }
             }
+
+            $(".notepaneView-selected", self.element).outerWidth($(".notepaneView-comments", self.element).outerWidth());
+
         }, 
         _render_one: function(page){
 
@@ -538,22 +713,11 @@
             }
 
             if (!(page in self._pages)){
-                var m    = self._model;
-                var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
-                var locs    = m.get("location", {id_source:  self._id_source, page: page });
-                var me = $.concierge.get_component("get_userinfo")();
-                if (self._filters.me){
-                    locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
-                }
-                if (self._filters.star){
-                    locs = locs.intersect(m.get("threadmark", {active: true, type: self._STAR }).values("location_id"));
-                }
-                if (self._filters.question){
-                    locs = locs.intersect(m.get("threadmark", {active: true, type: self._QUESTION }).values("location_id"));
-                }
-                if (self._filters.advanced){
-                    locs = locs.intersect(self._filters.advanced);
-                }
+                var m = self._model;
+                var $pane = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
+                var page_locs = m.get("location", {id_source:  self._id_source, page: page });
+                var locs = self.locs.intersect(page_locs.values("ID"));
+
                 var locs_array = locs.sort(self.options.loc_sort_fct);
                 var o;
                 if (locs_array.length && !nosummary){

@@ -7,6 +7,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 
 div.notepaneView{
 overflow: hidden;
+background-color: #EFEBE7;
 }
 
 div.location-lens{
@@ -118,10 +119,18 @@ overflow-y: auto;
     border-width: 0 1px 0 1px;
     border-style: solid;
     border-color: #DDD;
+    background-color: #FFF;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 2px 8px -3px inset;
 }
 
 div.notepaneView-selected {
     display: none;
+}
+
+div.action-bar {
+    position: absolute;
+    z-index: 5;
+    bottom: 2px;
 }
 
 div.notepaneView-selected span {
@@ -130,6 +139,7 @@ div.notepaneView-selected span {
 
 div.mode-select div.notepaneView-selected {
     display: block;
+    position: relative;
     padding: 3px 5px;
     color: #888;
 }
@@ -157,6 +167,43 @@ div.mode-select div.location-lens:hover input[type=button].threadselect {
 
 div.mode-select div.location-lens input[type=button].threadselect.selected {
     display: inline-block;
+}
+
+.select-bar div.labels,
+.select-bar div.select-all {
+    position: relative;
+    height: 1.25em;
+    left: 5px;
+}
+
+.select-bar div.select-all label {
+    position: absolute;
+    right: 120px;
+}
+
+.select-bar div.labels > abbr {
+    cursor: help;
+    display: block;
+    text-align: center;
+    position: absolute;
+}
+
+div.mode-select .selectors > span {
+    display: block;
+    text-align: center;
+    position: absolute;
+}
+
+.select-bar div.labels > abbr:nth-child(1),
+div.mode-select .selectors > span:nth-child(1) {
+    width: 32px;
+    right: 56px;
+}
+
+.select-bar div.labels > abbr:nth-child(2),
+div.mode-select .selectors > span:nth-child(2) {
+    width: 48px;
+    right: 4px;
 }
 
 ins.locationflag{
@@ -354,9 +401,7 @@ text-align: center;
 div.notepaneView-header{
 background-color: #EFEBE7;
 height: 24px;
-border-bottom: thin solid #DDD;
 padding: 3px 5px;
-box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2);
 }
 
 span.filter-msg-unfiltered, span.filter-msg-filtered{
