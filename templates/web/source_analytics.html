@@ -19,7 +19,7 @@
         <div class="page-stats">
           <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
           <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
-          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies requested</span>
+          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> questions</span>
         </div>
         <div class="clearfix"></div>
     </script>
@@ -76,8 +76,15 @@
               var num = $(this).text();
               var contents = $('#page-preview-'+num).html();
               $('.'+pgPreviewClass).html(contents);
-              $('.'+pgPreviewClass).children().each(function(i, el) {
-                var s = 3;  // scale factor
+
+              // get the larger image for the preview
+              var img_server = "http://nb.mit.edu";
+              var ckey = NB.conf.userinfo.ckey;
+              var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
+              $('.'+pgPreviewClass).find('.page-img').attr("src", img_url);
+
+              $('.'+pgPreviewClass).children(".highlight").each(function(i, el) {
+                var s = 5;  // scale factor (for res 20 images)
                 $(el).height($(el).height()*s);
                 $(el).width($(el).width()*s);
                 $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
@@ -129,7 +136,7 @@
               var img_server = "http://nb.mit.edu";
               // var img_server = "";
               var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
+              var img_url = img_server + "/pdf/cache2/72/20/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
               doc.add(page);

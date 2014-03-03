@@ -45,7 +45,7 @@
 	display: inline-block;
 	float: left;
 	margin: 5px;
-	padding: 5px 10px;
+	padding: 5px 3px;
 	clear: both;
 	-moz-border-radius: 15px;
 	border-radius: 15px;
@@ -63,8 +63,8 @@
 .page-img {
 /*	width: 170px;
 	height: 220px;*/
-	width: 25%;
-	height: 25%;
+	/*width: 25%;*/
+	/*height: 25%;*/
 	float:left;
 }
 
@@ -82,14 +82,15 @@
 .pg-preview {
 	position:absolute;
 	z-index:3;
-	width:510px;
-	height:660px;
-	top: 50%;
-	left: 50%;
-	margin-top:-330px;
-	margin-left:-255px;
+	width:/*510px;
+	height*/:660px;
+	/*top: 50%;*/
+	top: 0;
+	left: 20%;
+/*	margin-top:-330px;
+	margin-left:-255px;*/
 	display:none;
-	border: 1px solid;
+	/*border: 1px solid;*/
 }
 
 .img-enlarged {

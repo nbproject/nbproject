@@ -28,7 +28,7 @@ var HighlightView = Backbone.View.extend({
   template: _.template(jQuery("#highlight-template").html()),
   render: function(){
     var m = this.model.attributes;
-    var css_scale = 0.25;
+    var css_scale = 0.20;
     var fudge_scale; // scale of img with 72 dpi, 100%
     if (m.page_orientation === "portrait") {
       fudge_scale = 0.4802; // portrait
