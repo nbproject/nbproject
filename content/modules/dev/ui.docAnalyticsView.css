@@ -61,8 +61,10 @@
 }
 
 .page-img {
-	width: 170px;
-	height: 220px;
+/*	width: 170px;
+	height: 220px;*/
+	width: 25%;
+	height: 25%;
 	float:left;
 }
 

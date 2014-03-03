@@ -33,10 +33,10 @@
         timeOpened = Date.now();
       };
 
-      window.onunload = function() {
-        var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
-        jQuery.concierge.logHistory("analyticsVisit", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
-      };
+      // window.onunload = function() {
+      //   var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
+      //   jQuery.concierge.logHistory("analyticsVisit", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
+      // };
     </script>
     <script type="text/javascript">
       var chart_stats = {{ chart_stats|safe }};
@@ -112,6 +112,13 @@
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
             var doc = new Document();
+            
+            var orientation;
+            if ({{ source.h }} > {{ source.w }}) {
+              orientation = "portrait";
+            } else {
+              orientation = "landscape";
+            };
 
             var page;
 
@@ -120,8 +127,9 @@
 
               // TODO: better way to get the source ID/ckey?
               var img_server = "http://nb.mit.edu";
+              // var img_server = "";
               var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/288/33/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
+              var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 
               doc.add(page);
@@ -129,12 +137,13 @@
 
             var documentView = new DocumentView({
               collection: doc,
-              el: $("#pages-container")
+              el: $("#pages-container"),
             });
             documentView.render();
 
             for (h in highlights) {
               var highlight = new Highlight(highlights[h]);
+              highlight.set("page_orientation", orientation);
               var highlightView = new HighlightView({ model: highlight});
             }
 
