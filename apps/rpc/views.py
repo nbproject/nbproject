@@ -8,7 +8,7 @@ License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
-from base import annotations
+from base import annotations, doc_analytics
 import  json, sys, datetime, time
 from base import  auth, signals, constants, models as M, utils_response as UR
 #TODO import responder
