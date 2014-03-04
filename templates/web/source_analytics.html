@@ -35,7 +35,7 @@
 
       window.onunload = function() {
         var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
-        jQuery.concierge.logHistory("analyticsVisit", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
+        jQuery.concierge.logHistory("analytics", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
       };
     </script>
     <script type="text/javascript">
