@@ -427,7 +427,8 @@
                         delta_bottom = delta_top + h - H;
                         if (delta_top > 0){ //selected note is not too high
                             if (delta_bottom > 0) {//but it's too low... scroll down
-                                scrollby = delta_bottom + H/2-h; //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget. 
+                                //delta_bottom is how much to scroll so that bottom of lens coincides with bottom of widget.
+                                scrollby = delta_bottom + H/2-h;
                                 container.stop(true).animate({scrollTop: '+=' + scrollby  + 'px'}, 300);
                             }
                         }
