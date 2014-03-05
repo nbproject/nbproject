@@ -105,7 +105,7 @@
                 .addClass("filter")
                 .attr("title", "toggle filter: toggle by advanced features")
                 .attr("action", "advanced")
-                .html("<div class='filter-count'>advanced</div>")
+                .html("<div class='filter-count'>more filters</div>")
                 .click(function() {
                     if ($(this).hasClass("active")) {
                         $(this).removeClass("active");
@@ -124,11 +124,11 @@
 
             var $selected_threads = $("<div>").
                 addClass("notepaneView-selected").
-                html("<div class='action-bar'><span class='selected-count'>0</span> selected threads for export.</div>");
+                html("<div class='action-bar'><span class='selected-count'>0</span> selected threads for transfer.</div>");
 
             var $notepaneView_pages = $("<div>").addClass("notepaneView-pages");
 
-            var $export_button = $("<input type=\"button\" value=\"Export\">").
+            var $export_button = $("<input type=\"button\" value=\"Transfer\">").
                 click(function() {
                     var to_export = [];
                     if (self._selected_locs.all.length) {
@@ -290,8 +290,8 @@
 
             $("body").append(
                 "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
-                    "<li class='context export-top'><a href='#export-top'>Export Original Post</a></li>"+
-                    "<li class='context export-all'><a href='#export-all'>Export Entire Thread</a></li>"+
+                    "<li class='context export-top'><a href='#export-top'>Transfer Original Post</a></li>"+
+                    "<li class='context export-all'><a href='#export-all'>Transfer Entire Thread</a></li>"+
                     "</ul>");
 
             $("body").append(
@@ -302,7 +302,8 @@
             $wizard.filterWizard({
                 admin: true, // TODO: properly populate this value
                 callbacks: {
-                    onOk: function() { $wizard.dialog("close"); }
+                    onOk: function() { $wizard.dialog("close"); },
+                    onCancel: function() { $wizard.dialog("close"); }
                 }
             }).dialog({
                 width: 800,

@@ -85,12 +85,12 @@
             var $step2 = $("<div>").addClass("wizard-step").attr("wizard-step", "2");
             var $s2h1 = $("<h3>").text("File Copied...");
             var $s2d1 = $("<p>").text(
-                "File copy complete. Would you like to import annotations " +
+                "File copy complete. Would you like to transfer annotations " +
                 "into the document you just created?"
             );
 
             var $s2b = $("<div>");
-            var $s2b1 = $("<a href=\"\" target=\"_blank\">Choose Annotations to Import</a>");
+            var $s2b1 = $("<a href=\"\" target=\"_blank\">Choose Annotations to Transfer</a>");
 
             $s2b.append($s2b1);
             $step2.append($s2h1).append($s2d1).append($s2b);
