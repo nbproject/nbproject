@@ -39,17 +39,25 @@
                 .append("<option value='threads'>threads</option>")
                 .append("<option value='percent'>% of all threads</option>");
             var $filterType = $("<select>")
-                .append("<option value='random'>randomly</option>")
                 .append("<option value='reply'>that have the most responses</option>")
                 .append("<option value='students'>that have the most student participation</option>")
-                .append("<option value='longest'>that have the longest initial post</option>");
+                .append("<option value='longest'>that have the longest initial post</option>")
+                .append("<option value='random'>randomly</option>");
             var $go = $("<input>").attr("type", "button").attr("value", "Go");
+            var $cancel = $("<input>").attr("type", "button").attr("value", "Cancel");
 
-            $p.append("Show me&nbsp;")
-                .append($n).append("&nbsp;")
-                .append($r).append("&nbsp;")
-                .append($filterType).append(".&nbsp;")
-                .append($go);
+            $p.append("Show me&nbsp;").
+                append($n).append("&nbsp;").
+                append($r).append("&nbsp;").
+                append($filterType).append(".&nbsp;").
+                append($go).
+                append($cancel);
+
+            $cancel.click(function() {
+                if (self.options.callbacks.onCancel) {
+                    self.options.callbacks.onCancel();
+                }
+            });
 
             $go.click(function() {
                 // Step 1: validate [formatting + n/r compatibility]
@@ -127,7 +135,8 @@
 	admin: false,
         callbacks: {
             onOk: null,
-            fireEvent: null
+            fireEvent: null,
+            onCancel: null
         }
     };
 })(jQuery);
