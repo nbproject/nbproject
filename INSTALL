@@ -42,8 +42,8 @@ NOTE:  - packages in square brackets are optional)
       # If questions on getting NB to work w/ grunt 0.3.X, plrease refer 
       # to http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way. 
         npm install grunt 
-        npm install -g grunt-cli
-        npm install -g grunt-init
+        sudo npm install -g grunt-cli
+        sudo npm install -g grunt-init
         npm install grunt-contrib-jshint  --save-dev
         npm install grunt-contrib-concat  --save-dev
         npm install grunt-contrib-cssmin  --save-dev
