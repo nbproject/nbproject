@@ -1,6 +1,7 @@
 import json
 from django.core import serializers
 import models as M
+import datetime
 
 def get_num_annotations_stats(sid):
 	import db
@@ -108,8 +109,8 @@ def get_page_stats(sid):
 
 def markAnalyticsVisit(uid, o):
 	for id in o:
-		id_source, duration, junk = id.split("|")
-		x = M.AnalyticsVisit(user_id=uid, source_id=id_source, duration=duration, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
+		id_source, junk = id.split("|")
+		x = M.AnalyticsVisit(user_id=uid, source_id=id_source, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
 		x.save()
 
 # def get_time_on_page(sid):
