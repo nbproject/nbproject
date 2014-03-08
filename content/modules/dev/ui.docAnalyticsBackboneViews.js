@@ -68,7 +68,7 @@ var DocumentView = Backbone.View.extend({
     jQuery(".page-wrap").show()
                         .each(function(index, value) {
                           var el = jQuery(this);
-                          var val = el.find(tag).html();
+                          var val = el.find(tag).find(".val").html();
                           if (val <= num) {
                             el.hide();
                           }
