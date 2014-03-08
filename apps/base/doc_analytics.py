@@ -77,6 +77,22 @@ def get_num_pages(sid):
 	numpages = M.Source.objects.get(id = sid).numpages
 	return numpages
 
+def get_num_participants_stats(sid):
+	import db
+	attr = {
+		"page_num": "page",
+		"num_participants": None
+	}
+	from_clause = """
+	(SELECT page, count(distinct(author_id)) as num_participants 
+	FROM base_v_comment
+	WHERE source_id = ?
+	AND type = 3
+	GROUP BY page) as v1
+	"""
+	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
+
+
 # returns tuple (chart_stats, json_stats)
 # where chart_stats is an array of arrays: 
 #	[[page, num_threads, num_annotations, num_questions]]
@@ -86,6 +102,7 @@ def get_page_stats(sid):
 	a_stats = get_num_annotations_stats(sid)
 	q_stats = get_num_questions_stats(sid)
 	t_stats = get_num_threads_stats(sid)
+	p_stats = get_num_participants_stats(sid)
 
 	pages = {}
 	numpages = get_num_pages(sid)
@@ -104,13 +121,18 @@ def get_page_stats(sid):
 			t_stat = t_stats[p]["num_threads"]
 		else:
 			t_stat = 0
+		if p in p_stats:
+			p_stat = p_stats[p]["num_participants"]
+		else:
+			p_stat = 0
 		pages[p] = {
 			"page_num": p,
 			"num_threads": t_stat, 
 			"num_annotations": a_stat, 
-			"num_questions": q_stat
+			"num_questions": q_stat,
+			"num_participants": p_stat
 		}
-		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat)])
+		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat)])
 
 	# print pages
 	# print chart_array

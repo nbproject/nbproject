@@ -62,7 +62,7 @@ var DocumentView = Backbone.View.extend({
     });
   },
 
-  // type is 'annotations' or 'questions'
+  // property is 'annotations' or 'questions'
   filterByPropertyAndNum: function(property, num) {
     var tag = "."+property;
     jQuery(".page-wrap").show()

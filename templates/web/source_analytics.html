@@ -20,25 +20,18 @@
           <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
           <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
           <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> questions</span>
+          <br/><span class="participants color-stat"><span class="val"><%= num_participants %></span> participants</span>
         </div>
         <div class="clearfix"></div>
     </script>
     <script type="text/template" id="highlight-template">
-      <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;"></div>
+      <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
+      </div>
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script>
       // For logging
       window.onload = function() {
-<<<<<<< HEAD
-        timeOpened = Date.now();
-      };
-
-      // window.onunload = function() {
-      //   var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
-      //   jQuery.concierge.logHistory("analyticsVisit", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
-      // };
-=======
         var key = {{ source.id }}+"|"+(new Date()).getTime();
         var payload = {};
         payload[key]=(new Date()).getTime();
@@ -46,7 +39,6 @@
           console.log("logged");
         });
       };
->>>>>>> analytics-log
     </script>
     <script type="text/javascript">
       var chart_stats = {{ chart_stats|safe }};
@@ -58,6 +50,7 @@
         data.addColumn('number','Threads');
         data.addColumn('number','Annotations');
         data.addColumn('number','Replies requested');
+        data.addColumn('number', 'Participants');
         data.addRows(chart_stats);
         
         var options = {
@@ -224,6 +217,7 @@
           <option value="num_threads">Number of threads</option>
           <option value="num_annotations">Number of annotations</option>
           <option value="num_questions">Number of replies requested</option>
+          <option value="num_participants">Number of participants</option>
         </select>
       </div>
 

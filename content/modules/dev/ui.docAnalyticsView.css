@@ -123,6 +123,10 @@
 	color: #E19900;
 }
 
+.num-participants, .participants {
+	color: #109618;
+}
+
 .chart_div {
 	margin-bottom: 20px;
 }
