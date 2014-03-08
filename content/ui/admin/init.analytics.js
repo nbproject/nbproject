@@ -49,6 +49,7 @@ var Document = Backbone.Collection.extend({
 
 /// COLOR HELPERS
 // from http://css-tricks.com/snippets/javascript/lighten-darken-color/
+// col is a color in hex format
 function LightenDarkenColor(col, amt) {
 
   var usePound = false;
