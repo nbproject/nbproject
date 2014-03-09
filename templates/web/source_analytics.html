@@ -30,12 +30,12 @@
     <script>
       // For logging
       window.onload = function() {
-        timeOpened = Date.now();
-      };
-
-      window.onunload = function() {
-        var duration = (Date.now() - timeOpened)/1000; //time in milliseconds
-        jQuery.concierge.logHistory("analytics", {{ source.id }}+"|"+duration+"|"+(new Date()).getTime());
+        var key = {{ source.id }}+"|"+(new Date()).getTime();
+        var payload = {};
+        payload[key]=(new Date()).getTime();
+        NB.pers.call("log_history", {"analytics": payload}, function(callback) {
+          console.log("logged");
+        });
       };
     </script>
     <script type="text/javascript">

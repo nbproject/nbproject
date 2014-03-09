@@ -279,7 +279,6 @@ class PageSeen(models.Model):
 class AnalyticsVisit(models.Model):
     source              = ForeignKey(Source)
     user                = ForeignKey(User, null=True)
-    duration            = DateTimeField()
     ctime               = DateTimeField(default=datetime.now)
 
 class Landing(models.Model):
