@@ -77,6 +77,7 @@
 	background:#FFF53A;
 	position: absolute;
 	z-index: 2;
+	border: 1px solid rgba(0,0,0,0.5);
 }
 
 .pg-preview {
@@ -125,6 +126,16 @@
 
 .num-participants, .participants {
 	color: #109618;
+}
+
+.marker {
+    width: 1em;
+    height: 1em;
+    background-color: green;
+    /*opacity: 0.2;*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 .chart_div {

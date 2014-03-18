@@ -71,6 +71,7 @@ def get_highlights(sid):
 	WHERE source_id = ?
 	AND type = 3) as v1
 	"""
+	print db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 	return db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 
 def get_num_pages(sid):
