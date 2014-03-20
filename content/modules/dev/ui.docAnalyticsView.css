@@ -73,11 +73,11 @@
 }
 
 .highlight {
-	opacity:0.15;
-	background:#FFF53A;
+	/*opacity:0.15;*/
+	/*background:#FFF53A;*/
 	position: absolute;
 	z-index: 2;
-	border: 1px solid rgba(0,0,0,0.5);
+	border: 1px solid rgba(0,0,0,0.4);
 }
 
 .pg-preview {
@@ -91,7 +91,6 @@
 /*	margin-top:-330px;
 	margin-left:-255px;*/
 	display:none;
-	/*border: 1px solid;*/
 }
 
 .img-enlarged {
@@ -131,8 +130,9 @@
 .marker {
     width: 1em;
     height: 1em;
+    border-radius:50%;
     background-color: green;
-    /*opacity: 0.2;*/
+    opacity: 0.2;
     position: absolute;
     top: 50%;
     left: 50%;
