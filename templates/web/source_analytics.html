@@ -46,12 +46,15 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
+        // ANNOTATIONS CHART
         var data = new google.visualization.DataTable();
         data.addColumn('string','Page');
         data.addColumn('number','Threads');
         data.addColumn('number','Annotations');
         data.addColumn('number','Replies requested');
         data.addColumn('number', 'Participants');
+        // data.addColumn('number', 'Total time');
+        // data.addColumn('number', 'Avg time');
         data.addRows(chart_stats);
         
         var options = {
@@ -62,7 +65,33 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(data, options);
 
+        // TIME CHART
+        var time_chart_stats = {{ time_chart_stats|safe }};
+        var tData = new google.visualization.DataTable();
+        tData.addColumn('string', 'Page');
+        tData.addColumn('number', 'Total Time');
+        tData.addColumn('number', 'Average Time');
+        tData.addRows(time_chart_stats)
+
+        var options = {
+          title: 'Time Stats',
+          hAxis: {title: 'Page'}
+        };
+
+        var view = new google.visualization.DataView(tData);
+        view.setColumns([0,2]);
+
+        var time_chart = new google.visualization.ColumnChart(document.getElementById('time_chart_div'));
+        time_chart.draw(view, options);
+
         (function($){
+          $(document).on("click", "#toggle_total_time", function() {
+            console.log("view in jquery handler "+view);
+            view.setColumns([0,1,2]);
+            time_chart.draw(view);
+          });
+
+
           var pgLabelClass = 'page-label';
           var pgPreviewClass = 'pg-preview';
 
@@ -204,6 +233,8 @@
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
       <div id="chart_div"></div>
+      <div id="time_chart_div"></div>
+      <button id="toggle_total_time">Show total time</button>
       <hr>
       <div class="controls">
         <label>Show: </label>

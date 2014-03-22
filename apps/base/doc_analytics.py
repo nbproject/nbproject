@@ -3,9 +3,10 @@ from django.core import serializers
 import models as M
 import datetime
 import psycopg2.extensions
+import db
+import math
 
 def get_num_annotations_stats(sid):
-	import db
 	attr = {
 		"page_num": "page",
 		"num_annotations": None
@@ -20,7 +21,6 @@ def get_num_annotations_stats(sid):
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
 
 def get_num_questions_stats(sid):
-	import db
 	attr = {
 		"page_num": "page",
 		"num_questions": None
@@ -41,7 +41,6 @@ def get_num_questions_stats(sid):
 	# AND type = 3
 	# GROUP BY page) as v1
 def get_num_threads_stats(sid):
-	import db
 	attr = {
 		"page_num": "page",
 		"num_threads": None
@@ -57,7 +56,6 @@ def get_num_threads_stats(sid):
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
 
 def get_highlights(sid):
-	import db
 	attr = {
 		"id": "id",
 		"page_num": "page",
@@ -80,7 +78,6 @@ def get_num_pages(sid):
 	return numpages
 
 def get_num_participants_stats(sid):
-	import db
 	attr = {
 		"page_num": "page",
 		"num_participants": None
@@ -106,10 +103,15 @@ def get_page_stats(sid):
 	t_stats = get_num_threads_stats(sid)
 	p_stats = get_num_participants_stats(sid)
 
+	gather_time_stats(sid)
+	totaltime_stats = get_total_times(sid)
+	avgtime_stats = get_avgtime_peruser(sid)
+
 	pages = {}
 	numpages = get_num_pages(sid)
-	# chart_array = [["Page", "Threads", "Annotations", "Questions"]]
 	chart_array = []
+	time_chart_array = []
+
 	for p in range(1, numpages+1):
 		if p in a_stats:
 			a_stat = a_stats[p]["num_annotations"]
@@ -127,19 +129,53 @@ def get_page_stats(sid):
 			p_stat = p_stats[p]["num_participants"]
 		else:
 			p_stat = 0
+		if p in totaltime_stats:
+			tt_stat = totaltime_stats[p]['total_time'].total_seconds()/60
+		else:
+			tt_stat = 0
+		if p in avgtime_stats:
+			at_stat = avgtime_stats[p]['avgtime_per_user'].total_seconds()/60
+		else:
+			at_stat = 0
+
 		pages[p] = {
 			"page_num": p,
 			"num_threads": t_stat, 
 			"num_annotations": a_stat, 
 			"num_questions": q_stat,
-			"num_participants": p_stat
+			"num_participants": p_stat,
+			# "total_time": tt_stat,
+			# "avg_time": at_stat
 		}
+		# chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat), int(tt_stat), int(at_stat)])
 		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat)])
-
+		# time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
+		# avgtime_chart_array.append([str(p), int(at_stat)])
+		# totaltime_chart_array.append([str(p), int(tt_stat)])
+		time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
 	# print pages
-	# print chart_array
-	print get_time_stats(3343)
-	return (json.dumps(pages), chart_array)
+	# for p in pages:
+	# 	print pages[p]["avg_time"]
+	# print chart_array	
+	return (json.dumps(pages), chart_array, time_chart_array)
+
+# def get_timeperpage_stats(sid):
+# 	gather_time_stats(sid)
+# 	totaltime_stats = get_total_times(sid)
+# 	avgtime_stats = get_avgtime_peruser(sid)
+
+# 	pages = {}
+# 	numpages = get_num_pages(sid)
+# 	chart_array = []
+# 	for p in range(1, numpages+1):
+# 		if p in totaltime_stats:
+# 			tt_stat = totaltime_stats[p]['total_time'].total_seconds()/60
+# 		else:
+# 			tt_stat = 0
+# 		if p in avgtime_stats:
+# 			at_stat = avgtime_stats[p]['avgtime_per_user'].total_seconds()/60
+# 		else:
+# 			at_stat = 0
 
 def markAnalyticsVisit(uid, o):
 	for id in o:
@@ -149,30 +185,29 @@ def markAnalyticsVisit(uid, o):
 
 import socket
 
-def test_connection():
-    """Test whether the postgres database is available. Usage:
+# def test_connection():
+#     """Test whether the postgres database is available. Usage:
 
-        if "--offline" in sys.argv:
-            os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.offline'
-        else:
-            os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.standard'
-            from myapp.functions.connection import test_connection
-            test_connection()
-    """
-    try:
-        s = socket.create_connection(("example.net", 5432), 5)
-        s.close()
-        print "connectiong established"
-    except socket.timeout:
-        msg = """Can't detect the postgres server. If you're outside the
-        intranet, you might need to turn the VPN on."""
-        print "err"
-        print socket.timeout(msg)
+#         if "--offline" in sys.argv:
+#             os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.offline'
+#         else:
+#             os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.standard'
+#             from myapp.functions.connection import test_connection
+#             test_connection()
+#     """
+#     try:
+#         s = socket.create_connection(("example.net", 5432), 5)
+#         s.close()
+#         print "connectiong established"
+#     except socket.timeout:
+#         msg = """Can't detect the postgres server. If you're outside the
+#         intranet, you might need to turn the VPN on."""
+#         print "err"
+#         print socket.timeout(msg)
 
-def get_time_stats(sid):
+def gather_time_stats(sid):
 # conn = DB.getNewConnection()
 	from django.db import connection
-	import db
 	print "get time stats"
 	# print test_connection()
 	try:
@@ -255,7 +290,13 @@ def get_time_stats(sid):
 	finally:
 		c.close()
 
+	c.close()
+
 	print "cursor stuff complete"
+
+
+def get_total_times(sid):
+		# get total times
 	attr = {
 		"page": None,
 		"total_time": None
@@ -267,6 +308,20 @@ def get_time_stats(sid):
 	"""
 	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
 
+def get_avgtime_peruser(sid):
+		# get average time per user
+	attr = {
+		"page": None,
+		"avgtime_per_user": "avg_time"
+	}
+	from_clause = """
+	(SELECT page, avg(timeperuser) as avg_time from
+		(SELECT page, sum(tcorrected) as timeperuser from tpage2
+		WHERE source_id = ?
+		GROUP BY page, user_id) as v1
+	GROUP BY page) as v2
+	"""
+	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
 
 # # number of questions per page
 # SELECT c.page, count(*) as get_num_questions
@@ -275,8 +330,6 @@ def get_time_stats(sid):
 # WHERE t.comment_id = c.id
 # AND c.source_id = 8
 # GROUP BY c.page
-
-
 
 # # order by time of last annotation
 # SELECT page, max(ctime) as last_annotated
