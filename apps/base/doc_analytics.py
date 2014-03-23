@@ -110,7 +110,6 @@ def get_page_stats(sid):
 	pages = {}
 	numpages = get_num_pages(sid)
 	chart_array = []
-	time_chart_array = []
 
 	for p in range(1, numpages+1):
 		if p in a_stats:
@@ -148,34 +147,12 @@ def get_page_stats(sid):
 			"avg_time": at_stat
 		}
 		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat), int(tt_stat), int(at_stat)])
-		# chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat)])
-		# time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
-		# avgtime_chart_array.append([str(p), int(at_stat)])
-		# totaltime_chart_array.append([str(p), int(tt_stat)])
-		time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
+
 	# print pages
-	for p in pages:
-		print pages[p]["avg_time"]
+	# for p in pages:
+	# 	print pages[p]["avg_time"]
 	# print chart_array	
-	return (json.dumps(pages), chart_array, time_chart_array)
-
-# def get_timeperpage_stats(sid):
-# 	gather_time_stats(sid)
-# 	totaltime_stats = get_total_times(sid)
-# 	avgtime_stats = get_avgtime_peruser(sid)
-
-# 	pages = {}
-# 	numpages = get_num_pages(sid)
-# 	chart_array = []
-# 	for p in range(1, numpages+1):
-# 		if p in totaltime_stats:
-# 			tt_stat = totaltime_stats[p]['total_time'].total_seconds()/60
-# 		else:
-# 			tt_stat = 0
-# 		if p in avgtime_stats:
-# 			at_stat = avgtime_stats[p]['avgtime_per_user'].total_seconds()/60
-# 		else:
-# 			at_stat = 0
+	return (json.dumps(pages), chart_array)
 
 def markAnalyticsVisit(uid, o):
 	for id in o:
@@ -185,42 +162,16 @@ def markAnalyticsVisit(uid, o):
 
 import socket
 
-# def test_connection():
-#     """Test whether the postgres database is available. Usage:
-
-#         if "--offline" in sys.argv:
-#             os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.offline'
-#         else:
-#             os.environ['DJANGO_SETTINGS_MODULE'] = 'myapp.settings.standard'
-#             from myapp.functions.connection import test_connection
-#             test_connection()
-#     """
-#     try:
-#         s = socket.create_connection(("example.net", 5432), 5)
-#         s.close()
-#         print "connectiong established"
-#     except socket.timeout:
-#         msg = """Can't detect the postgres server. If you're outside the
-#         intranet, you might need to turn the VPN on."""
-#         print "err"
-#         print socket.timeout(msg)
-
 def gather_time_stats(sid):
-# conn = DB.getNewConnection()
 	from django.db import connection
-	print "get time stats"
-	# print test_connection()
 	try:
-		print "in try"
 		c = connection.cursor()
-		print "cursor created"
+		# print "cursor created"
 		qry = "drop table if exists nb2_page_order cascade;"
 		c.execute(qry)
 
-		print "executed"
 		qry ="create table nb2_page_order(id serial primary key, source_id integer, user_id integer, page integer, ctime timestamp, session_id integer);"
 		c.execute(qry)
-		print "executed"
 		qry ="""		
 			insert into nb2_page_order(source_id, user_id, page, ctime,
 			session_id) select source_id, user_id, page, ctime, session_id
@@ -228,7 +179,6 @@ def gather_time_stats(sid):
 			order by session_id, ctime;
 			"""
 		c.execute(qry, [sid])
-		print "executed"
 		qry = "DROP INDEX IF EXISTS nb2_page_order_id_session_idx ;"
 		c.execute(qry)
 
@@ -243,7 +193,6 @@ def gather_time_stats(sid):
 
 		qry = "drop index if exists nb2_page_order_page_idx ;"
 		c.execute(qry)
-		print "executed"
 		qry = "CREATE INDEX nb2_page_order_id_session_idx ON nb2_page_order(session_id);"
 		c.execute(qry)
 
@@ -291,9 +240,6 @@ def gather_time_stats(sid):
 		c.close()
 
 	c.close()
-
-	print "cursor stuff complete"
-
 
 def get_total_times(sid):
 		# get total times
