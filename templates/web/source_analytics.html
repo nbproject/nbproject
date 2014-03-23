@@ -46,7 +46,6 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        // ANNOTATIONS CHART
         var data = new google.visualization.DataTable();
         data.addColumn('string','Page');
         data.addColumn('number','Threads');
@@ -68,10 +67,6 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(view, options);
 
-        var formatter = new google.visualization.ColorFormat();
-        formatter.addRange(null, null, 'yellow', 'yellow');
-        formatter.format(data,1);
-
         (function($){
           var metrics_on = [0,1,2,3,4];
           var colors_on = [];
@@ -87,19 +82,19 @@
           $(".chart-toggle").on("click", function() {
             var metric = $(this).val();
             var num = metric_mapping[metric];
-            console.log(num);
-            console.log("metrics on before: "+metrics_on);
+            // console.log(num);
+            // console.log("metrics on before: "+metrics_on);
             var i = $.inArray(num, metrics_on);
             if (i > -1) {
-              console.log("turning off");
+              // console.log("turning off");
               metrics_on.splice(i, 1);
               $(this).removeClass("on");
             } else {
-              console.log("turning on");
+              // console.log("turning on");
               metrics_on.push(num);
               $(this).addClass("on");
             }
-            console.log(metrics_on);
+            // console.log(metrics_on);
             view.setColumns(metrics_on);
 
             chart.draw(view, options);
@@ -250,8 +245,8 @@
         <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
         <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
         <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
-        <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time
-        <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time
+        <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
+        <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
       </div>
       <div id="chart_div"></div>
       <hr>
