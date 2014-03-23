@@ -27,6 +27,26 @@ body {
 	clear: both;
 }
 
+.feedback-prompt {
+	position:absolute;
+	top: 50px;
+	right: 20px;
+}
+
+.feedback-btn {
+	border-radius: 8px;
+	background-color: #bce1fa;
+	font-size: 14px;
+	text-decoration: none;
+	padding: 5px 8px;
+	border: 1px solid;
+	color: #000;
+}
+
+.feedback-btn:hover {
+	color: #777474;
+}
+
 .panel {
 	background-color: #fff;
 	border-radius: 12px 12px 0 0;
