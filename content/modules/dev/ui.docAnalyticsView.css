@@ -127,6 +127,29 @@
 	color: #109618;
 }
 
+.chart-toggle.annotations{
+	background-color: #DC3912;
+}
+
+.chart-toggle.questions {
+	background-color: #E19900;
+}
+
+.chart-toggle.participants {
+	background-color: #109618;
+}
+
+.chart-toggle {
+	color: #fff;
+	opacity: 0.5;
+	background: none transparent; 
+	border: none;
+}
+
+.chart-toggle.on {
+	opacity: 1.0;
+}
+
 .marker {
     width: 1em;
     height: 1em;

@@ -144,11 +144,11 @@ def get_page_stats(sid):
 			"num_annotations": a_stat, 
 			"num_questions": q_stat,
 			"num_participants": p_stat,
-			# "total_time": tt_stat,
-			# "avg_time": at_stat
+			"total_time": tt_stat,
+			"avg_time": at_stat
 		}
-		# chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat), int(tt_stat), int(at_stat)])
-		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat)])
+		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat), int(tt_stat), int(at_stat)])
+		# chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat)])
 		# time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
 		# avgtime_chart_array.append([str(p), int(at_stat)])
 		# totaltime_chart_array.append([str(p), int(tt_stat)])

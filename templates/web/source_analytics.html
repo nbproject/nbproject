@@ -53,44 +53,88 @@
         data.addColumn('number','Annotations');
         data.addColumn('number','Replies requested');
         data.addColumn('number', 'Participants');
-        // data.addColumn('number', 'Total time');
-        // data.addColumn('number', 'Avg time');
+        data.addColumn('number', 'Total time');
+        data.addColumn('number', 'Avg time');
         data.addRows(chart_stats);
         
         var options = {
           title: 'Page Stats',
-          hAxis: {title: 'Page'}
+          hAxis: {title: 'Page'},
+          // colors: ["blue", '#3366CC', '#DC3912', '#E19900', '#109618']
+          // series: {
+          //   1: {
+          //     color: '#3366CC'
+          //   },
+          //   2: {
+          //     color: '#DC3912' 
+          //   },
+          //   3: {
+          //     color: '#E19900'
+          //   }
+          // }
         };
+
+        data.setColumnProperty(1, "allowHtml", "true");
+        data.setColumnProperty(1, "style", "color:yellow");
+        data.setColumnProperty(1, "style", "background-color:yellow");
+
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0,1,2,3]);
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+        chart.draw(view, options);
 
-        // TIME CHART
-        var time_chart_stats = {{ time_chart_stats|safe }};
-        var tData = new google.visualization.DataTable();
-        tData.addColumn('string', 'Page');
-        tData.addColumn('number', 'Total Time');
-        tData.addColumn('number', 'Average Time');
-        tData.addRows(time_chart_stats)
-
-        var options = {
-          title: 'Time Stats',
-          hAxis: {title: 'Page'}
-        };
-
-        var view = new google.visualization.DataView(tData);
-        view.setColumns([0,2]);
-
-        var time_chart = new google.visualization.ColumnChart(document.getElementById('time_chart_div'));
-        time_chart.draw(view, options);
+        var formatter = new google.visualization.ColorFormat();
+        formatter.addRange(null, null, 'yellow', 'yellow');
+        formatter.format(data,1);
 
         (function($){
-          $(document).on("click", "#toggle_total_time", function() {
-            console.log("view in jquery handler "+view);
-            view.setColumns([0,1,2]);
-            time_chart.draw(view);
+          var metrics_on = [0,1,2,3];
+          var colors_on = [];
+          var metric_mapping = {
+            "Threads": 1,
+            "Annotations": 2,
+            "Replies Requested": 3,
+            "Participants": 4,
+            "Total Time": 5,
+            "Average Time": 6
+          };
+          var color_mapping = {
+            0: "blue",
+            1: '#3366CC', 
+            2: '#DC3912', 
+            3: '#E19900', 
+            4: '#109618',
+            5: 'red',
+            6: 'red'
+          };
+          $(".chart-toggle").on("click", function() {
+            var metric = $(this).val();
+            var num = metric_mapping[metric];
+            console.log(num);
+            console.log("metrics on before: "+metrics_on);
+            var i = $.inArray(num, metrics_on);
+            if (i > -1) {
+              console.log("turning off");
+              metrics_on.splice(i, 1);
+              $(this).removeClass("on");
+            } else {
+              console.log("turning on");
+              metrics_on.push(num);
+              $(this).addClass("on");
+            }
+            console.log(metrics_on);
+            view.setColumns(metrics_on);
+            // colors_on = [];
+            // for (var i=0; i++; i<metrics_on.length) {
+            //   console.log(color_mapping[metrics_on[i]]);
+            //   colors_on.push(color_mapping[metrics_on[i]]);
+            // }
+            // console.log(colors_on);
+            // options.colors = colors_on;
+            chart.draw(view, options);
           });
-
 
           var pgLabelClass = 'page-label';
           var pgPreviewClass = 'pg-preview';
@@ -233,8 +277,16 @@
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
       <div id="chart_div"></div>
+      <div id="chart-controls">
+        <!-- Show: <input type="button" class="chart-toggle annotations" value="Annotations"/>Annotations -->
+        <button class="chart-toggle annotations on" value="Annotations">Annotations</button>
+        <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
+        <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
+        <input type="checkbox" class="chart-toggle" value="Participants"/>Participants
+        <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time
+        <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time
+      </div>
       <div id="time_chart_div"></div>
-      <button id="toggle_total_time">Show total time</button>
       <hr>
       <div class="controls">
         <label>Show: </label>
