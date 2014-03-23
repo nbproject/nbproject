@@ -18,8 +18,8 @@
         <span class="page-num page-label"><%= page_num %></span>
         <div class="page-stats">
           <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
-          <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> annotations</span>
-          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> questions</span>
+          <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> comments</span>
+          <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies req.</span>
           <br/><span class="participants color-stat"><span class="val"><%= num_participants %></span> participants</span>
         </div>
         <div class="clearfix"></div>
@@ -48,7 +48,7 @@
         var data = new google.visualization.DataTable();
         data.addColumn('string','Page');
         data.addColumn('number','Threads');
-        data.addColumn('number','Annotations');
+        data.addColumn('number','Comments');
         data.addColumn('number','Replies requested');
         data.addColumn('number', 'Participants');
         data.addColumn('number', 'Total time');
@@ -241,8 +241,9 @@
       
       <div class="panel chart">
         <div class="control-bar">
-          <label>Display stats for:</label> <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Annotations
+          <label>Display stats for:</label> 
           <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
+          <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Comments
           <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
           <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
           <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
@@ -259,7 +260,7 @@
             <label>Show: </label>
             <select id="show-filter">
               <option value="all">All pages</option>
-              <option value="annotations">Pages with annotations</option>
+              <option value="annotations">Pages with comments</option>
               <option value="questions">Pages with replies requested</option>
             </select>
           
@@ -267,7 +268,7 @@
             <select id="sort-by">
               <option value="page_num">Page number</option>
               <option value="num_threads">Number of threads</option>
-              <option value="num_annotations">Number of annotations</option>
+              <option value="num_annotations">Number of comments</option>
               <option value="num_questions">Number of replies requested</option>
               <option value="num_participants">Number of participants</option>
             </select>
