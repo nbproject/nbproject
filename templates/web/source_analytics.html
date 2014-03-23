@@ -26,7 +26,6 @@
     </script>
     <script type="text/template" id="highlight-template">
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
-        <div class="marker"></div>
       </div>
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -240,40 +239,43 @@
     <div class="main-wrapper">
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
-      <div id="chart-controls">
-        Display stats for: <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Annotations
-        <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
-        <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
-        <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
-        <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
-        <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
-      </div>
-      <div id="chart_div"></div>
-      <hr>
-      <div class="controls">
-        <label>Show: </label>
-        <select id="show-filter">
-          <option value="all">All pages</option>
-          <option value="annotations">Pages with annotations</option>
-          <option value="questions">Pages with replies requested</option>
-        </select>
-      
-        <label>Sort by: </label>
-        <select id="sort-by">
-          <option value="page_num">Page number</option>
-          <option value="num_threads">Number of threads</option>
-          <option value="num_annotations">Number of annotations</option>
-          <option value="num_questions">Number of replies requested</option>
-          <option value="num_participants">Number of participants</option>
-        </select>
+      <div class="panel chart">
+        <div id="chart-controls">
+          <label>Display stats for:</label> <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Annotations
+          <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
+          <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
+          <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
+          <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
+          <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
+        </div>
+        <div id="chart_div" style="width:90%;"></div>
       </div>
 
+      <div class="panel heatmap">
+        <div class="controls">
+          <label>Show: </label>
+          <select id="show-filter">
+            <option value="all">All pages</option>
+            <option value="annotations">Pages with annotations</option>
+            <option value="questions">Pages with replies requested</option>
+          </select>
+        
+          <label>Sort by: </label>
+          <select id="sort-by">
+            <option value="page_num">Page number</option>
+            <option value="num_threads">Number of threads</option>
+            <option value="num_annotations">Number of annotations</option>
+            <option value="num_questions">Number of replies requested</option>
+            <option value="num_participants">Number of participants</option>
+          </select>
+        </div>
       <span class="tip">
         Hover over page numbers for enlarged views. Click page images to view annotations in NB.
       </span>
 
       <div id="pages-container"></div>
       <div class="clearfix"></div>
+    </div>
     </div>
 
     <div class="pg-preview"><img class="img-enlarged" /></div>

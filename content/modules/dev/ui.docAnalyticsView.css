@@ -1,6 +1,10 @@
 .nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
 	overflow: auto;
 }
+
+body {
+	background-color: rgb(22,73,90);
+}
 .main-wrapper {
 	margin: 10px 20px;
 }
@@ -16,9 +20,18 @@
 
 #pages-container {
 	clear: both;
-
 }
 
+.panel {
+	background-color: #fff;
+	border-radius: 12px;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+label {
+	font-weight: bold;
+}
 .page-wrap {
 	float: left;
 /*	width: 170px;
@@ -33,11 +46,15 @@
 
 .header-link {
 	text-decoration: none;
-	color: #000000;
+	color: rgb(255,234,128);
 }
 
 .header-link:hover {
 	color: #6E97EB;
+}
+
+.heatmap {
+	padding-top:20px;
 }
 
 .page-num {
@@ -73,8 +90,7 @@
 }
 
 .highlight {
-	/*opacity:0.15;*/
-	/*background:#FFF53A;*/
+	background-color:rgba(255,245,48, 0.15);
 	position: absolute;
 	z-index: 2;
 	border: 1px solid rgba(0,0,0,0.4);
@@ -171,8 +187,8 @@
 }
 
 .tip {
-	margin-left: 30px;
-	background-color: #FFFFBA;
+	margin-right: 20px;
+	float:right;
 	padding: 3px 10px;
 	font-style: italic;
 	border-radius: 5px;
