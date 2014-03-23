@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
 import  urllib, json, base64, logging 
-from base import auth, signals, annotations, utils_response as UR, models as M
+from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
 import string, random, forms
 from random import choice
@@ -53,10 +53,23 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None):
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
-
     r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
+    return r
 
+# o is a dictionary representing the variables
+def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, mimetype=None):
+    """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
+    user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
+    if user is None:
+        redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
+        return HttpResponseRedirect(redirect_url)
+    if user.guest is False and (user.firstname is None or user.lastname is None): 
+        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
+    signals.page_served.send("page", req=req, uid=user["id"])
+    r = render_to_response(tpl, o, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
+    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
 
 def index(req): 
@@ -122,7 +135,19 @@ def source(req, n, allow_guest=False):
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
     else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
-    
+
+def source_analytics(req, n):
+    pages, chart_stats = doc_analytics.get_page_stats(n)
+    highlights = doc_analytics.get_highlights(n)
+    source = M.Source.objects.get(pk=n)
+    var_dict = {
+        'source': source,
+        'pages': pages,
+        'chart_stats': chart_stats,
+        'highlights': highlights,
+        'numpages': source.numpages
+    }
+    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, mimetype="text/html")
 
 def your_settings(req): 
     return __serve_page(req, 'web/your_settings.html', mimetype="text/html")
