@@ -240,7 +240,7 @@
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
       <div class="panel chart">
-        <div id="chart-controls">
+        <div class="control-bar">
           <label>Display stats for:</label> <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Annotations
           <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
           <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
@@ -248,33 +248,38 @@
           <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
           <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
         </div>
-        <div id="chart_div" style="width:90%;"></div>
+        <div class="panel-content">
+          <div id="chart_div" style="width:90%;"></div>
+        </div>
       </div>
 
       <div class="panel heatmap">
-        <div class="controls">
-          <label>Show: </label>
-          <select id="show-filter">
-            <option value="all">All pages</option>
-            <option value="annotations">Pages with annotations</option>
-            <option value="questions">Pages with replies requested</option>
-          </select>
-        
-          <label>Sort by: </label>
-          <select id="sort-by">
-            <option value="page_num">Page number</option>
-            <option value="num_threads">Number of threads</option>
-            <option value="num_annotations">Number of annotations</option>
-            <option value="num_questions">Number of replies requested</option>
-            <option value="num_participants">Number of participants</option>
-          </select>
-        </div>
-      <span class="tip">
-        Hover over page numbers for enlarged views. Click page images to view annotations in NB.
-      </span>
-
-      <div id="pages-container"></div>
-      <div class="clearfix"></div>
+        <div class="control-bar">
+          <div class="controls">
+            <label>Show: </label>
+            <select id="show-filter">
+              <option value="all">All pages</option>
+              <option value="annotations">Pages with annotations</option>
+              <option value="questions">Pages with replies requested</option>
+            </select>
+          
+            <label>Sort by: </label>
+            <select id="sort-by">
+              <option value="page_num">Page number</option>
+              <option value="num_threads">Number of threads</option>
+              <option value="num_annotations">Number of annotations</option>
+              <option value="num_questions">Number of replies requested</option>
+              <option value="num_participants">Number of participants</option>
+            </select>
+          </div>
+        <span class="tip">
+          Hover over page numbers for enlarged views. Click page images to view annotations in NB.
+        </span>
+      </div>
+      <div class="panel-content">
+        <div id="pages-container"></div>
+        <div class="clearfix"></div>
+      </div>
     </div>
     </div>
 
