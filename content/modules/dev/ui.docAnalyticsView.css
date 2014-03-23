@@ -141,13 +141,18 @@
 
 .chart-toggle {
 	color: #fff;
-	opacity: 0.5;
+	/*opacity: 0.5;*/
 	background: none transparent; 
 	border: none;
 }
 
 .chart-toggle.on {
 	opacity: 1.0;
+}
+
+#chart-controls {
+	width: 700px;
+	margin: 0 auto;
 }
 
 .marker {

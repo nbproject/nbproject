@@ -60,27 +60,10 @@
         var options = {
           title: 'Page Stats',
           hAxis: {title: 'Page'},
-          // colors: ["blue", '#3366CC', '#DC3912', '#E19900', '#109618']
-          // series: {
-          //   1: {
-          //     color: '#3366CC'
-          //   },
-          //   2: {
-          //     color: '#DC3912' 
-          //   },
-          //   3: {
-          //     color: '#E19900'
-          //   }
-          // }
         };
 
-        data.setColumnProperty(1, "allowHtml", "true");
-        data.setColumnProperty(1, "style", "color:yellow");
-        data.setColumnProperty(1, "style", "background-color:yellow");
-
-
         var view = new google.visualization.DataView(data);
-        view.setColumns([0,1,2,3]);
+        view.setColumns([0,1,2,3,4]);
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(view, options);
@@ -90,7 +73,7 @@
         formatter.format(data,1);
 
         (function($){
-          var metrics_on = [0,1,2,3];
+          var metrics_on = [0,1,2,3,4];
           var colors_on = [];
           var metric_mapping = {
             "Threads": 1,
@@ -100,15 +83,7 @@
             "Total Time": 5,
             "Average Time": 6
           };
-          var color_mapping = {
-            0: "blue",
-            1: '#3366CC', 
-            2: '#DC3912', 
-            3: '#E19900', 
-            4: '#109618',
-            5: 'red',
-            6: 'red'
-          };
+
           $(".chart-toggle").on("click", function() {
             var metric = $(this).val();
             var num = metric_mapping[metric];
@@ -126,13 +101,7 @@
             }
             console.log(metrics_on);
             view.setColumns(metrics_on);
-            // colors_on = [];
-            // for (var i=0; i++; i<metrics_on.length) {
-            //   console.log(color_mapping[metrics_on[i]]);
-            //   colors_on.push(color_mapping[metrics_on[i]]);
-            // }
-            // console.log(colors_on);
-            // options.colors = colors_on;
+
             chart.draw(view, options);
           });
 
@@ -276,17 +245,15 @@
     <div class="main-wrapper">
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       
-      <div id="chart_div"></div>
       <div id="chart-controls">
-        <!-- Show: <input type="button" class="chart-toggle annotations" value="Annotations"/>Annotations -->
-        <button class="chart-toggle annotations on" value="Annotations">Annotations</button>
+        Display stats for: <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Annotations
         <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
         <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
-        <input type="checkbox" class="chart-toggle" value="Participants"/>Participants
+        <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
         <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time
         <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time
       </div>
-      <div id="time_chart_div"></div>
+      <div id="chart_div"></div>
       <hr>
       <div class="controls">
         <label>Show: </label>

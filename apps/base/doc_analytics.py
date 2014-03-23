@@ -154,8 +154,8 @@ def get_page_stats(sid):
 		# totaltime_chart_array.append([str(p), int(tt_stat)])
 		time_chart_array.append([str(p), int(math.log(tt_stat)), int(at_stat)])
 	# print pages
-	# for p in pages:
-	# 	print pages[p]["avg_time"]
+	for p in pages:
+		print pages[p]["avg_time"]
 	# print chart_array	
 	return (json.dumps(pages), chart_array, time_chart_array)
 
