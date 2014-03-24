@@ -1,13 +1,22 @@
 .nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
 	overflow: auto;
 }
+
+body {
+	background-color: rgb(22,73,90);
+}
 .main-wrapper {
 	margin: 10px 20px;
 }
 
 .controls {
-	margin-bottom: 10px;
 	display: inline-block;
+}
+
+.control-bar {
+	padding: 10px;
+	background-color: #D5D2D2;
+	border-radius: 12px 12px 0 0;
 }
 
 .controls select {
@@ -16,9 +25,46 @@
 
 #pages-container {
 	clear: both;
-
 }
 
+.feedback-prompt {
+	position:absolute;
+	top: 50px;
+	right: 20px;
+}
+
+.feedback-btn {
+	border-radius: 8px;
+	background-color: #bce1fa;
+	font-size: 14px;
+	text-decoration: none;
+	padding: 5px 8px;
+	border: 1px solid;
+	color: #000;
+}
+
+.feedback-btn:hover {
+	color: #777474;
+}
+
+.panel {
+	background-color: #fff;
+	border-radius: 12px 12px 0 0;
+	/*padding: 10px;*/
+	margin-bottom: 20px;
+}
+
+.panel-content {
+	padding: 10px;
+}
+
+.heatmap > .panel-content {
+	padding: 0;
+}
+
+label {
+	font-weight: bold;
+}
 .page-wrap {
 	float: left;
 /*	width: 170px;
@@ -33,7 +79,7 @@
 
 .header-link {
 	text-decoration: none;
-	color: #000000;
+	color: rgb(255,234,128);
 }
 
 .header-link:hover {
@@ -45,7 +91,7 @@
 	display: inline-block;
 	float: left;
 	margin: 5px;
-	padding: 5px 10px;
+	padding: 5px 3px;
 	clear: both;
 	-moz-border-radius: 15px;
 	border-radius: 15px;
@@ -61,8 +107,10 @@
 }
 
 .page-img {
-	width: 170px;
-	height: 220px;
+/*	width: 170px;
+	height: 220px;*/
+	/*width: 25%;*/
+	/*height: 25%;*/
 	float:left;
 }
 
@@ -71,23 +119,23 @@
 }
 
 .highlight {
-	opacity:0.15;
-	background:#FFF53A;
+	background-color:rgba(255,245,48, 0.15);
 	position: absolute;
 	z-index: 2;
+	border: 1px solid rgba(0,0,0,0.4);
 }
 
 .pg-preview {
 	position:absolute;
 	z-index:3;
-	width:510px;
-	height:660px;
-	top: 50%;
-	left: 50%;
-	margin-top:-330px;
-	margin-left:-255px;
+	width:/*510px;
+	height*/:660px;
+	/*top: 50%;*/
+	top: 0;
+	left: 20%;
+/*	margin-top:-330px;
+	margin-left:-255px;*/
 	display:none;
-	border: 1px solid;
 }
 
 .img-enlarged {
@@ -120,13 +168,54 @@
 	color: #E19900;
 }
 
+.num-participants, .participants {
+	color: #109618;
+}
+
+.chart-toggle.annotations{
+	background-color: #DC3912;
+}
+
+.chart-toggle.questions {
+	background-color: #E19900;
+}
+
+.chart-toggle.participants {
+	background-color: #109618;
+}
+
+.chart-toggle {
+	color: #fff;
+	/*opacity: 0.5;*/
+	background: none transparent; 
+	border: none;
+	margin-left: 15px;
+}
+
+.chart-toggle.on {
+	opacity: 1.0;
+}
+
+
+
+.marker {
+    width: 1em;
+    height: 1em;
+    border-radius:50%;
+    background-color: green;
+    opacity: 0.2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
 .chart_div {
 	margin-bottom: 20px;
 }
 
 .tip {
-	margin-left: 30px;
-	background-color: #FFFFBA;
+	margin-right: 20px;
+	float:right;
 	padding: 3px 10px;
 	font-style: italic;
 	border-radius: 5px;

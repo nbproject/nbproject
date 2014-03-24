@@ -1,6 +1,5 @@
 /*global NB$:true NB:true PageView:true HighlightView:true DocumentView:true Backbone:true _:true jQuery:true */
 
-
 var PageView = Backbone.View.extend({
   
   tagName: 'div',
@@ -18,10 +17,6 @@ var PageView = Backbone.View.extend({
 });
 
 var HighlightView = Backbone.View.extend({
-  // defaults: {
-  //   pgHeight: 220,
-  //   preview: false  // indicates whether it's for blown-up version or not
-  // },
   initialize: function() {
     this.render();
   },
@@ -32,12 +27,15 @@ var HighlightView = Backbone.View.extend({
   },
   template: _.template(jQuery("#highlight-template").html()),
   render: function(){
-    // TODO: better way to calculate variables?
-    var pgHtLg = 1045;
-    var pgHtSm = jQuery(this.el).find(".page-img").height(); // height of page image
-    var s = 1.577; // calculated complicatedly
-    var s2 = pgHtSm/(s*pgHtLg);
     var m = this.model.attributes;
+    var css_scale = 0.20;
+    var fudge_scale; // scale of img with 72 dpi, 100%
+    if (m.page_orientation === "portrait") {
+      fudge_scale = 0.4802; // portrait
+    } else {
+      fudge_scale = 0.6244; //landscape
+    }
+    var s2 = css_scale*fudge_scale;
     jQuery(this.el).append(this.template({
       'x': m.x*s2,
       'y': m.y*s2,
@@ -64,13 +62,13 @@ var DocumentView = Backbone.View.extend({
     });
   },
 
-  // type is 'annotations' or 'questions'
+  // property is 'annotations' or 'questions'
   filterByPropertyAndNum: function(property, num) {
     var tag = "."+property;
     jQuery(".page-wrap").show()
                         .each(function(index, value) {
                           var el = jQuery(this);
-                          var val = el.find(tag).html();
+                          var val = el.find(tag).find(".val").html();
                           if (val <= num) {
                             el.hide();
                           }
@@ -90,7 +88,7 @@ var DocumentView = Backbone.View.extend({
     var fragment = document.createDocumentFragment();
     _(this._pageViews).each(function(pv) {
       fragment.appendChild(pv.render().el);
-    });  
+    });
     jQuery(_this.el).html(fragment);
   }
 });
