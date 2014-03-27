@@ -46,7 +46,7 @@
         self._location = null; //selected location (might not be on current page)
 
         self.element.addClass("notepaneView").append("<div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
-        $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
+        },
         _defaultHandler: function(evt){
         var self    = this;
         var sel, container, delta_top, delta_bottom, o, h, H, scrollby;

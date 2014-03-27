@@ -288,11 +288,19 @@
             $header.append($filters).append($filtered_message).append($unfiltered_message);
             self.element.append($header).append($selected_threads).append($notepaneView_pages);
 
-            $("body").append(
-                "<ul id='contextmenu_notepaneView' class='contextMenu'>" +
-                    "<li class='context export-top'><a href='#export-top'>Transfer Original Post</a></li>"+
-                    "<li class='context export-all'><a href='#export-all'>Transfer Entire Thread</a></li>"+
-                    "</ul>");
+            // Declare NotepaneView.Doc ContextMenu
+            $.contextMenu({
+                selector: '.location-lens',
+                build: function ($trigger, event) {
+                    var item_object = self._context_build.call(self, $trigger, event);
+                    return {
+                        callback: function (key, options) {
+                            self._context_callback.call(self, this, key, options);
+                        },
+                        items: item_object
+                    };
+                }
+            });
 
             $("body").append(
                 $("<div>").attr("id", "filterWizardDialog")
@@ -664,6 +672,26 @@
             }
 
         },
+        _context_build: function ($trigger, event) {
+            var self = this;
+
+            if (self._model.get("ensemble", {}).first().admin === false) {
+                return false;
+            }
+
+            return {
+                "export-top": { name: "Transfer Original Post", icon: "export-top" },
+                "export-all": { name: "Transfer Entire Thread", icon: "export-all" },
+            };
+        },
+        _context_callback: function (el, action) {
+            var $loc = el.closest("div.location-lens");
+            var id_item = $loc.attr("id_item");
+            if (action === "export-top" || action === "export-all") {
+                var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
+                window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
+            }
+        },
         _render: function(do_erase){
             /*
              * this is where we implement the caching strategy we want...
@@ -735,16 +763,6 @@
                         $("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
                     $pane.append(loc_lens);
 
-                    if (admin === true) {
-                        loc_lens.contextMenu({menu: "contextmenu_notepaneView"}, function(action, el, pos) {
-                            var $loc = $(el).closest("div.location-lens");
-                            var id_item = $loc.attr("id_item");
-                            if (action === "export-top" || action === "export-all") {
-                                var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
-                                window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
-                            }
-                        });
-                    }
                 });
 
                 $("div.location-lens", $pane).click(self._f_location_click).mouseenter(self._f_location_hover).mouseleave(self._f_location_out).removeClass("lens-odd").filter(":odd").addClass("lens-odd");
@@ -759,7 +777,7 @@
             return null;
         }, 
         set_model: function(model){
-            var self=this;
+            var self = this;
             self._STAR = $.concierge.get_constant("STAR");
             self._QUESTION =  $.concierge.get_constant("QUESTION");
             self._model =  model;

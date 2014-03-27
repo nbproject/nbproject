@@ -7,8 +7,6 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 
 div.threadview{
 overflow-y: auto;
-//background-color: #E6E6E6 !important;
-//font-size: small;
 }
 
 div.threadview-branch{
@@ -211,46 +209,55 @@ button.mark-toggle.active{
 border-bottom: 5px solid #ffff00;
 }
 
-
-.contextMenu li.context{
-background-image: url("/content/data/icons/png/theme_dark.png");
-background-repeat: no-repeat;
+.context-menu-item.icon {
+    position: relative;
 }
 
-.contextMenu li.hover.context{
+.context-menu-item.icon:before {
+background-image: url("/content/data/icons/png/theme_dark.png");
+background-repeat: no-repeat;
+content: '';
+position: absolute;
+z-index: 0;
+width: 18px;
+height: 18px;
+left: 1px;
+top: 0;
+}
+
+.context-menu-item.icon.hover:before{
 background-image: url("/content/data/icons/png/theme_light.png");
 }
 
-.contextMenu li.context.reply{
+.context-menu-item.icon.icon-reply:before{
     background-position: -300px 0px;
 }
 
-.contextMenu li.context.thanks{
+.context-menu-item.icon.icon-thanks:before{
     background-position: -280px 0px;
 }
 
-.contextMenu li.context.edit{
+.context-menu-item.icon.icon-edit:before{
     background-position: -320px 0px;
 }
 
-.contextMenu li.context.question{
+.context-menu-item.icon.icon-question:before{
     background-position: -180px 0px;
 }
 
-.contextMenu li.context.noquestion{
+.context-menu-item.icon.icon-noquestion:before{
     background-position: -260px 0px;
 }
 
-
-.contextMenu li.context.star{
+.context-menu-item.icon.icon-star:before{
     background-position: -160px 0px;
 }
 
-.contextMenu li.context.nostar{
+.context-menu-item.icon.icon-nostar:before{
     background-position: -240px 0px;
 }
 
-.contextMenu li.context.delete{
+.context-menu-item.icon.icon-delete:before{
     background-position: -339px 1px;
 }
 

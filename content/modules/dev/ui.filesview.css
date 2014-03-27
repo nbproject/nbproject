@@ -3,11 +3,6 @@ overflow-y: auto;
 height: 100%;
 }
 
-
-.contextMenu {
-        font-family: Verdana,Arial,Helvetica,sans-serif;
-}
-
 td.filesview_ftitle:hover{
 background-color: #ffffa0;
 cursor: context-menu;

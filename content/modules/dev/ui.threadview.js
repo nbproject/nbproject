@@ -60,21 +60,32 @@
                 });
             }); 
 
-        //splash screen: 
-        $("div.threadview-pane", self.element).append($.concierge.get_component("mini_splashscreen")());        
-        $("div.threadview-header", self.element).hide();
-        self._ready = true;
-        if (self._doDelayedRender){
-            self._render();
-        }
-        $("body").append("<ul id='contextmenu_threadview' class='contextMenu'> "+
-                         "<li class='context thanks'><a href='#thanks'>That helped. Thanks !</a></li>"+
-                         "<li class='context edit'><a href='#edit'>Edit</a></li> <li class='context reply'><a href='#reply'>Reply</a></li>"+
-                         "<li class='context question menu-separator'><a href='#question'>Request a reply</a></li> "+
-                         "<li class='context noquestion menu-separator'><a href='#noquestion'>Remove 'reply requested'</a></li> "+
-                         "<li class='context star'><a href='#star'>Mark as favorite</a></li> "+
-                         "<li class='context nostar'><a href='#nostar'>Remove from favorites</a></li> "+
-                         "<li class='context delete menu-separator'><a href='#delete'>Delete</a></li></ul>");                   
+            //splash screen: 
+            $("div.threadview-pane", self.element).append($.concierge.get_component("mini_splashscreen")());        
+            $("div.threadview-header", self.element).hide();
+            self._ready = true;
+            if (self._doDelayedRender){
+                self._render();
+            }
+
+            // Declare Threadview Context Menu
+            $.contextMenu({
+                selector: 'div.note-lens,a.optionmenu',
+                build: function($trigger, e) {
+
+                    var item_object = self._context_build.call(self, $trigger, e);
+
+                    return {
+                        callback: function(key, options) {
+                            // we use 'call' and supply 'self' so that _context
+                            // will use 'self' as 'this', not the context menu.
+                            self._context_callback.call(self,this, key, options);
+                        },
+                        items: item_object
+                    };
+                }
+            });
+
         },
         _defaultHandler: function(evt){
         if (this._file ===  $.concierge.get_state("file")){
@@ -212,7 +223,130 @@
                     section_header.text(section.name);
                 }              
             }
-        }, 
+        },
+        _context_build: function(el, event){
+            var self = this;
+            var id_item = el.closest("div.note-lens").attr("id_item");
+            var m = self._model;                   
+            var c = m.o.comment[id_item];
+
+            var items = {
+                "thanks": { name: "That helped. Thanks!", icon: "thanks" },
+                "edit": { name: "Edit", icon: "edit" },
+                "reply": { name: "Reply", icon: "reply" },
+                "sep1": "---------",
+                "question": { name: "Request a reply", icon: "question" },
+                "noquestion": { name: "Remove 'reply requested'", icon: "noquestion" },
+                "star": { name: "Mark as favorite", icon: "star" },
+                "nostar": { name: "Remove from favorites", icon: "nostar"},
+                "sep2": "---------",
+                "delete": { name: "Delete", icon: "delete" }
+            };
+
+            //edit and delete: 
+            if ((c.id_author !== self._me.id) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
+                delete items["edit"];
+                delete items["delete"];
+            }
+
+            //star and question: 
+            var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type: self._QUESTION });
+            var tms_comment = tms_location.intersect(c.ID, "comment_id");
+
+            //is this one of my active questions: if so, hide context.question
+            if ( tms_comment.is_empty() ) {
+                delete items["noquestion"];
+            } else {
+                delete items["question"];
+            }
+
+            
+            if (m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty()) {
+                delete items["li.context.nostar"];
+            } else {
+                delete items["li.context.star"];
+            }
+
+            // can't thank a comment for which I'm the author or where I haven't
+            // any replyrequested or which was authored before the comment I
+            // marked as "reply requested".
+            if ( tms_location.is_empty() || c.id_author === self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
+                delete items["thanks"];
+            }
+
+            return items;
+        },
+        _on_delete: function(p){
+            var self = this;
+            var model = self._model;
+            var c = model.o.comment[p.id_comment];
+
+            $.I("Note #"+p.id_comment+" has been deleted");
+            model.remove("comment", p.id_comment);
+
+            if (c.id_parent === null){
+                model.remove("location", c.ID_location);
+                // model.remove("html5location", c.ID_location); FIXME: This is not working, but it should.
+            } else {
+                //we force an update of locations in case some styling needs to be changed. 
+                var locs = {};
+                locs[c.ID_location] = model.o.location[c.ID_location];
+                model.add("location", locs);
+            }
+        },
+        _context_callback: function(el, action, options){
+            var self = this;
+            var $el = $(el);
+            var $note = $el.closest("div.note-lens");
+            var id_item = $note.attr("id_item");
+
+            switch (action) {
+            case "reply":             
+                $.concierge.trigger({type: "reply_thread", value: id_item});
+                break;
+            case "edit": 
+                $.concierge.trigger({type: "edit_thread", value: id_item});
+                break;
+            case "question": 
+            case "noquestion": 
+                $.concierge.get_component("mark_thread")({
+                    id_location: self._location,
+                    type: self._QUESTION,
+                    comment_id: id_item
+                }, function(p){                
+                    self._model.add("threadmark", p.threadmarks);
+                    var i, tm;
+                    for ( i in p.threadmarks){
+                        tm = p.threadmarks[i];
+                        $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as 'Reply Requested'.");
+                    }
+                });
+                break;
+            case "star": 
+            case "nostar": 
+                $.concierge.get_component("mark_thread")({
+                    id_location: self._location,
+                    type: self._STAR,
+                    comment_id: id_item
+                }, function(p){                
+                    self._model.add("threadmark", p.threadmarks);
+                    var i, tm;
+                    for ( i in p.threadmarks){
+                        tm = p.threadmarks[i];
+                        $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
+                    }
+                });
+                break;
+            case "thanks": 
+                $.L("TODO: " + action);
+            break;
+            case "delete":
+                if (confirm("Are you sure you want to delete this note ?")){
+                    $.concierge.get_component("note_deleter")({id_comment: id_item}, self._on_delete);
+                }
+                break;
+            }
+        },
         _render: function(){    
         var self    = this;
         self._me =  $.concierge.get_component("get_userinfo")();
@@ -231,65 +365,6 @@
         }
         $pane.append(this._commentLabelsFactory(root, 2));
         $pane.append(this._fill_tree(model, root));
-        var f_on_delete = function(p){
-            $.I("Note #"+p.id_comment+" has been deleted");
-            var c = model.o.comment[p.id_comment];
-            model.remove("comment", p.id_comment);
-
-            if (c.id_parent === null){
-                model.remove("location", c.ID_location);
-                // model.remove("html5location", c.ID_location); FIXME: This is not working, but it should.
-            } else {
-                //we force an update of locations in case some styling needs to be changed. 
-                var locs = {};
-                locs[c.ID_location] = model.o.location[c.ID_location];
-                model.add("location", locs);
-            }
-        };
-        var f_context = function(action, el, pos){
-            var $el    = $(el);
-            var $note    =  $el.closest("div.note-lens");
-            var id_item =  $note.attr("id_item");
-            switch (action){
-            case "reply":             
-            $.concierge.trigger({type: "reply_thread", value: id_item});
-            break;
-            case "edit": 
-            $.concierge.trigger({type: "edit_thread", value: id_item});
-            break;
-            case "question": 
-            case "noquestion": 
-            $.concierge.get_component("mark_thread")({id_location: self._location, type: self._QUESTION, comment_id: id_item}, function(p){                
-                self._model.add("threadmark", p.threadmarks);
-                var i, tm;
-                for ( i in p.threadmarks){
-                    tm = p.threadmarks[i];
-                    $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as 'Reply Requested'.");
-                }
-                });
-            break;
-            
-            case "star": 
-            case "nostar": 
-            $.concierge.get_component("mark_thread")({id_location: self._location, type: self._STAR, comment_id: id_item}, function(p){                
-                self._model.add("threadmark", p.threadmarks);
-                var i, tm;
-                for ( i in p.threadmarks){
-                    tm = p.threadmarks[i];
-                    $.I("Comment #"+tm.comment_id+ " has been "+(tm.active ? "":"un")+"marked as favorite.");
-                }
-                });
-            break;
-            case "thanks": 
-            $.L("TODO: " + action);
-            break;
-            case "delete":
-            if (confirm("Are you sure you want to delete this note ?")){
-                $.concierge.get_component("note_deleter")({id_comment: id_item}, f_on_delete);
-            }
-            break;
-            }
-        };
         var f_reply = function(event){
             var id_item = $(event.target).closest("div.note-lens").attr("id_item");
             $.concierge.trigger({type: "reply_thread", value: id_item});
@@ -312,34 +387,9 @@
                     });
             }
         };
-        $("div.note-lens", $pane).contextMenu({menu: "contextmenu_threadview"}, f_context);
         $("a.replymenu", $pane).click(f_reply);
         $("div.commentlabel_container", $pane).click(f_comment_label);
-        $("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
-        $("#contextmenu_threadview").bind("beforeShow", function(event, el){
-            var id_item = el.closest("div.note-lens").attr("id_item");
-            var m    = self._model;                   
-            var c = m.o.comment[id_item];
-            $("li", this).show();
-
-            //edit and delete: 
-            if ((c.id_author !== self._me.id) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
-                $("li.context.edit, li.context.delete", this).hide();
-            }        
-            //star and question: 
-            var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type: self._QUESTION });    
-            var tms_comment = tms_location.intersect(c.ID, "comment_id");
-            //is this one of my active questions: if so, hide context.question
-            var to_hide = [];
-            to_hide.push(tms_comment.is_empty() ?  "li.context.noquestion": "li.context.question");
-            to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context.nostar": "li.context.star" );
-            // can't thank a comment for which I'm the author or where I haven't any replyrequested or which was authored before the comment I marked as "reply requested".
-            if ( tms_location.is_empty() || c.id_author === self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
-                to_hide.push("li.context.thanks");
-            }
-            $(to_hide.join(","), this).hide();            
-            });
-        }, 
+         }, 
         set_model: function(model){
         var self=this;
         self._model =  model;

@@ -47,7 +47,7 @@
 
         self.element.addClass("notepaneView").addClass("threadview").append("<div class='splash'/><div class='notepaneView-header'></div><div class='notepaneView-pages'/>");
         $("div.splash", self.element).html($.concierge.get_component("splash_notepaneview")());
-        $("body").append("<ul id='contextmenu_notepaneView' class='contextMenu'><li class='reply'><a href='#reply'>Reply</a></li></ul>");                   },
+        },
         _defaultHandler: function(evt){
         var self    = this;
         var sel, container, delta_top, delta_bottom, h, H, scrollby;
