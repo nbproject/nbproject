@@ -134,7 +134,11 @@ def canImportAnnotation(uid, from_id_source, to_id_source):
         return False
 
     return canAnnotate(uid, to_ensemble.pk)
-    
+
+def canAdministrateLocation(uid, id_location):
+    ensemble = M.Location.objects.get(pk=id_location).ensemble
+    o = M.Membership.objects.filter(ensemble__id=ensemble.pk, user__id=uid, deleted=False, admin=True)
+    return (len(o) != 0)
 
 def addUser(email, password, conf, valid=0, guest=0):
     o = M.User()

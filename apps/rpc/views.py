@@ -67,6 +67,8 @@ __EXPORTS = [
     "advanced_filter",
     "get_top_comments_from_locations",
     "bulk_import_annotations",
+    "set_location_section",
+    "promote_location_by_copy"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -724,6 +726,19 @@ def bulk_import_annotations(P, req):
     if not auth.canImportAnnotation(uid, P["from_source_id"], P["to_source_id"]):
         return UR.prepare_response({}, 1, "NOT ALLOWED")
     return UR.prepare_response( annotations.bulkImportAnnotations(P["from_source_id"], P["to_source_id"], P["locs_array"], P["import_type"]))
+
+def set_location_section(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canAdministrateLocation(uid, P["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    result = annotations.setLocationSection(P["id_location"], P["id_section"])
+    return UR.prepare_response( result )
+
+def promote_location_by_copy(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canAdministrateLocation(uid, P["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    return UR.prepare_response( annotations.promoteLocationByCopy(P["id_location"]) )
 
 @csrf_exempt
 def other(req):

@@ -705,7 +705,7 @@
                 return false;
             }
 
-            if (loc.secton_id === undefined || loc.secton_id === null) {
+            if (loc.section_id === undefined || loc.section_id === null) {
                 delete items["promote"];
                 items["reassign-section"].items["unset-section"].name =
                     "[X] " + items["reassign-section"].items["unset-section"].name;
@@ -716,9 +716,9 @@
             } else {
                 for (section_id in sections.items) {
                     section = sections.items[section_id];
-                    var menu_item_name = ((loc.section_id === section_id) ? "[X] " : "") + section.name;
+                    var menu_item_name = ((String(loc.section_id) === section_id) ? "[X] " : "") + section.name;
                     items["reassign-section"].items["set-section:" + section_id] = {
-                        name: section.name
+                        name: menu_item_name
                     };
                 }
             }
@@ -736,11 +736,22 @@
 
             if (action === "unset-section" || action === "promote-entire") {
                 // set the section of the location with "ID_item" to "None"
+                $.concierge.get_component("set_location_section")({
+                    id_location: id_item,
+                    id_section: null
+                }, function (response) {
+
+                });
                 return;
             }
 
             if (action === "promote-copy") {
                 // copy location + top comment over to each section other than "this"
+                $.concierge.get_component("promote_location_by_copy")({
+                    id_location: id_item
+                }, function (response) {
+
+                });
                 return;
             }
 
@@ -750,6 +761,12 @@
             if (result) {
                 // set the section ID for the location with "ID_item" to "section_id"
                 var section_id = result[1];
+                $.concierge.get_component("set_location_section")({
+                    id_location: id_item,
+                    id_section: section_id
+                }, function (response) {
+
+                });
                 return;
             }
 

@@ -741,6 +741,38 @@ def addNote(payload):
         comment.save()
         return comment
 
+def setLocationSection(id_location, id_section):
+    location = M.Location.objects.get(pk = id_location)
+    if id_section:
+        location.section = M.Section.objects.get(pk = id_section)
+    else:
+        location.section = None
+    location.save()
+    return UR.model2dict(location)
+
+def promoteLocationByCopy(id_location):
+    location = M.Location.objects.get(pk = id_location)
+    if location.section == None:
+        return { "status": "Already promoted" }
+
+    # Get List of All Sections Except for mine
+    sections = M.Section.objects.filter(ensemble=location.ensemble).exclude(pk=location.section.pk)
+    top_comment = M.Comment.objects.get(location = location, parent__isnull = True)
+
+    for section in sections:
+        location.pk = None # prepare to make a new copy of location
+        top_comment.pk = None # prepare to make a new copy of the top comment
+
+        location.section = section
+        # TODO: code to copy HTML5Location
+        location.save()
+        
+        top_comment.location = location
+        top_comment.signed = False
+        top_comment.save()
+            
+    return {"status": "Success"}
+
 def importAnnotation(import_type, from_loc_id, target_location):
 
     # Now, import body text of the comment

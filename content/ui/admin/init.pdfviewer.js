@@ -133,8 +133,18 @@
                     to_source_id: P.to_source_id,
                     import_type: P.import_type
                 }, cb);
+            },
+            set_location_section: function (P, cb) {
+                GLOB.pers.call("set_location_section", {
+                    id_location: P.id_location,
+                    id_section: P.id_section
+                }, cb);
+            },
+            promote_location_by_copy: function (P, cb) {
+                GLOB.pers.call("promote_location_by_copy", {
+                    id_location: P.id_location
+                }, cb);
             }
-            
         });   
     };
     
