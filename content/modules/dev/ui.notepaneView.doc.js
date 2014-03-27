@@ -674,15 +674,56 @@
         },
         _context_build: function ($trigger, event) {
             var self = this;
+            var id_item = $trigger.closest("div.location-lens").attr("id_item");
+            var items = {
+                "export-top": { name: "Transfer Original Post", icon: "export-top" },
+                "export-all": { name: "Transfer Entire Thread", icon: "export-all" },
+                "promote": {
+                    name: "Promote",
+                    items: {
+                        "promote-entire": { name: "Promote thread to entire class" },
+                        "promote-copy": { name: "Copy annotation to each section separately" }
+                    }
+                },
+                "reassign-section": {
+                    name: "Reassign Section",
+                    items: {
+                        "unset-section": { name: "No section (visible to entire class)" }
+                    }
+                }
+            };
 
             if (self._model.get("ensemble", {}).first().admin === false) {
                 return false;
             }
 
-            return {
-                "export-top": { name: "Transfer Original Post", icon: "export-top" },
-                "export-all": { name: "Transfer Entire Thread", icon: "export-all" },
-            };
+            var loc = self._model.get("location", { ID: id_item }).first();
+            var sections = self._model.get("section");
+            var section_id, section;
+
+            if (loc === undefined || loc === null) {
+                return false;
+            }
+
+            if (loc.secton_id === undefined || loc.secton_id === null) {
+                delete items["promote"];
+                items["reassign-section"].items["unset-section"].name =
+                    "[X] " + items["reassign-section"].items["unset-section"].name;
+            }
+
+            if (sections.is_empty()) {
+                delete items["reassign-section"];
+            } else {
+                for (section_id in sections.items) {
+                    section = sections.items[section_id];
+                    var menu_item_name = ((loc.section_id === section_id) ? "[X] " : "") + section.name;
+                    items["reassign-section"].items["set-section:" + section_id] = {
+                        name: section.name
+                    };
+                }
+            }
+
+            return items;
         },
         _context_callback: function (el, action) {
             var $loc = el.closest("div.location-lens");
@@ -690,7 +731,28 @@
             if (action === "export-top" || action === "export-all") {
                 var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
                 window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
+                return;
             }
+
+            if (action === "unset-section" || action === "promote-entire") {
+                // set the section of the location with "ID_item" to "None"
+                return;
+            }
+
+            if (action === "promote-copy") {
+                // copy location + top comment over to each section other than "this"
+                return;
+            }
+
+            var regExp = /^set-section:([0-9]*)$/g;
+            var result = regExp.exec(action);
+
+            if (result) {
+                // set the section ID for the location with "ID_item" to "section_id"
+                var section_id = result[1];
+                return;
+            }
+
         },
         _render: function(do_erase){
             /*

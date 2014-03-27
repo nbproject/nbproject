@@ -187,7 +187,7 @@ var // currently active contextMenu trigger
     },
     // determine zIndex
     zindex = function($t) {
-        var zin = 0,
+        var zin = 11, // minimum z-index
             $tt = $t;
 
         while (true) {
