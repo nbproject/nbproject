@@ -216,7 +216,10 @@ var NB$ = jQuery.noConflict();
 
     $.L = function(){
         if (window.console) {
-            console.log.apply(this, arguments);
+            var args = Array.prototype.slice.call(arguments);
+            args.forEach(function (arg) {
+                console.log(arg);
+            });
         }
     };
 
