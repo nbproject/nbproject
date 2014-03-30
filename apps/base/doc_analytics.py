@@ -233,8 +233,6 @@ def gather_time_stats(sid):
 	finally:
 		c.close()
 
-	c.close()
-
 def get_total_times(sid):
 	# get total times
 	attr = {
