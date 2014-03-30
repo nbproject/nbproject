@@ -35,11 +35,6 @@ def get_num_questions_stats(sid):
 	"""
 	return db.Db().getIndexedObjects(attr, "page_num", from_clause, "true", [sid])
 
-	# (SELECT page, count(*) as num_threads
-	# FROM base_location
-	# WHERE source_id = ?
-	# AND type = 3
-	# GROUP BY page) as v1
 def get_num_threads_stats(sid):
 	attr = {
 		"page_num": "page",
@@ -70,7 +65,6 @@ def get_highlights(sid):
 	WHERE source_id = ?
 	AND type = 3) as v1
 	"""
-	# print db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 	return db.Db().getIndexedObjects(attr, "id", from_clause, "true", [sid])
 
 def get_num_pages(sid):
@@ -242,7 +236,7 @@ def gather_time_stats(sid):
 	c.close()
 
 def get_total_times(sid):
-		# get total times
+	# get total times
 	attr = {
 		"page": None,
 		"total_time": None
@@ -268,18 +262,3 @@ def get_avgtime_peruser(sid):
 	GROUP BY page) as v2
 	"""
 	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
-
-# # number of questions per page
-# SELECT c.page, count(*) as get_num_questions
-# FROM base_threadmark t,
-# 	base_v_comment c
-# WHERE t.comment_id = c.id
-# AND c.source_id = 8
-# GROUP BY c.page
-
-# # order by time of last annotation
-# SELECT page, max(ctime) as last_annotated
-# FROM base_v_comment 
-# WHERE source_id=8 
-# GROUP BY page
-# ORDER BY last_annotated desc;
