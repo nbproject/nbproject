@@ -144,6 +144,11 @@
                 GLOB.pers.call("promote_location_by_copy", {
                     id_location: P.id_location
                 }, cb);
+            },
+            delete_thread: function (P, cb) {
+                GLOB.pers.call("deleteThread", {
+                    id_location: P.id_location
+                }, cb);
             }
         });   
     };

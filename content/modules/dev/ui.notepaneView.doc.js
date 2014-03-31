@@ -690,7 +690,9 @@
                     items: {
                         "unset-section": { name: "No section (visible to entire class)" }
                     }
-                }
+                },
+                "sep1": "---------",
+                "delete-thread": { name: "Delete Thread" }
             };
 
             if (self._model.get("ensemble", {}).first().admin === false) {
@@ -728,6 +730,8 @@
         _context_callback: function (el, action) {
             var $loc = el.closest("div.location-lens");
             var id_item = $loc.attr("id_item");
+            var self = this;
+
             if (action === "export-top" || action === "export-all") {
                 var text = "@import(" + id_item + ", " + ((action === "export-top") ? "top" : "all") + ")";
                 window.prompt("Copy the text below and insert it as a new annotation to import it.", text);
@@ -739,8 +743,8 @@
                 $.concierge.get_component("set_location_section")({
                     id_location: id_item,
                     id_section: null
-                }, function (response) {
-
+                }, function (payload) {
+                    self._model.add("location", payload);
                 });
                 return;
             }
@@ -749,8 +753,21 @@
                 // copy location + top comment over to each section other than "this"
                 $.concierge.get_component("promote_location_by_copy")({
                     id_location: id_item
-                }, function (response) {
+                }, function (payload) {
+                    self._model.add("comment", payload.comments);
+                    self._model.add("location", payload.locations);
+                    if ("html5locations" in payload) {
+                        self._model.add("html5location", payload.html5location);
+                    }
+                });
+                return;
+            }
 
+            if (action === "delete-thread" &&
+                window.confirm("Are you sure you want to delete this thread" +
+                "and all responses to it? This action cannot be undone")) {
+                $.concierge.get_component("delete_thread")({ id_location: id_item }, function (payload) {
+                    self._model.remove("location", payload.id_location);
                 });
                 return;
             }
@@ -764,8 +781,8 @@
                 $.concierge.get_component("set_location_section")({
                     id_location: id_item,
                     id_section: section_id
-                }, function (response) {
-
+                }, function (payload) {
+                    self._model.add("location", payload);
                 });
                 return;
             }
@@ -904,6 +921,8 @@
             } else {
                 self.element.removeClass("admin");
             }
+
+            self._recalculate_locs();
 
             if (action === "add" && items_fieldname === "location"){
                 id_source    = self._id_source; 

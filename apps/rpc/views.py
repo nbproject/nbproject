@@ -28,7 +28,8 @@ __EXPORTS = [
     "getNotes",
     "saveNote", 
     "editNote", 
-    "deleteNote", 
+    "deleteNote",
+    "deleteThread",
     "getStats",
     "getMyNotes", 
     "getCommentLabels", 
@@ -386,7 +387,7 @@ def saveNote(payload, req):
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
-    if a is None: 
+    if len(a) == 0:
         return UR.prepare_response({}, 2,  "DUPLICATE") 
     tms = {}
     for mark in payload["marks"]:
@@ -395,12 +396,14 @@ def saveNote(payload, req):
         if len(m_types): #old clients may return types we don't have in DB so ignore them 
             tm.type = m_types[0]
             tm.user_id = uid         
-            tm.comment=a
-            tm.location_id=a.location_id
+            tm.comment=a[0]
+            tm.location_id=tm.comment.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"], retval["html5locations"] = annotations.getLocation(a.location_id)
-    retval["comments"] = annotations.getComment(a.id, uid)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(a[0].location_id)
+    retval["comments"] = {}
+    for annotation in a:
+        retval["comments"].update(annotations.getComment(annotation.id, uid))
     retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
@@ -412,7 +415,7 @@ def editNote(payload, req):
     else:
         annotations.editNote(payload)
     #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
-    return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid)})
+    return UR.prepare_response({"comments":  [annotations.getComment(payload["id_comment"], uid)] })
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)
@@ -422,6 +425,14 @@ def deleteNote(payload, req):
     else:
         annotations.deleteNote(payload)
         return UR.prepare_response({"id_comment": payload["id_comment"] })
+
+def deleteThread(payload, req):
+    uid = UR.getUserId(req)
+    if not auth.canDeleteThread(uid, payload["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    else:
+        annotations.deleteThread(payload)
+        return UR.prepare_response({"id_location": payload["id_location"]})
 
 def getPending(payload, req):
     uid = UR.getUserId(req)
@@ -732,13 +743,31 @@ def set_location_section(P, req):
     if not auth.canAdministrateLocation(uid, P["id_location"]):
         return UR.prepare_response({}, 1, "NOT ALLOWED")
     result = annotations.setLocationSection(P["id_location"], P["id_section"])
-    return UR.prepare_response( result )
+    locations, html5locations = annotations.getLocation(result.pk)
+    return UR.prepare_response( locations )
+
 
 def promote_location_by_copy(P, req):
     uid = UR.getUserId(req)
     if not auth.canAdministrateLocation(uid, P["id_location"]):
         return UR.prepare_response({}, 1, "NOT ALLOWED")
-    return UR.prepare_response( annotations.promoteLocationByCopy(P["id_location"]) )
+    location_ids, comment_ids = annotations.promoteLocationByCopy(P["id_location"])
+    retval = {}
+    retval["comments"] = {}
+    for cid in comment_ids:
+        retval["comments"].update(annotations.getComment(cid, uid))
+    retval["locations"] = {}
+    retval["html5locations"] = {}
+    for lid in location_ids:
+        locations, html5locations = annotations.getLocation(lid)
+        retval["locations"].update(locations)
+        if not html5locations:
+            retval["html5locations"].update(html5locations)
+
+    # clear out html5locations if none exist
+    if retval["html5locations"]:
+        del retval["html5locations"]
+    return UR.prepare_response( retval )
 
 @csrf_exempt
 def other(req):

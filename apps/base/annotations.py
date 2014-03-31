@@ -687,7 +687,7 @@ def addNote(payload):
         #refuse if similar comment
         similar_comments = similar_comments.filter(location=location)
         if similar_comments.count(): 
-            return None
+            return []
     else:
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
@@ -702,7 +702,7 @@ def addNote(payload):
         #refuse if similar comment
         similar_comments = similar_comments.filter(location__in=M.Location.objects.filter(source=location.source, ensemble=location.ensemble, y=location.y, x=location.x, w=location.w, h=location.h, page=location.page));
         if similar_comments.count():
-            return None
+            return []
 
         location.save()
         #do we need to add an html5 location ?    
@@ -729,7 +729,7 @@ def addNote(payload):
         if src_membership.count() > 0:
             return importAnnotation(import_type, from_loc_id, location)
         else:
-            return None
+            return []
     else:
         comment = M.Comment()
         comment.parent = parent
@@ -739,7 +739,7 @@ def addNote(payload):
         comment.type = payload["type"]
         comment.signed = payload["signed"] == 1
         comment.save()
-        return comment
+        return [comment]
 
 def setLocationSection(id_location, id_section):
     location = M.Location.objects.get(pk = id_location)
@@ -748,7 +748,7 @@ def setLocationSection(id_location, id_section):
     else:
         location.section = None
     location.save()
-    return UR.model2dict(location)
+    return location
 
 def promoteLocationByCopy(id_location):
     location = M.Location.objects.get(pk = id_location)
@@ -759,6 +759,10 @@ def promoteLocationByCopy(id_location):
     sections = M.Section.objects.filter(ensemble=location.ensemble).exclude(pk=location.section.pk)
     top_comment = M.Comment.objects.get(location = location, parent__isnull = True)
 
+    # Resulting Lists
+    new_locs = []
+    new_comments = []
+    
     for section in sections:
         location.pk = None # prepare to make a new copy of location
         top_comment.pk = None # prepare to make a new copy of the top comment
@@ -770,8 +774,10 @@ def promoteLocationByCopy(id_location):
         top_comment.location = location
         top_comment.signed = False
         top_comment.save()
-            
-    return {"status": "Success"}
+
+        new_locs.append(location.pk)
+        new_comments.append(top_comment.pk)
+    return new_locs, new_comments
 
 def importAnnotation(import_type, from_loc_id, target_location):
 
@@ -785,6 +791,8 @@ def importAnnotation(import_type, from_loc_id, target_location):
 
     oldToNew = {}
 
+    toReturn = [comment]
+    
     # If we need to import the whole thread, do that
     if import_type == "all":
         oldToNew[importPk] = comment.pk
@@ -802,7 +810,8 @@ def importAnnotation(import_type, from_loc_id, target_location):
                 c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
                 c.save()
                 oldToNew[oldPk] = c.pk
-    return comment
+                toReturn.append(c)
+    return toReturn
 
 def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type):
 
@@ -838,6 +847,12 @@ def deleteNote(payload):
     comment = M.Comment.objects.get(pk=id)
     comment.deleted = True
     comment.save()
+
+def deleteThread(payload):
+    comments = M.Comment.objects.filter(location__id = payload["id_location"])
+    comments.delete()
+    location = M.Location.objects.get(pk=payload["id_location"])
+    location.delete()
 
 def approveNote(uid, payload):
     value = int(payload["value"])

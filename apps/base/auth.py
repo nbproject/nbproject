@@ -273,8 +273,12 @@ def canEdit(uid, id_ann):
     o = M.Comment.objects.get(pk=id_ann)
     return o.author_id==uid and M.Comment.objects.filter(parent=o, deleted=False).count()==0
     
-def canDelete(uid, id_ann):    
-    return canEdit(uid, id_ann)
+def canDelete(uid, id_ann):
+    return canEdit(uid, id_ann) or canLabelComment(uid, id_ann)
+
+def canDeleteThread(uid, id_location):
+    m = M.Membership.objects.filter(ensemble__location__id = id_location, user__id=uid, deleted=False, admin=True)
+    return m.count() > 0
 
 def canLabelComment(uid, cid): 
     #need to be an admin for the ensemble containing that comment. 
