@@ -123,11 +123,11 @@ def get_page_stats(sid):
 		else:
 			p_stat = 0
 		if p in totaltime_stats:
-			tt_stat = totaltime_stats[p]['total_time'].total_seconds()/60
+			tt_stat = totaltime_stats[p]['total_time'].seconds/60
 		else:
 			tt_stat = 0
 		if p in avgtime_stats:
-			at_stat = avgtime_stats[p]['avgtime_per_user'].total_seconds()/60
+			at_stat = avgtime_stats[p]['avgtime_per_user'].seconds/60
 		else:
 			at_stat = 0
 
