@@ -74,7 +74,9 @@
         },
         _filelens: function(f){
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
-        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
+        var analytics_link = (this._admin && f.filetype === 1) ?  "<br/><a href='/f/"+f.ID+"/analyze' target='_blank'>Analytics</a>" : "";
+        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions"+analytics_link+"</a></td>" : "" ;
+        
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
         var download = "";
         var f_stats =  this._model.o.file_stats[f.ID];
@@ -88,8 +90,7 @@
             }
             download = "<td>"+download+"</td>";
         }
-        var analytics_link = (this._admin && f.filetype === 1) ?  "<a href='/f/"+f.ID+"/analyze' target='_blank'>Analytics</a>" : "";
-        var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a>"+analytics_link+" </td>":"<td/>";
+        var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a>"+" </td>":"<td/>";
         var type_class = 'pdficon';
         if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
