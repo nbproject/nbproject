@@ -281,6 +281,13 @@ class AnalyticsVisit(models.Model):
     user                = ForeignKey(User, null=True)
     ctime               = DateTimeField(default=datetime.now)
 
+class AnalyticsClick(models.Model):
+    source              = ForeignKey(Source)
+    user                = ForeignKey(User, null=True)
+    ctime               = DateTimeField(default=datetime.now)
+    control             = CharField(max_length=30)
+    value               = CharField(max_length=30)
+
 class Landing(models.Model):
     user                = ForeignKey(User)
     ctime               = DateTimeField(default=datetime.now)
