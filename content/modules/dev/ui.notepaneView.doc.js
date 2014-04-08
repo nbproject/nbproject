@@ -676,13 +676,13 @@
             var self = this;
             var id_item = $trigger.closest("div.location-lens").attr("id_item");
             var items = {
-                "export-top": { name: "Transfer Original Post", icon: "export-top" },
+                "export-top": { name: "Transfer First Post", icon: "export-top" },
                 "export-all": { name: "Transfer Entire Thread", icon: "export-all" },
                 "promote": {
                     name: "Promote",
                     items: {
                         "promote-entire": { name: "Promote thread to entire class" },
-                        "promote-copy": { name: "Copy annotation to each section separately" }
+                        "promote-copy": { name: "Copy first post to each section separately" }
                     }
                 },
                 "reassign-section": {
