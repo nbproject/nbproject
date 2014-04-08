@@ -522,11 +522,9 @@
         var model = this._model;        
         var t,l,w,h, ID, locs, o, sel_contents;
         var s = ($.concierge.get_constant("res")*self._scale+0.0)/($.concierge.get_constant("RESOLUTION_COORDINATES")*100);
-        window.console.log('$.concierge.get_constant("res"):'+$.concierge.get_constant("res")+' self._scale:'+self._scale+' $.concierge.get_constant("RESOLUTION_COORDINATES"): '+$.concierge.get_constant("RESOLUTION_COORDINATES")+" s="+s);
         var file = model.o.file[id_source];
         var fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
         s=s*fudge; //BUG_226: for compatibility with old UI, but needs to be removed !!!
-        window.console.log("s: "+s);
         contents="";
         locs = model.get("location", {id_source: id_source, page: page}).sort(self.options.loc_sort_fct);
         var me =  $.concierge.get_component("get_userinfo")();

@@ -119,7 +119,7 @@ label {
 }
 
 .highlight {
-	background-color:rgba(255,245,48, 0.15);
+	background-color:rgba(255,245,48, 0.18);
 	position: absolute;
 	z-index: 2;
 	border: 1px solid rgba(0,0,0,0.4);
@@ -162,26 +162,15 @@ label {
 
 .num-annotations, .annotations {
 	color: #DC3912;
+	color: #FF7100;
 }
 
 .num-questions, .questions {
-	color: #E19900;
-}
-
-.num-participants, .participants {
 	color: #109618;
 }
 
-.chart-toggle.annotations{
-	background-color: #DC3912;
-}
-
-.chart-toggle.questions {
-	background-color: #E19900;
-}
-
-.chart-toggle.participants {
-	background-color: #109618;
+.num-participants, .participants {
+	color: #990099;
 }
 
 .chart-toggle {

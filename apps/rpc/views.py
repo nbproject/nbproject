@@ -654,6 +654,8 @@ def log_history(payload, req):
             output = annotations.getPending(uid, payload)
     if "analytics" in payload and cid != 0:
         doc_analytics.markAnalyticsVisit(uid, payload["analytics"])
+    if "analyticsClick" in payload and cid != 0:
+        doc_analytics.markAnalyticsClick(uid, payload["analyticsClick"])
     return UR.prepare_response(output)
   
 def get_location_info(payload, req): 
