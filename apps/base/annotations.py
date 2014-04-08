@@ -1006,6 +1006,7 @@ def copy_file(uid, P):
     elif new_source.type == 4: # html5
         new_html5 = M.HTML5Info.objects.get(source__pk=P["source_id"])
         new_html5.pk = None
+        new_html5.source = new_source
         new_html5.save()
 
     return new_source.pk
