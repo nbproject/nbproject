@@ -154,6 +154,12 @@ def markAnalyticsVisit(uid, o):
 		x = M.AnalyticsVisit(user_id=uid, source_id=id_source, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
 		x.save()
 
+def markAnalyticsClick(uid, o):
+	for id in o:
+		id_source, control, value = id.split("|")
+		x = M.AnalyticsClick(user_id=uid, source_id=id_source, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000), control=control, value=value)
+		x.save()
+
 import socket
 
 def gather_time_stats(sid):

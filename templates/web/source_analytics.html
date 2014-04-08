@@ -10,7 +10,7 @@
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <a href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
+      <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
         <div id="page-preview-<%= page_num %>">
           <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
         </div>
@@ -35,10 +35,17 @@
         var key = {{ source.id }}+"|"+(new Date()).getTime();
         var payload = {};
         payload[key]=(new Date()).getTime();
-        NB.pers.call("log_history", {"analytics": payload}, function(callback) {
-          console.log("logged");
-        });
+        NB.pers.call("log_history", {"analytics": payload}, function(callback) {});
       };
+
+      var recordAction = function(control, value) {
+        var key = {{ source.id }}+"|"+control+"|"+value;
+        var payload = {};
+        payload[key]=(new Date()).getTime();
+        NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {
+          console.log("logged click");
+        });
+      }
     </script>
     <script type="text/javascript">
       var chart_stats = {{ chart_stats|safe }};
@@ -97,6 +104,7 @@
             view.setColumns(metrics_on);
 
             chart.draw(view, options);
+            recordAction('chart-toggle', metric);
           });
 
           var pgLabelClass = 'page-label';
@@ -131,6 +139,7 @@
                 $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
               });
               $('.'+pgPreviewClass).show();
+              recordAction('pagenum-hover', num);
             },
             mouseleave: function() {
               $('.'+pgPreviewClass).hide();
@@ -221,12 +230,19 @@
             $("#sort-by").on('change', function() {
               var attr = $(this).val();
               doc.sortByField(attr);
+              recordAction('page-sort-by', attr);
             })
 
             $("#show-filter").on('change', function() {
               var property = $(this).val();
               var num = 0; // TODO: make this flexible (another HTML property?)
               documentView.filterByPropertyAndNum(property, num);
+              recordAction('page-filter', property);
+            })
+
+            $(".page-link").on('click', function() {
+              var num = $(this).attr('id').split("link-")[1];
+              recordAction('pagethumb-click', num);
             })
         });
       })(jQuery);
@@ -246,7 +262,7 @@
         <div class="control-bar">
           <label>Display stats for:</label> 
           <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
-          <input type="checkbox" class="chart-toggle annotations" checked value="Annotations"/>Comments
+          <input type="checkbox" class="chart-toggle" checked value="Annotations"/>Comments
           <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
           <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
           <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
