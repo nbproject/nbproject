@@ -752,6 +752,12 @@ def setLocationSection(id_location, id_section):
 
 def promoteLocationByCopy(id_location):
     location = M.Location.objects.get(pk = id_location)
+    html5locations = M.HTML5Location.objects.filter(location = location)
+    html5location = None
+
+    if html5locations.exists():
+        html5location = html5locations[0]
+
     if location.section == None:
         return { "status": "Already promoted" }
 
@@ -768,9 +774,15 @@ def promoteLocationByCopy(id_location):
         top_comment.pk = None # prepare to make a new copy of the top comment
 
         location.section = section
-        # TODO: code to copy HTML5Location
+
         location.save()
         
+        # Create a Fresh HTML5Location for each location
+        if html5location:
+            html5location.pk = None
+            html5location.location = location
+            html5location.save()
+
         top_comment.location = location
         top_comment.signed = False
         top_comment.save()
@@ -820,14 +832,21 @@ def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type)
 
     for id_location in locs_array:
         location = M.Location.objects.get(pk=id_location)
+        html5locations = M.HTML5Location.objects.filter(location=location)
 
         if location.source_id != from_source.pk:
             return { "status": "Source File Mismatch locsrc: %s, src %s"%(location.source_id,from_source_id) }
             
-            # Copy Location and update the source
+        # Copy Location and update the source
         location.pk = None
         location.source_id = to_source_id
         location.save()
+
+        if html5locations.exists():
+            html5location = html5locations[0]
+            html5location.pk = None
+            html5location.location = location
+            html5location.save()
 
         # Arguments:                   old loc id  target loc
         importAnnotation( import_type, id_location, location)
