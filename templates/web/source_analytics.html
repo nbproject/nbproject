@@ -66,43 +66,65 @@
         };
 
         var view = new google.visualization.DataView(data);
-        view.setColumns([0,1,2,3,4]);
-
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-        chart.draw(view, options);
+
+        var metric_mapping = {
+          "Threads": {
+            "col":1,
+            "color": "#3366CC",
+            "on": true,
+          },
+          "Annotations": {
+            "col":2,
+            "color": "#FF7100",
+            "on": true,
+          },
+          "Replies Requested": {
+            "col":3,
+            "color": "#109618",
+            "on": true,
+          },
+          "Participants": {
+            "col":4,
+            "color": "#990099",
+            "on": true,
+          },
+          "Total Time": {
+            "col":5,
+            "color": "#21B7CC",
+            "on": false,
+          },
+          "Average Time": {
+            "col":6,
+            "color": "#CC89C7",
+            "on": false,
+          }
+        };
+
+        var drawChart = function() {
+          var metrics_on = [0];
+          var colors_on = [];
+          for (m in metric_mapping) {
+            var obj = metric_mapping[m];
+            if (obj["on"]) {
+              metrics_on.push(obj["col"]);
+              colors_on.push(obj["color"]);
+            }
+          }
+          options.colors = colors_on;
+          view.setColumns(metrics_on);
+          chart.draw(view, options);
+        }
+
+        drawChart();
 
         (function($){
-          var metrics_on = [0,1,2,3,4];
-          var colors_on = [];
-          var metric_mapping = {
-            "Threads": 1,
-            "Annotations": 2,
-            "Replies Requested": 3,
-            "Participants": 4,
-            "Total Time": 5,
-            "Average Time": 6
-          };
 
           $(".chart-toggle").on("click", function() {
             var metric = $(this).val();
-            var num = metric_mapping[metric];
-            // console.log(num);
-            // console.log("metrics on before: "+metrics_on);
-            var i = $.inArray(num, metrics_on);
-            if (i > -1) {
-              // console.log("turning off");
-              metrics_on.splice(i, 1);
-              $(this).removeClass("on");
-            } else {
-              // console.log("turning on");
-              metrics_on.push(num);
-              $(this).addClass("on");
-            }
-            // console.log(metrics_on);
-            view.setColumns(metrics_on);
-
-            chart.draw(view, options);
-            recordAction('chart-toggle', metric);
+            var status = metric_mapping[metric]["on"];
+            metric_mapping[metric]["on"] = status ? false : true;
+            drawChart(); 
           });
 
           var pgLabelClass = 'page-label';

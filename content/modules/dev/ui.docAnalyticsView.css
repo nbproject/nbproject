@@ -162,26 +162,17 @@ label {
 
 .num-annotations, .annotations {
 	color: #DC3912;
+	color: #FF7100;
 }
 
 .num-questions, .questions {
-	color: #E19900;
-}
-
-.num-participants, .participants {
+	color: #109618;
 	color: #109618;
 }
 
-.chart-toggle.annotations{
-	background-color: #DC3912;
-}
-
-.chart-toggle.questions {
-	background-color: #E19900;
-}
-
-.chart-toggle.participants {
-	background-color: #109618;
+.num-participants, .participants {
+	color: #990099;
+	color: #990099;
 }
 
 .chart-toggle {
