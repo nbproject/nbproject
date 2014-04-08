@@ -42,9 +42,7 @@
         var key = {{ source.id }}+"|"+control+"|"+value;
         var payload = {};
         payload[key]=(new Date()).getTime();
-        NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {
-          console.log("logged click");
-        });
+        NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {});
       }
     </script>
     <script type="text/javascript">
