@@ -51,7 +51,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None):
         return HttpResponseRedirect(redirect_url)
     if user.guest is False and (user.firstname is None or user.lastname is None): 
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
-    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
 
     r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
@@ -554,5 +554,6 @@ def user_post_save_handler(sender, **kwargs):
         except M.User.DoesNotExist: 
             password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,6)])
             confkey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
-            u = M.User(email=email, firstname=user.first_name, lastname=user.last_name, password=password, confkey=confkey, guest=False, valid=True )
+            u = M.User(email=email, firstname=user.first_name, lastname=user.last_name, confkey=confkey, guest=False, valid=True )
+            u.set_password(password)
             u.save()
