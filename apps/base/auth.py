@@ -139,11 +139,12 @@ def canImportAnnotation(uid, from_id_source, to_id_source):
 def addUser(email, password, conf, valid=0, guest=0):
     o = M.User()
     o.email = email
-    o.password = password
+    o.password = None
+    o.set_password(password)
     o.confkey = conf
     o.valid = valid
     o.guest = guest
-    o.save()  
+    o.save()
     if o.guest:
         gh = M.GuestHistory(user=o)
         gh.save()         
