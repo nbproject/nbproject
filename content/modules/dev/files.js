@@ -30,7 +30,7 @@ GLOB.files.labelfields = {file: "title", folder: "name"};
 GLOB.files.set_model = function(model){
     GLOB.files.model = model;
     var $util_window = $.concierge.get_component("get_util_window")();
-    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form><div><a id='add_file_html' href='#'>Add a HTML page</a></div><div style='display: none'><a id='add_file_youtube' href='#'><b>[Experimental]</b> Add a YouTube video</a></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
+    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form><div><a id='add_file_html' href='#'>Add a HTML page</a></div><div><a style='display:none' id='add_file_youtube' href='#'>Add a YouTube video</a></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
 "<tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'>No</input> </td></tr> "+
 "<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'>No</input>        </td></tr> "+
 "<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'>No</input>        </td></tr> "+
@@ -49,7 +49,9 @@ GLOB.files.set_model = function(model){
         "<span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/>" +
         "<textarea id='invite_users_msg'  rows='7' cols='50'/>" +
         "</div>")
-    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");   
+    .append(
+        "<div id='duplicate_file_dialog'></div>")
+    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");
 };
 
 
@@ -293,7 +295,12 @@ GLOB.files.rename_file = function(id, item_type){
             $(this).dialog("close");  
         },
             "Ok": function() { 
-            $.concierge.get_component("rename_file")({item_type: item_type, id: id, title:  $filename[0].value}, function(p){GLOB.files.model.add(item_type, p[item_type+"s"]);$.I(item_type+" renamed");} );
+            $.concierge.get_component("rename_file")(
+                { item_type: item_type, id: id, title:  $filename[0].value },
+                function(p){
+                    GLOB.files.model.add(item_type, p[item_type+"s"]);
+                    $.I(item_type+" renamed");
+                });
             $(this).dialog("destroy");
             }
         }
@@ -302,7 +309,42 @@ GLOB.files.rename_file = function(id, item_type){
     $filename.focus();
 };
 
+GLOB.files.duplicate_file = function(id, item_type){
+    if (item_type !== "file") {
+        return;
+    }
+    var o = GLOB.files.model.o.file[id];
+    var $dialog = $('#duplicate_file_dialog');
+    $dialog.empty();
+    $dialog.duplicateWizard({
+        admin: true,
+        file_id: id,
+        callbacks: {
+            onOk: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
+            },
+            onCancel: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
+            },
+            onSubmit: function() {
+                $dialog.dialog("destroy");
+                $dialog.duplicateWizard("destroy");
+            }
+        }
+    });
+    $dialog.duplicateWizard("set_model", GLOB.pers.store);
 
+    $dialog.dialog({
+        title: "Duplicate file",
+        buttons: {},
+        width: 700,
+        height: 320
+    });
+    $dialog.dialog("open");
+
+};
 
 GLOB.files.delete_file = function(id, item_type){
     var m = GLOB.pers.store;

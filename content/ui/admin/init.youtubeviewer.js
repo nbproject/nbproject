@@ -68,7 +68,8 @@ GLOB.pers.init = function(){
                         listens: {
                         page_peek: function(evt){
                             //need to add 1 value for uniqueness
-                            $.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
+                            //do not keep history of page seen for now since evt.value is null
+                            //$.concierge.logHistory("page", evt.value+"|"+id+"|"+(new Date()).getTime());
                         }, 
                     successful_login: function(evt){
                     GLOB.auth.set_cookie("ckey", evt.value.ckey);

@@ -6,17 +6,25 @@ margin-right: 505px;
 right: 0px;
 top: 0px;
 position: fixed;
-width: 500px;
 z-index: 2;
+}
+
+.nb_sidebar #login-window {
+    display: none;
 }
 
 .nb_sidebar > div.nb-viewport {
     margin-left: 4px;
 }
 
+body.nb-active .nb_sidebar #login-window {
+    display: block;
+}
+
 body.nb-active .nb_sidebar {
 bottom: 0px;
 background-color: #ffffff;
+width: 500px;
 }
 
 .nb-error {
@@ -32,7 +40,7 @@ position: absolute;
 
 /* HTML5 comments */
 .nb-comment-highlight {
-	background-color: rgba(255, 204, 1, .2);
+    background-color: rgba(255, 204, 1, .2);
 	padding: 2px 0 2px 0;
 }
 
@@ -75,4 +83,20 @@ position: absolute;
     padding: 0;
     text-align: center;
     vertical-align: middle;
+}
+
+/** make printing work properly */
+@media print { 
+    .nb_sidebar {
+        display: none;
+    }
+    
+    .nb-comment-highlight {
+        background-color: transparent;
+    }
+    
+    body,
+    body.nb-active {
+        margin: auto;
+    }
 }

@@ -7,7 +7,8 @@ License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
-from django.db.models import Q, Max
+from django.db.models import Q
+from django.db.models import Count
 from django.db import transaction
 import datetime, os, re, json 
 import models as M
@@ -15,6 +16,8 @@ import constants as CST
 import utils_response as UR #, utils_format as UF
 from django.template import Template
 from django.core.exceptions import ValidationError
+from django.conf import settings
+import shutil
 
 #SINGLETONS:
 
@@ -213,7 +216,7 @@ def get_ensembles(uid, payload):
     if id is not None: 
         my_memberships = my_memberships.filter(ensemble__id=id)
     return UR.qs2dict(my_memberships, names, "ID")
-    
+
 def get_folders(uid, payload):
     id = payload["id"] if "id" in payload else None
     names = {
@@ -401,14 +404,47 @@ def getLocation(id):
     except M.HTML5Location.DoesNotExist: 
         pass
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
-#    retval = {}
-#    retval["location"] = loc_dict
-#    retval["html5location"] = h5l_dict
-#    return retval
     return (loc_dict, h5l_dict)
+
+def getTopCommentsFromLocations(location_ids):
+    comments = {}
+    for loc_id in location_ids:
+        loc_comments = M.Comment.objects.filter(location_id=loc_id)
+        if loc_comments.count() > 0:
+            comments[loc_id] = {"replies": loc_comments.count(), "head_body": loc_comments[0].body}
+            # TODO: use .first() for above instead of [0] once we update to 1.6
+
+    return comments
+
+def getAdvancedFilteredLocationsByFile(id_source, n, r, filterType):
+    source_locations = M.Location.objects.filter(source__id=id_source).annotate(reply=Count('comment')).filter(reply__gt=0)
+
+    if filterType == "reply":
+        filter_locations=source_locations.order_by('-reply')
+    elif filterType == "students":
+        filter_locations=source_locations.annotate(students=Count('comment__author',distinct=True)).order_by('-students')
+    elif filterType == "longest":
+        return {}
+        #TODO: fix
+        #filter_locations=source_locations.annotate(body=Q(comment__parent=None)).extra(select={'length':'Length(body)'}).order_by('-length')
+    elif filterType == "random":
+        filter_locations=source_locations.order_by('?')
+
+    if r == "threads":
+        filter_locations = filter_locations[:n]
+    else:
+        nTotal = len(source_locations)
+        filter_locations = filter_locations[:nTotal * n / 100]
+
+    retval = {}
+    for loc in filter_locations:
+        retval[loc.id] = loc.id
+
+    return retval
+
 def getComment(id, uid):
     names = __NAMES["comment2"]
-    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)       
+    comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
     return UR.model2dict(comment, names, "ID")
     
 def getCommentsByFile(id_source, uid, after):
@@ -418,14 +454,23 @@ def getCommentsByFile(id_source, uid, after):
     locations_im_admin = M.Location.objects.filter(ensemble__in=ensembles_im_admin)
     comments = M.Comment.objects.extra(select={"admin": 'select cast(admin as integer) from base_membership where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id'}).select_related("location", "author").filter(location__source__id=id_source, deleted=False, moderated=False).filter(Q(location__in=locations_im_admin, type__gt=1) | Q(author__id=uid) | Q(type__gt=2))
     membership = M.Membership.objects.filter(user__id=uid, ensemble__ownership__source__id=id_source, deleted=False)[0]
+
     if membership.section is not None:
-        comments = comments.filter(Q(location__section=membership.section)|Q(location__section=None)) 
-    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id", flat=True))
+        seen = M.CommentSeen.objects.filter(comment__location__source__id=id_source, user__id=uid)
+        #idea: we let you see comments 
+        # - that are in your current section
+        # - that aren't in any section
+        # - that you've seen before
+        # - that you've authored.   
+        comments = comments.filter(Q(location__section=membership.section)|
+                                   Q(location__section=None)|
+                                   Q(location__comment__in=seen.values_list("comment_id"))|
+                                   Q(author__id=uid))
+    threadmarks = M.ThreadMark.objects.filter(location__in=comments.values_list("location_id"))
     if after is not None: 
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
-    if after is not None: 
-        comments = comments.filter(ctime__gt=after)    
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
@@ -434,12 +479,10 @@ def getCommentsByFile(id_source, uid, after):
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
-        #if c["type"] < 3 and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
     return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
-    #return __post_process_comments(o, uid)
 
 def get_comments_collection(uid, P):
     output = {}
@@ -660,7 +703,7 @@ def addNote(payload):
         if similar_comments.count():
             return None
 
-        location.save()    
+        location.save()
         #do we need to add an html5 location ?    
         if "html5range" in payload: 
                 h5range = payload["html5range"]
@@ -670,18 +713,84 @@ def addNote(payload):
                 h5l.offset1 = h5range["offset1"]
                 h5l.offset2 = h5range["offset2"]
                 h5l.location = location  
-                h5l.save()            
-    comment = M.Comment()
-    comment.parent = parent
-    comment.location = location
-    comment.author = author
-    comment.body = payload["body"]
-    comment.type = payload["type"]
-    comment.signed = payload["signed"] == 1
-    comment.save()
-    return comment
-    #return {"id_location": location.id, "id_comment": comment.id}
+                h5l.save()
 
+    # Should we import this comment from somewhere?
+    body = payload["body"]
+    matchObj = re.match( r'@import\((\d+), *(.*)\)', body)
+
+    if (matchObj):
+        from_loc_id = int(matchObj.group(1))
+        import_type = matchObj.group(2)
+
+        # Am I allowed to do this? Am I an admin in the source?
+        src_membership = M.Location.objects.get(pk=from_loc_id).ensemble.membership_set.filter(user=author,admin=True)
+        if src_membership.count() > 0:
+            return importAnnotation(import_type, from_loc_id, location)
+        else:
+            return None
+    else:
+        comment = M.Comment()
+        comment.parent = parent
+        comment.location = location
+        comment.author = author
+        comment.body = payload["body"]
+        comment.type = payload["type"]
+        comment.signed = payload["signed"] == 1
+        comment.save()
+        return comment
+
+def importAnnotation(import_type, from_loc_id, target_location):
+
+    # Now, import body text of the comment
+    comment = M.Comment.objects.get(location = from_loc_id, parent__isnull = True)
+    importPk = comment.pk
+    comment.pk = None
+    comment.location = target_location
+    comment.signed = False
+    comment.save()
+
+    oldToNew = {}
+
+    # If we need to import the whole thread, do that
+    if import_type == "all":
+        oldToNew[importPk] = comment.pk
+        toVisit = [ importPk ]
+
+        while len(toVisit) > 0:
+            visiting = toVisit.pop()
+            comments = M.Comment.objects.filter(location = from_loc_id, parent = visiting)
+            for c in comments:
+                toVisit.append(c.pk)
+                oldPk = c.pk
+                c.pk = None
+                c.location = target_location
+                c.signed = False
+                c.parent = M.Comment.objects.get(pk = oldToNew[visiting])
+                c.save()
+                oldToNew[oldPk] = c.pk
+    return comment
+
+def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type):
+
+    from_source = M.Source.objects.get(pk=from_source_id)
+    to_source = M.Source.objects.get(pk=to_source_id)
+
+    for id_location in locs_array:
+        location = M.Location.objects.get(pk=id_location)
+
+        if location.source_id != from_source.pk:
+            return { "status": "Source File Mismatch locsrc: %s, src %s"%(location.source_id,from_source_id) }
+            
+            # Copy Location and update the source
+        location.pk = None
+        location.source_id = to_source_id
+        location.save()
+
+        # Arguments:                   old loc id  target loc
+        importAnnotation( import_type, id_location, location)
+
+    return {"status": "Success" }
 
 def editNote(payload):
     id_type = payload["type"]
@@ -781,6 +890,59 @@ def move_file(uid, P):
         o.parent_id = P["dest"]
         o.save()
         return get_folders(uid, {"id": id})
+
+def copy_file(uid, P):
+    new_source = M.Source.objects.get(pk=P["source_id"])
+    new_source.title = P["target_name"]
+    new_source.pk = None
+    new_source.submittedby_id = uid
+    new_source.save()
+
+    new_ownership = M.Ownership.objects.get(source__id=P["source_id"])
+    new_ownership.pk = None
+    new_ownership.source = new_source
+    new_ownership.published = datetime.datetime.now()
+    new_ownership.deleted = False
+    new_ownership.due = None
+
+    if P["target_type"] == "ensemble":
+        new_ownership.ensemble_id = P["target_id"]
+        new_ownership.folder = None
+    else: # target type is folder, we know for sure since it was validated before
+        folder = M.Folder.objects.get(pk=P["target_id"])
+        new_ownership.folder = folder
+        new_ownership.ensemble = folder.ensemble
+
+    new_ownership.save()
+
+    if new_source.type == 1: # ondemand pdf
+        try:
+            new_ondemand = M.OnDemandInfo.objects.get(source__pk=P["source_id"])
+            new_ondemand.pk = None
+            new_ondemand.ensemble = new_ownership.ensemble
+            new_ondemand.source = new_source
+            new_ondemand.save()
+        except M.OnDemandInfo.DoesNotExist:
+            pass
+        pdf_dir =  "%s/%s" % (settings.HTTPD_MEDIA, settings.REPOSITORY_DIR)
+        old_file = "%s/%s" % (pdf_dir, P["source_id"])
+        new_file = "%s/%s" % (pdf_dir, new_source.pk)
+        shutil.copyfile(old_file, new_file)
+
+    elif new_source.type == 2: # youtube
+        new_youtube = M.YoutubeInfo.objects.get(source__pk=P["source_id"])
+        new_youtube.pk = None
+        new_youtube.source = new_source
+        new_youtube.save()
+    elif new_source.type == 3: # html5 video
+        pass
+    elif new_source.type == 4: # html5
+        new_html5 = M.Html5Info.objects.get(source__pk=P["source_id"])
+        new_html5.pk = None
+        new_html5.save()
+
+    return new_source.pk
+    
 
 def createSource(uid, payload):
     """ 
@@ -922,10 +1084,8 @@ def getPending(uid, payload):
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     all_comments = M.Comment.objects.filter(location__in=locations)
-    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
-    
-    unrated_replies_ids = list(unrated_replies.values_list("id", flat=True))    
-    questions = questions.exclude(location__comment__in=unrated_replies_ids)
+    unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=u0.location_id and base_threadmark.ctime<u0.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
+    questions = questions.exclude(location__comment__in=unrated_replies)
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))

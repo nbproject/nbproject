@@ -99,6 +99,8 @@ def add_allcomments_sheet(source_id, workbook):
     col+=1
     s_c.write(row, col,"PARENT_ID")
     col+=1       
+    s_c.write(row, col,"SECTION_ID")
+    col+=1       
     s_c.write(row, col,"AUTHOR_ID")
     col+=1
     s_c.write(row, col,"CTIME")
@@ -117,6 +119,8 @@ def add_allcomments_sheet(source_id, workbook):
         s_c.write(row, col,rec.id)
         col+=1
         s_c.write(row, col,rec.parent_id)
+        col+=1
+        s_c.write(row, col,rec.location.section_id)
         col+=1
         s_c.write(row, col, rec.author_id)
         col+=1
