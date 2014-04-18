@@ -21,6 +21,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Max
 from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
+from django.db import transaction
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
 
@@ -386,14 +387,41 @@ ds.name='email_confirmation_reply_author' and
             print msg
         except UnicodeEncodeError: 
             print "not displaying msg b/c of unicode issues"            
-        
+
+def do_upgrade(t_args):
+    # We will see if we need to upgrade and call
+    # the appropriate upgrade metods when needed
+    u = M.User.objects.all()[0]
+    if u.password != None and u.saltedhash == None:
+        do_auth_salt_upgrade()
+
+@transaction.commit_on_success
+def do_auth_salt_upgrade():
+    # This method does not handle database migrations, only schema
+    #   upgrades. Make sure to run the following query before doing
+    #   upgrade:
+    #
+    # ALTER TABLE base_user
+    #     ADD COLUMN salt varchar(32),
+    #     ADD COLUMN saltedhash varchar(128);
+    #
+    # The query can be run from manage.py dbshell
+
+    for u in M.User.objects.all():
+        if u.password != None and u.saltedhash == None:
+            u.set_password(u.password)
+            # we will unset the password manually later
+            # u.password = None
+            u.save()
+
 if __name__ == "__main__" :
     ACTIONS = {
         "immediate": do_immediate,
         "digest": do_digest, 
         "watchdog": do_watchdog,
         "extract": do_extract, 
-        "dumpensemble": do_dumpensemble
+        "dumpensemble": do_dumpensemble,
+        "upgrade": do_upgrade
         }
     utils.process_cli(__file__, ACTIONS)
 
