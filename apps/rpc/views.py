@@ -143,22 +143,29 @@ def sendInvites(payload, req):
     connection = mail.get_connection()
     emailmessages = []
     for email in emails:       
-        user         = auth.user_from_email(email)
+        user = auth.user_from_email(email)
         password=""
         if user is None:
-            #in practice, ckey not used: user clicks on link that has an invite_key
-            ckey        =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
-            password    = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
-            user     = auth.addUser(email, password, ckey)
+            ckey = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
+            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
+            user = auth.addUser(email, password, ckey)
         invite_key      = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
         auth.addInvite(invite_key, user.id, id_ensemble, id_section, admin)
         link = "http://%s/confirm_invite?invite_key=%s" % (settings.HOSTNAME, invite_key,)
         ensemble = M.Ensemble.objects.get(pk=id_ensemble)
 
-        p = {"name": ensemble.name, "description": ensemble.description, "link": link, "contact": user.firstname if user.firstname != None else user.email }
+        p = {
+            "name": ensemble.name,
+            "description": ensemble.description,
+            "link": link,
+            "contact": user.firstname if user.firstname != None else user.email
+        }
+
         if payload["msg"] != "": 
             p["msg_perso"] = payload["msg"]
-        if password != "": 
+
+        # TODO: We still include the password in the e-mail, should we stop doing that?
+        if password != "":
             p["password"] = password
             p["email"] = email
         msg = render_to_string("email/msg_invite",p)
@@ -201,23 +208,11 @@ def login_user(P,req):
     user = auth.checkUser(email, password)
     if user is None: 
         return UR.prepare_response({"ckey": None})      
-    u_in        = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote('{"ckey": ""}'))))
+    u_in = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote('{"ckey": ""}'))))
     if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:  
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
     return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
-
-#def on_register_session(payload): 
-#    req = payload["req"]
-#    #print req.META
-#    uid =  UR.getUserId(req)
-#    p={}
-#    p["ctime"] = payload["cid"]
-#    p["client"] = req.META["REMOTE_HOST"] if "REMOTE_HOST" in req.META else None
-#    p["ip"]     = req.META["REMOTE_ADDR"] if "REMOTE_ADDR" in req.META else None
-#    p["referer"]= req.META["referer"]     if "referer"     in req.META else None
-#    #TODO HISTORY
-#    #annotations.registerSession(uid, p)
 
 def on_delete_session(payload, s): 
     req = s["request"]
@@ -503,12 +498,16 @@ def passwordLost(payload, req):
     user = auth.user_from_email(email)
     if user is not None:     
         from django.core.mail import EmailMessage  
-        p={"firstname": user.firstname, "email": email, "password": user.password, "directurl": "%s://%s/?ckey=%s" % (settings.PROTOCOL, settings.HOSTNAME, user.confkey)}
+        p= {
+            "firstname": user.firstname,
+            "email": email,
+            "settings_url": "%s://%s/settings?ckey=%s" % (settings.PROTOCOL, settings.HOSTNAME, user.confkey)
+        }
         msg = render_to_string("email/password_reminder",p)
         e = EmailMessage(
-                "Password reminder for your NB account",
+                "Password reset for your NB account",
                 msg,  
-                "NB Password Reminder Bot <nbnotifications@csail.mit.edu>", 
+                "NB Password Reset Bot <nbnotifications@csail.mit.edu>", 
                 (email, ), 
                 (settings.SMTP_CC_LOSTPASSWORD, ))
         e.send()     

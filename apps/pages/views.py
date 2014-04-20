@@ -51,7 +51,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None):
         return HttpResponseRedirect(redirect_url)
     if user.guest is False and (user.firstname is None or user.lastname is None): 
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
-    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
 
     r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
@@ -149,7 +149,12 @@ def newsite(req):
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
-            p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
+            p = {
+                "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey),
+                "firstname": user.firstname,
+                "email": user.email
+            }
             email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname),
                 render_to_string("email/confirm_newsite", p), 
@@ -322,7 +327,12 @@ def subscribe(req):
                 user_form.save()  
                 m = M.Membership(user=user, ensemble=e)
                 m.save() #membership exists but user is still invalid until has confirmed their email
-                p = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey), "firstname": user.firstname, "email": user.email, "password": user.password }
+                p = {
+                    "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                    "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey),
+                    "firstname": user.firstname,
+                    "email": user.email
+                }
                 email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname,),
                 render_to_string("email/confirm_subscribe", p), 
@@ -536,23 +546,3 @@ def debug(request):
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')
-
-
-
-@receiver(post_save, sender=User)
-def user_post_save_handler(sender, **kwargs): 
-    user = kwargs["instance"]
-    u = None
-    if user is not None: 
-        email = user.email
-        try: 
-            u = M.User.objects.get(email=email)
-            if u.firstname == "" or u.lastname== "":
-                u.firstname = user.first_name
-                u.lastname = user.last_name
-                u.save()
-        except M.User.DoesNotExist: 
-            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,6)])
-            confkey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
-            u = M.User(email=email, firstname=user.first_name, lastname=user.last_name, password=password, confkey=confkey, guest=False, valid=True )
-            u.save()
