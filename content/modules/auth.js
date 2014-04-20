@@ -23,7 +23,7 @@
 	if ( path ){
 	    cookie_string += "; path=" + escape ( path );
 	} else {
-	    cookie_string += "; path=/"
+	    cookie_string += "; path=/";
 	}
 
 	if ( domain ){
