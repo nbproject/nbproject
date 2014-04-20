@@ -64,14 +64,14 @@ class User(models.Model):
 
     # Returns 'True' if password is correct, 'False' othrewise
     def authenticate(self, password):
-        user_hash = hashlib.sha512(password + self.salt).hexdigest()
+        user_hash = hashlib.sha512(password.encode('ascii', 'xmlcharrefreplace') + self.salt).hexdigest()
         return (self.saltedhash == user_hash)
     
     # Updates 'salt' and 'saltedhash' to correspond to new password
     # this method does notcall 'save'
     def set_password(self, password):
         self.salt = uuid.uuid4().hex
-        self.saltedhash = hashlib.sha512(password + self.salt).hexdigest()
+        self.saltedhash = hashlib.sha512(password.encode('ascii', 'xmlcharrefreplace') + self.salt).hexdigest()
         return
 
 class Ensemble(models.Model):                                                   # old: ensemble
