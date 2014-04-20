@@ -143,11 +143,12 @@ def canAdministrateLocation(uid, id_location):
 def addUser(email, password, conf, valid=0, guest=0):
     o = M.User()
     o.email = email
-    o.password = password
+    o.password = None
+    o.set_password(password)
     o.confkey = conf
     o.valid = valid
     o.guest = guest
-    o.save()  
+    o.save()
     if o.guest:
         gh = M.GuestHistory(user=o)
         gh.save()         
@@ -175,8 +176,11 @@ def user_from_email(email):
     return users[0] if len(users)==1 else None
          
 def checkUser(email, password):
-    users = M.User.objects.filter(email=email.strip().lower(), password=password, valid=1, guest=0)
-    return users[0] if len(users)==1 else None
+    users = M.User.objects.filter(email=email.strip().lower(), valid=1, guest=0)
+    if len(users) != 1:
+        return None
+    user = users[0]
+    return user if user.authenticate(password) else None
 
 def canAddFolder(uid, id_ensemble, id_parent=None): 
     return canInsertFile(uid, id_ensemble, id_parent)

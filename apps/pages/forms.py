@@ -6,14 +6,12 @@ from django.forms.widgets import PasswordInput
 
 class EnterYourNameUserForm(ModelForm):    
     def clean_firstname(self):
-        #super(EnterYourNameUserForm, self).clean_firstname()
         data = self.cleaned_data["firstname"].strip()
         if data == "": 
             raise ValidationError("First name can't be empty")
         return data
     
     def clean_lastname(self):
-        #super(EnterYourNameUserForm, self).clean_lastname()
         data = self.cleaned_data["lastname"].strip()
         if data == "": 
             raise ValidationError("Last name can't be empty")
@@ -22,7 +20,7 @@ class EnterYourNameUserForm(ModelForm):
     class Meta: 
         model = M.User
         fields = ("firstname", "lastname")
-                
+
 class UserForm(ModelForm):
     confirm_password = CharField(widget=PasswordInput())
     def clean_email(self):
@@ -34,7 +32,15 @@ class UserForm(ModelForm):
         if cleaned_data.get("password") != cleaned_data.get("confirm_password"): 
             raise ValidationError("passwords don't match")
         return cleaned_data
-        
+
+    def save(self, force_insert=False, force_update=False, commit=True):
+        m = super(UserForm, self).save(commit=False)
+        m.password = None
+        m.set_password(self.cleaned_data.get("password"))
+        if commit:
+            m.save()
+        return m
+
     class Meta: 
         model = M.User
         fields = ( "firstname", "lastname", "email", "password", "confirm_password")

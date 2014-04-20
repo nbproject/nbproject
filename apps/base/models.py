@@ -7,7 +7,7 @@ import time
 import pytz
 import calendar
 from django.utils import timezone
-
+import hashlib, uuid
 
 ### TODO continue porting with schema in main_dir/schema
 
@@ -47,17 +47,32 @@ from django.utils import timezone
 
 ### TODO: Maybe use the django auth.user model
 ### TODO: Port COUHES approvals
-class User(models.Model):                                                       # old: users
+class User(models.Model):
     email               = EmailField(max_length=63, unique=True)
-    firstname           = CharField(max_length=63, blank=True, null=True)      # new
-    lastname            = CharField(max_length=63, blank=True, null=True)      # new 
-    pseudonym           = CharField(max_length=63, blank=True, null=True)      # new
-    password            = CharField(max_length=63, blank=True, null=True)      
+    firstname           = CharField(max_length=63, blank=True, null=True)
+    lastname            = CharField(max_length=63, blank=True, null=True)
+    pseudonym           = CharField(max_length=63, blank=True, null=True)
+    password            = CharField(max_length=63, blank=True, null=True)      # old; should be null
+    salt                = CharField(max_length=32, blank=False, null=True)     # new secure authentication
+    saltedhash          = CharField(max_length=128, blank=False, null=True)    # new secure authentication
     confkey             = CharField(max_length=63, blank=True, null=True)      
-    guest               = BooleanField(default=False)                          # new
-    valid               = BooleanField(default=False)                          # new
+    guest               = BooleanField(default=False)
+    valid               = BooleanField(default=False)
+    
     def __unicode__(self):
         return "%s %s: %s %s <%s>" % (self.__class__.__name__,self.id,  self.firstname, self.lastname, self.email)
+
+    # Returns 'True' if password is correct, 'False' othrewise
+    def authenticate(self, password):
+        user_hash = hashlib.sha512(password + self.salt).hexdigest()
+        return (self.saltedhash == user_hash)
+    
+    # Updates 'salt' and 'saltedhash' to correspond to new password
+    # this method does notcall 'save'
+    def set_password(self, password):
+        self.salt = uuid.uuid4().hex
+        self.saltedhash = hashlib.sha512(password + self.salt).hexdigest()
+        return
 
 class Ensemble(models.Model):                                                   # old: ensemble
     SECTION_ASSGT_NULL  = 1

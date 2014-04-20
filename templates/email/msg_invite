@@ -2,11 +2,16 @@ Dear {{contact}},
 You just got an invitation to the NB channel '{{name}}'
 Channel Description: {{description}}
 
-To accept this invitation please visit {{link}} 
+Please confirm your membership by visiting the URL below:
+{{link}}
+
 {% if password %}
-To login to NB after this time, please use the credentials below:
+To login to NB after this time, please use these temporary credentials:
 email:    {{email}}
 password: {{password}}
+
+We ask that you change your password on a subsequent log-in.
+
 {% endif %}
 {% if msg_perso %}
 The administrator of {{name}} has sent you the message below:

@@ -379,14 +379,12 @@ def save_settings(uid, payload):
         m.save() 
         #DB().doTransaction("update nb2_user_settings set valid=0 where id_user=? and name=?", (uid, k))
         #DB().doTransaction("insert into nb2_user_settings(id_user, name, value) values (?, ?, ?)", (uid, k, payload[k]))
-    if "__PASSWD__" in payload: 
+    if "__PASSWD__" in payload:
         password = payload["__PASSWD__"]
         u = M.User.objects.get(pk=uid)
-        u.password = password
+        u.set_password(password)
         u.save()
     return get_settings(uid, {})
-        #DB().doTransaction("insert into nb2_user_settings(id_user, name, value, valid) values(?, '__PASSWD__',0, 0);update users set password=? where id=?", (uid, password, uid))
-
 
 def get_settings(uid, payload):
     ds = M.DefaultSetting.objects.all()
@@ -406,7 +404,7 @@ def getLocation(id):
         pass
     h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
     return (loc_dict, h5l_dict)
-
+    
 def getTopCommentsFromLocations(location_ids):
     comments = {}
     for loc_id in location_ids:
@@ -1119,13 +1117,12 @@ def register_user(uid, P):
     u.lastname = P["lastname"]
     u.confkey = new_confkey
     u.email =  P["email"]
-    u.password = P["password"]
+    u.set_password(P["password"])
     u.guest = False
     u.save()
     gh = M.GuestHistory.objects.get(user=u)
     gh.t_end = datetime.datetime.now()
     gh.save()
-    #DB().doTransaction("update users set confkey=?, firstname=?, lastname=?, email=?, pseudonym=?, password=?, guest=0 where id=?;update nb4_guest_history set t_end=now() where id_user=?", (new_confkey, P["firstname"], P["lastname"], P["email"], P["pseudonym"], P["password"], uid, uid))
     return new_confkey
     
 
