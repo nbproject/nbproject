@@ -1,17 +1,14 @@
 Hello {{firstname}}, 
 
-Congratulations ! You've successfully created your account on NB... 
+Congratulations! You have successfully created your account on NB. NB is an communal annotation engine: it lets you read PDF documents and discuss them with other users.
 
-- To start using NB, please visit {{conf_url}}
+To start using NB, please confirm your e-mail by visiting the following URL:
+{{conf_url}}
 
-- Please keep the information below, so that you can login in the future: 
-  Your email:	 {{email}}  
-  Your password:   {{password}}
+You can log in at any time in the future, after confirming your membership, by using this e-mail address ({{email}}) and the password you used to register on the site.
 
-- For a quick tutorial on how to use NB please visit {{tutorial_url}}. 
+For a quick tutorial on how to use NB please visit {{tutorial_url}}. 
 
-NB is an communal annotation engine: it lets you read PDF documents and discuss them with other users. 
 
-Happy Annotating !
-
+Happy Annotating!
 The NB Team
