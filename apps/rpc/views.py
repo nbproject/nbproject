@@ -154,11 +154,18 @@ def sendInvites(payload, req):
         link = "http://%s/confirm_invite?invite_key=%s" % (settings.HOSTNAME, invite_key,)
         ensemble = M.Ensemble.objects.get(pk=id_ensemble)
 
-        p = {"name": ensemble.name, "description": ensemble.description, "link": link, "contact": user.firstname if user.firstname != None else user.email }
+        p = {
+            "name": ensemble.name,
+            "description": ensemble.description,
+            "link": link,
+            "contact": user.firstname if user.firstname != None else user.email
+        }
+
         if payload["msg"] != "": 
             p["msg_perso"] = payload["msg"]
+
         # TODO: We still include the password in the e-mail, should we stop doing that?
-        if password != "": 
+        if password != "":
             p["password"] = password
             p["email"] = email
         msg = render_to_string("email/msg_invite",p)
@@ -206,18 +213,6 @@ def login_user(P,req):
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
     return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
-
-#def on_register_session(payload): 
-#    req = payload["req"]
-#    #print req.META
-#    uid =  UR.getUserId(req)
-#    p={}
-#    p["ctime"] = payload["cid"]
-#    p["client"] = req.META["REMOTE_HOST"] if "REMOTE_HOST" in req.META else None
-#    p["ip"]     = req.META["REMOTE_ADDR"] if "REMOTE_ADDR" in req.META else None
-#    p["referer"]= req.META["referer"]     if "referer"     in req.META else None
-#    #TODO HISTORY
-#    #annotations.registerSession(uid, p)
 
 def on_delete_session(payload, s): 
     req = s["request"]
