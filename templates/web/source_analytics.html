@@ -124,7 +124,8 @@
             var metric = $(this).val();
             var status = metric_mapping[metric]["on"];
             metric_mapping[metric]["on"] = status ? false : true;
-            drawChart(); 
+            drawChart();
+            recordAction('chart-toggle', metric); 
           });
 
           var pgLabelClass = 'page-label';
