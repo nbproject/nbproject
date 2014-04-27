@@ -290,6 +290,11 @@ class PageSeen(models.Model):
     session             = ForeignKey(Session, null=True)
     user                = ForeignKey(User, null=True) #duplicate (cf session) but inlined for performance
     ctime               = DateTimeField(default=datetime.now) 
+
+class SourceLastSeen(models.Model):
+    source              = ForeignKey(Source)
+    user                = ForeignKey(User, null=True) #duplicate (cf session) but inlined for performance
+    ctime               = DateTimeField(default=datetime.now) 
    
 class Landing(models.Model):
     user                = ForeignKey(User)

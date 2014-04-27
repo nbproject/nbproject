@@ -244,3 +244,31 @@ background: -moz-linear-gradient(top, #e0e0e0, #fafafa);
 span.reply-rated-as{
 color: #a0a0a0;
 }
+
+.hidden {
+    display: none;
+}
+
+.sort-option {
+    text-decoration:none;
+}
+
+.sort-option.active {
+    font-weight: bold;
+}
+
+.sort-option > .arrow {
+    height: 8px;
+    width: 16px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.sort-option.asc > .arrow {
+    background-image: url("/content/modules/tablesorter/asc.gif");
+}
+
+.sort-option.desc > .arrow {
+    background-image: url("/content/modules/tablesorter/desc.gif");    
+}
