@@ -7,7 +7,7 @@ License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.db.models import Count
 from django.db import transaction
 import datetime, os, re, json 
@@ -153,7 +153,9 @@ __NAMES = {
         "rotation": "source.rotation",
         "assignment": None, 
         "due": None, 
-        "filetype": "source.type"
+        "filetype": "source.type",
+        "date_published": "published",
+        "last_seen": "last_seen"
 },
            "ensembles2": {
                           "ID": "ensemble_id",
@@ -359,11 +361,8 @@ def get_files(uid, payload):
     names = __NAMES["files2"]
     my_memberships = M.Membership.objects.filter(user__id=uid,  deleted=False)
     my_ensembles = M.Ensemble.objects.filter(membership__in=my_memberships)
-    my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False) 
-    if id is not None:
-        my_ownerships = my_ownerships.filter(source__id=id)
+    my_ownerships = M.Ownership.objects.select_related("source").filter(ensemble__in=my_ensembles, deleted=False).annotate(last_seen=Max('source__sourcelastseen__ctime'))
     return UR.qs2dict(my_ownerships, names, "ID")
-
 
 def save_settings(uid, payload): 
     #print "save settings w/ payload %s" % (payload, )
