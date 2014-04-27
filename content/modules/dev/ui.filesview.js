@@ -280,7 +280,9 @@
         var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='2' class='sort-option desc active'><span class='arrow'></span>name</a> <table id='contents-table' class='tablesorter'><thead><tr><th class='hidden'>Date Added</th><th class='hidden'>Last Seen</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
-        self._menu_items.remove();
+        if (self._menu_items){
+            self._menu_items.remove();
+        }
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
         self.set_tablesort();
         $("body").append(self._menu_items);
