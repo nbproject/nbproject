@@ -4,8 +4,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
 import  urllib, json, base64, logging 
-from base import auth, signals, annotations, utils_response as UR
-from base import models as M
+from base import auth, signals, annotations, utils_response as UR, models as M
 from django.conf import settings
 import string, random, forms
 from random import choice
