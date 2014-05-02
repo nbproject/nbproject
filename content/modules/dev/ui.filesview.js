@@ -92,7 +92,7 @@
                 "delete": { name: "Delete", icon: "delete" }
             };
 
-            if (self._model.get("ensemble", {}).first().admin === false) {
+            if (self._model.get("ensemble", {ID: self._id_ensemble}).first().admin === false) {
                 return false;
             }
 
