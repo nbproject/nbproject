@@ -303,11 +303,6 @@ class AnalyticsClick(models.Model):
     control             = CharField(max_length=30)
     value               = CharField(max_length=30)
 
-class SourceLastSeen(models.Model):
-    source              = ForeignKey(Source)
-    user                = ForeignKey(User, null=True) #duplicate (cf session) but inlined for performance
-    ctime               = DateTimeField(default=datetime.now) 
-   
 class Landing(models.Model):
     user                = ForeignKey(User)
     ctime               = DateTimeField(default=datetime.now)
