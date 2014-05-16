@@ -467,8 +467,11 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['<config:jshint.src>', 'content/ui/admin/*.css'],
-            tasks: ['jshint', 'concat', 'cssmin']
+            files: ['<config:jshint.src>', 'content/modules/*/*.css'],
+            tasks: ['jshint', 'concat', 'cssmin'],
+            options: {
+                livereload: true,
+            }
 
         },
         uglify: {}
