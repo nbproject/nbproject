@@ -1,3 +1,16 @@
+.notification-badge{
+  height: 13px;
+  min-width: 10px;
+  background-color: #14B1E2;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  padding: 2px 5px 5px 5px;
+  text-align: center;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+
 /*div.filesView{
 overflow-y: auto;
 height: 100%;
