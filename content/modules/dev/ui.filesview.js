@@ -291,8 +291,8 @@
             var f_leftcontext = function(action, el, pos){
             f_context(action, el.parent().parent(), pos);
             };
-            // $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
-            // $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
+            $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
+            $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
             $("#contextmenu_filesview").bind("beforeShow", function(event, el){
                 $("li", this).show();
                 if (el.closest(".filesview_row").attr("item_type") ==="folder"){
