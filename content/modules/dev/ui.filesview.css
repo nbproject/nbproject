@@ -1,41 +1,29 @@
-div.filesView{
+/*div.filesView{
 overflow-y: auto;
 height: 100%;
 }
 
-
-.contextMenu {
-        font-family: Verdana,Arial,Helvetica,sans-serif;
-}
-
-td.filesview_ftitle:hover{
-background-color: #ffffa0;
-cursor: context-menu;
-}
-
-
-
 #filesview-splash{
-position: absolute;
-width: 100%;
-height: 100%;
-background-color: #f0f0f0;
-}
-
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+}*/
+/*
 button[action=add_file]>ins{
 
-}
+}*/
 
-
+/*
 
 div.filesView div.filesView-header {
-    padding: 15px 15px 10px 15px;
-    box-shadow: 0 -1px 8px rgba(0,0,0,0.2);
-    background-color: #EFEBE7;
-    border-bottom: thin solid #DDD;
-}
+  padding: 15px 15px 10px 15px;
+  box-shadow: 0 -1px 8px rgba(0,0,0,0.2);
+  background-color: #EFEBE7;
+  border-bottom: thin solid #DDD;
+}*/
 
-div.filesView-header>* {
+/*div.filesView-header>* {
     vertical-align: middle;
 }
 
@@ -43,7 +31,7 @@ div.filesView-header .title{
     font-size: 1.75em;
     padding-right: 1.5em;
 }
-
+*//*
 div.filesView-panel {
 background-color: #f5f5f5;
 overflow-y: auto;
@@ -64,8 +52,8 @@ font-style: italic;
 
 span.yesno{
 padding-left: 30px;
-}
-
+}*/
+/*
 div.filesView-header > a {
 margin-left: 15px;
 padding: 3px 5px 3px 5px;
@@ -80,7 +68,7 @@ box-shadow: 0 0 5px -1px rgba(0,0,0,1);
 div.filesView-header > a:hover {
 background-color: #ddd;
 }
-
+/*
 a.collagelink{
 margin-right: 10px;
 padding: 0px;
@@ -91,7 +79,7 @@ height: 23px;
 background-color: #EEE;
 color: #707070;
 font-size: 0.9em;
-}
+}*/
 
 span.collagelink-caption{
 padding: 5px 0 5px 5px;
@@ -137,7 +125,6 @@ padding: 10px;
 }
 
 div.filesView-question-body{
-    font-family: Trebuchet MS, sans-serif;
     white-space: nowrap;
     overflow-x: hidden;
     font-size: medium;
@@ -159,18 +146,15 @@ div.filesView-item:nth-child(even) {
 
 span.filesView-reply-body{
     font-size: medium;
-    font-family: Trebuchet MS;
     padding-right: 10px;
 
 }
-
 
 #filesView-question-header-total #filesView-pending-header-total {
     font-weight: bold; 
 }
 
 #filesView-question-header, #filesView-pending-header, #filesView-files-header{
-    font-family: trebuchet MS;
     font-size: x-large;
 }
 
@@ -244,3 +228,4 @@ background: -moz-linear-gradient(top, #e0e0e0, #fafafa);
 span.reply-rated-as{
 color: #a0a0a0;
 }
+*/
