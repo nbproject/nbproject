@@ -1,12 +1,31 @@
 /* tables */
 table.tablesorter {
-	background-color: #CDCDCD;
-	margin:10px 0pt 15px;
-	text-align: left;
 	border-collapse: collapse;
-	border: 1px solid #EEE;
+	color: #505556;
+	text-align: left;
+	width: 100%;
+
 }
-table.tablesorter th, table.tablesorter th {
+
+table.tablesorter td, table.tablesorter th{
+	padding: 10px;
+}
+
+table.tablesorter tr{
+	border-bottom: 1px solid #EDEDF7;
+}
+
+table.tablesorter tbody{
+	background-color: #fff;
+}
+
+table.tablesorter tbody tr:hover{
+	background-color: #FAFEFF;
+}
+
+
+
+/*table.tablesorter th, table.tablesorter th {
 	background-color: #e6EEEE;
 	border: 1px solid #EEE;
 	padding: 4px;
@@ -36,3 +55,4 @@ table.tablesorter thead tr .headerSortDown {
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
 background-color: #8dbdd8;
 }
+*/
