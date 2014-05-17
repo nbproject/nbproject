@@ -92,20 +92,20 @@
         var comments_all = f_stats ? f_stats.total : "0";
         // var comments_unread = f_stats ? f_stats.total - f_stats.seen : "";
         var unread_notification = f_stats ? "<div class='unread-count'>" + (f_stats.total - f_stats.seen) + "</div>" : ""; //use in live ver
-        // var unread_notification = "<div class='notification-badge'>" + 102 + "</div>"; //just for testing
-        var type_class = "pdficon";
+        // var unread_notification = "<div class='notification-badge'>" + 2 + "</div>"; //just for testing
+        var type_class = "fa-file-pdf-o";
         var kind = "PDF";
 
-        if (f.filetype === 4) { type_class = "html5icon"; kind = "HTML?"; } // TODO: 4 should not be hardcoded
-        if (f.filetype === 2) { type_class = "youtubeicon"; kind = "Video"; } // TODO: 2 should not be hardcoded
+        if (f.filetype === 4) { type_class = "fa-file-code-o"; kind = "HTML"; } // TODO: 4 should not be hardcoded
+        if (f.filetype === 2) { type_class = "fa-youtube-play"; kind = "Video"; } // TODO: 2 should not be hardcoded
         // return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
-        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/>" + unread_notification + "<a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+comments_all+"</td><td>"+assignment_info+"</td><td></td><td>"+kind+"</td></tr>");
+        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'>" + unread_notification + "<i class='fa fa-2x " + type_class + "'></i><a class='filename' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+comments_all+"</td><td>"+assignment_info+"</td><td></td><td>"+kind+"</td></tr>");
 
         },
         _folderlens: function(f){
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
         // return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
-        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='filename'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/><td>Folder</td></tr>");
+        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><i class='fa fa-2x fa-folder-o'></i><a class='filename'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/><td>Folder</td></tr>");
         },
         _draw_pending: function(){
         var self = this;
