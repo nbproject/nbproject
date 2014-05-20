@@ -52,8 +52,8 @@ module.exports = function(grunt) {
         src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css", "dev/ui.threadselect.css" ])
     };
     MODS.TREEVIEW = {
-        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
-        src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview.css"])
+        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview-dropdown.js"]), 
+        src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview-dropdown.css"])
     };  
     MODS.FILESVIEW = {
         src_js: [].concat(
