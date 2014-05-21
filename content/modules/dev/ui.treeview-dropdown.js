@@ -20,7 +20,7 @@
                 self._model    = null;
                 self._selection = {};
                 self._admin    = self.options.admin;
-                //insert both dropdown and tree for now, as siblings
+                
                 // self.element.css("overflow-y", "auto").html("<div class='tree'></div><div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'></a><ul class='dropdown-menu'></ul></div>");
                 self.element.html("<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'></a><ul class='dropdown-menu'></ul></div>");
 
@@ -30,6 +30,7 @@
                 // var tree;
                 var dropdown;
                 // by default we listen to events directed to everyone
+                //TODO (carolynz): figure out if this is needed for dropdown
             //     switch (evt.type){
             //         case "ensemble":
             //             tree = $("div.jstree");
@@ -67,16 +68,6 @@
             _render: function(){
                 var self = this;
                 var model = self._model;
-                //build view: 
-                var params =  self.options.admin ? {admin: true} : {};
-                var ensemble = model.get("ensemble", params).items;
-                var data = [];
-                var data_dropdown = "";
-                var subfolders = null;
-                var subfiles = null;
-                var children = null;
-                var s_numfiles = null;
-                var qry = null;
                 for (var i in ensemble){
                     //adds class to dropdown
                     data_dropdown += ("<li><a href='#' data-rel='ensemble' data-id=" + i + ">" + $.E(ensemble[i].name) + "</a></li>");
