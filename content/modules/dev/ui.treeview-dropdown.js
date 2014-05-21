@@ -68,6 +68,10 @@
             _render: function(){
                 var self = this;
                 var model = self._model;
+                //build view: 
+                var params =  self.options.admin ? {admin: true} : {};
+                var ensemble = model.get("ensemble", params).items;
+                var data_dropdown = "";
                 for (var i in ensemble){
                     //adds class to dropdown
                     data_dropdown += ("<li><a href='#' data-rel='ensemble' data-id=" + i + ">" + $.E(ensemble[i].name) + "</a></li>");
