@@ -33,26 +33,41 @@
         //Factories: methods called if an event calls for a function that's not yet present
         $.concierge.addFactory("admin_init", "admin_viewer", function(id){
             var pers_id        = "pers_"+id;
-            var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' /></div>").prependTo("body");
+            var $vp        = $("<div class='nb-viewport desktop-viewport'>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-            var treeview    =  {
+            // var treeview    =  {
+            //     priority: 1, 
+            //     min_height: 80, 
+            //     desired_width: 25, 
+            //     content: function($div){
+            //         //TODO (carolynz): rename treeview method
+            //         $div.treeView({admin: GLOB.pers.admin});
+            //         $div.treeView("set_model", GLOB.pers.store );
+            //         //default behavior: select the "home" screen. 
+            //         $.concierge.trigger({type:"ensemble", value: 0});
+            //     }
+            // };
+            var navbar = {
                 priority: 1, 
-                min_width: 200, 
-                desired_width: 25, 
+                min_height: 100, 
+                // desired_width: 25, 
                 content: function($div){
                     $div.treeView({admin: GLOB.pers.admin});
                     $div.treeView("set_model", GLOB.pers.store );
                     //default behavior: select the "home" screen. 
-                    $.concierge.trigger({type:"ensemble", value: 0});
+                    // $.concierge.trigger({type:"ensemble", value: 0});
+                    // $.concierge.trigger({type:"ensemble", value: 2});
                 }
             };
-            var filesview    =  {
+            var filesview  = {
                 priority: 1, 
-                min_width: 1000, 
-                desired_width: 85, 
+                // min_width: 1000, 
+                // desired_width: 85, 
                 content: function($div){
                     $div.filesView({img_server: GLOB.conf.servers.img,  admin: GLOB.pers.admin});
                     $div.filesView("set_model",GLOB.pers.store );
+                    //TODO (carolynz): set to last-viewed class
+                    $.concierge.trigger({type:"ensemble", value: 2});
                 }
             }; 
             $pers.perspective({
@@ -83,8 +98,8 @@
                     }
                 }, 
                 views: {
-                    v1:{ data: treeview }, 
-                    v2:{ data: filesview }, orientation: "vertical"}
+                    v1:{ data: navbar }, 
+                    v2:{ data: filesview }, orientation: "horizontal"}
             });
         });
         
