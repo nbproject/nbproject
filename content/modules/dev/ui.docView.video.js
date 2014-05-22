@@ -14,140 +14,17 @@
 /*global YT:true jQuery:true console:true*/
 
 var ytplayer = null;
-var NB_vid = {};
-
-	//Update a particular HTML element with a new value
-	function updateHTML(elmId, value) {
-		document.getElementById(elmId).innerHTML = value;
-	}
-
-	// This function is called when an error is thrown by the player
-	function onPlayerError(errorCode) {
-		alert("An error occured of type:" + errorCode);
-	}
-
-	// This function is called when the player changes state
-	function onPlayerStateChange(newState) {
-		updateHTML("playerState", newState);
-	}
-
-	// Display information about the current state of the player
-	// It’s called every 250 milliseconds in onYoutubePlayerReady()
-	function updatePlayerInfo() {
-		// Also check that at least one function exists since when IE unloads the
-		// page, it will destroy the SWF before clearing the interval.
-		if(ytplayer && ytplayer.getDuration) {
-			NB_vid.methods.updateHTML("videoTimeDisplay", NB_vid.methods.calculateTime(ytplayer.getCurrentTime())); //seen under progressbar
-			NB_vid.methods.updateHTML("videoTotalTimeDisplay", NB_vid.methods.calculateTime(ytplayer.getDuration()));
-		}
-	}
-
-
-	// Allow the user to set the volume from 0-100
-	function setVideoVolume(volume) {
-	if(ytplayer){
-		ytplayer.setVolume(volume);
-		}
-	}
-
-	function playVideo() {
-		if (ytplayer) {
-			NB_vid.isPlaying = true;
-			ytplayer.playVideo();
-		}
-	}
-
-	function pauseVideo() {
-		if (ytplayer) {
-			NB_vid.isPlaying = false;
-			ytplayer.pauseVideo();
-		}
-	}
-
-	function muteVideo() {
-		if(ytplayer) {
-			ytplayer.mute();
-		}
-	}
-
-	function unMuteVideo() {
-		if(ytplayer) {
-			ytplayer.unMute();
-		}
-	}
 	
-	//give the time in seconds, return the time as a string with (hours:)minutes:seconds
-	function calculateTime(givenTime){
-		var totalSec = parseInt(givenTime);
-		var hours = 0;
-		if (totalSec >= 3600){
-			hours = parseInt(totalSec/3600);
-			totalSec -= hours*3600;
-		}
-		var minutes = 0;
-		if(totalSec >= 60){
-			minutes = parseInt(totalSec/60);
-			totalSec -= minutes*60;
-		}
-		var display = "";
-		if(hours > 0){
-			display += hours + ":";
-		}
-		if(hours > 0 && minutes <10){
-			display += "0" + minutes + ":";
-		}else{
-			display += minutes + ":";
-		}
-		if (totalSec < 10){
-			display+= "0" + totalSec;
-		}else{
-			display+= totalSec;
-		}
-		return display;
-	}
-
-	// Given the time as a string, return the time as a number of seconds
-	function calculateTime_stringToNum(timeStr){
-		var seconds = parseInt(timeStr.substring(timeStr.length-2, timeStr.length)); //gets seconds
-		timeStr = timeStr.substring(0, timeStr.length-3); //gets rid of the seconds portion of string
-		var minutes, hours = 0;
-		if (timeStr.length === 1 || timeStr.length === 2){
-			minutes = parseInt(timeStr);
-		}else{//if the video has hours
-			minutes = parseInt(timeStr.substring(timeStr.length-2, timeStr.length));
-			timeStr = timeStr.substring(0, timeStr.length-3); //gets rid of the seconds portion of string
-			hours = parseInt(timeStr);
-		}
-
-		var totalSeconds = hours*3600 + minutes*60 + seconds;
-		return totalSeconds;	
-	}
-	
-	function videoClicked() {
-		NB_vid.methods.playORpause();
-	}
-	
-	NB_vid = {
-		"methods": {
-			"updateHTML": updateHTML,
-			"onPlayerError": onPlayerError,
-			"onPlayerStateChange": onPlayerStateChange,
-			"updatePlayerInfo": updatePlayerInfo,
-			"calculateTime": calculateTime,
-			"calculateTime_stringToNum": calculateTime_stringToNum,
-			"setVideoVolume": setVideoVolume,
-			"playVideo": playVideo,
-			"pauseVideo": pauseVideo,
-			"muteVideo": muteVideo,
-			"unMuteVideo": unMuteVideo
-		},
+var NB_vid = {
+		"methods": {},
 		"defaultTickWidth": 2,
 		"isPlaying": false,
 		"wasPlaying": false, // Whether the player was playing before a note was started
 		"hoveredTick": null,
 		"selectedTick": null,
 		"currentID": "",
-		"ytLoaded": false
+		"ytLoaded": false,
+		"methodsDefined": false
 		};
 
 	// This function is automatically called by the player once it loads
@@ -155,24 +32,9 @@ var NB_vid = {};
 		console.log("ytplayer ready");
 		ytplayer = document.getElementById("ytPlayer");
 		NB_vid.ytLoaded = true;
-
-		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
-
-		//This hack is an attempt to eliminate the big red play button by default
-		//it prevents the default play button from playing the video without changing my own play button
-		//it also starts the loading of the video sooner
-		window.setTimeout(function() {
-			ytplayer.playVideo();
-			ytplayer.pauseVideo(); //comment this out if using the gatherThumbnailHandler
-		}, 0);
-
-		// This causes the updatePlayerInfo function to be called every 250ms to
-		// get fresh data from the player
-		NB_vid.methods.updatePlayerInfo();		
+	
 		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
 		ytplayer.addEventListener("onError", "onPlayerError");
-		//Load an initial video into the player
-		ytplayer.cueVideoById("ylLzyHk54Z0");
 	}
 (function($) {
     var PLAYER_HTML_TEMPLATE = 
@@ -217,17 +79,128 @@ var NB_vid = {};
 		'</div>',
 	'</div>'].join('\n');
 	
-	function completeMethods() {
+	function defineHelperMethods() {
+		//Update a particular HTML element with a new value
+		function updateHTML(elmId, value) {
+			document.getElementById(elmId).innerHTML = value;
+		}
+
+		// This function is called when an error is thrown by the player
+		function onPlayerError(errorCode) {
+			alert("An error occured of type:" + errorCode);
+		}
+
+		// This function is called when the player changes state
+		function onPlayerStateChange(newState) {
+			updateHTML("playerState", newState);
+		}
+
+		// Display information about the current state of the player
+		// It’s called every 250 milliseconds in onYoutubePlayerReady()
+		function updatePlayerInfo() {
+			// Also check that at least one function exists since when IE unloads the
+			// page, it will destroy the SWF before clearing the interval.
+			if(ytplayer && ytplayer.getDuration) {
+				updateHTML("videoTimeDisplay", calculateTime(ytplayer.getCurrentTime())); //seen under progressbar
+				updateHTML("videoTotalTimeDisplay", calculateTime(ytplayer.getDuration()));
+			}
+		}
+
+
+		// Allow the user to set the volume from 0-100
+		function setVideoVolume(volume) {
+		if(ytplayer){
+			ytplayer.setVolume(volume);
+			}
+		}
+
+		function playVideo() {
+			if (ytplayer) {
+				NB_vid.isPlaying = true;
+				ytplayer.playVideo();
+			}
+		}
+
+		function pauseVideo() {
+			if (ytplayer) {
+				NB_vid.isPlaying = false;
+				ytplayer.pauseVideo();
+			}
+		}
+
+		function muteVideo() {
+			if(ytplayer) {
+				ytplayer.mute();
+			}
+		}
+
+		function unMuteVideo() {
+			if(ytplayer) {
+				ytplayer.unMute();
+			}
+		}
+	
+		//give the time in seconds, return the time as a string with (hours:)minutes:seconds
+		function calculateTime(givenTime){
+			var totalSec = parseInt(givenTime);
+			var hours = 0;
+			if (totalSec >= 3600){
+				hours = parseInt(totalSec/3600);
+				totalSec -= hours*3600;
+			}
+			var minutes = 0;
+			if(totalSec >= 60){
+				minutes = parseInt(totalSec/60);
+				totalSec -= minutes*60;
+			}
+			var display = "";
+			if(hours > 0){
+				display += hours + ":";
+			}
+			if(hours > 0 && minutes <10){
+				display += "0" + minutes + ":";
+			}else{
+				display += minutes + ":";
+			}
+			if (totalSec < 10){
+				display+= "0" + totalSec;
+			}else{
+				display+= totalSec;
+			}
+			return display;
+		}
+
+		// Given the time as a string, return the time as a number of seconds
+		function calculateTime_stringToNum(timeStr){
+			var seconds = parseInt(timeStr.substring(timeStr.length-2, timeStr.length)); //gets seconds
+			timeStr = timeStr.substring(0, timeStr.length-3); //gets rid of the seconds portion of string
+			var minutes, hours = 0;
+			if (timeStr.length === 1 || timeStr.length === 2){
+				minutes = parseInt(timeStr);
+			}else{//if the video has hours
+				minutes = parseInt(timeStr.substring(timeStr.length-2, timeStr.length));
+				timeStr = timeStr.substring(0, timeStr.length-3); //gets rid of the seconds portion of string
+				hours = parseInt(timeStr);
+			}
+
+			var totalSeconds = hours*3600 + minutes*60 + seconds;
+			return totalSeconds;	
+		}
+	
+		function videoClicked() {
+			playORpause();
+		}
+	
 		// called when the play/pause button is clicked
 		// syncs the correct image with the action
 		function playORpause(){
 			if (!NB_vid.isPlaying){
 				$(".playORpause").attr("src", "/content/data/images/pause.png");
-				NB_vid.methods.playVideo();
+				playVideo();
 				return true;
 			}else{
 				$(".playORpause").attr("src", "/content/data/images/play.png");
-				NB_vid.methods.pauseVideo();
+				pauseVideo();
 				return false;
 			}
 		}
@@ -237,10 +210,10 @@ var NB_vid = {};
 		function muteORunmute(){
 			if ($(".muteORunmute").attr("src") === "/content/data/images/volume_up.png"){
 				$(".muteORunmute").attr("src", "/content/data/images/mute.png");
-				NB_vid.methods.muteVideo();
+				muteVideo();
 			}else{
 				$(".muteORunmute").attr("src", "/content/data/images/volume_up.png");
-				NB_vid.methods.unMuteVideo();
+				unMuteVideo();
 			}
 		}
 			
@@ -255,14 +228,10 @@ var NB_vid = {};
 		function playback(){
 			var time = ytplayer.getCurrentTime();
 			if (time > 5){
-				NB_vid.methods.goToTime(time - 5);
+				goToTime(time - 5);
 			}else{
-				NB_vid.methods.goToTime(0);
+				goToTime(0);
 			}
-		}
-		
-		function videoClicked() {
-			NB_vid.methods.playORpause();
 		}
 		
 		// This function is called every 500 milliseconds
@@ -292,7 +261,7 @@ var NB_vid = {};
 				var relX = e.pageX - parentOffset.left;
 				var relY = e.pageY - parentOffset.top;
 				$('#offset').html(relX + ', ' + relY);
-				NB_vid.methods.progressbar_click(relX);
+				progressbar_click(relX);
 			});
 		}
 
@@ -313,8 +282,8 @@ var NB_vid = {};
 		//calculate the tick width given the starting and end time associated with the comment
 		function calculateTickWidth(startTime, endTime){
 			if (endTime !== 0){
-				var leftLoc = NB_vid.methods.calculateTickLoc(startTime);
-				var rightLoc = NB_vid.methods.calculateTickLoc(endTime);
+				var leftLoc = calculateTickLoc(startTime);
+				var rightLoc = calculateTickLoc(endTime);
 				var width = rightLoc - leftLoc;
 				return width;
 			}else{
@@ -348,8 +317,8 @@ var NB_vid = {};
 			}
 			for (var id in payload.diff) {
 				newNoteObj = payload.diff[id];
-				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-				var newTickHTML = NB_vid.methods.tickHTML(tickX, NB_vid.defaultTickWidth, id);
+				var tickX = calculateTickLoc(newNoteObj.page);
+				var newTickHTML = tickHTML(tickX, NB_vid.defaultTickWidth, id);
 				
 				//copy the htmlText - stores the current tick mark divs (if any)
 				var htmlText = $(".tickmark_holder").html();
@@ -361,17 +330,17 @@ var NB_vid = {};
 			}
 			
 			// Attach Listeners to tickmarks
-			$(".tickmark").click(NB_vid.methods.tickClickListen).mouseenter(NB_vid.methods.tickMouseEnterListen).mouseleave(NB_vid.methods.tickMouseLeaveListen);
+			$(".tickmark").click(tickClickListen).mouseenter(tickMouseEnterListen).mouseleave(tickMouseLeaveListen);
 		}
 
 		// Highlights the given tickmark the given color
 		function highlightTick(tickmark, color) {
-			NB_vid.methods.changeTickCSS(tickmark, color, "No Change", "1");
+			changeTickCSS(tickmark, color, "No Change", "1");
 		}
 		
 		// Unhighlights a given tick
 		function unhighlightTick(tickmark) {
-			NB_vid.methods.changeTickCSS(tickmark, "red", "No Change", ".4");
+			changeTickCSS(tickmark, "red", "No Change", ".4");
 		}
 		
 		// Highlights a selected tick green and saves it as selected
@@ -379,30 +348,30 @@ var NB_vid = {};
 			var idStr = "tickmark" + id;
 			var tickStr = "#" + idStr;
 			var tickmark = $(tickStr);
-			NB_vid.methods.highlightTick(tickmark, "green");
+			highlightTick(tickmark, "green");
 			if (NB_vid.selectedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+				unhighlightTick(NB_vid.selectedTick);
 			}
 			NB_vid.selectedTick = tickmark;
-			NB_vid.currentID = NB_vid.methods.tickNumFromIdStr(idStr);
+			NB_vid.currentID = tickNumFromIdStr(idStr);
 		}
 		
 		// Removes tick selecting
 		function removeTickSelect() {
 			if (NB_vid.highlightedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+				unhighlightTick(NB_vid.selectedTick);
 			}
 			NB_vid.selectedTick = null;
 			NB_vid.currentID = "";
 		}
 		
-		// Highlights a hovered tick green and saves it as hovered
+		// Highlights a hovered tick blue and saves it as hovered
 		function tickHover(id) {
 			var tickStr = "#tickmark" + id;
 			var tickmark = $(tickStr);
-			NB_vid.methods.highlightTick(tickmark, "blue");
+			highlightTick(tickmark, "blue");
 			if (NB_vid.hoveredTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+				unhighlightTick(NB_vid.hoveredTick);
 			}
 			NB_vid.hoveredTick = tickmark;
 		}
@@ -410,7 +379,7 @@ var NB_vid = {};
 		// Removed tick hovering
 		function removeTickHover() {
 			if (NB_vid.hoveredTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+				unhighlightTick(NB_vid.hoveredTick);
 			}
 			NB_vid.hoveredTick = null;
 		}
@@ -454,26 +423,24 @@ var NB_vid = {};
 		// Listener for clicks on ticks
 		function tickClickListen(evt) {
 			var idStr = evt.target.getAttribute("id");
-			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
-			NB_vid.methods.threadSelect(tickNum);
+			var tickNum = tickNumFromIdStr(idStr);
+			threadSelect(tickNum);
 		}
 		
 		// Listener for mouseenter on ticks
 		function tickMouseEnterListen(evt) {
-			console.log("mouseenter");
 			var idStr = evt.target.getAttribute("id");
-			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
-			NB_vid.methods.tickHover(tickNum);
+			var tickNum = tickNumFromIdStr(idStr);
+			tickHover(tickNum);
 		}
 		
 		// Listener for mouseleave on ticks
 		function tickMouseLeaveListen(evt) {
-			console.log("mouseleave");
 			var idStr = evt.target.getAttribute("id");
-			NB_vid.methods.removeTickHover();
+			removeTickHover();
 			var currentSelectStr = "tickmark" + NB_vid.currentID;
 			if (idStr === currentSelectStr) {
-				NB_vid.methods.highlightTick(NB_vid.selectedTick, "green");
+				highlightTick(NB_vid.selectedTick, "green");
 			}
 		}
 		
@@ -482,33 +449,17 @@ var NB_vid = {};
 				"playORpause": playORpause,
 				"playback": playback,
 				"muteORunmute": muteORunmute,
-				"goToTime" : goToTime,
+				"updatePlayerInfo": updatePlayerInfo,
 				"updateProgressbar": updateProgressbar,
-				"progressbar_click": progressbar_click,
 				"updateProgressbarClick": updateProgressbarClick,
-				"progressbarOffsetX": progressbarOffsetX,
-				"calculateTickLoc": calculateTickLoc,
-				"calculateTickWidth": calculateTickWidth,
-				"tickHTML": tickHTML,
 				"addAllTicks": addAllTicks,
-				"highlightTick": highlightTick,
-				"unhighlightTick": unhighlightTick,
-				"tickSelect": tickSelect,
-				"tickHover": tickHover,
-				"removeTickSelect": removeTickSelect,
-				"removeTickHover": removeTickHover,
-				"createTickPopover": createTickPopover,
-				"changeTickCSS": changeTickCSS,
-				"threadSelect": threadSelect,
-				"tickNumFromIdStr": tickNumFromIdStr,
-				"tickClickListen": tickClickListen,
-				"tickMouseEnterListen": tickMouseEnterListen,
-				"tickMouseLeaveListen": tickMouseLeaveListen
+				"tickSelect": tickSelect
 		};
 		
 		$.extend(NB_vid["methods"], new_methods);
+		NB_vid.methodsDefined = true;
 	}
-	completeMethods();
+	defineHelperMethods();
     
 	var METRONOME_STATES = {
 		PLAYING: 1, 
@@ -797,6 +748,9 @@ var NB_vid = {};
 					var f_poll = function(){
 						if (!ytplayer) {
 							console.log("NULL ytplayer");
+							setTimeout(f_poll, 100);
+						}
+						else if (!NB_vid.methodsDefined){
 							setTimeout(f_poll, 100);
 						}
 						else if ("getDuration" in ytplayer){

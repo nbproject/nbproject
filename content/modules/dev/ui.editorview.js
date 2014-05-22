@@ -31,7 +31,6 @@
                 var me            = $.concierge.get_component("get_userinfo")();
                 var guest_msg    = "<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
                 var id_item, draft, drafts;
-                console.log("Editor Event: "+evt.type);
                 switch (evt.type){
                 case "new_thread":
                     if (me.guest === 1){
