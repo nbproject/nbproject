@@ -91,15 +91,15 @@
         // var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":"<td/>";
         var comments_all = f_stats ? f_stats.total : "0";
         // var comments_unread = f_stats ? f_stats.total - f_stats.seen : "";
-        var unread_notification = f_stats ? "<div class='unread-count'>" + (f_stats.total - f_stats.seen) + "</div>" : ""; //use in live ver
-        // var unread_notification = "<div class='notification-badge'>" + 2 + "</div>"; //just for testing
+        // var unread_notification = f_stats ? "<div class='unread-count'>" + (f_stats.total - f_stats.seen) + "</div>" : ""; //use in live ver
+        var unread_notification = "<div class='notification-badge'>" + 2 + "</div>"; //just for testing
         var type_class = "fa-file-pdf-o";
         var kind = "PDF";
 
         if (f.filetype === 4) { type_class = "fa-file-code-o"; kind = "HTML"; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = "fa-youtube-play"; kind = "Video"; } // TODO: 2 should not be hardcoded
         // return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
-        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'>" + unread_notification + "<i class='fa fa-2x " + type_class + "'></i><a class='filename' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+comments_all+"</td><td>"+assignment_info+"</td><td></td><td>"+kind+"</td></tr>");
+        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><i class='fa fa-2x " + type_class + "'></i>" + unread_notification + "<a class='filename' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+comments_all+"</td><td>"+assignment_info+"</td><td></td><td>"+kind+"</td></tr>");
 
         },
         _folderlens: function(f){
@@ -237,10 +237,10 @@
         var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
         // var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter'><thead><tr><th class='header headerSortDown'>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
-        var filesView_files = (self._id_ensemble === null) ?  "<!--<div id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter' id='files-table'><thead><tr><th class='header headerSortDown'>Name</th><th>Comments</th><th>Due date</th><th>Last Updated</th><th>Kind</th></tr></thead><tbody id='filesView-file-list'/></table></div>";
+        var filesView_files = (self._id_ensemble === null) ?  "<!--<div id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter' id='files-table'><thead><tr><th class='header headerSortDown'>Name</th><th>Comments</th><th>Due date</th><th>Last Updated</th><th>Kind</th></tr></thead><tbody id='filesView-file-list'/></table></div>";
 
         // self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
-        self.element.html(header + filesView_files + filesView_pending + filesView_question);
+        self.element.html("<div class='container'>" + header + filesView_files + "</div>");
         // self.element.html(header + filesView_files);
 
         self._menu_items.remove();
@@ -335,16 +335,16 @@
             self._defaultopen = open_candidate;
         }
         self._draw_files();
-        $("#filesView-accordion").accordion({
-            autoHeight: false,
-                collapsible: true,
-                change: function(event, ui){
-                //simulate scroll event to display img if not there already.
-                self.element.scroll();
-                self._defaultopen = "#" + ui.newHeader.attr("id");
-            },
-                active: self._defaultopen
-                });
+        // $("#filesView-accordion").accordion({
+        //     autoHeight: false,
+        //         collapsible: true,
+        //         change: function(event, ui){
+        //         //simulate scroll event to display img if not there already.
+        //         self.element.scroll();
+        //         self._defaultopen = "#" + ui.newHeader.attr("id");
+        //     },
+        //         active: self._defaultopen
+        //         });
 
         // there might be quite a few questions: don't get all images at once
         var scroll_timeout = 300;
