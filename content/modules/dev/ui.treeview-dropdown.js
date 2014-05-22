@@ -22,7 +22,7 @@
                 self._admin    = self.options.admin;
                 
                 // self.element.css("overflow-y", "auto").html("<div class='tree'></div><div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'></a><ul class='dropdown-menu'></ul></div>");
-                self.element.html("<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'><div class='current-class'></div><div class='dropdown-caret'><i class='fa fa-caret-down'></i></div></a><ul class='dropdown-menu'></ul></div>");
+                self.element.html("<nav class='desktop-nav'><div class='container'><img alt='NB logo' id='nb-logo' class='brand' src='/content/data/img/nb-logo.png'><div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'><div class='current-class'></div><div class='dropdown-caret'><i class='fa fa-caret-down'></i></div></a><ul class='dropdown-menu'></ul></div></div></nav>");
 
             },
             _defaultHandler: function(evt){
@@ -79,7 +79,9 @@
 
                 //insert folders into dropdown
                 $("ul.dropdown-menu").append(data_dropdown);
-                $("ul.dropdown-menu").append("<li><a href='#' data-id='' data-rel=''>All files</a></li>");
+                $("ul.dropdown-menu").append("<li><a href='#' data-id='0' data-rel='ensemble'>All files</a></li>");
+                
+                //TODO (carolynz): get rid of "Home"!
                 $(".current-class").append("Home");
 
                 //TODO (carolynz): bug where creating a new class appends home again -- figure out way to fix!
@@ -104,7 +106,7 @@
 
                     if (id_changed) {
                         // TODO (carolynz): add notifications div later
-                        $("a.dropdown-toggle").html($(e.target).text());
+                        $(".current-class").html($(e.target).text());
 
                         self._selection =  {rel: rel, id_item: id_item};
 
