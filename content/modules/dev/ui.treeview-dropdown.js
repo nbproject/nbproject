@@ -22,7 +22,7 @@
                 self._admin    = self.options.admin;
                 
                 // self.element.css("overflow-y", "auto").html("<div class='tree'></div><div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'></a><ul class='dropdown-menu'></ul></div>");
-                self.element.html("<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'></a><ul class='dropdown-menu'></ul></div>");
+                self.element.html("<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'><div class='current-class'></div><div class='dropdown-caret'><i class='fa fa-caret-down'></i></div></a><ul class='dropdown-menu'></ul></div>");
 
             },
             _defaultHandler: function(evt){
@@ -80,7 +80,7 @@
                 //insert folders into dropdown
                 $("ul.dropdown-menu").append(data_dropdown);
                 $("ul.dropdown-menu").append("<li><a href='#' data-id='' data-rel=''>All files</a></li>");
-                $("a.dropdown-toggle").append("Home");
+                $(".current-class").append("Home");
 
                 //TODO (carolynz): bug where creating a new class appends home again -- figure out way to fix!
                 //_render gets re-called frequently -- can't just keep appending items to the dropdown
@@ -115,7 +115,6 @@
                         }
                     }
                 });
-
             },
 
             update: function(action, payload, items_fieldname){
