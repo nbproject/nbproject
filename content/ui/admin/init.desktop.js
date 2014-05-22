@@ -49,7 +49,9 @@
             // };
             var navbar = {
                 priority: 1, 
-                min_height: 100, 
+                //set min_height to 165 because for some reason 15px gets subtracted from this number in pers
+                min_height: 165,
+                desired_height: 165,
                 // desired_width: 25, 
                 content: function($div){
                     $div.treeView({admin: GLOB.pers.admin});
