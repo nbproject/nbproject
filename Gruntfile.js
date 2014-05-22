@@ -77,7 +77,7 @@ module.exports = function(grunt) {
     };  
     MODS.DOCVIEW_YOUTUBE = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.video.js" ]),
-        src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
+        src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css", "dev/ui.docView.youtube.css"])
     }; 
     
     MODS.NOTEPANEVIEW_DOC = {
@@ -462,7 +462,7 @@ module.exports = function(grunt) {
             banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
                 '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
                 '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
-                '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+                '* Copyright (c) <%= gruytplayernt.template.today("yyyy") %> <%= pkg.author.name %>;' +
                 ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
         },
         jshint: {           
@@ -483,6 +483,8 @@ module.exports = function(grunt) {
                     wgxpath: false,
                     Backbone: false, 
                     _: false,
+                    swfobject: false,
+                    google: false,
                 __nb_userinfo:true
                 }, 
                 curly: true,
