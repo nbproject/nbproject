@@ -73,8 +73,8 @@ margin-right: 10px;
 
 .desktop-viewport ~ #login-window{
     position: absolute;
-    top: 40px;
-    right: 20px;
+    top: 35px; 
+    right: 40px; /* eventually, we'll want #login-window nested within navbar */
     color: #505556;
     z-index: 3;
 }
@@ -82,10 +82,12 @@ margin-right: 10px;
 .desktop-viewport ~ #login-window a{
     margin-left: 10px;
     margin-right: 10px;
+    font-weight: normal;
 }
 
 .desktop-viewport ~ #login-name{
     margin-right: 10px;
+    font-weight: normal;
 }
 
 
