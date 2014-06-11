@@ -56,13 +56,24 @@
         data.addColumn('number','Comments');
         data.addColumn('number','Replies requested');
         data.addColumn('number', 'Participants');
-        data.addColumn('number', 'Total time');
-        data.addColumn('number', 'Avg time');
+        data.addColumn('number', 'Total time (min)');
+        data.addColumn('number', 'Avg time (min)');
         data.addRows(chart_stats);
         
         var options = {
           title: 'Page Stats',
           hAxis: {title: 'Page'},
+          vAxes: {0: {logScale: false},
+                  1: {logScale: false,
+                      title: "min"}},
+          series:{
+             0: {targetAxisIndex:0},
+             1: {targetAxisIndex:0},
+             2: {targetAxisIndex:0},
+             3: {targetAxisIndex:0},
+             4: {targetAxisIndex:1},
+             5: {targetAxisIndex:1},
+          }
         };
 
         var view = new google.visualization.DataView(data);
