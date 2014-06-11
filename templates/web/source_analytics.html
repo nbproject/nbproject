@@ -121,7 +121,6 @@
             // if selection length is 0, we deselected an element
             if (sel.length > 0) {
                 // if row is undefined, we clicked on the legend
-                recordAction('chart-toggle', metric);
                 if (sel[0].row == null) {
                     var col = sel[0].column;
                     if (typeof(columns[col]) == 'number') {
@@ -147,6 +146,7 @@
                         columns[col] = src;
                         series[src - 1].color = null;
                     }
+                    recordAction('chart-toggle', data.getColumnLabel(src));
                     var view = new google.visualization.DataView(data);
                     view.setColumns(columns);
                     chart.draw(view, options);
@@ -177,6 +177,7 @@
     <script>
       (function($){
         $(document).ready(function() {
+            // initialize page thumbnails
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
             var doc = new Document();
@@ -215,6 +216,7 @@
               var highlightView = new HighlightView({ model: highlight});
             }
 
+            // color thumbnail stats using a gradient
             $(".color-stat").each(function(i, el) {
               var val = $(el).children(".val").text();
               var o = 1.0;
@@ -304,7 +306,6 @@
     <div class="main-wrapper">
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       <div class="feedback-prompt">
-        <!-- Is this helpful? -->
         <a class="feedback-btn" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Send Feedback</a>
       </div>    
       <div class="panel chart">
