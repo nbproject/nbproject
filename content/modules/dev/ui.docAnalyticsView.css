@@ -99,6 +99,16 @@ label {
 	text-align: center;
 	background-color: #FAFAF5;
 	font-weight:normal;
+	color: #000;
+}
+
+.page-num {
+	cursor: pointer;
+}
+
+.page-num:hover {
+	color: #fff;
+	background-color: #6F6F6C;
 }
 
 .page-stats {
@@ -107,10 +117,6 @@ label {
 }
 
 .page-img {
-/*	width: 170px;
-	height: 220px;*/
-	/*width: 25%;*/
-	/*height: 25%;*/
 	float:left;
 }
 

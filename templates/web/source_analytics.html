@@ -8,14 +8,15 @@
   -->
     <title>NB Analytics</title>
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
-        <div id="page-preview-<%= page_num %>">
+        <div class="page-preview" id="page-preview-<%= page_num %>">
           <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
         </div>
-      </a>
-        <span class="page-num page-label"><%= page_num %></span>
+        <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
+          <span class="page-num"><%= page_num %></span>
+        </a>
         <div class="page-stats">
           <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
           <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> comments</span>
@@ -28,7 +29,7 @@
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
       </div>
     </script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
     <script>
       // For logging
       window.onload = function() {
@@ -46,136 +47,29 @@
       }
     </script>
 
-    <script type="text/javascript">
-      var chart_stats = {{ chart_stats|safe }};
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string','Page');
-        data.addColumn('number','Threads');
-        data.addColumn('number','Comments');
-        data.addColumn('number','Replies requested');
-        data.addColumn('number', 'Participants');
-        data.addColumn('number', 'Total time (min)');
-        data.addColumn('number', 'Avg time (min)');
-        data.addRows(chart_stats);
-
-        var view = new google.visualization.DataView(data);
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-
-        // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
-        // create columns array
-        var columns = [];
-        // display these data series by default
-        var defaultSeries = [1, 2, 3, 4];
-        var series = {};
-        for (var i = 0; i < data.getNumberOfColumns(); i++) {
-            if (i == 0 || defaultSeries.indexOf(i) > -1) {
-                // if the column is the domain column or in the default list, display the series
-                columns.push(i);
-            }
-            else {
-                // otherwise, hide it
-                columns.push({
-                    label: data.getColumnLabel(i),
-                    type: data.getColumnType(i),
-                    sourceColumn: i,
-                    calc: function () {
-                        return null;
-                    }
-                });
-            }
-            if (i > 0) {
-                // set the default series option
-                series[i - 1] = {};
-                if (defaultSeries.indexOf(i) == -1) {
-                    // backup the default color (if set)
-                    if (typeof(series[i - 1].color) !== 'undefined') {
-                        series[i - 1].backupColor = series[i - 1].color;
-                    }
-                    series[i - 1].color = '#CCCCCC';
-                }
-                // use secondary y-axis for time values
-                if (i - 1 > 3) {
-                  series[i - 1].targetAxisIndex = 1;
-                } else {
-                  series[i - 1].targetAxisIndex = 0;
-                }
-            }
-        }
-        
-        var options = {
-            series: series,
-            height: 300,
-            colors: ["#3366CC", "#FF7100", "#109618", "#990099", "#21B7CC", "#CC89C7"], // same colors as thumbnail stats
-            hAxis: {title: 'Page'},
-            vAxes: {0: {logScale: false},
-                    1: {logScale: false,
-                        title: "min"}},
-        }
-        
-        function showHideSeries () {
-            var sel = chart.getSelection();
-            // if selection length is 0, we deselected an element
-            if (sel.length > 0) {
-                // if row is undefined, we clicked on the legend
-                if (sel[0].row == null) {
-                    var col = sel[0].column;
-                    if (typeof(columns[col]) == 'number') {
-                        var src = columns[col];
-                        
-                        // hide the data series
-                        columns[col] = {
-                            label: data.getColumnLabel(src),
-                            type: data.getColumnType(src),
-                            sourceColumn: src,
-                            calc: function () {
-                                return null;
-                            }
-                        };
-                        
-                        // grey out the legend entry
-                        series[src - 1].color = '#CCCCCC';
-                    }
-                    else {
-                        var src = columns[col].sourceColumn;
-                        
-                        // show the data series
-                        columns[col] = src;
-                        series[src - 1].color = null;
-                    }
-                    recordAction('chart-toggle', data.getColumnLabel(src));
-                    var view = new google.visualization.DataView(data);
-                    view.setColumns(columns);
-                    chart.draw(view, options);
-                }
-            }
-        }
-        
-        google.visualization.events.addListener(chart, 'select', showHideSeries);
-        
-        // create a view with the default columns
-        var view = new google.visualization.DataView(data);
-        view.setColumns(columns);
-        chart.draw(view, options);
-
-        // add page-label class to x-axis page labels
-        jQuery('text').each(function(i, el) {
-          var obj = jQuery(el);
-          var n = obj.text();
-          if (jQuery.isNumeric(n)) {
-            obj.attr('class', 'page-label');
-          }
-        });
-      }
-
-    </script>
-    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
-
     <script>
       (function($){
+        // shows a preview of page 'num' with highlights in overlay
+        var showPagePreview = function(num) {
+          var contents = $('#page-preview-'+num).html();
+          $('.pg-preview').html(contents);
+
+          // get the larger image for the preview
+          var img_server = "http://nb.mit.edu";
+          var ckey = NB.conf.userinfo.ckey;
+          var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
+          $(".pg-preview").find(".page-img").attr("src", img_url);
+
+          $(".pg-preview").children(".highlight").each(function(i, el) {
+            var s = 5;  // scale factor (for res 20 images)
+            $(el).height($(el).height()*s);
+            $(el).width($(el).width()*s);
+            $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
+            $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
+          });
+          $(".pg-preview").show();
+        }
+
         $(document).ready(function() {
             // initialize page thumbnails
             var pages = {{ pages|safe }};
@@ -259,27 +153,22 @@
               recordAction('pagethumb-click', num);
             })
 
-            $('.page-label').on({
+            $(".page-label").on({
               mouseenter: function() {
-                var num = $(this).text();
-                var contents = $('#page-preview-'+num).html();
-                $('.pg-preview').html(contents);
+                var num = $(this).html();
+                showPagePreview(num);
+                recordAction('chart-pagenum-hover', num);
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }              
+            });
 
-                // get the larger image for the preview
-                var img_server = "http://nb.mit.edu";
-                var ckey = NB.conf.userinfo.ckey;
-                var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
-                $('.pg-preview').find('.page-img').attr("src", img_url);
-
-                $('.pg-preview').children(".highlight").each(function(i, el) {
-                  var s = 5;  // scale factor (for res 20 images)
-                  $(el).height($(el).height()*s);
-                  $(el).width($(el).width()*s);
-                  $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
-                  $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
-                });
-                $('.pg-preview').show();
-                recordAction('pagenum-hover', num);
+            $(".page-preview").on({
+              mouseenter: function() {
+                var num = $(this).attr('id').split("page-preview-")[1];
+                showPagePreview(num);
+                recordAction('page-hover', num);
               },
               mouseleave: function() {
                 $('.pg-preview').hide();
@@ -287,7 +176,7 @@
             });
 
             // to avoid flicker when preview overlaps page number 
-            $('.pg-preview').on({
+            $(".pg-preview").on({
               mouseenter: function() {
                 $('.pg-preview').show();
               },
@@ -295,10 +184,146 @@
                 $('.pg-preview').hide();
               }
             });
-          });
-      })(jQuery);
-    </script>
+        });
 
+        // set up chart
+        var chart_stats = {{ chart_stats|safe }};
+        google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+        
+        function drawChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string','Page');
+          data.addColumn('number','Threads');
+          data.addColumn('number','Comments');
+          data.addColumn('number','Replies requested');
+          data.addColumn('number', 'Participants');
+          data.addColumn('number', 'Total time (min)');
+          data.addColumn('number', 'Avg time (min)');
+          data.addRows(chart_stats);
+
+          var view = new google.visualization.DataView(data);
+          var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
+          // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
+          // create columns array
+          var columns = [];
+          // display these data series by default
+          var defaultSeries = [1, 2, 3, 4];
+          var series = {};
+          for (var i = 0; i < data.getNumberOfColumns(); i++) {
+              if (i == 0 || defaultSeries.indexOf(i) > -1) {
+                  // if the column is the domain column or in the default list, display the series
+                  columns.push(i);
+              }
+              else {
+                  // otherwise, hide it
+                  columns.push({
+                      label: data.getColumnLabel(i),
+                      type: data.getColumnType(i),
+                      sourceColumn: i,
+                      calc: function () {
+                          return null;
+                      }
+                  });
+              }
+              if (i > 0) {
+                  // set the default series option
+                  series[i - 1] = {};
+                  if (defaultSeries.indexOf(i) == -1) {
+                      // backup the default color (if set)
+                      if (typeof(series[i - 1].color) !== 'undefined') {
+                          series[i - 1].backupColor = series[i - 1].color;
+                      }
+                      series[i - 1].color = '#CCCCCC';
+                  }
+                  // use secondary y-axis for time values
+                  if (i - 1 > 3) {
+                    series[i - 1].targetAxisIndex = 1;
+                  } else {
+                    series[i - 1].targetAxisIndex = 0;
+                  }
+              }
+          }
+          
+          var options = {
+              series: series,
+              height: 300,
+              colors: ["#3366CC", "#FF7100", "#109618", "#990099", "#21B7CC", "#CC89C7"], // same colors as thumbnail stats
+              hAxis: {title: 'Page'},
+              vAxes: {0: {logScale: false},
+                      1: {logScale: false,
+                          title: "min"}},
+          }
+          
+          function showHideSeries () {
+              var sel = chart.getSelection();
+              // if selection length is 0, we deselected an element
+              if (sel.length > 0) {
+                  // if row is undefined, we clicked on the legend
+                  if (sel[0].row == null) {
+                      var col = sel[0].column;
+                      if (typeof(columns[col]) == 'number') {
+                          var src = columns[col];
+                          
+                          // hide the data series
+                          columns[col] = {
+                              label: data.getColumnLabel(src),
+                              type: data.getColumnType(src),
+                              sourceColumn: src,
+                              calc: function () {
+                                  return null;
+                              }
+                          };
+                          
+                          // grey out the legend entry
+                          series[src - 1].color = '#CCCCCC';
+                      }
+                      else {
+                          var src = columns[col].sourceColumn;
+                          
+                          // show the data series
+                          columns[col] = src;
+                          series[src - 1].color = null;
+                      }
+                      recordAction('chart-toggle', data.getColumnLabel(src));
+                      var view = new google.visualization.DataView(data);
+                      view.setColumns(columns);
+                      chart.draw(view, options);
+                  }
+              }
+          }
+          
+          google.visualization.events.addListener(chart, 'select', showHideSeries);
+          
+          // create a view with the default columns
+          var view = new google.visualization.DataView(data);
+          view.setColumns(columns);
+          chart.draw(view, options);
+
+            // add page-label class to x-axis page labels
+          $('text').each(function(i, el) {
+            var obj = $(el);
+            var n = obj.text();
+            if ($.isNumeric(n)) {
+              obj.attr('class', 'page-label');
+            }
+          });
+
+          $(".page-label").on({
+            mouseenter: function() {
+              var num = $(this).html();
+              showPagePreview(num);
+              recordAction('chart-pagenum-hover', num);
+            },
+            mouseleave: function() {
+              $('.pg-preview').hide();
+            }              
+          });
+        }
+    })(jQuery);
+
+  </script>
 
   </head>
   <body>
@@ -312,7 +337,7 @@
         <div class="control-bar">
           <label>Page Stats</label> 
           <span class="tip">
-            Click metrics to toggle bars on and off.
+            Click metrics to toggle bars on and off. Hover over page numbers for page previews.
           </span>
         </div>
         <div class="panel-content">
@@ -340,7 +365,7 @@
             </select>
           </div>
         <span class="tip">
-          Hover over page numbers for enlarged views. Click page images to view annotations in NB.
+          Hover over pages for enlarged views. Click page numbers to view annotations in NB.
         </span>
       </div>
       <div class="panel-content">
