@@ -50,6 +50,7 @@
       var chart_stats = {{ chart_stats|safe }};
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
+      
       function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string','Page');
@@ -60,76 +61,107 @@
         data.addColumn('number', 'Total time (min)');
         data.addColumn('number', 'Avg time (min)');
         data.addRows(chart_stats);
-        
-        var options = {
-          title: 'Page Stats',
-          hAxis: {title: 'Page'},
-          vAxes: {0: {logScale: false},
-                  1: {logScale: false,
-                      title: "min"}},
-          series:{
-             0: {targetAxisIndex:0},
-             1: {targetAxisIndex:0},
-             2: {targetAxisIndex:0},
-             3: {targetAxisIndex:0},
-             4: {targetAxisIndex:1},
-             5: {targetAxisIndex:1},
-          }
-        };
 
         var view = new google.visualization.DataView(data);
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
 
-        var metric_mapping = {
-          "Threads": {
-            "col":1,
-            "color": "#3366CC",
-            "on": true,
-          },
-          "Annotations": {
-            "col":2,
-            "color": "#FF7100",
-            "on": true,
-          },
-          "Replies Requested": {
-            "col":3,
-            "color": "#109618",
-            "on": true,
-          },
-          "Participants": {
-            "col":4,
-            "color": "#990099",
-            "on": true,
-          },
-          "Total Time": {
-            "col":5,
-            "color": "#21B7CC",
-            "on": false,
-          },
-          "Average Time": {
-            "col":6,
-            "color": "#CC89C7",
-            "on": false,
-          }
-        };
-
-        var drawChart = function() {
-          var metrics_on = [0];
-          var colors_on = [];
-          for (m in metric_mapping) {
-            var obj = metric_mapping[m];
-            if (obj["on"]) {
-              metrics_on.push(obj["col"]);
-              colors_on.push(obj["color"]);
+        // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
+        // create columns array
+        var columns = [];
+        // display these data series by default
+        var defaultSeries = [1, 2, 3, 4];
+        var series = {};
+        for (var i = 0; i < data.getNumberOfColumns(); i++) {
+            if (i == 0 || defaultSeries.indexOf(i) > -1) {
+                // if the column is the domain column or in the default list, display the series
+                columns.push(i);
             }
-          }
-          options.colors = colors_on;
-          view.setColumns(metrics_on);
-          chart.draw(view, options);
+            else {
+                // otherwise, hide it
+                columns.push({
+                    label: data.getColumnLabel(i),
+                    type: data.getColumnType(i),
+                    sourceColumn: i,
+                    calc: function () {
+                        return null;
+                    }
+                });
+            }
+            if (i > 0) {
+                // set the default series option
+                series[i - 1] = {};
+                if (defaultSeries.indexOf(i) == -1) {
+                    // backup the default color (if set)
+                    if (typeof(series[i - 1].color) !== 'undefined') {
+                        series[i - 1].backupColor = series[i - 1].color;
+                    }
+                    series[i - 1].color = '#CCCCCC';
+                }
+                // use secondary y-axis for time values
+                if (i - 1 > 3) {
+                  series[i - 1].targetAxisIndex = 1;
+                } else {
+                  series[i - 1].targetAxisIndex = 0;
+                }
+            }
         }
+        
+        var options = {
+            series: series,
+            height: 300,
+            colors: ["#3366CC", "#FF7100", "#109618", "#990099", "#21B7CC", "#CC89C7"], // same colors as thumbnail stats
+            title: 'Page Stats',
+            hAxis: {title: 'Page'},
+            vAxes: {0: {logScale: false},
+                    1: {logScale: false,
+                        title: "min"}},
+        }
+        
+        function showHideSeries () {
+            var sel = chart.getSelection();
+            // if selection length is 0, we deselected an element
+            if (sel.length > 0) {
+                // if row is undefined, we clicked on the legend
+                if (sel[0].row == null) {
+                    var col = sel[0].column;
+                    if (typeof(columns[col]) == 'number') {
+                        var src = columns[col];
+                        
+                        // hide the data series
+                        columns[col] = {
+                            label: data.getColumnLabel(src),
+                            type: data.getColumnType(src),
+                            sourceColumn: src,
+                            calc: function () {
+                                return null;
+                            }
+                        };
+                        
+                        // grey out the legend entry
+                        series[src - 1].color = '#CCCCCC';
+                    }
+                    else {
+                        var src = columns[col].sourceColumn;
+                        
+                        // show the data series
+                        columns[col] = src;
+                        series[src - 1].color = null;
+                    }
+                    var view = new google.visualization.DataView(data);
+                    view.setColumns(columns);
+                    chart.draw(view, options);
+                }
+            }
+        }
+        
+        google.visualization.events.addListener(chart, 'select', showHideSeries);
+        
+        // create a view with the default columns
+        var view = new google.visualization.DataView(data);
+        view.setColumns(columns);
+        chart.draw(view, options);
 
-        drawChart();
-
+        // add page-label class to x-axis page labels
         jQuery('text').each(function(i, el) {
           var obj = jQuery(el);
           var n = obj.text();
@@ -225,6 +257,7 @@
               recordAction('pagethumb-click', num);
             })
 
+            // TODO: this won't work here
             $(".chart-toggle").on("click", function() {
               var metric = $(this).val();
               var status = metric_mapping[metric]["on"];
