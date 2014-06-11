@@ -121,6 +121,7 @@
             // if selection length is 0, we deselected an element
             if (sel.length > 0) {
                 // if row is undefined, we clicked on the legend
+                recordAction('chart-toggle', metric);
                 if (sel[0].row == null) {
                     var col = sel[0].column;
                     if (typeof(columns[col]) == 'number') {
@@ -255,15 +256,6 @@
               var num = $(this).attr('id').split("link-")[1];
               recordAction('pagethumb-click', num);
             })
-
-            // TODO: this won't work here
-            $(".chart-toggle").on("click", function() {
-              var metric = $(this).val();
-              var status = metric_mapping[metric]["on"];
-              metric_mapping[metric]["on"] = status ? false : true;
-              drawChart();
-              recordAction('chart-toggle', metric); 
-            });
 
             $('.page-label').on({
               mouseenter: function() {
