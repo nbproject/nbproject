@@ -110,7 +110,6 @@
             series: series,
             height: 300,
             colors: ["#3366CC", "#FF7100", "#109618", "#990099", "#21B7CC", "#CC89C7"], // same colors as thumbnail stats
-            title: 'Page Stats',
             hAxis: {title: 'Page'},
             vAxes: {0: {logScale: false},
                     1: {logScale: false,
@@ -318,16 +317,13 @@
       </div>    
       <div class="panel chart">
         <div class="control-bar">
-          <label>Display stats for:</label> 
-          <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
-          <input type="checkbox" class="chart-toggle" checked value="Annotations"/>Comments
-          <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
-          <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
-          <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
-          <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
+          <label>Page Stats</label> 
+          <span class="tip">
+            Click metrics to toggle bars on and off.
+          </span>
         </div>
         <div class="panel-content">
-          <div id="chart_div" style="width:90%;"></div>
+          <div id="chart_div"></div>
         </div>
       </div>
 
