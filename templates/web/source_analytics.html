@@ -45,6 +45,7 @@
         NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {});
       }
     </script>
+
     <script type="text/javascript">
       var chart_stats = {{ chart_stats|safe }};
       google.load("visualization", "1", {packages:["corechart"]});
@@ -129,66 +130,13 @@
 
         drawChart();
 
-        (function($){
-
-          $(".chart-toggle").on("click", function() {
-            var metric = $(this).val();
-            var status = metric_mapping[metric]["on"];
-            metric_mapping[metric]["on"] = status ? false : true;
-            drawChart();
-            recordAction('chart-toggle', metric); 
-          });
-
-          var pgLabelClass = 'page-label';
-          var pgPreviewClass = 'pg-preview';
-
-          $('text').each(function(i, el) {
-            var obj = $(el);
-            var n = obj.text();
-            if ($.isNumeric(n)) {
-              obj.attr('class', pgLabelClass);
-            }
-          });
-
-          // TODO: move this out of drawChart() function
-          $('.'+pgLabelClass).on({
-            mouseenter: function() {
-              var num = $(this).text();
-              var contents = $('#page-preview-'+num).html();
-              $('.'+pgPreviewClass).html(contents);
-
-              // get the larger image for the preview
-              var img_server = "http://nb.mit.edu";
-              var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
-              $('.'+pgPreviewClass).find('.page-img').attr("src", img_url);
-
-              $('.'+pgPreviewClass).children(".highlight").each(function(i, el) {
-                var s = 5;  // scale factor (for res 20 images)
-                $(el).height($(el).height()*s);
-                $(el).width($(el).width()*s);
-                $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
-                $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
-              });
-              $('.'+pgPreviewClass).show();
-              recordAction('pagenum-hover', num);
-            },
-            mouseleave: function() {
-              $('.'+pgPreviewClass).hide();
-            }
-          });
-
-          // to avoid flicker when preview overlaps page number 
-          $('.'+pgPreviewClass).on({
-            mouseenter: function() {
-              $('.'+pgPreviewClass).show();
-            },
-            mouseleave: function() {
-              $('.'+pgPreviewClass).hide();
-            }
-          });
-
-        })(jQuery); 
+        jQuery('text').each(function(i, el) {
+          var obj = jQuery(el);
+          var n = obj.text();
+          if (jQuery.isNumeric(n)) {
+            obj.attr('class', 'page-label');
+          }
+        });
       }
 
     </script>
@@ -256,8 +204,8 @@
                 $(el).css("color", newC);
               }
             });
-
-            /////////////// handlers
+            
+            /////////////// event handlers
 
             $("#sort-by").on('change', function() {
               var attr = $(this).val();
@@ -276,7 +224,52 @@
               var num = $(this).attr('id').split("link-")[1];
               recordAction('pagethumb-click', num);
             })
-        });
+
+            $(".chart-toggle").on("click", function() {
+              var metric = $(this).val();
+              var status = metric_mapping[metric]["on"];
+              metric_mapping[metric]["on"] = status ? false : true;
+              drawChart();
+              recordAction('chart-toggle', metric); 
+            });
+
+            $('.page-label').on({
+              mouseenter: function() {
+                var num = $(this).text();
+                var contents = $('#page-preview-'+num).html();
+                $('.pg-preview').html(contents);
+
+                // get the larger image for the preview
+                var img_server = "http://nb.mit.edu";
+                var ckey = NB.conf.userinfo.ckey;
+                var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
+                $('.pg-preview').find('.page-img').attr("src", img_url);
+
+                $('.pg-preview').children(".highlight").each(function(i, el) {
+                  var s = 5;  // scale factor (for res 20 images)
+                  $(el).height($(el).height()*s);
+                  $(el).width($(el).width()*s);
+                  $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
+                  $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
+                });
+                $('.pg-preview').show();
+                recordAction('pagenum-hover', num);
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }
+            });
+
+            // to avoid flicker when preview overlaps page number 
+            $('.pg-preview').on({
+              mouseenter: function() {
+                $('.pg-preview').show();
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }
+            });
+          });
       })(jQuery);
     </script>
 
