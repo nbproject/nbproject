@@ -27,13 +27,26 @@ body {
 	clear: both;
 }
 
-.feedback-prompt {
+/*.feedback-prompt {
 	position:absolute;
 	top: 50px;
 	right: 20px;
+}*/
+
+.links {
+	text-align: right;
+	color: #fff;
 }
 
-.feedback-btn {
+.links a, .links a:visited {
+	color: white;
+}
+
+.links a:hover {
+	color: rgb(255,234,128);
+}
+
+/*.feedback {
 	border-radius: 8px;
 	background-color: #bce1fa;
 	font-size: 14px;
@@ -45,7 +58,7 @@ body {
 
 .feedback-btn:hover {
 	color: #777474;
-}
+}*/
 
 .panel {
 	background-color: #fff;
@@ -83,7 +96,7 @@ label {
 }
 
 .header-link:hover {
-	color: #6E97EB;
+	color: #fff;
 }
 
 .page-num {

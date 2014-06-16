@@ -206,7 +206,6 @@
           var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
 
           // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
-          // create columns array
           var columns = [];
           // display these data series by default
           var defaultSeries = [1, 2, 3, 4];
@@ -329,10 +328,11 @@
   <body>
     <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
     <div class="main-wrapper">
-      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
-      <div class="feedback-prompt">
-        <a class="feedback-btn" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Send Feedback</a>
+      <div class="links">
+        <a class="guide" target="_blank" href="https://github.com/nbproject/nbproject/wiki/Analytics-Tools-for-Instructors">Guide</a> | 
+        <a class="feedback" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Feedback</a>
       </div>    
+      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       <div class="panel chart">
         <div class="control-bar">
           <label>Page Stats</label> 
