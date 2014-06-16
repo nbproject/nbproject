@@ -1,4 +1,5 @@
 /*global NB$:true NB:true PageView:true HighlightView:true DocumentView:true Backbone:true _:true jQuery:true */
+// depends on templates in source_analytics.html
 
 var PageView = Backbone.View.extend({
   

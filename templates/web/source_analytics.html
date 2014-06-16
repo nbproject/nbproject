@@ -150,7 +150,7 @@
 
             $(".page-link").on('click', function() {
               var num = $(this).attr('id').split("link-")[1];
-              recordAction('pagethumb-click', num);
+              recordAction('pagenum-click', num);
             })
 
             $(".page-label").on({
@@ -168,7 +168,7 @@
               mouseenter: function() {
                 var num = $(this).attr('id').split("page-preview-")[1];
                 showPagePreview(num);
-                recordAction('page-hover', num);
+                recordAction('pagethumb-hover', num);
               },
               mouseleave: function() {
                 $('.pg-preview').hide();

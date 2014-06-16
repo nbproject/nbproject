@@ -142,10 +142,6 @@ def get_page_stats(sid):
 		}
 		chart_array.append([str(p), int(t_stat), int(a_stat), int(q_stat), int(p_stat), int(tt_stat), int(at_stat)])
 
-	# print pages
-	# for p in pages:
-	# 	print pages[p]["avg_time"]
-	# print chart_array	
 	return (json.dumps(pages), chart_array)
 
 def markAnalyticsVisit(uid, o):
@@ -166,7 +162,6 @@ def gather_time_stats(sid):
 	from django.db import connection
 	try:
 		c = connection.cursor()
-		# print "cursor created"
 		qry = "drop table if exists nb2_page_order cascade;"
 		c.execute(qry)
 
@@ -240,7 +235,6 @@ def gather_time_stats(sid):
 		c.close()
 
 def get_total_times(sid):
-	# get total times
 	attr = {
 		"page": None,
 		"total_time": None
@@ -253,7 +247,6 @@ def get_total_times(sid):
 	return db.Db().getIndexedObjects(attr, "page", from_clause, "true", [sid])
 
 def get_avgtime_peruser(sid):
-		# get average time per user
 	attr = {
 		"page": None,
 		"avgtime_per_user": "avg_time"

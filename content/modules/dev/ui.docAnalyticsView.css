@@ -27,12 +27,6 @@ body {
 	clear: both;
 }
 
-/*.feedback-prompt {
-	position:absolute;
-	top: 50px;
-	right: 20px;
-}*/
-
 .links {
 	text-align: right;
 	color: #fff;
@@ -45,20 +39,6 @@ body {
 .links a:hover {
 	color: rgb(255,234,128);
 }
-
-/*.feedback {
-	border-radius: 8px;
-	background-color: #bce1fa;
-	font-size: 14px;
-	text-decoration: none;
-	padding: 5px 8px;
-	border: 1px solid;
-	color: #000;
-}
-
-.feedback-btn:hover {
-	color: #777474;
-}*/
 
 .panel {
 	background-color: #fff;
@@ -80,9 +60,6 @@ label {
 }
 .page-wrap {
 	float: left;
-/*	width: 170px;
-	height: 220px;*/
-	/*text-align: center;*/
 	border: 1px solid;
 	font-size: 10px;
 	font-weight: bold;
@@ -165,12 +142,6 @@ label {
 	cursor: default;
 }
 
-/*.page-label:hover {
-	background-color:#e0e0e0;
-	margin:5px;
-	border-radius:50%;
-}*/
-
 .color-stat {
 	opacity: 0.7;
 }
@@ -203,8 +174,6 @@ label {
 .chart-toggle.on {
 	opacity: 1.0;
 }
-
-
 
 .marker {
     width: 1em;
