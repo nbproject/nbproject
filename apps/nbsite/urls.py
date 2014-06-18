@@ -94,9 +94,9 @@ urlpatterns += patterns('',
                         (r'^openid_index$', "pages.views.openid_index"),
 #                        (r'^facebook/', include('django_facebook.urls')),
 #                        (r'^accounts/', include('django_facebook.auth_urls'))
-                        url(r'^facebooksample$', 'pages.views.facebooksample'),
-                        url(r'^facebook/login$', 'facebook.views.login'),
-                        url(r'^facebook/authentication_callback$', 'facebook.views.authentication_callback'),
+#                        url(r'^facebooksample$', 'pages.views.facebooksample'),
+#                        url(r'^facebook/login$', 'facebook.views.login'),
+#                        url(r'^facebook/authentication_callback$', 'facebook.views.authentication_callback'),
                         url(r'^logout$', 'django.contrib.auth.views.logout'),
 
 

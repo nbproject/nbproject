@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     "django_openid_auth",
    # 'django_facebook',
-    'facebook',
+#    'facebook',
     "base",
     "polls", 
 #"fixture_magic" #add this for 
