@@ -27,24 +27,17 @@ body {
 	clear: both;
 }
 
-.feedback-prompt {
-	position:absolute;
-	top: 50px;
-	right: 20px;
+.links {
+	text-align: right;
+	color: #fff;
 }
 
-.feedback-btn {
-	border-radius: 8px;
-	background-color: #bce1fa;
-	font-size: 14px;
-	text-decoration: none;
-	padding: 5px 8px;
-	border: 1px solid;
-	color: #000;
+.links a, .links a:visited {
+	color: white;
 }
 
-.feedback-btn:hover {
-	color: #777474;
+.links a:hover {
+	color: rgb(255,234,128);
 }
 
 .panel {
@@ -67,9 +60,6 @@ label {
 }
 .page-wrap {
 	float: left;
-/*	width: 170px;
-	height: 220px;*/
-	/*text-align: center;*/
 	border: 1px solid;
 	font-size: 10px;
 	font-weight: bold;
@@ -83,7 +73,7 @@ label {
 }
 
 .header-link:hover {
-	color: #6E97EB;
+	color: #fff;
 }
 
 .page-num {
@@ -99,6 +89,16 @@ label {
 	text-align: center;
 	background-color: #FAFAF5;
 	font-weight:normal;
+	color: #000;
+}
+
+.page-num {
+	cursor: pointer;
+}
+
+.page-num:hover {
+	color: #fff;
+	background-color: #6F6F6C;
 }
 
 .page-stats {
@@ -107,10 +107,6 @@ label {
 }
 
 .page-img {
-/*	width: 170px;
-	height: 220px;*/
-	/*width: 25%;*/
-	/*height: 25%;*/
 	float:left;
 }
 
@@ -146,12 +142,6 @@ label {
 	cursor: default;
 }
 
-/*.page-label:hover {
-	background-color:#e0e0e0;
-	margin:5px;
-	border-radius:50%;
-}*/
-
 .color-stat {
 	opacity: 0.7;
 }
@@ -184,8 +174,6 @@ label {
 .chart-toggle.on {
 	opacity: 1.0;
 }
-
-
 
 .marker {
     width: 1em;

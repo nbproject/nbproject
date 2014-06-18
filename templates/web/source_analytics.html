@@ -8,14 +8,15 @@
   -->
     <title>NB Analytics</title>
     <link type="text/css" href="/content/compiled/docanalytics.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="/content/compiled/docanalytics_NB.js"></script>
     <script type="text/template" id="page-template">
-      <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
-        <div id="page-preview-<%= page_num %>">
+        <div class="page-preview" id="page-preview-<%= page_num %>">
           <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
         </div>
-      </a>
-        <span class="page-num page-label"><%= page_num %></span>
+        <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
+          <span class="page-num"><%= page_num %></span>
+        </a>
         <div class="page-stats">
           <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
           <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> comments</span>
@@ -28,7 +29,7 @@
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
       </div>
     </script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
     <script>
       // For logging
       window.onload = function() {
@@ -45,147 +46,32 @@
         NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {});
       }
     </script>
-    <script type="text/javascript">
-      var chart_stats = {{ chart_stats|safe }};
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string','Page');
-        data.addColumn('number','Threads');
-        data.addColumn('number','Comments');
-        data.addColumn('number','Replies requested');
-        data.addColumn('number', 'Participants');
-        data.addColumn('number', 'Total time');
-        data.addColumn('number', 'Avg time');
-        data.addRows(chart_stats);
-        
-        var options = {
-          title: 'Page Stats',
-          hAxis: {title: 'Page'},
-        };
-
-        var view = new google.visualization.DataView(data);
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-
-        var metric_mapping = {
-          "Threads": {
-            "col":1,
-            "color": "#3366CC",
-            "on": true,
-          },
-          "Annotations": {
-            "col":2,
-            "color": "#FF7100",
-            "on": true,
-          },
-          "Replies Requested": {
-            "col":3,
-            "color": "#109618",
-            "on": true,
-          },
-          "Participants": {
-            "col":4,
-            "color": "#990099",
-            "on": true,
-          },
-          "Total Time": {
-            "col":5,
-            "color": "#21B7CC",
-            "on": false,
-          },
-          "Average Time": {
-            "col":6,
-            "color": "#CC89C7",
-            "on": false,
-          }
-        };
-
-        var drawChart = function() {
-          var metrics_on = [0];
-          var colors_on = [];
-          for (m in metric_mapping) {
-            var obj = metric_mapping[m];
-            if (obj["on"]) {
-              metrics_on.push(obj["col"]);
-              colors_on.push(obj["color"]);
-            }
-          }
-          options.colors = colors_on;
-          view.setColumns(metrics_on);
-          chart.draw(view, options);
-        }
-
-        drawChart();
-
-        (function($){
-
-          $(".chart-toggle").on("click", function() {
-            var metric = $(this).val();
-            var status = metric_mapping[metric]["on"];
-            metric_mapping[metric]["on"] = status ? false : true;
-            drawChart();
-            recordAction('chart-toggle', metric); 
-          });
-
-          var pgLabelClass = 'page-label';
-          var pgPreviewClass = 'pg-preview';
-
-          $('text').each(function(i, el) {
-            var obj = $(el);
-            var n = obj.text();
-            if ($.isNumeric(n)) {
-              obj.attr('class', pgLabelClass);
-            }
-          });
-
-          // TODO: move this out of drawChart() function
-          $('.'+pgLabelClass).on({
-            mouseenter: function() {
-              var num = $(this).text();
-              var contents = $('#page-preview-'+num).html();
-              $('.'+pgPreviewClass).html(contents);
-
-              // get the larger image for the preview
-              var img_server = "http://nb.mit.edu";
-              var ckey = NB.conf.userinfo.ckey;
-              var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
-              $('.'+pgPreviewClass).find('.page-img').attr("src", img_url);
-
-              $('.'+pgPreviewClass).children(".highlight").each(function(i, el) {
-                var s = 5;  // scale factor (for res 20 images)
-                $(el).height($(el).height()*s);
-                $(el).width($(el).width()*s);
-                $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
-                $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
-              });
-              $('.'+pgPreviewClass).show();
-              recordAction('pagenum-hover', num);
-            },
-            mouseleave: function() {
-              $('.'+pgPreviewClass).hide();
-            }
-          });
-
-          // to avoid flicker when preview overlaps page number 
-          $('.'+pgPreviewClass).on({
-            mouseenter: function() {
-              $('.'+pgPreviewClass).show();
-            },
-            mouseleave: function() {
-              $('.'+pgPreviewClass).hide();
-            }
-          });
-
-        })(jQuery); 
-      }
-
-    </script>
-    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
 
     <script>
       (function($){
+        // shows a preview of page 'num' with highlights in overlay
+        var showPagePreview = function(num) {
+          var contents = $('#page-preview-'+num).html();
+          $('.pg-preview').html(contents);
+
+          // get the larger image for the preview
+          var img_server = "http://nb.mit.edu";
+          var ckey = NB.conf.userinfo.ckey;
+          var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
+          $(".pg-preview").find(".page-img").attr("src", img_url);
+
+          $(".pg-preview").children(".highlight").each(function(i, el) {
+            var s = 5;  // scale factor (for res 20 images)
+            $(el).height($(el).height()*s);
+            $(el).width($(el).width()*s);
+            $(el).css("top", $(el).css("top").replace(/[^-\d\.]/g, '')*s);
+            $(el).css("left", $(el).css("left").replace(/[^-\d\.]/g, '')*s);
+          });
+          $(".pg-preview").show();
+        }
+
         $(document).ready(function() {
+            // initialize page thumbnails
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
             var doc = new Document();
@@ -224,6 +110,7 @@
               var highlightView = new HighlightView({ model: highlight});
             }
 
+            // color thumbnail stats using a gradient
             $(".color-stat").each(function(i, el) {
               var val = $(el).children(".val").text();
               var o = 1.0;
@@ -245,8 +132,8 @@
                 $(el).css("color", newC);
               }
             });
-
-            /////////////// handlers
+            
+            /////////////// event handlers
 
             $("#sort-by").on('change', function() {
               var attr = $(this).val();
@@ -263,34 +150,198 @@
 
             $(".page-link").on('click', function() {
               var num = $(this).attr('id').split("link-")[1];
-              recordAction('pagethumb-click', num);
+              recordAction('pagenum-click', num);
             })
-        });
-      })(jQuery);
-    </script>
 
+            $(".page-label").on({
+              mouseenter: function() {
+                var num = $(this).html();
+                showPagePreview(num);
+                recordAction('chart-pagenum-hover', num);
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }              
+            });
+
+            $(".page-preview").on({
+              mouseenter: function() {
+                var num = $(this).attr('id').split("page-preview-")[1];
+                showPagePreview(num);
+                recordAction('pagethumb-hover', num);
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }
+            });
+
+            // to avoid flicker when preview overlaps page number 
+            $(".pg-preview").on({
+              mouseenter: function() {
+                $('.pg-preview').show();
+              },
+              mouseleave: function() {
+                $('.pg-preview').hide();
+              }
+            });
+        });
+
+        // set up chart
+        var chart_stats = {{ chart_stats|safe }};
+        google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+        
+        function drawChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string','Page');
+          data.addColumn('number','Threads');
+          data.addColumn('number','Comments');
+          data.addColumn('number','Replies requested');
+          data.addColumn('number', 'Participants');
+          data.addColumn('number', 'Total time (min)');
+          data.addColumn('number', 'Avg time (min)');
+          data.addRows(chart_stats);
+
+          var view = new google.visualization.DataView(data);
+          var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
+          // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
+          var columns = [];
+          // display these data series by default
+          var defaultSeries = [1, 2, 3, 4];
+          var series = {};
+          for (var i = 0; i < data.getNumberOfColumns(); i++) {
+              if (i == 0 || defaultSeries.indexOf(i) > -1) {
+                  // if the column is the domain column or in the default list, display the series
+                  columns.push(i);
+              }
+              else {
+                  // otherwise, hide it
+                  columns.push({
+                      label: data.getColumnLabel(i),
+                      type: data.getColumnType(i),
+                      sourceColumn: i,
+                      calc: function () {
+                          return null;
+                      }
+                  });
+              }
+              if (i > 0) {
+                  // set the default series option
+                  series[i - 1] = {};
+                  if (defaultSeries.indexOf(i) == -1) {
+                      // backup the default color (if set)
+                      if (typeof(series[i - 1].color) !== 'undefined') {
+                          series[i - 1].backupColor = series[i - 1].color;
+                      }
+                      series[i - 1].color = '#CCCCCC';
+                  }
+                  // use secondary y-axis for time values
+                  if (i - 1 > 3) {
+                    series[i - 1].targetAxisIndex = 1;
+                  } else {
+                    series[i - 1].targetAxisIndex = 0;
+                  }
+              }
+          }
+          
+          var options = {
+              series: series,
+              height: 300,
+              colors: ["#3366CC", "#FF7100", "#109618", "#990099", "#21B7CC", "#CC89C7"], // same colors as thumbnail stats
+              hAxis: {title: 'Page'},
+              vAxes: {0: {logScale: false},
+                      1: {logScale: false,
+                          title: "min"}},
+          }
+          
+          function showHideSeries () {
+              var sel = chart.getSelection();
+              // if selection length is 0, we deselected an element
+              if (sel.length > 0) {
+                  // if row is undefined, we clicked on the legend
+                  if (sel[0].row == null) {
+                      var col = sel[0].column;
+                      if (typeof(columns[col]) == 'number') {
+                          var src = columns[col];
+                          
+                          // hide the data series
+                          columns[col] = {
+                              label: data.getColumnLabel(src),
+                              type: data.getColumnType(src),
+                              sourceColumn: src,
+                              calc: function () {
+                                  return null;
+                              }
+                          };
+                          
+                          // grey out the legend entry
+                          series[src - 1].color = '#CCCCCC';
+                      }
+                      else {
+                          var src = columns[col].sourceColumn;
+                          
+                          // show the data series
+                          columns[col] = src;
+                          series[src - 1].color = null;
+                      }
+                      recordAction('chart-toggle', data.getColumnLabel(src));
+                      var view = new google.visualization.DataView(data);
+                      view.setColumns(columns);
+                      chart.draw(view, options);
+                  }
+              }
+          }
+          
+          google.visualization.events.addListener(chart, 'select', showHideSeries);
+          
+          // create a view with the default columns
+          var view = new google.visualization.DataView(data);
+          view.setColumns(columns);
+          chart.draw(view, options);
+
+            // add page-label class to x-axis page labels
+          $('text').each(function(i, el) {
+            var obj = $(el);
+            var n = obj.text();
+            if ($.isNumeric(n)) {
+              obj.attr('class', 'page-label');
+            }
+          });
+
+          $(".page-label").on({
+            mouseenter: function() {
+              var num = $(this).html();
+              showPagePreview(num);
+              recordAction('chart-pagenum-hover', num);
+            },
+            mouseleave: function() {
+              $('.pg-preview').hide();
+            }              
+          });
+        }
+    })(jQuery);
+
+  </script>
 
   </head>
   <body>
     <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
     <div class="main-wrapper">
-      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
-      <div class="feedback-prompt">
-        <!-- Is this helpful? -->
-        <a class="feedback-btn" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Send Feedback</a>
+      <div class="links">
+        <a class="guide" target="_blank" href="https://github.com/nbproject/nbproject/wiki/Analytics-Tools-for-Instructors">Guide</a> | 
+        <a class="feedback" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Feedback</a>
       </div>    
+      <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       <div class="panel chart">
         <div class="control-bar">
-          <label>Display stats for:</label> 
-          <input type="checkbox" class="chart-toggle" checked value="Threads"/>Threads
-          <input type="checkbox" class="chart-toggle" checked value="Annotations"/>Comments
-          <input type="checkbox" class="chart-toggle" checked value="Replies Requested"/>Replies Requested
-          <input type="checkbox" class="chart-toggle" checked value="Participants"/>Participants
-          <input type="checkbox" class="chart-toggle" value="Total Time"/>Total Time (min)
-          <input type="checkbox" class="chart-toggle" value="Average Time"/>Average Time (min)
+          <label>Page Stats</label> 
+          <span class="tip">
+            Click metric names to toggle bars on and off. Hover over page numbers for page previews.
+          </span>
         </div>
         <div class="panel-content">
-          <div id="chart_div" style="width:90%;"></div>
+          <div id="chart_div"></div>
         </div>
       </div>
 
@@ -314,7 +365,7 @@
             </select>
           </div>
         <span class="tip">
-          Hover over page numbers for enlarged views. Click page images to view annotations in NB.
+          Hover over thumbnails for enlarged views. Click page numbers to view annotations in NB.
         </span>
       </div>
       <div class="panel-content">

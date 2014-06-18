@@ -6,10 +6,6 @@
     }
     var $str        = "NB$" in window ? "NB$" : "jQuery";
 
-	var getUserInfo = function() {
-		return $.concierge.get_component("get_userinfo")().ckey;
-	};
-
 	GLOB.pers.createStore = function() {
 		GLOB.pers.store = new GLOB.models.Store();
 	};
