@@ -7,7 +7,7 @@ PREFIXDIR	= $(PWD)
 WSGIDIR		= $(SITEDIR)
 WSGIFILE	= $(WSGIDIR)/wsgi.py
 WSGISKEL	= $(WSGIFILE).skel
-APACHEFILE	= conf/nb_apache
+APACHEFILE	= conf/nb_apache.conf
 APACHESKEL	= $(APACHEFILE).skel
 CRONFILE	= conf/nb_crontab
 CRONSKEL	= conf/crontab.skel
@@ -81,9 +81,9 @@ django: check_settings
 	echo ''
 	echo '--------- Apache configuration file ------------'
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'
-	echo 'sudo cp conf/nb_apache /etc/apache2/sites-available/'
+	echo 'sudo cp conf/nb_apache.conf /etc/apache2/sites-available/'
 	echo 'cd /etc/apache2/sites-enabled'
-	echo 'sudo ln -s ../sites-available/nb_apache .'
+	echo 'sudo ln -s ../sites-available/nb_apache.conf.'
 	echo ''
 	echo '--------- Crontab file -------------------------'
 	echo 'If you have not done it already, please update your crontab file with the contents of:'
