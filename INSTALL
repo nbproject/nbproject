@@ -34,9 +34,15 @@ NOTE:  - packages in square brackets are optional)
        - Download the tarball from https://launchpad.net/django-openid-auth
        - Untar and 
             sudo python setup.py install
-     - django_facebook_oath, for example from this github fork: https://github.com/sachazyto/django_facebook_oauth
-      - download the zip and unzip
-            sudo python setup.py install
+       - Note: If you encounter a "ImportError: No module named defaults" issued from django-openid-auth, it's a known bug. 
+	 cf: https://bugs.launchpad.net/django-openid-auth/+bug/1252866. 
+	Fortunately the fix is trivial (cf for instance http://stackoverflow.com/q/19962736/768104)
+	Namely: 
+	Edit the urls.py file from the django-openid-auth package, and change the line: 
+		from django.conf.urls.defaults import *
+	into: 
+		from django.conf.urls import patterns, url, include
+	then, redo a 'sudo python setup.py install'
     - grunt: 
       # As of November 2013 we have been using grunt 0.4.X, but it should still work w/ grunt 0.3.X
       # If questions on getting NB to work w/ grunt 0.3.X, plrease refer 
@@ -47,14 +53,19 @@ NOTE:  - packages in square brackets are optional)
         npm install grunt-contrib-jshint  --save-dev
         npm install grunt-contrib-concat  --save-dev
         npm install grunt-contrib-cssmin  --save-dev
-   
-     [optional] To annotate YouTube Videos: The google python library. 
+    - pytz: 
+	easy_install pytz
+    - [optional] To annotate YouTube Videos: The google python library. 
         sudo pip install --upgrade google-api-python-client
+    - [optional and not yet working] django_facebook_oath, for example from this github fork: https$
+      - download the zip and unzip
+            sudo python setup.py install
+
 
 2- Installation commands: 
    Once you've satisfied the dependencies listed above, you need to run the following installation commands: 
-	    cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
-        sudo npm install #in order to install specific grunt modules, such as grunt-css, execSync
+	cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
+        npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
         #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data

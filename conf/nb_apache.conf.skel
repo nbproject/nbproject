@@ -1,7 +1,8 @@
 # Uncomment this if you're listening on a non standard port: 
 # Listen NB_HTTP_PORT
 
-NameVirtualHost *:NB_HTTP_PORT
+# Deprecated on apache 2.4. uncomment if using on older apache 
+# NameVirtualHost *:NB_HTTP_PORT
 
 <VirtualHost *:NB_HTTP_PORT>
 
@@ -12,6 +13,7 @@ Alias /content/ NB_CONTENTDIR/
 <Directory NB_CONTENTDIR>
 Order deny,allow
 Allow from all
+Require all granted
 </Directory>
 
 Alias NB_STATICURL NB_STATIC_MEDIA_DIR
@@ -19,6 +21,7 @@ Alias NB_STATICURL NB_STATIC_MEDIA_DIR
 <Directory NB_STATIC_MEDIA_DIR>
 Order deny,allow
 Allow from all
+Require all granted
 </Directory>
 
 WSGIScriptAlias / NB_WSGIDIR/wsgi.py
@@ -26,6 +29,7 @@ WSGIScriptAlias / NB_WSGIDIR/wsgi.py
 <Directory NB_WSGIDIR/>
 Order allow,deny
 Allow from all
+Require all granted
 </Directory>
 
 </VirtualHost>

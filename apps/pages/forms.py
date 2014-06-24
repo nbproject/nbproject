@@ -51,7 +51,7 @@ class UserForm(ModelForm):
 class EnsembleForm(ModelForm):
     class Meta: 
         model = M.Ensemble
-        exclude = ("invitekey")
+        exclude = ("invitekey",)
 
 
 class Html5Form(Form):

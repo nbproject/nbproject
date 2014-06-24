@@ -1,7 +1,7 @@
 # Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 # MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 from os.path import abspath, dirname, basename 
 ROOTDIR = dirname(abspath(__file__))
