@@ -198,17 +198,19 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-HTTPD_MEDIA     =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/nb")
-IMG_FMT_STRING  =  "%04d"
-SERVER_USERNAME = "www-data"
+HTTPD_MEDIA             =  settings_credentials.__dict__.get("HTTPD_MEDIA", "/var/local/nb")
+HTTPD_MEDIA_CACHE       =  settings_credentials.__dict__.get("HTTPD_MEDIA_CACHE", HTTPD_MEDIA)
 
-DESKTOP_TEMPLATE= "web/desktop.html"
-COLLAGE_TEMPLATE= "web/collage.html"
-DEV_DESKTOP_TEMPLATE= 'web/desktop%s.xhtml'
-SOURCE_TEMPLATE = "web/source1.html"
-YOUTUBE_TEMPLATE = "web/youtube1.html"
-GUEST_TUTORIAL_URL = "http://%s/tutorial" % (NB_SERVERNAME,)
-SPREADSHEET_TEMPLATE = "web/spreadsheet.html"
+IMG_FMT_STRING          =  "%04d"
+SERVER_USERNAME         = "www-data"
+
+DESKTOP_TEMPLATE        = "web/desktop.html"
+COLLAGE_TEMPLATE        = "web/collage.html"
+DEV_DESKTOP_TEMPLATE    = 'web/desktop%s.xhtml'
+SOURCE_TEMPLATE         = "web/source1.html"
+YOUTUBE_TEMPLATE        = "web/youtube1.html"
+GUEST_TUTORIAL_URL      = "http://%s/tutorial" % (NB_SERVERNAME,)
+SPREADSHEET_TEMPLATE    = "web/spreadsheet.html"
 
 
 

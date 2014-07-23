@@ -37,15 +37,15 @@ def serve_img(req, res, scale, id_source):
     filename = "%s_%s.png" % (filename, page_str)
     response = None
     try: 
-        response = serve(req, filename,settings.HTTPD_MEDIA)
+        response = serve(req, filename,settings.HTTPD_MEDIA_CACHE)
         return response
     except Http404: 
         #let's generate on demand
         try: 
             pdf_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
-            img_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.CACHE_DIR)
+            img_dir =  "%s/%s" % (settings.HTTPD_MEDIA_CACHE,settings.CACHE_DIR)
             process_page(id_source, page,  res, scale, pdf_dir, img_dir, settings.IMG_FMT_STRING)
-            response = serve(req, filename,settings.HTTPD_MEDIA)
+            response = serve(req, filename,settings.HTTPD_MEDIA_CACHE)
             return response
         except Http404:             
             basedir = dirname(dirname(dirname(abspath(__file__))))
