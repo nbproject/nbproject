@@ -308,7 +308,7 @@ def process_next(args=[]):
         else:
             resolutions = settings.RESOLUTIONS
         rep_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
-        cache_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.CACHE_DIR)
+        cache_dir =  "%s/%s" % (settings.HTTPD_MEDIA_CACHE,settings.CACHE_DIR)
         fmt = settings.IMG_FMT_STRING
         for res in resolutions:
             if not os.path.exists( "%s/%s" % (cache_dir, res)):
