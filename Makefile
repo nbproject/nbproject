@@ -24,13 +24,14 @@ DBHOST		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;a=DA
 CRON_EMAIL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import CRON_EMAIL;print CRON_EMAIL')
 CONTENTDIR	= $(PWD)/content
 HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA;print HTTPD_MEDIA')
+HTTPD_MEDIA_CACHE_DIR = $(shell python -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA_CACHE;print HTTPD_MEDIA_CACHE')
 NB_STATIC_MEDIA_DIR= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_ROOT;print STATIC_ROOT')
 NB_STATICURL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_URL;print STATIC_URL')
 HTTPD_PDF_DIR	= $(HTTPD_MEDIA_DIR)/pdf
 HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
 HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
-HTTPD_CACHE_DIR = $(HTTPD_PDF_DIR)/cache2
+HTTPD_CACHE_DIR = $(HTTPD_MEDIA_CACHE_DIR)/pdf/cache2
 SERVER_USERNAME = $(shell python -c 'from  $(SITEDIR_DOT).settings import SERVER_USERNAME;print SERVER_USERNAME')
 NB_SERVERNAME  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_SERVERNAME;print NB_SERVERNAME')
 NB_HTTP_PORT  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_HTTP_PORT;print NB_HTTP_PORT')
@@ -60,9 +61,10 @@ create_dirs:
 	- mkdir -p $(HTTPD_CACHE_DIR)
 	echo 'attempting to chown Media dir: ' $(HTTPD_MEDIA_DIR)
 	- chown -R $(SERVER_USERNAME):$(SERVER_USERNAME) $(HTTPD_MEDIA_DIR)
+	echo 'attempting to chown Media cache dir: ' $(HTTPD_MEDIA_CACHE_DIR)
+	- chown -R $(SERVER_USERNAME):$(SERVER_USERNAME) $(HTTPD_MEDIA_CACHE_DIR)
 	echo 'attempting to create static media dir: ' $(NB_STATIC_MEDIA_DIR)
 	- mkdir -p $(NB_STATIC_MEDIA_DIR)
-
 .SILENT:
 
 create_db:

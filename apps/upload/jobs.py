@@ -273,7 +273,7 @@ def upload_chapters(*t_args):
         fmt2 = settings.IMG_FMT_STRING
         resolutions = P["RESOLUTIONS"] if "RESOLUTIONS" in P else settings.RESOLUTIONS
         rep_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.RESTRICTED_REPOSITORY_DIR) if P["restricted"] else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) 
-        cache_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.CACHE_DIR)
+        cache_dir =  "%s/%s" % (settings.HTTPD_MEDIA_CACHE,settings.CACHE_DIR)
         for i in xrange(0, len(ends)): 
             ch_num = i0+i
             fmt = P["chapter_fmt"] % (ch_num, )
