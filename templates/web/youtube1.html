@@ -8,12 +8,12 @@
   -->
     <title>NB YouTube Viewer</title>
     <link type="text/css" href="/content/compiled/youtubeviewer.css" rel="stylesheet" />
-    <script>
-      function onYouTubePlayerAPIReady(){
-      console.log("YouTube API ready"); 
-      }
-    </script>
-    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+    <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+    <script src="http://www.youtube.com/iframe_api" type="text/javascript"></script>
+	<script type="text/javascript">
+	    console.log("test");
+		google.load("swfobject", "2.1");
+	</script> 
     <script type="text/javascript" src="/content/compiled/youtubeviewer_NB.js"></script>
   </head>
   <body/>

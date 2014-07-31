@@ -37,25 +37,25 @@ GLOB.pers.init = function(){
             var pers_id        = "pers_"+id;
             var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-            var docview        =  {priority: 1, min_width: 950, desired_width: 50, 
+            var docview        =  {priority: 1, min_width: 970, desired_width: 50, 
                                    content: function($div){
                     $div.docView({img_server: GLOB.conf.servers.img});
                     $div.docView("set_model",GLOB.pers.store );
                 }
             };
-            var notesview    =  {priority: 1, min_width: 650, desired_width: 35, min_height: 1000, desired_height: 50, 
+            var notesview    =  {priority: 1, min_width: 630, desired_width: 35, min_height: 1000, desired_height: 50, 
                         content: function($div){
                     $div.notepaneView();
                     $div.notepaneView("set_model",GLOB.pers.store );
                 }
             }; 
-            var threadview    = {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, 
+            var threadview    = {priority: 1, min_width: 630, desired_width: 35,  min_height: 1000, desired_height: 50, 
                        content: function($div){
                     $div.threadview();
                     $div.threadview("set_model",GLOB.pers.store );                
                 }
             };
-            var editorview    =  {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
+            var editorview    =  {priority: 1, min_width: 630, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
                                   content: function($div){
                     var m = GLOB.pers.store;
                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
@@ -166,7 +166,7 @@ GLOB.pers.createStore = function(payload){
     $.concierge.trigger({type:"file", value: id_source});
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title);
-    $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
+    var noteLoaderCallback = function(P) {
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
@@ -197,6 +197,9 @@ GLOB.pers.createStore = function(payload){
             $.concierge.trigger({type: "page", value: 1});
             }, 300);
         }
+    };
+    $.concierge.get_component("notes_loader")( {file:id_source }, function(P) {
+        window.setTimeout(function() {noteLoaderCallback(P);}, 1000);
     });
 };
 
