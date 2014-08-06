@@ -141,11 +141,7 @@ module.exports = function(grunt) {
     };
 
     MODS.DOCANALYTICSVIEW = {
-<<<<<<< HEAD
-       src_css: addPrefix(MODULE_DIR, ["dev/ui.docAnalyticsView.css"])
-=======
         src_css: addPrefix(MODULE_DIR, ["dev/ui.docAnalyticsView.css"])
->>>>>>> add Grunt stuff back for analytics
     };
 
     /* TARGETS are modules that are built (but they can also serve as building blocks) */
@@ -485,7 +481,7 @@ module.exports = function(grunt) {
                     confirm: false,
                     rangy: false, 
                     wgxpath: false,
-                    Backbone: false,
+                    Backbone: false, 
                     _: false,
                     swfobject: false,
                     google: false,
