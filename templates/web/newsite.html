@@ -1,0 +1,51 @@
+{% extends "web/base.html" %}
+{% block title %}Creating your first site on NB{% endblock %}
+{% block style %}
+ul.errorlist{
+	color: #ff0000;
+	font-weight: bold;
+	list-style: none;	
+}
+{% endblock %} 
+{% block content %}
+
+  <h1>Creating your first site on NB</h1>
+  
+  <p>Welcome to NB ! With this form, you can create your user profile and the site for your first class. </p>
+  
+  <p><b>Important</b> This form is for <i>new NB users only</i>. If you already have an account on NB, please use your <a href="/">NB Admin Console</a> instead, in order to create your site.</p> 
+  
+  <div>
+    <form action="" method="post">
+    	<h2>About yourself...</h2>
+      <table>
+	{% for field in user_form %}
+	
+	<tr>
+          <td>{% if field.required %} * {% endif %}{{ field.label_tag }}</td><td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+
+	</tr>
+	
+        {% endfor %}  
+	
+      </table>
+          {{ user_form.non_field_errors }}
+      <br/>     
+      <h2>About the site you wish to create...</h2>
+      <table>
+	{% for field in ensemble_form %}
+	
+	<tr>
+          <td>{% if field.required %} * {% endif %}{{ field.label_tag }}</td><td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+	</tr>
+        {% endfor %}  
+	<tr><td/><td><input style="margin-top: 10px", type="submit" value="Send" /></td></tr>
+	
+      </table>
+    </form>
+  </div>
+
+<p><b>IMPORTANT</b> By using this form, you certify that you've read and approved the <a href="/terms_public_site" target="_blank">NB Terms and Conditions</a>.</p> 
+
+{% endblock %}
+

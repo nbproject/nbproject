@@ -1,0 +1,10 @@
+This directory has different files that correpond to steps used to build a more and more complete NB ui
+
+minimal	minimal files to get perspective running
+step1	sample views
+step2	gets data from server
+step3	treeview w/ data from server
+step4 	[dummy] view factory
+step5	real view factory (try w/ 570 as 'file' event and opens a PDF
+step6	same as step5 but using mods.js: CSS and JS are loaded dynamically. 
+step7	same as step6 but with optimal width rendering

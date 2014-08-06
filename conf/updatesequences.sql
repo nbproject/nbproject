@@ -1,0 +1,21 @@
+select setval('base_user_id_seq', (select max(id) from base_user)); 
+select setval('base_ensemble_id_seq', (select max(id) from base_ensemble)); 
+select setval('base_folder_id_seq', (select max(id) from base_folder)); 
+select setval('base_invite_id_seq', (select max(id) from base_invite)); 
+select setval('base_membership_id_seq', (select max(id) from base_membership)); 
+select setval('base_source_id_seq', (select max(id) from base_source)); 
+select setval('base_ownership_id_seq', (select max(id) from base_ownership)); 
+select setval('base_location_id_seq', (select max(id) from base_location)); 
+select setval('base_comment_id_seq', (select max(id) from base_comment)); 
+select setval('base_mark_id_seq', (select max(id) from base_mark)); 
+select setval('base_processqueue_id_seq', (select max(id) from base_processqueue)); 
+select setval('base_session_id_seq', (select max(id) from base_session)); 
+select setval('base_commentseen_id_seq', (select max(id) from base_commentseen)); 
+select setval('base_pageseen_id_seq', (select max(id) from base_pageseen)); 
+select setval('base_landing_id_seq', (select max(id) from base_landing)); 
+select setval('base_idle_id_seq', (select max(id) from base_idle)); 
+select setval('base_settinglabel_id_seq', (select max(id) from base_settinglabel)); 
+select setval('base_defaultsetting_id_seq', (select max(id) from base_defaultsetting)); 
+select setval('base_usersetting_id_seq', (select max(id) from base_usersetting)); 
+select setval('base_notification_id_seq', (select max(id) from base_notification)); 
+

@@ -1,0 +1,18 @@
+Hello {{c.author.firstname}}, 
+
+This is a confirmation that you've posted the following note on NB:
+
+Direct URL:    {{V.protocol}}://{{V.hostname}}/c/{{c.id}}?org=ma_i
+For class:     {{c.location.ensemble.name}}
+On file:       {{c.location.source.title}}
+Visibility:    {{visibility}}
+Authored at:   {{c.ctime}}
+{% if c.parent %}In reply to:   {{c.parent.body|safe}}{% endif %}
+Content:       {{c.body|safe}}
+
+
+To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=ma_i
+
+Dutifully yours,
+
+NBNB  -  the NB Notification Bot

@@ -1,0 +1,29 @@
+{% extends "web/base.html" %}
+{% block title %}NB FAQ{% endblock %}
+{% block css %}
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
+{% endblock %}
+{% block style %}
+span.ui-icon {
+display: inline-block;
+} 
+{% endblock %}
+{% block js %}
+<script src="/content/modules/faq.js"></script>
+{% endblock %}
+{% block content %}
+<h1>Frequently Asked Questions about NB</h1>
+<br>
+<style>
+.center
+{
+margin-right: auto;
+margin-left: auto;
+width: 100%;
+}
+</style>
+<p style="text-align: center"> <a class="clickable3" style="font-size: xx-large" href="/faq_student"> For Students </a> </p> 
+<p style="text-align: center"> <a class="clickable3" style="font-size: xx-large" href="/faq_instructor"> For Instructors </a> </p>
+
+
+      {% endblock %}

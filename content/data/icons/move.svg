@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="63.964985"
+   id="svg1"
+   inkscape:version="0.46"
+   sodipodi:docbase="/home/danny/flat/scalable/actions"
+   sodipodi:docname="move.svg"
+   sodipodi:version="0.32"
+   version="1.0"
+   width="64"
+   x="0"
+   y="0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/var/local/home/sacha/myServer/content/data/icons/png/move.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <metadata
+     id="metadata3">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Part of the Flat Icon Collection (Wed Aug 25 23:29:46 2004)</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>hash</rdf:li>
+            <rdf:li />
+            <rdf:li>action</rdf:li>
+            <rdf:li>computer</rdf:li>
+            <rdf:li>icons</rdf:li>
+            <rdf:li>theme</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Danny Allen</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Danny Allen</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Danny Allen</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     bordercolor="#666666"
+     borderopacity="1.0"
+     id="base"
+     inkscape:cx="-10.169014"
+     inkscape:cy="11.375967"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:window-height="975"
+     inkscape:window-width="1399"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:zoom="1.7366335"
+     pagecolor="#ffffff"
+     showgrid="false"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs3">
+    <linearGradient
+       id="linearGradient48">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.3333;"
+         offset="0"
+         id="stop49" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop50" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient53">
+      <stop
+         style="stop-color:#faff00;stop-opacity:1;"
+         offset="0"
+         id="stop54" />
+      <stop
+         style="stop-color:#02ff00;stop-opacity:1;"
+         offset="1"
+         id="stop55" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient48"
+       id="linearGradient2438"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.6843238,0,0,1.4612965,-490.83575,-199.62552)"
+       x1="326.66656"
+       y1="105.63631"
+       x2="378.43874"
+       y2="209.57385" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient53"
+       id="linearGradient2441"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0051978,0,0,0.9948291,106.87242,-107.49324)"
+       x1="11.121577"
+       y1="217.78824"
+       x2="428.81486"
+       y2="217.78824" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient53"
+       id="linearGradient3223"
+       x1="7.7120867"
+       y1="32.846233"
+       x2="55.712086"
+       y2="32.846233"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9166538,0,0,0.9171813,2.9309959,1.856541)" />
+  </defs>
+  <path
+     d="M 32.581264,11.057005 L 24.588891,17.963505 L 29.965579,17.963505 L 29.965579,30.055941 L 18.122333,30.055941 L 18.170772,24.215707 L 11.074513,31.413008 L 18.001237,39.41001 L 18.001237,34.005976 L 29.965579,34.005976 L 29.965579,45.662211 L 24.225601,45.662211 L 31.68515,52.907979 L 39.314233,45.637978 L 33.937547,45.637978 L 33.937547,34.005976 L 45.659694,34.005976 L 45.659694,39.773509 L 52.925487,32.309642 L 45.659694,24.651907 L 45.659694,30.055941 L 33.937547,30.055941 L 33.937547,18.084672 L 39.774401,18.157373 L 32.581264,11.057005 z"
+     id="path690"
+     sodipodi:stroke-cmyk="(0 0 0 0.8)"
+     style="fill:url(#linearGradient3223);fill-opacity:1;fill-rule:evenodd;stroke:#006000;stroke-width:2.14902544;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+</svg>

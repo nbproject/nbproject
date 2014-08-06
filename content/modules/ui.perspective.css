@@ -1,0 +1,40 @@
+/*
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+.separator,
+.external-separator{
+    background-color:#EFEBE7;
+    z-index: 10;
+    position: absolute !important;
+}
+
+
+.external-separator:hover, 
+.separator:hover {
+    background-color: #CCC;
+    z-index: 11;
+}
+
+.pers-container{
+    overflow: hidden;
+}
+
+.pers-protection{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.pers-widget{
+    overflow: hidden;
+    position: absolute;
+}
+
+.focusgrabber{
+position: absolute; 
+top: -1000px;
+}

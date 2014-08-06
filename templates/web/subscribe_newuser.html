@@ -1,0 +1,41 @@
+{% extends "web/base.html" %}
+{% block title %}Welcome to NB{% endblock %}
+{% block style %}
+ul.errorlist{
+	color: #ff0000;
+	font-weight: bold;
+	list-style: none;	
+}
+p.important{
+font-weight: large;
+font-color: #770000;	
+}
+{% endblock %} 
+{% block content %}
+
+  <h1>Confirm your subscription to the NB group <i>{{ensemble.name}}</i></h1>
+
+<p class="important">If you're already an NB user, please use <a href="/login?next=/subscribe?key={{key}}">this link instead</a></p>
+
+  <div>
+    <form action="" method="post">
+      <h2>About yourself...</h2>
+      <table>
+	{% for field in form %}
+	
+	<tr>
+          <td>{% if field.required %} * {% endif %}{{ field.label_tag }}</td><td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
+	  
+	</tr>
+	
+        {% endfor %}  
+	
+      </table>
+      {{ form.non_field_errors }}
+      
+<p>Click on the "Confirm" button to create your NB user and subscribe to the NB group <i>{{ensemble.name}}</i>
+    <p><input style="margin-top: 10px", type="submit" value="Confirm" /></p>
+    </form>
+
+{% endblock %}
+

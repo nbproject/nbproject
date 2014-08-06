@@ -1,0 +1,300 @@
+html, body {
+    margin:0;
+    padding:0;
+    font-family: 'Nobile', sans-serif;
+    background-color: #E6E6DC; /*#F4F4F4;*/
+}
+
+#content_main,
+header>div,
+footer>div {
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+#content_main {
+    background:#FFFFFF;
+    padding:100px 30px 10px 30px;
+    margin-bottom:20px;
+    border: 1px solid #BFBFBF;
+    -moz-border-radius: 0 0 6px 6px;
+    -ms-border-radius: 0 0 6px 6px;
+    -o-border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+    text-align: left;
+}
+
+header {
+    margin:0;
+    padding:0;
+    height:90px;  
+    background: #225566;
+    box-shadow: 0 -2px 10px #034;
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    display: block;
+    overflow: hidden;
+}
+
+header>div {
+    padding: 20px 30px 0 30px;
+}
+
+header a#logo:link,
+header a#logo:visited,
+header a#logo:active {
+  font-size: 64px;
+  font-family: 'Knewave', cursive;
+  text-decoration: none;
+  color: #FCFCFC;
+  text-shadow: 0 0 2px #111;
+  line-height: 0.8em;
+  float: left;
+}
+
+header a#logo:hover {
+  text-shadow: 0 0 3px #666;
+  color: #FFF;
+}
+
+nav.main {
+    margin-left: 150px;
+    height:48px;
+    display: block;
+}
+
+nav.main > ul { 	
+    font-weight: bold;
+    font-size:16px;
+    list-style-type: none;
+    text-align: right;
+    overflow:hidden;
+    margin-top: 32px;
+    /*height: 20px;*/
+}
+
+
+nav.main > ul >li {
+    display:inline-block;
+    *display: inline;
+    zoom: 1;
+    margin-left:8px;
+}
+
+header a:link,
+header a:visited{
+    text-decoration: none;
+    color: #EECD2B;
+}
+
+header a:hover {
+    color: #FFEA80;
+}
+
+nav.main a:link {
+    padding: 12px 12px 32px 12px;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    background-color: #003344;
+}
+
+nav.main a:hover {
+    background-color: #16495A;
+}
+
+#login {
+    position: fixed;
+    top: 0.5em; right: 0.5em;
+}
+
+footer {
+    font-size: small;
+    color: #707070;
+    font-style: italic
+}
+
+footer>div {
+    text-align: center;
+}
+
+a:link,
+a:visited {
+    color: #034;
+}
+
+.column {
+  width: 50%;
+  text-align: justify;
+}
+.column>div{
+  margin: 0 20px;
+}
+.column.right {
+  float: right;
+}
+.column.right>div{
+  margin-right: 0;
+}
+.column.left {
+  float: left;
+  box-shadow: 32px 0 32px -32px #888;
+}
+.column.left>div{
+  margin-left: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 0.25em;
+}
+
+/*
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+
+section.expandable>div.desc {
+   height: 0; overflow: hidden;
+   transition: height 0.5s;
+   -webkit-transition: height 0.5s;
+}
+
+section.expandable:hover>div.desc {
+   height: 32px;
+}
+
+div.video {
+  padding: 0 16px;
+}
+
+.desc{
+  font-size: 0.7em;
+  font-style: italic;
+  display: block; text-align: center;
+}
+
+.desc>span {
+  display: block;
+}
+
+.desc a:link,
+.desc a:visited {
+  color: #445;
+}
+
+span.courtesy,
+span.caution {
+color: #555;
+
+}
+
+div.navbar {
+text-align:center;
+margin-bottom:5px;
+padding:5px 0;
+font-size: large;
+}
+
+div.navbar > a {
+color:#444444;
+font-weight:bold;
+padding:5px 10px;
+text-decoration:none;
+}
+
+div.navbar > a:hover {
+background-color:#404040;
+color:#C0C0C0;
+}
+
+#tuts{
+
+}
+
+tr.row{
+vertical-align: top;
+}
+
+section {
+margin: 2px;
+clear: both;
+}
+
+span.try{
+font-size: x-large; 
+color: #a0a0a0;
+font-style: italic;
+margin-right: 10px;
+
+}
+
+span.n,
+span.b,
+span.nb{
+font-weight: bold;
+}
+
+ul.features_list{
+color: #404040;
+}
+
+div.suggestion {
+  display: inline-block;
+    *display: inline;
+    zoom: 1;
+  width: 25%;
+  vertical-align: top;
+  text-align: justify;
+}
+
+div.suggestion>div{
+  margin: 0 16px 16px 16px;
+}
+
+section>p{
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+div.suggestion p{
+font-size: 0.9em;
+font-style: italic;
+height: 60px;
+}
+
+div.suggestion img{
+width: 100%;
+height: auto;
+}
+
+#credits{
+font-size: small;
+color: #a0a0a0;
+}
+
+div.big-button>a:link,
+div.big-button>a:visited {
+  text-decoration: none;
+  display: block;
+  color: #444;
+  margin: 10px;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  font-size: 24px;
+}
+
+div.big-button>a:active,
+div.big-button>a:hover{
+  background-color: #F4F4F4;
+  border-color: #DDD;
+  color: #666;
+}

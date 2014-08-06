@@ -1,0 +1,66 @@
+#!/bin/bash
+echo 'sqlcommands' && \
+psql -d @@OLD_DB@@ -h localhost  -U nbadmin -f ~/oeit/nb_trunk/conf/migratedb.sql && \
+echo 'starting user' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_user @@OLD_DB@@ > /tmp/users.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/users.custom && \
+echo 'starting ensemble' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_ensemble @@OLD_DB@@ > /tmp/ensemble.custom &&\
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/ensemble.custom && \
+echo 'starting folder' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_folder @@OLD_DB@@ > /tmp/folder.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/folder.custom  && \
+echo 'starting invite' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_invite @@OLD_DB@@ > /tmp/invite.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/invite.custom  && \
+echo 'starting membership' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_membership @@OLD_DB@@ > /tmp/membership.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/membership.custom  && \
+echo 'starting source' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_source @@OLD_DB@@ > /tmp/source.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/source.custom  && \
+echo 'starting ownership' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_ownership @@OLD_DB@@ > /tmp/ownership.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/ownership.custom  && \
+echo 'starting location' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_location @@OLD_DB@@ > /tmp/location.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/location.custom  && \
+echo 'starting comment' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_comment @@OLD_DB@@ > /tmp/comment.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/comment.custom  && \
+echo 'starting mark' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_mark @@OLD_DB@@ > /tmp/mark.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/mark.custom  && \
+echo 'starting processqueue' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_processqueue @@OLD_DB@@ > /tmp/processqueue.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/processqueue.custom  && \
+echo 'starting session' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_session @@OLD_DB@@ > /tmp/session.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/session.custom  && \
+echo 'starting commentseen' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_commentseen @@OLD_DB@@ > /tmp/commentseen.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/commentseen.custom  && \
+echo 'starting pageseen' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_pageseen @@OLD_DB@@ > /tmp/pageseen.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/pageseen.custom  && \
+echo 'starting landing' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_landing @@OLD_DB@@ > /tmp/landing.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/landing.custom  && \
+echo 'starting idle' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_idle @@OLD_DB@@ > /tmp/idle.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/idle.custom  && \
+echo 'starting defaultsetting' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_defaultsetting @@OLD_DB@@ > /tmp/defaultsetting.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/defaultsetting.custom  && \
+echo 'starting settinglabel' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_settinglabel @@OLD_DB@@ > /tmp/settinglabel.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/settinglabel.custom  && \
+echo 'starting usersetting' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_usersetting @@OLD_DB@@ > /tmp/usersetting.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/usersetting.custom  && \
+echo 'starting notification' && \
+pg_dump -Fc -U nbadmin -h localhost  -t base_notification @@OLD_DB@@ > /tmp/notification.custom && \
+pg_restore -a -Fc -h localhost -d @@NEW_DB@@  -U nbadmin /tmp/notification.custom  && \
+echo 'starting updating sequences...' && \
+psql -d @@NEW_DB@@ -h localhost  -U nbadmin -f ~/oeit/nb_trunk/conf/updatesequences.sql && \
+echo '---------------- MIGRATION FROM @@OLD_DB@@ TO @@NEW_DB@@ SUCCESSFULLY COMPLETED ! ---------'

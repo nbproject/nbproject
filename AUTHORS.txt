@@ -1,0 +1,9 @@
+Authors (in alphabetical order by last name).
+
+Eyas Alsharaiha
+Steph Greene
+David Karger
+Sanjoy Mahajan 
+Peter Wilkins
+Colin Zwiebel
+Sacha Zyto

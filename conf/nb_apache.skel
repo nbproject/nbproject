@@ -1,0 +1,31 @@
+# Uncomment this if you're listening on a non standard port: 
+# Listen NB_HTTP_PORT
+
+NameVirtualHost *:NB_HTTP_PORT
+
+<VirtualHost *:NB_HTTP_PORT>
+
+ServerName NB_SERVERNAME
+
+Alias /content/ NB_CONTENTDIR/
+
+<Directory NB_CONTENTDIR>
+Order deny,allow
+Allow from all
+</Directory>
+
+Alias NB_STATICURL NB_STATIC_MEDIA_DIR
+
+<Directory NB_STATIC_MEDIA_DIR>
+Order deny,allow
+Allow from all
+</Directory>
+
+WSGIScriptAlias / NB_WSGIDIR/wsgi.py
+
+<Directory NB_WSGIDIR/>
+Order allow,deny
+Allow from all
+</Directory>
+
+</VirtualHost>

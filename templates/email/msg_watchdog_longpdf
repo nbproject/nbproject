@@ -1,0 +1,9 @@
+Dear NB Administrator, 
+
+A PDF conversion process has been going on for {{processtime}}. If you think that this isn't normal, please check the processing queue, and clear it if necessary, so that new PDF documents can be processed. 
+
+File:         {{o.source.title}} (id={{o.source.id}}, {{o.source.numpages}} pages)
+Server:       {{hostname}}
+
+Dutifully yours,
+NBNB  -  the NB Notification Bot

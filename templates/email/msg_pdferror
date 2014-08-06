@@ -1,0 +1,11 @@
+Dear  {% if firstname %}{{firstname}}{% else %}{{email}}{% endif %},  
+
+NB wasn't able to read the pdf file that you've submitted: '{{title}}' (submitted on {{submitted}} with source_id={{source_id}}). 
+
+Suggestions: 
+- Make sure that  '{{title}}' is a PDF file: Are you able to read this PDF on your computer ?
+- If you are, please try to regenerate this file using a different method (Export as PDF, Print to file...), and submit it to NB again. 
+- If you get the same error message after trying again, please visit our forum at  {{support|safe}} or contact the NB Team at {{contact_email|safe}}
+
+Dutifully yours,
+NBNB  -  the NB Notification Bot

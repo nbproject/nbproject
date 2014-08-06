@@ -1,0 +1,52 @@
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 200px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 11px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, .25);
+}
+
+.contextMenu li {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu a {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	line-height: 20px;
+	height: 20px;
+	outline: none;
+	padding: 1px 5px;
+	margin-left: 20px;
+	background-color: #eeeeee;
+}
+
+.contextMenu li.hover a,
+.contextMenu li.hover {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu li.disabled a {
+	color: #aaa;
+	cursor: default;
+}
+
+.contextMenu li.hover.disabled a {
+	background-color: transparent;
+}
+
+.contextMenu li.menu-separator {
+	border-top: solid 1px #CCC;
+}
+

@@ -1,0 +1,128 @@
+{% extends "web/base.html" %}
+{% block title %}Properties for {{ensemble.name}}{% endblock %}
+{% block style %}
+span.lowcontrast{
+	color: #a0a0a0;
+}
+div.section{
+	color: #404040;
+	margin-left: 30px;	
+}
+table{
+	border-spacing: 15px 3px;	
+}
+{% endblock %} 
+{% block content %}
+
+  <h1>Users of {{ensemble.name}}</h1>
+
+<h2>{{memberships.count}} registered users</h2>
+<div class='section'>
+	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
+      <table>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Section</th><th>Actions</th></tr></thead>
+      	<tbody>
+	{% for o in memberships %}	
+		<tr>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+			<td>
+				<form method="POST" action="?action=setsection&membership_id={{o.id}}">
+				<select name="section_id" data_membership_id="{{o.id}}">
+					<option value="None" {% if o.section == None %} selected="selected" {%endif %}>No Section</option>
+					{% for s in sections %}
+						<option value='{{s.id}}' {% if o.section == s %} selected="selected" {%endif%} >{{s.name}}</option>
+					{% endfor %}
+				</select><noscript><input type="submit" value="Change" /></noscript>
+				</form>
+			</td>
+            <td><a style='margin-right: 10px' href='?action=delete&membership_id={{o.id}}'>Delete</a>
+              {% if o.admin %}
+              <a href='?action=unadmin&membership_id={{o.id}}'>Remove staff status</a>
+              {% else %}
+              <a href='?action=admin&membership_id={{o.id}}'>Add staff status</a>
+              {% endif %}
+            </td>
+		</tr>
+        {% endfor %}
+	
+	</tbody>
+      </table>
+      </div>
+
+<h2>{{pendinginvites.count}} pending invitations</h2>
+
+      <div class='section'>
+  	<p>The following users have been sent an invite but haven't yet replied to it. If you notice that the invite has been sent a long time ago, it might a good idea to check if you have the correct email for those users or ask them to check their spam folders (NB invites sometines get blocked by spam programs) </p>
+
+   <table>
+      	<thead><tr><th>Email</th><th>Role</th><th>Section</th></tr></thead>
+      	<tbody>
+	{% for o in pendinginvites %}	
+		<tr>
+			<td>{{o.user.email}}</td>
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>
+			<td>{{o.section.name}}</td>
+		</tr>
+        {% endfor %}
+	
+	</tbody>
+      </table>
+      </div>
+
+{% if pendingconfirmations %}
+<h2>{{pendingconfirmations.count}} pending email confirmations</h2>
+ <div class='section'>
+  	<p>The following users have used the subscribe link but haven't confirmed their email yet.  </p>
+
+   <table>
+     	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th></tr></thead>
+      	<tbody>
+	{% for o in pendingconfirmations %}	
+		<tr>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+		</tr>
+        {% endfor %}	
+	</tbody>
+      </table>
+      </div>
+{% endif %}      
+
+{% if deleted_memberships %}
+<h2>{{deleted_memberships.count}} deleted memberships</h2>
+ <div class='section'>
+  	<p>The following users have been removed from this group.  </p>
+   <table>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+      	<tbody>
+	{% for o in deleted_memberships %}	
+		<tr>
+			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
+			<td>{{o.user.email}}</td>
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+            <td><a href='?action=undelete&membership_id={{o.id}}'>Undelete</a></td>
+
+		</tr>
+        {% endfor %}
+	</tbody>
+      </table>
+      </div>
+{% endif %}
+
+<script type="text/javascript">
+$("select[name=section_id]").change(function(){
+   var membership_id = $(this).attr("data_membership_id");
+   var section_id = $(this).val();
+   $.post(
+      "?action=setsection&membership_id=" + membership_id,
+      {section_id: section_id} );
+
+});
+</script>
+{% endblock %}
+

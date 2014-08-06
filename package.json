@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "dashboard-server",
   "version": "0.0.1",
   "dependencies": {
@@ -10,3 +11,22 @@
     "npm": "1.2.x"
   }
 }
+=======
+  "name": "NB",
+  "version": "3.1.0",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "scripts": {
+    "test": "grunt qunit"
+  },
+  "devDependencies": {
+    "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-concat": "~0.3.0"
+  },
+  "dependencies": {
+    "execSync": ">= 0.0.0"
+  }
+}
+>>>>>>> FETCH_HEAD

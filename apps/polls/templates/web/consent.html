@@ -1,0 +1,28 @@
+{% extends "web/base.html" %}
+{% block title %}Consent Form{% endblock %}
+{% block content %}
+
+<h1>Consent Form for {{user.firstname}} {{user.lastname}}</h1>
+
+<p>Dear {{user.firstname}},</p> 
+
+<p>Thanks for your reply. Your current status is as follows: 
+
+<p style='font-size: x-large;'>You <b>{% if not approved %} do not {% endif %} allow</b> your notes (once anonymized) to be used for research purposes or as sample comments in future classes.</p> 
+
+</p>
+If you'd like, you can change your status by simply <a href="?ckey={{user.confkey}}{% if not approved %}&approved=1{% endif %}">clicking here</a>. 
+<p>Note that if you decide to allow us to use your notes, those notes will be <b>anonymized.</b></p>  
+<br/>
+
+<div style="font-family: cursive; margin: 20px; background-color: #c0ffe0; color: #404040; border: thin solid #404040; padding: 3px 20px 20px 20px;">	 
+<h2 align="center">And now... a plea from our grad students</h2>
+ <b>Pleaaaase</b> help us improve NB !!! All it takes is a few seconds. You may think <i>"Why me ?"</i> Well, <b>You're an NB expert user now !</b> That's why we <b>need your feedback</b>, so please  <a href='{{surveylink}}'>fill in our survey</a>. Replying to just a few questions will make a huge difference.
+<div style="font-size: small">
+<p>PS: Instead of reading what follows, please <a href="{{surveylink}}">Fill in our survey !</a></p>	
+<p>PPS: Did I forget to mention that we desperately need your feedback ? Help make a better future with a better NB ! Help poor grad students graduate ! Save the environment ! <a href="{{surveylink}}">Fill in our survey !</a></p>
+<p>PPPS: If you've read all this, then you <b>must</b> have a few seconds to help us by  <a href="{{surveylink}}">Filling in our survey !</a></p>	
+</div>  
+</div>
+
+{% endblock %}
