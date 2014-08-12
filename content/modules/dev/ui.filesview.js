@@ -282,7 +282,9 @@
 
 
         self.element.html("<div class='container'>" + header + filesView_files + "</div>");
-        if (self._menu_items) self._menu_items.remove();
+        if (self._menu_items){
+            self._menu_items.remove();
+        }
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
         $("body").append(self._menu_items);
         self.set_tablesort();
