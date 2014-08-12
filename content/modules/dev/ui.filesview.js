@@ -119,9 +119,7 @@
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
         var analytics_link = (this._admin && f.filetype === 1) ?  "<br/><a href='/f/"+f.ID+"/analyze' target='_blank'>Analytics</a>" : "";
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions"+analytics_link+"</a></td>" : "" ;
-        var d = new Date(f.date_published);
-        var date_added = d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2);
-        var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
+        var assignment_info = f.assignment ? (f.due.substring(7,5)+"/"+f.due.substring(10,8)+"/"+f.due.substring(4,0)+", "+f.due.substring(13,11)+":"+f.due.substring(16,14)) : "--";
         var download = "";
         var f_stats =  this._model.o.file_stats[f.ID];
         if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download){
@@ -134,16 +132,21 @@
             }
             download = "<td>"+download+"</td>";
         }
-        var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a>"+" </td>":"<td/>";
-        var type_class = 'pdficon';
-        if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
-        if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
-        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='hidden'>"+date_added+"</td><td class='filesview_ftitle'><div class='nbicon "+type_class+"'/><a class='aftericon' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+assignment_info+"</td>"+download+stats+opts+"</tr>");
+
+        var comments_all = f_stats ? f_stats.total : "0";
+        var unread_notification = "<div class='notification-badge'>" + 2 + "</div>"; //just for testing
+        var type_class = "fa-file-pdf-o";
+        var kind = "PDF";
+
+        if (f.filetype === 4) { type_class = "fa-file-code-o"; kind = "HTML"; } // TODO: 4 should not be hardcoded
+        if (f.filetype === 2) { type_class = "fa-youtube-play"; kind = "Video"; } // TODO: 2 should not be hardcoded
+        return $("<tr class='filesview_row' item_type='file' id_item='"+f.ID+"'><td class='filesview_ftitle'><i class='fa fa-2x " + type_class + "'></i>" + unread_notification + "<a class='filename' target='_blank' href='/f/"+f.ID+"'>"+$.E(f.title)+"</a></td><td>"+comments_all+"</td><td>"+assignment_info+"</td><td></td><td>"+kind+"</td></tr>");
 
         },
         _folderlens: function(f){
         var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
-        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
+
+        return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><i class='fa fa-2x fa-folder-o'></i><a class='filename'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/><td>Folder</td></tr>");
         },
         _draw_pending: function(){
         var self = this;
@@ -274,17 +277,15 @@
         var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";
         var filesView_question = "<h3 id='filesView-question-header'><a href='#'>Your classmates have <span id='filesView-question-header-total'>0</span> pending question<span id='filesView-question-header-plural'/>. <span id='filesView-question-header-help'>Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>--></a></h3><div id='filesView-panel-question'  class='filesView-panel'><div id='filesView-question-list'/></div>";
 
-        // UNCOMMENT THIS LINE AND DELETE THE ONE BELOW IT TO INCLUDE SORTING BY LAST SEEN (of all users)
-       // var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='1' class='sort-option asc active'><span class='arrow'></span>last seen</a> <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='2' class='sort-option asc'><span class='arrow'></span>name</a> <table id='contents-table' class='tablesorter'><thead><tr><th class='hidden'>Date Added</th><th class='hidden'>Last Seen</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
-        var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='1' class='sort-option desc active'><span class='arrow'></span>name</a> <table id='contents-table' class='tablesorter'><thead><tr><th class='hidden'>Date Added</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 
-        self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
-        if (self._menu_items){
-            self._menu_items.remove();
-        }
+        var filesView_files = (self._id_ensemble === null) ?  "<!--<div id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<div id='filesView-panel-files' class='filesView-panel'> <table class='tablesorter' id='files-table'><thead><tr><th class='header headerSortDown'>Name</th><th>Comments</th><th>Due date</th><th>Last Updated</th><th>Kind</th></tr></thead><tbody id='filesView-file-list'/></table></div>";
+
+
+        self.element.html("<div class='container'>" + header + filesView_files + "</div>");
+        if (self._menu_items) self._menu_items.remove();
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
-        self.set_tablesort();
         $("body").append(self._menu_items);
+        self.set_tablesort();
         },
         _draw_files : function(){
         var self=this;
@@ -319,7 +320,6 @@
             $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
             }
             $("table.tablesorter", self.element).trigger("update");
-
             $("a.optionmenu", self.element).click(function (e) {
                 e.preventDefault();
                 $(this).parents("tr.filesview_row").contextMenu();
@@ -355,16 +355,16 @@
             self._defaultopen = open_candidate;
         }
         self._draw_files();
-        $("#filesView-accordion").accordion({
-            autoHeight: false,
-                collapsible: true,
-                change: function(event, ui){
-                //simulate scroll event to display img if not there already.
-                self.element.scroll();
-                self._defaultopen = "#" + ui.newHeader.attr("id");
-            },
-                active: self._defaultopen
-                });
+        // $("#filesView-accordion").accordion({
+        //     autoHeight: false,
+        //         collapsible: true,
+        //         change: function(event, ui){
+        //         //simulate scroll event to display img if not there already.
+        //         self.element.scroll();
+        //         self._defaultopen = "#" + ui.newHeader.attr("id");
+        //     },
+        //         active: self._defaultopen
+        //         });
 
         // there might be quite a few questions: don't get all images at once
         var scroll_timeout = 300;
@@ -403,6 +403,7 @@
         set_model: function(model){
         var self=this;
         self._model = model;
+            console.log("in set_model!!!");
         model.register($.ui.view.prototype.get_adapter.call(this),  {file: null, folder: null, file_stats: null, replyrating: null, question: null}); //TODO: put stg here so that we update
         },
         set_tablesort: function(){

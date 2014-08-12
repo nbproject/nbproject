@@ -1,52 +1,52 @@
 
 /*** ESSENTIAL STYLES ***/
-.dropdown-menu, .dropdown-menu * {
+.nb-dropdown-menu, .nb-dropdown-menu * {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
-.dropdown-menu ul {
+.nb-dropdown-menu ul {
 	display: none;
 }
-.dropdown-menu ul li {
+.nb-dropdown-menu ul li {
 	width: 100%;
 }
-.dropdown-menu li {
+.nb-dropdown-menu li {
 	float: left;
 	position: relative;
 }
-.dropdown-menu a {
+.nb-dropdown-menu a {
 	display: block;
 	padding: 4px 15px;
 	text-decoration:none;
 }
-.dropdown-menu li:hover ul {
+.nb-dropdown-menu li:hover ul {
 	display: block;
 	position: absolute;
 }
 
-.dropdown-menu > li > a {
+.nb-dropdown-menu > li > a {
 	background-image: url("/content/data/icons/png/arrows.png");
 	background-position: -10px -94px;
 	background-repeat: no-repeat;
 }
 
-.dropdown-menu > li:hover > a {
+.nb-dropdown-menu > li:hover > a {
 	background-image: none;
 }
 
-.dropdown-menu>li>a {
+.nb-dropdown-menu>li>a {
 	color: #034;
 }
 
-.dropdown-menu li li,
-.dropdown-menu li li>a {
+.nb-dropdown-menu li li,
+.nb-dropdown-menu li li>a {
 	background-color: #034;
 	color: #EECD2B
 }
 
-.dropdown-menu li:hover,
-.dropdown-menu li:hover>a {
+.nb-dropdown-menu li:hover,
+.nb-dropdown-menu li:hover>a {
 	outline: 0;
 	background-color: #16495A;
 	color: #FFEA80;

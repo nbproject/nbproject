@@ -52,15 +52,15 @@ module.exports = function(grunt) {
         src_css: addPrefix(MODULE_DIR, ["dev/ui.duplicatewizard.css", "dev/ui.threadselect.css" ])
     };
     MODS.TREEVIEW = {
-        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview.js"]), 
-        src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview.css"])
+        src_js: addPrefix(MODULE_DIR,["jstree/jquery.jstree.js", "dev/ui.treeview-dropdown.js"]), 
+        src_css:  addPrefix(MODULE_DIR, ["jstree/themes/default/style.css" , "dev/ui.treeview-dropdown.css"])
     };  
     MODS.FILESVIEW = {
         src_js: [].concat(
-            MODS.CONTEXTMENU.src_js, 
+            // MODS.CONTEXTMENU.src_js, 
             addPrefix(MODULE_DIR,["tablesorter/jquery.tablesorter.min.js", "calendrical/jquery.calendrical.js", "dev/ui.filesview.js"])),
         src_css:  [].concat(
-            MODS.CONTEXTMENU.src_css,
+            // MODS.CONTEXTMENU.src_css,
             addPrefix(MODULE_DIR, ["tablesorter/style.css", "calendrical/calendrical.css", "dev/ui.filesview.css"]))
     };  
     MODS.DOCVIEW = {
@@ -178,7 +178,8 @@ module.exports = function(grunt) {
         ), 
         dest_js:  DEST_DIR+"embed_NB.js", 
         src_css: [].concat( 
-            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css", "dev/buildEmbed.css"]), 
+            // addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css", "dev/buildEmbed.css"]), 
+            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.view.css", "dev/buildEmbed.css"]), 
             addPrefix(UI_DIR, ["template.css"]),
             MODS.NOTEPANEVIEW_DOC.src_css, 
             MODS.THREADVIEW.src_css, 
@@ -513,9 +514,13 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: '<config:lint.files>',
-            tasks: 'lint qunit'
-        },        
+            files: ['<config:jshint.src>', 'content/modules/*/*.css'],
+            tasks: ['jshint', 'concat', 'cssmin'],
+            options: {
+                livereload: true,
+            }
+
+        },
         uglify: {}
     });
     
@@ -523,7 +528,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     
     
