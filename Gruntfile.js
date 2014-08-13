@@ -57,10 +57,10 @@ module.exports = function(grunt) {
     };  
     MODS.FILESVIEW = {
         src_js: [].concat(
-            // MODS.CONTEXTMENU.src_js, 
+            MODS.CONTEXTMENU.src_js, 
             addPrefix(MODULE_DIR,["tablesorter/jquery.tablesorter.min.js", "calendrical/jquery.calendrical.js", "dev/ui.filesview.js"])),
         src_css:  [].concat(
-            // MODS.CONTEXTMENU.src_css,
+            MODS.CONTEXTMENU.src_css,
             addPrefix(MODULE_DIR, ["tablesorter/style.css", "calendrical/calendrical.css", "dev/ui.filesview.css"]))
     };  
     MODS.DOCVIEW = {
