@@ -210,7 +210,7 @@ def do_auth_immediate():
                              settings.EMAIL_FROM,
                              (c.author.email, ), 
                              (settings.EMAIL_BCC, ))
-        email.send()
+        email.send(fail_silently=True)
         try: 
             print msg
         except UnicodeEncodeError: 
@@ -234,7 +234,7 @@ def do_all_immediate():
                                  settings.EMAIL_FROM,
                                  (m.user.email, ), 
                                  (settings.EMAIL_BCC, ))
-            email.send()              
+            email.send(fail_silently=True)
             try: 
                 print msg
             except UnicodeEncodeError: 
@@ -260,7 +260,7 @@ def do_reply_immediate():
                 msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
-                email.send()
+                email.send(fail_silently=True)
                 try: 
                     print msg
                 except UnicodeEncodeError: 
@@ -282,7 +282,7 @@ def do_watchdog_longpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
         
 def do_watchdog_notstartedpdfprocess():
@@ -298,7 +298,7 @@ def do_watchdog_notstartedpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
     
 def do_auth_digest():
