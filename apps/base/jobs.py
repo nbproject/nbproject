@@ -395,6 +395,16 @@ def do_upgrade(t_args):
     if u.password != None and u.saltedhash == None:
         do_auth_salt_upgrade()
 
+def do_testwrite(t_args): 
+    try: 
+        f = open("testwrite", "w")
+    except IOError:
+        email = EmailMessage("NB: IO Error on server %s" % settings.NB_SERVERNAME,
+                             "unable to write file on server %s\nCheck that all partitions are mounted in r/w mode" %  settings.NB_SERVERNAME, 
+                             settings.EMAIL_FROM,
+                             (settings.ADMINS[0][1],))
+        email.send()
+
 @transaction.commit_on_success
 def do_auth_salt_upgrade():
     # This method does not handle database migrations, only schema
@@ -421,7 +431,8 @@ if __name__ == "__main__" :
         "watchdog": do_watchdog,
         "extract": do_extract, 
         "dumpensemble": do_dumpensemble,
-        "upgrade": do_upgrade
+        "upgrade": do_upgrade, 
+        "testwrite": do_testwrite
         }
     utils.process_cli(__file__, ACTIONS)
 
