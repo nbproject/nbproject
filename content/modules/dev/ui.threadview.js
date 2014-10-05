@@ -333,10 +333,16 @@
             var to_hide = [];
             to_hide.push(tms_comment.is_empty() ?  "li.context.noquestion": "li.context.question");
             to_hide.push(m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty() ?"li.context.nostar": "li.context.star" );
+            /*
             // can't thank a comment for which I'm the author or where I haven't any replyrequested or which was authored before the comment I marked as "reply requested".
             if ( tms_location.is_empty() || c.id_author === self._me.id || tms_comment.is_empty() || tms_comment.first().comment_id>=c.ID){
                 to_hide.push("li.context.thanks");
             }
+            */
+            // SACHA: for now disabling "thanks" option. 
+            // TODO: Enable it once we figure out what to do with thankyous
+            //       by removing the line below and uncommenting the block above. 
+            to_hide.push("li.context.thanks");
             $(to_hide.join(","), this).hide();            
             });
         }, 
