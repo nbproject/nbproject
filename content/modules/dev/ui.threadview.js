@@ -324,7 +324,11 @@
 
             //edit and delete: 
             if ((c.id_author !== self._me.id) || (!(m.get("comment", {id_parent: id_item}).is_empty()))){
-                $("li.context.edit, li.context.delete", this).hide();
+                $("li.context.edit", this).hide();
+                 if (!(self.is_admin)){
+                     // an admin can delete any comment
+                     $("li.context.delete", this).hide();
+                 }
             }        
             //star and question: 
             var tms_location = m.get("threadmark", {location_id: c.ID_location, user_id: self._me.id, active: true, type: self._QUESTION });    

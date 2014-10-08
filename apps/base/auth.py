@@ -270,11 +270,14 @@ def isMember(user_id, ensemble_id):
     
 def canEdit(uid, id_ann):
     #uid need to be comment owner and there need to be no dependent non-deleted comment
+    #or uid needs to be admin for the ensemble containing that comment. 
     o = M.Comment.objects.get(pk=id_ann)
     return o.author_id==uid and M.Comment.objects.filter(parent=o, deleted=False).count()==0
     
 def canDelete(uid, id_ann):    
-    return canEdit(uid, id_ann)
+    #can edit or uid needs to be admin for the ensemble containing that comment. 
+    m = M.Membership.objects.filter(ensemble__location__comment__id = id_ann, admin=True)   
+    return canEdit(uid, id_ann) or m.count()>0
 
 def canLabelComment(uid, cid): 
     #need to be an admin for the ensemble containing that comment. 
