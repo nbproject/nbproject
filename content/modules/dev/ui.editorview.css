@@ -32,6 +32,10 @@ div.editor-header{
     border-bottom: thin solid #DDD;
 }
 
+div.editor-footer {
+    margin-top: -15px;
+}
+
 div.editor table.editorcontrols{
 width: 100%;
 margin: 5px 0px 5px 0px;

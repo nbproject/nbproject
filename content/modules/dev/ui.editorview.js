@@ -34,7 +34,7 @@
                 switch (evt.type){
                 case "new_thread":
                     if (me.guest === 1){
-                        $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
+                        $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+ $str+ ".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
                     }
 
@@ -167,7 +167,7 @@
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea class='ckeditor' name='editor1' id='editor1'></textarea><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
                                   "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
                 self.element.append(contents);
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
@@ -177,6 +177,10 @@
                         }
                     });
                 $textarea.css('minHeight', $textarea.height() + self.element.height() - $("div.notebox", self.element).height() - 42);
+                // CKEDITOR.replace('editor1', {
+                //     uiColor: '#EFEBE7'
+                // });
+
                 var f_sel = function(evt, ui){
                     $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
                 };
@@ -212,12 +216,12 @@
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
-                        body:  $("textarea", self.element)[0].value,            
+                        body:  $("textarea", self.element)[0].value,   
+                        // body: CKEDITOR.instances.editor1.getData(),         
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {}
                     };
-                    
-                    
+                    confirm(marked(msg.body));
                     if ($("input[value=question]:checked", self.element).length){
                         msg.marks.question = true;
                     }
