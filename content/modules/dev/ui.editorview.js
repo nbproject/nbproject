@@ -164,12 +164,19 @@
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
                 var checkbox_options = questionoption+signoption;
-                var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
-
+                var getHtmlStrippedHeader = function (note_body) {
+                    var htmlStrippedString = note_body.replace(/(<([^>]+)>)/ig,"");
+                    return $.ellipsis(htmlStrippedString, 100);
+                };
+                var header = self._inReplyTo ? "Re: "+ getHtmlStrippedHeader(self._note.body) : "New note...";
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea class='ckeditor' name='nb_editor' id='nb_editor'></textarea><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
                                   "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
                 self.element.append(contents);
+                // Activate MathJax for Latex Formulas in the containers
+                $('.editor-header').each(function(i, mathBlock) {
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,mathBlock]);
+                });
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
@@ -242,7 +249,7 @@
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),        
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-                        body: is_ckeditor_loaded ? CKEDITOR.instances.nb_editor.getData() : $("textarea", self.element)[0].value;
+                        body: is_ckeditor_loaded ? CKEDITOR.instances.nb_editor.getData() : $("textarea", self.element)[0].value,
                         marks: {}
                     };
                     if ($("input[value=question]:checked", self.element).length){
