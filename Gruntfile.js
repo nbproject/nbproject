@@ -236,7 +236,6 @@ module.exports = function(grunt) {
             addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
             TARGETS.API.src_js,
             addPrefix(MODULE_DIR,["ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js"]),
-            addPrefix(MODULE_DIR,["ckeditor/plugins/mathjax/dialogs/MathJax.js??config=TeX-AMS_HTML"]),
             MODS.DOCVIEW.src_js, 
             MODS.NOTEPANEVIEW_DOC.src_js,
             MODS.THREADVIEW.src_js,
@@ -443,6 +442,7 @@ module.exports = function(grunt) {
                     rangy: false, 
                     CKEDITOR: false,
                     hljs: false,
+                    MathJax: false,
                     wgxpath: false,
                 __nb_userinfo:true
                 }, 

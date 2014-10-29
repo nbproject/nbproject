@@ -183,6 +183,10 @@ padding: 0px 3px;
 font-size: large;
 }
 
+div.threadview-branch div.note-body span.math-tex {
+    padding-bottom: 4px;
+}
+
 #thread_request_reply{
 color: #707070;
 }

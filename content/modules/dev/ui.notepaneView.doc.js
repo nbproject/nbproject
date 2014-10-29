@@ -333,9 +333,9 @@
         var lf_star    = numstar > 0 ? "<ins class='locationflag'><div class='nbicon staricon-hicontrast' title='This thread has been starred'/></ins>" : "";
         var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
         var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
-        
-        var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
-
+        var htmlStrippedString = root.body.replace(/(<([^>]+)>)/ig,"");
+        var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : htmlStrippedString;
+        //var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
         return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
         }, 
         _keydown: function(event){
@@ -437,7 +437,7 @@
         var self    = this;        
         var nosummary = false;
 
-        if (page > self._maxpage){
+        if (page > self._maxpage) {
             self._maxpage =  page;
         }
 
@@ -475,7 +475,12 @@
                 var loc_lens =
                     $("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
                 $pane.append(loc_lens);
-
+                // Get the location shortbody text containers
+                var $shortBody = loc_lens.find(".location-shortbody-text");
+                // Activate MathJax for Latex Formulas in the containers
+                $shortBody.each(function(i, mathBlock) {
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,mathBlock]);
+                });
                 if (admin === true) {
                     loc_lens.contextMenu({menu: "contextmenu_notepaneView"}, function(action, el, pos) {
                         var $loc = $(el).closest("div.location-lens");
