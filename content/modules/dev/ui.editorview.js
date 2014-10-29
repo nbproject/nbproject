@@ -167,7 +167,7 @@
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea class='ckeditor' name='editor1' id='editor1'></textarea><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea class='ckeditor' name='nb_editor' id='nb_editor'></textarea><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
                                   "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
                 self.element.append(contents);
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
@@ -177,9 +177,34 @@
                         }
                     });
                 $textarea.css('minHeight', $textarea.height() + self.element.height() - $("div.notebox", self.element).height() - 42);
-                // CKEDITOR.replace('editor1', {
-                //     uiColor: '#EFEBE7'
-                // });
+                
+                // Check if CKEDITOR loaded through CDN, then start the editor. If not loaded, use regular textbox.
+                var is_ckeditor_loaded = false;
+                if ( typeof(CKEDITOR) !== "undefined") {
+                    is_ckeditor_loaded = true;
+                    // Start the editor, and configure.
+                    CKEDITOR.replace('nb_editor', {
+                        extraPlugins: 'codesnippet,mathjax',
+                        uiColor: '#EFEBE7',
+                        removeButtons:  'Scayt,PasteText,PasteFromWord,Cut,Copy,Paste,Undo,Redo,' + 
+                                        'Anchor,Underline,Strike,Subscript,Superscript,About,HorizontalRule,' + 
+                                        'Smiley,SpecialChar,Styles,Format,Source,Image,Table',
+                        removeDialogTabs: 'link:advanced',
+                        removePlugins: 'elementspath',
+                        toolbarGroups: [{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                                        { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                                        { name: 'links' },
+                                        { name: 'insert' },
+                                        { name: 'styles' },
+                                        { name: 'colors' },
+                                        { name: 'tools' },
+                                        { name: 'others' },
+                                        { name: 'about' }],
+                        height: '130px',
+                        enterMode: CKEDITOR.ENTER_BR,
+                        resize_enabled: false
+                    });
+                }
 
                 var f_sel = function(evt, ui){
                     $.L("sel has moved to", self._sel.width(), "x",  self._sel.height(), "+" ,  self._sel.css("left"), "+", self._sel.css("top"));
@@ -215,13 +240,15 @@
                     $("button[action=save]", self.element).attr("disabled", "disabled");
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
                     var msg = {
-                        type: $("select[name=vis_"+id_item+"]", self.element).val(),
-                        body:  $("textarea", self.element)[0].value,   
-                        // body: CKEDITOR.instances.editor1.getData(),         
+                        type: $("select[name=vis_"+id_item+"]", self.element).val(),        
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {}
                     };
-                    confirm(marked(msg.body));
+                    if (is_ckeditor_loaded) {   
+                        msg.body = CKEDITOR.instances.nb_editor.getData();
+                    } else {
+                        msg.body = $("textarea", self.element)[0].value;
+                    }
                     if ($("input[value=question]:checked", self.element).length){
                         msg.marks.question = true;
                     }

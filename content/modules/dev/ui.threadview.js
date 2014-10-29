@@ -165,15 +165,27 @@
         var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
         var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&middot;&middot;&middot;</div></a> ";
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
-        var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
-        //var body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : o.body;
+        //var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
+        var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : o.body;
         var commentlabels = self._commentLabelsFactory(o,1 );
-       
         return ["<div class='note-lens ",tms.is_empty() ? "":"replyrequested" , "' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div>",commentlabels,"<span class='note-body",bold_cl,"'>", body,"</span><div class='authorship-info'>", author_name,admin_info, me_info, question_info, type_info, creation_info,"</div>", "</div>"].join("");
         },
         _comment_sort_fct: function(o1, o2){return o1.ID-o2.ID;},
         _fill_tree: function(m, c){
         var $div = $("<div class='threadview-branch'>"+this._lens(c)+"</div>");
+        // Get the note body container, and highlight code content
+        var $noteBody = $div.find(".note-body");
+        $noteBody.find('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+        });
+
+        // // Activate MathJax for Latex Formulas
+        // var QUEUE = MathJax.Hub.queue;
+        // var math = null;
+        // QUEUE.Push(function () {
+        //     math = MathJax.Hub.getAllJax("MathOutput")[0];
+        // });
+
         var children = m.get("comment", {ID_location: c.ID_location, id_parent: c.ID}).sort(this._comment_sort_fct);        
         for (var i = 0; i<children.length;i++){
             $div.append(this._fill_tree(m,children[i]));
