@@ -242,13 +242,9 @@
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),        
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
+                        body: is_ckeditor_loaded ? CKEDITOR.instances.nb_editor.getData() : $("textarea", self.element)[0].value;
                         marks: {}
                     };
-                    if (is_ckeditor_loaded) {   
-                        msg.body = CKEDITOR.instances.nb_editor.getData();
-                    } else {
-                        msg.body = $("textarea", self.element)[0].value;
-                    }
                     if ($("input[value=question]:checked", self.element).length){
                         msg.marks.question = true;
                     }
