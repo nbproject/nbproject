@@ -334,7 +334,7 @@
         var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
         var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
         var htmlStrippedString = root.body.replace(/(<([^>]+)>)/ig,"");
-        var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : htmlStrippedString;
+        var body = (root===null || root.body.replace(/\s/g, "") === "") ? "<span class='empty_comment'>Empty Comment</span>" : $.ellipsis(htmlStrippedString, 200);
         return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
         }, 
         _keydown: function(event){
@@ -474,12 +474,6 @@
                 var loc_lens =
                     $("<div class='location-lens' id_item='"+o.ID+"'>"+self._lens(o)+"</div>");
                 $pane.append(loc_lens);
-                // Get the location shortbody text containers
-                var $shortBody = loc_lens.find(".location-shortbody-text");
-                // Activate MathJax for Latex Formulas in the containers
-                $shortBody.each(function(i, mathBlock) {
-                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,mathBlock]);
-                });
                 if (admin === true) {
                     loc_lens.contextMenu({menu: "contextmenu_notepaneView"}, function(action, el, pos) {
                         var $loc = $(el).closest("div.location-lens");
@@ -496,6 +490,12 @@
             if (self._id_location in locs.items && locs.items[self._id_location].page === page){//highlight selection
             $("div.location-lens[id_item="+self._id_location+"]",self.element).addClass("selected");
             }
+            // Get the location shortbody text containers
+            var $shortBody = $(".location-shortbody-text");
+            // Activate MathJax for Latex Formulas in the containers
+            $shortBody.each(function(i, mathBlock) {
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,mathBlock]);
+            });
             self._pages[page] = true;           
             self._rendered = true;
             return locs;
