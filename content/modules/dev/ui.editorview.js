@@ -195,7 +195,7 @@
                         uiColor: '#EFEBE7',
                         removeButtons:  'Scayt,PasteText,PasteFromWord,Cut,Copy,Paste,Undo,Redo,' + 
                                         'Anchor,Underline,Strike,Subscript,Superscript,About,HorizontalRule,' + 
-                                        'Smiley,SpecialChar,Styles,Format,Source,Image,Table',
+                                        'Smiley,SpecialChar,Styles,Format,Source,Image,Table,Maximize',
                         removeDialogTabs: 'link:advanced',
                         removePlugins: 'elementspath',
                         toolbarGroups: [{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
