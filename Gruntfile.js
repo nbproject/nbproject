@@ -289,6 +289,7 @@ module.exports = function(grunt) {
             addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
             addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
             TARGETS.API.src_js,
+            addPrefix(MODULE_DIR,["ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js"]),
             MODS.DOCVIEW_COLLAGE.src_js, 
             MODS.NOTEPANEVIEW_COLLAGE.src_js,
             MODS.THREADVIEW.src_js,
@@ -299,8 +300,9 @@ module.exports = function(grunt) {
         ), 
         src_css: [].concat( 
             addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
-
             addPrefix(UI_DIR, ["template.css"]),
+            addPrefix(MODULE_DIR,["ckeditor/plugins/codesnippet/lib/highlight/styles/default.css"]),
+            addPrefix(MODULE_DIR,["ckeditor/contents.css"]),
             MODS.DOCVIEW_COLLAGE.src_css, 
             MODS.NOTEPANEVIEW_COLLAGE.src_css, 
             MODS.THREADVIEW.src_css, 

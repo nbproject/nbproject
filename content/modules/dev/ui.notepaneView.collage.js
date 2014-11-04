@@ -116,7 +116,8 @@
         var lf_me_private =  m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?  "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in  this thread'/></ins>" );
         var bold_cl    = numnew > 0 ? "location-bold" : "";
         var root =  m.get("comment", {ID_location: l.ID, id_parent: null}).first();
-        var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0,200));
+        var htmlStrippedString = root.body.replace(/(<([^>]+)>)/ig,"");
+        var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.ellipsis(htmlStrippedString, 200);
         return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+"</div><div class='location-shortbody'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
         }, 
         _keydown: function(event){
@@ -208,6 +209,14 @@
             self._pages[page] = true;           
             this._rendered = true;
         }
+
+        // Get the location shortbody text containers
+        var $shortBody = $(".location-shortbody-text");
+        // Activate MathJax for Latex Formulas in the containers
+        $shortBody.each(function(i, mathBlock) {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,mathBlock]);
+        });
+
         this._rendered = true;
         }, 
         set_model: function(model){
