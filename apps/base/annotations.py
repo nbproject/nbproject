@@ -1065,7 +1065,7 @@ def markActivity(cid):
     if cid=="0" or cid=="1":
         return None, None #temporary fix 
     try: 
-        session = M.Session.objects.get(ctime=cid)
+        session = M.Session.objects.filter(ctime=cid)[0]
         previous_activity = session.lastactivity
         session.lastactivity = datetime.datetime.now()
         session.save()
