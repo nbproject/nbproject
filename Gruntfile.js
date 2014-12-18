@@ -79,7 +79,10 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.video.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
     }; 
-    
+    MODS.DOCVIEW_HTMLAUDIO = {
+        src_js: addPrefix(MODULE_DIR,["dev/ui.drawable4.js", "dev/ui.docView.htmlaudio.js" ]),
+        src_css:  addPrefix(MODULE_DIR, ["dev/ui.drawable.css", "dev/ui.docView.css"])
+    }; 
     MODS.NOTEPANEVIEW_DOC = {
         src_js: [].concat(
             MODS.CONTEXTMENU.src_js,
@@ -115,7 +118,14 @@ module.exports = function(grunt) {
             MODS.CONTEXTMENU.src_css, 
             addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
     };
-
+    MODS.NOTEPANEVIEW_HTMLAUDIO = {
+        src_js: [].concat(
+            MODS.CONTEXTMENU.src_js, 
+            addPrefix(MODULE_DIR,["dev/ui.notepaneView.htmlaudio.js"])),
+        src_css:   [].concat(
+            MODS.CONTEXTMENU.src_css, 
+            addPrefix(MODULE_DIR, ["dev/ui.notepaneView.css"]))
+    };
     MODS.THREADVIEW = {
         src_js: [].concat(
             MODS.CONTEXTMENU.src_js,
@@ -125,12 +135,10 @@ module.exports = function(grunt) {
             MODS.CONTEXTMENU.src_css, 
             addPrefix(MODULE_DIR, ["dev/ui.threadview.css"]))
     };
-
     MODS.EDITORVIEW = {
         src_js: addPrefix(MODULE_DIR,["dev/ui.editorview.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.editorview.css"])
     };
-
     MODS.RANGY = {
         src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-cssclassapplier.js", "rangy-textrange.js", "termfix.js" ]),
         src_css:  []
@@ -139,8 +147,6 @@ module.exports = function(grunt) {
         src_js: addPrefix(MODULE_DIR,["dev/ui.spreadsheetView1.js" ]),
         src_css:  addPrefix(MODULE_DIR, ["dev/ui.spreadsheetView1.css"])
     };
-
-
 
     /* TARGETS are modules that are built (but they can also serve as building blocks) */
     var TARGETS = {};
@@ -279,6 +285,32 @@ module.exports = function(grunt) {
         ), 
         dest_js:  DEST_DIR+"youtubeviewer_NB.js",
         dest_css:  DEST_DIR+"youtubeviewer.css"
+        
+    };    
+
+    TARGETS.HTMLAUDIOVIEWER = {
+        src_js: [].concat(
+            addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
+            addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
+            TARGETS.API.src_js,
+            MODS.DOCVIEW_HTMLAUDIO.src_js, 
+            MODS.NOTEPANEVIEW_HTMLAUDIO.src_js,
+            MODS.THREADVIEW.src_js,
+            MODS.EDITORVIEW.src_js,
+            addPrefix(UI_DIR,["conf.js", "conf_local.js"]), 
+            addPrefix(MODULE_DIR, ["dev/pers.js"]), 
+            addPrefix(UI_DIR, ["init.htmlaudioviewer.js", "launch.js"])
+        ), 
+        src_css: [].concat( 
+            addPrefix(MODULE_DIR, ["jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css", "ui.perspective.css", "ui.viewport.css", "ui.menu.css", "ui.view.css"]), 
+            addPrefix(UI_DIR, ["template.css"]),
+            MODS.DOCVIEW_HTMLAUDIO.src_css, 
+            MODS.NOTEPANEVIEW_HTMLAUDIO.src_css, 
+            MODS.THREADVIEW.src_css, 
+            MODS.EDITORVIEW.src_css
+        ), 
+        dest_js:  DEST_DIR+"htmlaudioviewer_NB.js",
+        dest_css:  DEST_DIR+"htmlaudioviewer.css"
         
     };    
 

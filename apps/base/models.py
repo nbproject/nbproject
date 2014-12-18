@@ -138,7 +138,8 @@ class Source(models.Model):
     TYPE_YOUTUBE        = 2
     TYPE_HTML5VIDEO     = 3
     TYPE_HTML5          = 4
-    TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"), (TYPE_HTML5, "HTML5"))     
+    TYPE_HTML5AUDIO     = 5
+    TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"), (TYPE_HTML5, "HTML5"),  (TYPE_HTML5AUDIO, "HTML5AUDIO"))
     title               = CharField(max_length=255, default="untitled")         # old: title text
     submittedby         = ForeignKey(User, blank=True, null=True)               # old: submittedby integer
     numpages            = IntegerField(default=0)

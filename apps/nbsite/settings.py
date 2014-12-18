@@ -211,7 +211,7 @@ SOURCE_TEMPLATE         = "web/source1.html"
 YOUTUBE_TEMPLATE        = "web/youtube1.html"
 GUEST_TUTORIAL_URL      = "http://%s/tutorial" % (NB_SERVERNAME,)
 SPREADSHEET_TEMPLATE    = "web/spreadsheet.html"
-
+HTMLAUDIO_TEMPLATE      = "web/htmlaudio1.html"
 
 
 #for utils_notify

@@ -120,6 +120,8 @@ def source(req, n, allow_guest=False):
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
+    elif source.type==M.Source.TYPE_HTML5AUDIO:
+        return __serve_page(req, settings.HTMLAUDIO_TEMPLATE, allow_guest, mimetype="text/html")
     else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
     
