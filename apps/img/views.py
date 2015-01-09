@@ -378,7 +378,9 @@ def serve_grades_spreadsheet(req, id_ensemble):
     add_labeledcomments_sheet(uid, id_ensemble, wbk)
     
     #now add sheets for the social graph
-    add_socialgraph_sheets(id_ensemble, stats["users"], wbk)
+    # FIXME: this is broken for ensemble 6010 on nb.mit.edu. Disabling for now. 
+    # https://github.com/nbproject/nbproject/issues/199
+    #add_socialgraph_sheets(id_ensemble, stats["users"], wbk)
 
     import datetime
     a = datetime.datetime.now()
