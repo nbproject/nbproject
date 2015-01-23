@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
-import  urllib, json, base64, logging 
+import  urllib, json, base64, logging
 from base import auth, signals, annotations, utils_response as UR, models as M
 from django.conf import settings
 import string, random, forms
@@ -18,7 +18,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
-def on_serve_page(sender, **payload): 
+def on_serve_page(sender, **payload):
     req = payload["req"]
     uid = payload["uid"]
     #print req.META
@@ -29,86 +29,86 @@ def on_serve_page(sender, **payload):
     p["referer"]= req.META.get("HTTP_REFERER", None)
     p["path"]   = req.get_full_path()
     annotations.page_served(uid, p)
-if settings.MONITOR.get("PAGE_SERVED", False): 
+if settings.MONITOR.get("PAGE_SERVED", False):
     signals.page_served.connect(on_serve_page, weak=False)
 
 
-def __extra_confkey_getter(req): 
-    if req.user.is_authenticated(): 
-        try: 
+def __extra_confkey_getter(req):
+    if req.user.is_authenticated():
+        try:
             o = M.User.objects.get(email=req.user.email)
             return o.confkey
-        except M.User.DoesNotExist: 
+        except M.User.DoesNotExist:
             return None
     return None
 
-def __serve_page(req, tpl, allow_guest=False, nologin_url=None, mimetype=None): 
+def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=None):
     """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
     o           = {} #for template
     user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
     if user is None:
         redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
         return HttpResponseRedirect(redirect_url)
-    if user.guest is False and (user.firstname is None or user.lastname is None): 
-        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
-    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None}) 
+    if user.guest is False and (user.firstname is None or user.lastname is None):
+        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
 
-    r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
+    r = render_to_response(tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
 
     return r
 
-def index(req): 
-    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", mimetype="text/html" )
-   
-def collage(req): 
-    return __serve_page(req, settings.COLLAGE_TEMPLATE, mimetype="text/html")
+def index(req):
+    return __serve_page(req, settings.DESKTOP_TEMPLATE, False, "/welcome", content_type="text/html" )
 
-def dev_desktop(req, n): 
+def collage(req):
+    return __serve_page(req, settings.COLLAGE_TEMPLATE, content_type="text/html")
+
+def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
-    if url: 
-        try: 
+    if url:
+        try:
             source_info = M.OnDemandInfo.objects.get(url=url, ensemble_id=ensemble_id)
             return HttpResponseRedirect("/f/%s" %(source_info.source_id,))
         except M.OnDemandInfo.DoesNotExist:
             ensemble = None
-            try: 
+            try:
                 ensemble = M.Ensemble.objects.get(pk=ensemble_id)
-            except M.Ensemble.DoesNotExist: 
-                return HttpResponse("No such ensemble: %s " % (ensemble_id,))                                      
-            if not ensemble.allow_ondemand: 
-                return HttpResponse("ondemand uplaod not allowed for that ensemble: %s " % (ensemble_id,))                                      
+            except M.Ensemble.DoesNotExist:
+                return HttpResponse("No such ensemble: %s " % (ensemble_id,))
+            if not ensemble.allow_ondemand:
+                return HttpResponse("ondemand uplaod not allowed for that ensemble: %s " % (ensemble_id,))
             import urllib2
             from upload.views import insert_pdf_metadata
             f = urllib2.urlopen(url)
             s = None
-            try: 
+            try:
                 s = f.read()
                 f.close()
                 source = M.Source()
                 uid = UR.getUserId(req);
-                source.submittedby_id = uid     
-                source.title = url.rpartition("/")[2]           
+                source.submittedby_id = uid
+                source.title = url.rpartition("/")[2]
                 source.save();
                 sid = source.id
                 annotations.addOwnership(sid, ensemble_id)
                 REPOSITORY_DIR = "%s/%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
-                f2 = open("%s/%s" % (REPOSITORY_DIR, sid,),"wb")    
+                f2 = open("%s/%s" % (REPOSITORY_DIR, sid,),"wb")
                 f2.write(s)
-                f2.close() 
-                insert_pdf_metadata(sid,  REPOSITORY_DIR)        
+                f2.close()
+                insert_pdf_metadata(sid,  REPOSITORY_DIR)
                 info = M.OnDemandInfo()
                 info.url = url
                 info.ensemble_id = ensemble_id
                 info.source_id = sid
-                info.save()        
+                info.save()
                 return HttpResponseRedirect("/f/%s" %(sid,))
-            except Exception as e: 
-                return HttpResponse("URL Read Error: %s, %s " % (url,e))                                      
+            except Exception as e:
+                return HttpResponse("URL Read Error: %s, %s " % (url,e))
     else:
         return HttpResponse("Missing parameter: url")
 
@@ -116,36 +116,36 @@ def ondemand(req, ensemble_id):
 
 def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
-    if source.type==M.Source.TYPE_YOUTUBE: 
-        return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , mimetype="text/html")
+    if source.type==M.Source.TYPE_YOUTUBE:
+        return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , content_type="text/html")
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
     else:
-        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
-    
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
-def your_settings(req): 
-    return __serve_page(req, 'web/your_settings.html', mimetype="text/html")
 
-def embedopenid(req): 
-    return __serve_page(req, 'web/embedopenid.html', mimetype="text/html")
- 
+def your_settings(req):
+    return __serve_page(req, 'web/your_settings.html', content_type="text/html")
+
+def embedopenid(req):
+    return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
+
 def newsite(req):
-    import base.models as M, random, string 
+    import base.models as M, random, string
     form                = None
     auth_user           = UR.getUserInfo(req)
     ensemble_form       = None
     user_form           = None
-    if auth_user is not None: 
+    if auth_user is not None:
         return HttpResponseRedirect("/")
     if req.method == 'POST':
         user            = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
         ensemble        = M.Ensemble()
         user_form       = forms.UserForm(req.POST, instance=user)
         ensemble_form   = forms.EnsembleForm(req.POST, instance=ensemble)
-        if user_form.is_valid() and ensemble_form.is_valid():             
+        if user_form.is_valid() and ensemble_form.is_valid():
             user_form.save()
-            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])      
+            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
@@ -157,33 +157,33 @@ def newsite(req):
             }
             email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname),
-                render_to_string("email/confirm_newsite", p), 
-                settings.EMAIL_FROM, 
-                (user.email, ), 
+                render_to_string("email/confirm_newsite", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
                 (settings.EMAIL_BCC, ))
             email.send()
-            return HttpResponseRedirect('/newsite_thanks')       
-    else: 
+            return HttpResponseRedirect('/newsite_thanks')
+    else:
         user_form       = forms.UserForm()
         ensemble_form   = forms.EnsembleForm()
     return render_to_response("web/newsite.html", {"user_form": user_form, "ensemble_form": ensemble_form})
 
 
-def enter_your_name(req):    
+def enter_your_name(req):
     import base.models as M
     user       = UR.getUserInfo(req, False)
     if user is None:
         redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
         return HttpResponseRedirect(redirect_url)
-    user_form = forms.EnterYourNameUserForm(instance=user)        
+    user_form = forms.EnterYourNameUserForm(instance=user)
     if req.method == 'POST':
         user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
-        if user_form.is_valid():             
-            user_form.save()            
-            return HttpResponseRedirect("/?ckey=%s" % (user.confkey,))         
+        if user_form.is_valid():
+            user_form.save()
+            return HttpResponseRedirect("/?ckey=%s" % (user.confkey,))
     return render_to_response("web/enteryourname.html", {"user_form": user_form})
 
-def add_html_doc(req, ensemble_id): 
+def add_html_doc(req, ensemble_id):
     import base.models as M
     user       = UR.getUserInfo(req, False)
     if user is None:
@@ -194,7 +194,7 @@ def add_html_doc(req, ensemble_id):
     addform = forms.Html5Form()
     if req.method == 'POST':
         addform = forms.Html5Form(req.POST)
-        if addform.is_valid():             
+        if addform.is_valid():
             source = M.Source()
             source.numpages = 1
             source.w = 0
@@ -204,7 +204,7 @@ def add_html_doc(req, ensemble_id):
             source.type = 4
             source.submittedby=user
             source.title = addform.cleaned_data['title']
-            source.save()            
+            source.save()
             ownership = M.Ownership()
             ownership.source = source
             ownership.ensemble_id = ensemble_id
@@ -213,10 +213,10 @@ def add_html_doc(req, ensemble_id):
             info.source = source
             info.url = addform.cleaned_data['url']
             info.save();
-            return HttpResponseRedirect("/")         
+            return HttpResponseRedirect("/")
     return render_to_response("web/add_html_doc.html", {"form": addform})
 
-def add_youtube_doc(req, ensemble_id): 
+def add_youtube_doc(req, ensemble_id):
     import base.models as M
     from apiclient.discovery import build
     from urlparse import urlparse, parse_qs
@@ -232,7 +232,7 @@ def add_youtube_doc(req, ensemble_id):
     addform = forms.YoutubeForm()
     if req.method == 'POST':
         addform = forms.YoutubeForm(req.POST)
-        if addform.is_valid():             
+        if addform.is_valid():
             source = M.Source()
             source.numpages = 1
             source.w = 0
@@ -241,7 +241,7 @@ def add_youtube_doc(req, ensemble_id):
             source.version = 0
             source.type = 2
             source.submittedby=user
-            source.save()            
+            source.save()
             ownership = M.Ownership()
             ownership.source = source
             ownership.ensemble_id = ensemble_id
@@ -257,36 +257,36 @@ def add_youtube_doc(req, ensemble_id):
             source.title = ginfo["items"][0]["snippet"]["title"]
             matches_dict = re_iso8601.match(ginfo["items"][0]["contentDetails"]["duration"]).groupdict()
             numsecs = 0
-            if matches_dict["hours"] is not None: 
+            if matches_dict["hours"] is not None:
                 numsecs += int(matches_dict["hours"])*3600
-            if matches_dict["minutes"] is not None: 
+            if matches_dict["minutes"] is not None:
                 numsecs += int(matches_dict["minutes"])*60
-            if matches_dict["seconds"] is not None: 
+            if matches_dict["seconds"] is not None:
                 numsecs += int(matches_dict["seconds"])
-            source.numpages = numsecs #we use 1/100 sec precision. 
+            source.numpages = numsecs #we use 1/100 sec precision.
             source.save();
             #addform.cleaned_data['title']
 
-            return HttpResponseRedirect("/")         
+            return HttpResponseRedirect("/")
     return render_to_response("web/add_youtube_doc.html", {"form": addform})
 
-def comment(req, id_comment): 
+def comment(req, id_comment):
     #id_comment = int(id_comment)
-    c = M.Comment.objects.get(pk=id_comment)    
+    c = M.Comment.objects.get(pk=id_comment)
     #id_source = annotations.getSourceForComment(id_comment)
     #[id_comment]
     org=("&org="+req.GET["org"]) if "org" in req.GET else ""
     do_reply = "&reply=1" if req.path.split("/")[1]=="r" else ""
     return HttpResponseRedirect("/f/%s?c=%s%s%s" % (c.location.source.id, id_comment, org, do_reply))
-    
-def invite(req): 
+
+def invite(req):
     pass #SACHA TODO
 
-def logout(req): 
+def logout(req):
     o = {}
     r = render_to_response("web/logout.html", {"o": o})
     user = UR.getUserInfo(req, False)
-    if user is not None and user.guest: 
+    if user is not None and user.guest:
         r.set_cookie("pgid", user.id, 1e9)
     r.delete_cookie("userinfo")
     r.delete_cookie("ckey")
@@ -294,15 +294,15 @@ def logout(req):
     djangologout(req)
     return r
 
-def confirm_invite(req):        
+def confirm_invite(req):
     invite_key  = req.GET.get("invite_key", None)
     invite      = M.Invite.objects.get(key=invite_key)
     m = M.Membership.objects.filter(user=invite.user, ensemble=invite.ensemble)
     if m.count() > 0:
         m = m[0]
-    else: 
+    else:
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
-    m.admin = invite.admin or m.admin #'or'-clause so that admins don't inadventertly lose their admin privileges by clicking on a non-admin invite. 
+    m.admin = invite.admin or m.admin #'or'-clause so that admins don't inadventertly lose their admin privileges by clicking on a non-admin invite.
     m.section = invite.section
     m.save()
     if invite.user.valid == False:
@@ -314,17 +314,17 @@ def confirm_invite(req):
 def subscribe(req):
     key     = req.GET.get("key", "")
     e       = M.Ensemble.objects.get(invitekey=key)
-    if not e.use_invitekey: 
-        return HttpResponseRedirect("/notallowed")    
+    if not e.use_invitekey:
+        return HttpResponseRedirect("/notallowed")
     auth_user       = UR.getUserInfo(req)
     user = None
-    P = {"ensemble": e, "key": key}   
+    P = {"ensemble": e, "key": key}
     if req.method == 'POST':
         if auth_user is None:
             user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
             user_form = forms.UserForm(req.POST, instance=user)
-            if user_form.is_valid(): 
-                user_form.save()  
+            if user_form.is_valid():
+                user_form.save()
                 m = M.Membership(user=user, ensemble=e)
                 m.save() #membership exists but user is still invalid until has confirmed their email
                 p = {
@@ -335,56 +335,56 @@ def subscribe(req):
                 }
                 email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname,),
-                render_to_string("email/confirm_subscribe", p), 
-                settings.EMAIL_FROM, 
-                (user.email, ), 
+                render_to_string("email/confirm_subscribe", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
                 (settings.EMAIL_BCC, ))
                 email.send()
                 return HttpResponseRedirect('/subscribe_thanks')
-            else: 
+            else:
                 P["form"] = forms.UserForm(req.POST, instance=user)
-                return render_to_response("web/subscribe_newuser.html", P)   
-        else: 
+                return render_to_response("web/subscribe_newuser.html", P)
+        else:
             user = auth_user
             m = M.Membership.objects.filter(user=user, ensemble=e)
-            if m.count() ==0: 
+            if m.count() ==0:
                 m = M.Membership(user=user, ensemble=e)
                 m.save()
             return HttpResponseRedirect('/')
-        #user_form = forms.EnterYourNameUserForm(req.POST, instance=user)        
-    else: 
+        #user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
+    else:
         if auth_user is not None:
             P["user"] = auth_user
             P["form"] = forms.UserForm(instance=user)
             return render_to_response("web/subscribe_existinguser.html", P)
-        else:        
+        else:
             P["form"] = forms.UserForm()
             return render_to_response("web/subscribe_newuser.html", P)
-                    
-    
+
+
 
 
 def properties_ensemble(req, id):
     user       = UR.getUserInfo(req)
-    if user is None: 
+    if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     ensemble_form = None
-    if req.method=="POST": 
-        ensemble_form = forms.EnsembleForm(req.POST, instance=ensemble)  
-        if ensemble_form.is_valid(): 
-            ensemble_form.save()   
-            return HttpResponseRedirect('/')   
-    else: 
+    if req.method=="POST":
+        ensemble_form = forms.EnsembleForm(req.POST, instance=ensemble)
+        if ensemble_form.is_valid():
+            ensemble_form.save()
+            return HttpResponseRedirect('/')
+    else:
         ensemble_form = forms.EnsembleForm(instance=ensemble)
     return render_to_response("web/properties_ensemble.html", {"form": ensemble_form, "conf_url":  "%s://%s/subscribe?key=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, ensemble.invitekey)})
 
 
 def properties_ensemble_users(req, id):
     user       = UR.getUserInfo(req)
-    if user is None: 
+    if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
@@ -392,31 +392,31 @@ def properties_ensemble_users(req, id):
     sections = M.Section.objects.filter(ensemble=ensemble)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
     pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
-    real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)    
+    real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
     deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
-    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))    
-    if "action" in req.GET and "membership_id" in req.GET: 
-        if req.GET["action"] == "delete": 
+    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
+    if "action" in req.GET and "membership_id" in req.GET:
+        if req.GET["action"] == "delete":
             m = real_memberships.filter(id=req.GET["membership_id"])
             if len(m):
                 m = m[0]
                 m.deleted = True
                 m.save()
-                return HttpResponseRedirect(req.path)   
+                return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "undelete":
             m = deleted_memberships.filter(id=req.GET["membership_id"])
             if len(m):
                 m = m[0]
                 m.deleted = False
                 m.save()
-                return HttpResponseRedirect(req.path)   
+                return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "admin":
             m = real_memberships.filter(id=req.GET["membership_id"])
             if len(m):
                 m = m[0]
                 m.admin = True
                 m.save()
-                return HttpResponseRedirect(req.path)      
+                return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "unadmin":
             m = real_memberships.filter(id=req.GET["membership_id"])
             if len(m):
@@ -440,7 +440,7 @@ def properties_ensemble_users(req, id):
 
 def properties_ensemble_sections(req, id):
     user       = UR.getUserInfo(req)
-    if user is None: 
+    if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
@@ -452,7 +452,7 @@ def properties_ensemble_sections(req, id):
         students[s] = all_students.filter(section=s)
     no_section = all_students.filter(section=None)
     err = ""
-    if "action" in req.GET: 
+    if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
             if M.Section.objects.filter(ensemble=ensemble, name=req.POST["name"]).exists():
                 err = "Could not create section: a section with the same name already exists."
@@ -488,36 +488,36 @@ def properties_ensemble_sections(req, id):
                 err = "Cannot find section"
         else:
            err = "Unrecognized Command"
-    if "json" in req.GET:        
-        return HttpResponse(json.dumps({"error_message": err}), mimetype="application/json")
+    if "json" in req.GET:
+        return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
     return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "no_section": no_section, "error_message": err })
 
 
 def spreadsheet(req):
-    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), mimetype="text/html")
+    return __serve_page(req, settings.SPREADSHEET_TEMPLATE, False, "/login?next=%s" % (req.get_full_path(),), content_type="text/html")
 
 def fbchannel(req):
     import datetime
     r = HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
-    r["Pragma"] = "Public"    
+    r["Pragma"] = "Public"
     cache_expire = 60*60*24*365
     r["Cache-Control"] = "max-age="+cache_expire
     r["Expires"]=(datetime.datetime.now()+datetime.timedelta(cache_expire)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     return r
 
 
- 
-#   
+
+#
 # UR.getUserInfo(req)
-#    if user is None: 
+#    if user is None:
 #        return HttpResponseRedirect("/login?next=%s" % (req.get_full_path(),))
-#    if "id_ensemble" not in req.GET: 
+#    if "id_ensemble" not in req.GET:
 #        from django.http import HttpResponse
 #        return HttpResponse("missing id_ensemble")
 #    id_ensemble = req.GET["id_ensemble"]
 #    if not auth.canEditEnsemble(user.id,id_ensemble):
 #        return HttpResponseRedirect("/notallowed")
-#       
+#
 
 def openid_index(request):
     s = ['<p>']
