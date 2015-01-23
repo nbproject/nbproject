@@ -21,6 +21,8 @@ if "." not in sys.path:
     sys.path.append(".")
 if "DJANGO_SETTINGS_MODULE" not in os.environ: 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
+import django
+django.setup()
 from django.conf import settings
 from base import utils, models as M, annotations, utils_response as UR
 import glob, json,   pyPdf, shutil, re, random, string, logging
