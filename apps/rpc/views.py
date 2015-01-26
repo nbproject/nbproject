@@ -417,6 +417,8 @@ def deleteNote(payload, req):
         return UR.prepare_response({"id_comment": payload["id_comment"] })
 
 def getPending(payload, req):
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid = UR.getUserId(req)
     output = annotations.getPending(uid, payload)
     return UR.prepare_response(output)
@@ -434,6 +436,8 @@ def getMyNotes(payload, req):
         return UR.prepare_response(output)
 
 def getStats(payload, req): 
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid = UR.getUserId(req)
     if uid is None: 
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
@@ -442,6 +446,8 @@ def getStats(payload, req):
 
 
 def getStats2(payload, req): 
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid = UR.getUserId(req)
     if uid is None: 
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
@@ -459,6 +465,8 @@ def getMembers(payload, req):
 
 
 def markThread(payload, req):
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid = UR.getUserId(req)
     id_location =  payload["id_location"]
     if not auth.canMarkThread(uid,id_location ):
@@ -471,6 +479,8 @@ def markThread(payload, req):
         return UR.prepare_response(p)
 
 def markNote(payload, req):
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid = UR.getUserId(req)
     id_comment =  payload["id_comment"]
     if not auth.canMark(uid,id_comment ):
