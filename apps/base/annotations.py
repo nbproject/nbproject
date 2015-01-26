@@ -1075,6 +1075,13 @@ def markActivity(cid):
     return None, None    
 
 def getPending(uid, payload):
+    if settings.IGNORE_EXPENSIVE_QUERIES: 
+        output = {
+            "questions": {}, 
+            "locations": {}, 
+            "comments": {}, 
+            "basecomments": {}}
+        return output
     #reply requested threadmarks:    
     questions = M.ThreadMark.objects.filter(location__ensemble__membership__user__id=uid, type=1, active=True).exclude(user__id=uid)
     comments = M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
