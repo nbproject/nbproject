@@ -605,6 +605,8 @@ def remote_log(payload,req):
      return log_history(payload, req)
 
 def log_history(payload, req):
+    if settings.IGNORE_EXPENSIVE_QUERIES: 
+        return UR.prepare_response({}, 2,  "TEMPORARILY UNAVAILABLE")
     uid =  UR.getUserInfo(req, True).id
     if uid is None: 
         #SACHA TODO: LOG this.
