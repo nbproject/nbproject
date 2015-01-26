@@ -1010,7 +1010,9 @@ def addOwnership(id_source, id_ensemble, id_folder=None):
     ownership.save()
     return ownership
 
-def markIdle(uid, id_session, o):   
+def markIdle(uid, id_session, o):  
+    if settings.IGNORE_EXPENSIVE_QUERIES: 
+        return
     for id in o: 
         t1= datetime.datetime.fromtimestamp(long(id)/1000)
         t2= datetime.datetime.fromtimestamp(o[id]/1000)
@@ -1018,6 +1020,8 @@ def markIdle(uid, id_session, o):
         x.save()
         
 def markCommentSeen(uid, id_session, o):    
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return
     for id in o:
         try: 
             comment_id = int(id)
@@ -1027,6 +1031,8 @@ def markCommentSeen(uid, id_session, o):
             pass
             
 def markPageSeen(uid, id_session, o):    
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return
     for id in o:
         page, id_source, junk = id.split("|")
         x = M.PageSeen(user_id=uid, session_id=id_session, source_id=id_source, page=page, ctime=datetime.datetime.fromtimestamp((o[id]+0.0)/1000))
@@ -1058,11 +1064,13 @@ def register_user(uid, P):
     
 
 def page_served(uid, p):
+    if settings.IGNORE_EXPENSIVE_QUERIES:
+        return
     o = M.Landing(user_id=uid, ip=p["ip"], referer=p["referer"], path=p["path"], client=p["client"])
     o.save()
     
 def markActivity(cid):
-    if cid=="0" or cid=="1":
+    if cid=="0" or cid=="1" or settings.IGNORE_EXPENSIVE_QUERIES:
         return None, None #temporary fix 
     try: 
         session = M.Session.objects.filter(ctime=cid)[0]
