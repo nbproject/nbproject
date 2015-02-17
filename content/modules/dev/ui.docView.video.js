@@ -28,7 +28,7 @@ var NB_vid = {};
 
 	// This function is called when the player changes state
 	function onPlayerStateChange(newState) {
-		updateHTML("playerState", newState);
+		//updateHTML("playerState", newState);
 	}
 
 	// Display information about the current state of the player
@@ -127,6 +127,12 @@ var NB_vid = {};
 		NB_vid.methods.playORpause();
 	}
 	
+	function defineYouTubeIfReady() {
+		console.log("YouTube ready check");
+		if (NB_vid.apiLoaded) {defineYouTubePlayer();}
+		else {setTimeout(defineYouTubeIfReady, 100);}
+	}
+	
 	NB_vid = {
 		"methods": {
 			"updateHTML": updateHTML,
@@ -141,19 +147,21 @@ var NB_vid = {};
 			"muteVideo": muteVideo,
 			"unMuteVideo": unMuteVideo
 		},
+		"define": defineYouTubeIfReady,
 		"defaultTickWidth": 2,
 		"isPlaying": false,
 		"wasPlaying": false, // Whether the player was playing before a note was started
 		"hoveredTick": null,
 		"selectedTick": null,
 		"currentID": "",
-		"ytLoaded": false
+		"ytLoaded": false,
+		"apiLoaded": false
 		};
 
 	// This function is automatically called by the player once it loads
-	function onYouTubePlayerReady(playerId) {
+	function onYouTubePlayerReady(event) {
 		console.log("ytplayer ready");
-		ytplayer = document.getElementById("ytPlayer");
+		
 		NB_vid.ytLoaded = true;
 
 		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
@@ -174,6 +182,32 @@ var NB_vid = {};
 		//Load an initial video into the player
 		ytplayer.cueVideoById("ylLzyHk54Z0");
 	}
+	
+	function defineYouTubePlayer() {
+		console.log("defining ytplayer");
+		ytplayer = new YT.Player('videoDiv', {
+			height: '423',
+			width: '752',
+			videoId: 'ylLzyHk54Z0',
+			playerVars: {
+				'controls': 0,
+				'showinfo': 0
+			},
+			events: {
+				'onReady': onYouTubePlayerReady
+			}
+		});
+		if (ytplayer) {console.log("ytplayer defined");}
+		else {console.log("ytplayer definition failed");}
+	}
+	
+	function onYouTubeIframeAPIReady() {
+		console.log("Iframe API Ready");
+		//defineYouTubePlayer();
+		NB_vid.apiLoaded = true;
+		//setTimeout(defineYouTubePlayer, 1000);
+	}
+		
 (function($) {
     var PLAYER_HTML_TEMPLATE = 
     ['<div class = "videoView">',
@@ -569,6 +603,8 @@ var NB_vid = {};
 		$.ui.view.prototype._create.call(this);
 			var self = this;
 			self.element.append(PLAYER_HTML_TEMPLATE);
+			NB_vid.define();
+			
 			self._last_clicked_selection =  0;
 			// Fill in width and height of player; Only tested with current values
 			var playerWidth = 752;
@@ -588,15 +624,6 @@ var NB_vid = {};
 			self._id_location = null; //location_id of selected thread
 			self._metronome = null;
 			self._ignoremetronome = false;
-			
-			// Lets Flash from another domain call JavaScript
-			var params = { allowScriptAccess: "always" };
-			// The element id of the Flash embed
-			var atts = { id: "ytPlayer" };
-			
-			swfobject.embedSWF("http://www.youtube.com/apiplayer?" +
-				"enablejsapi=1&version=3&playerapiid=player1", 
-				"videoDiv", playerWidth.toString(), playerHeight.toString(), "9", null, null, params, atts);
 				
 				self._attachListeners();
         },
