@@ -250,7 +250,13 @@ def add_youtube_doc(req, ensemble_id):
             info.source = source
             url = addform.cleaned_data['url']
             result = urlparse(url)
-            key = parse_qs(result.query)["v"][0]
+            key = None
+            try:
+                # old format ,e.g. http://www.youtube.com/watch?v=Z3EAE9F2Qpo
+                key = parse_qs(result.query)["v"][0]
+            except KeyError:
+                # new format, e.g. http://youtu.be/Z3EAE9F2Qpo
+                key = result.path[1:]
             info.key = key
             info.save();
             ginfo = youtube.videos().list(part="id,contentDetails,snippet", id=key).execute()
