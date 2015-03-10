@@ -150,11 +150,11 @@ Date.prototype.toPrettyString = function () {
         var current_date = new Date();
 
         if (this.getFullYear() !== current_date.getFullYear()) { // Not even this year
-            return this.format("d mmm yyyy", true);
+            return this.format("d mmm yyyy");
         } else if (this.getWeek() !== current_date.getWeek()) { // This year but not this week
-            return this.format("d mmm, hh:MMTT", true);
+            return this.format("d mmm, hh:MMTT");
         } else if (this.getDay() !== current_date.getDay()) { // This week but not today
-            return this.format("ddd hh:MMTT", true);
+            return this.format("ddd hh:MMTT");
         }
 
         // Today
