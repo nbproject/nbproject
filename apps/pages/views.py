@@ -256,7 +256,7 @@ def add_youtube_doc(req, ensemble_id):
                 key = parse_qs(result.query)["v"][0]
             except KeyError:
                 # new format, e.g. http://youtu.be/Z3EAE9F2Qpo
-                key = result.path[1:]
+                key = result.path[1:].strip()
             info.key = key
             info.save();
             ginfo = youtube.videos().list(part="id,contentDetails,snippet", id=key).execute()
