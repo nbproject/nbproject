@@ -43,7 +43,7 @@ table{
 <h2>{{memberships.count}} registered users</h2>
 <div class='section'>
 	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
-      <table id='reg' class="tablesorter">
+      <table id='reg'>
       	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Section</th><th>Actions</th></tr></thead>
       	<tbody>
 	{% for o in memberships %}
@@ -77,11 +77,10 @@ table{
       </div>
 
 <h2>{{pendinginvites.count}} pending invitations</h2>
-
-      <div class='section'>
+  	<div class='section' >
   	<p>The following users have been sent an invite but haven't yet replied to it. If you notice that the invite has been sent a long time ago, it might a good idea to check if you have the correct email for those users or ask them to check their spam folders (NB invites sometimes get blocked by spam programs) </p>
 
-   <table>
+   <table id='pendingInvites'>
       	<thead><tr><th>Email</th><th>Role</th><th>Section</th></tr></thead>
       	<tbody>
 	{% for o in pendinginvites %}
@@ -101,7 +100,7 @@ table{
  <div class='section'>
   	<p>The following users have used the subscribe link but haven't confirmed their email yet.  </p>
 
-   <table>
+   <table id='pendingConf'>
      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th></tr></thead>
       	<tbody>
 	{% for o in pendingconfirmations %}
@@ -120,7 +119,7 @@ table{
 <h2>{{deleted_memberships.count}} deleted memberships</h2>
  <div class='section'>
   	<p>The following users have been removed from this group.  </p>
-   <table class='tableSort'>
+   <table id='deleted'>
       	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
       	<tbody>
 	{% for o in deleted_memberships %}
@@ -149,19 +148,22 @@ $("select[name=section_id]").change(function(){
 });
 
 $(document).ready(function(){
-	$('#reg').tablesorter({
+	var config = {
 		headers:{
 			0: {sorter: "text"},
 			1: {sorter: "text"},
-			2:{sorter: false},
+			2:{sorter: "email"},
 			3:{sorter: false},
 			4:{sorter: false},
 			5:{sorter: false}
 		},
 		ignoreCase: true,
 		sortReset: true
-	});
-})
-
+	}
+	$('#reg').tablesorter(config);
+	$('#pendingInvites').tablesorter({headers:{1:{sorter:false}, 2:{sorter:false}}});
+	$('#pendingConf').tablesorter(config);
+	$('#deleted').tablesorter(config);
+});
 </script>
 {% endblock %}
