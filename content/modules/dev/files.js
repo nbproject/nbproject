@@ -119,11 +119,13 @@ GLOB.files.proceedUpload = function(payload){
         console.log("HTML Upload");
         $('#html_upload_form').attr("action", "/addhtml/"+GLOB.files.currentEnsemble);
         $('#html_upload_form').submit();
+        $('#html_upload_form').reset();
     }
     else if (getUploadType() === 'youtube') {
         console.log("YouTube Upload");
         $('#youtube_upload_form').attr("action", "/addyoutube/"+GLOB.files.currentEnsemble);
         $('#youtube_upload_form').submit();
+        $('#youtube_upload_form').reset();
     }
     else {
         console.log("File Upload");
@@ -133,6 +135,7 @@ GLOB.files.proceedUpload = function(payload){
         var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
         form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
         form.submit();
+        form.reset();
         //$.I("File added to remote repository");
     }
     $('#add_file_dialog').dialog("destroy");
