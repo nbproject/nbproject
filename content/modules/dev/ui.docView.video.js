@@ -126,6 +126,52 @@ var NB_vid = {};
 	function videoClicked() {
 		NB_vid.methods.playORpause();
 	}
+
+
+	// This function is automatically called by the player once it loads
+	function onYouTubePlayerReady(event) {
+		console.log("ytplayer ready");
+		
+		NB_vid.ytLoaded = true;
+
+		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
+
+		//This hack is an attempt to eliminate the big red play button by default
+		//it prevents the default play button from playing the video without changing my own play button
+		//it also starts the loading of the video sooner
+		window.setTimeout(function() {
+			ytplayer.playVideo();
+			ytplayer.pauseVideo(); //comment this out if using the gatherThumbnailHandler
+		}, 0);
+
+		// This causes the updatePlayerInfo function to be called every 250ms to
+		// get fresh data from the player
+		NB_vid.methods.updatePlayerInfo();		
+		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
+		ytplayer.addEventListener("onError", "onPlayerError");
+		//Load an initial video into the player
+		ytplayer.cueVideoById("ylLzyHk54Z0");
+	}
+
+	function defineYouTubePlayer() {
+		console.log("defining ytplayer");
+		ytplayer = new YT.Player('videoDiv', {
+			height: '423',
+			width: '752',
+			videoId: 'ylLzyHk54Z0',
+			playerVars: {
+				'controls': 0,
+				'showinfo': 0
+			},
+			events: {
+				'onReady': onYouTubePlayerReady
+			}
+		});
+		if (ytplayer) {console.log("ytplayer defined");}
+		else {console.log("ytplayer definition failed");}
+	}
+
+
 	
 	function defineYouTubeIfReady() {
 		console.log("YouTube ready check");
@@ -158,48 +204,7 @@ var NB_vid = {};
 		"apiLoaded": false
 		};
 
-	// This function is automatically called by the player once it loads
-	function onYouTubePlayerReady(event) {
-		console.log("ytplayer ready");
-		
-		NB_vid.ytLoaded = true;
-
-		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
-
-		//This hack is an attempt to eliminate the big red play button by default
-		//it prevents the default play button from playing the video without changing my own play button
-		//it also starts the loading of the video sooner
-		window.setTimeout(function() {
-			ytplayer.playVideo();
-			ytplayer.pauseVideo(); //comment this out if using the gatherThumbnailHandler
-		}, 0);
-
-		// This causes the updatePlayerInfo function to be called every 250ms to
-		// get fresh data from the player
-		NB_vid.methods.updatePlayerInfo();		
-		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
-		ytplayer.addEventListener("onError", "onPlayerError");
-		//Load an initial video into the player
-		ytplayer.cueVideoById("ylLzyHk54Z0");
-	}
 	
-	function defineYouTubePlayer() {
-		console.log("defining ytplayer");
-		ytplayer = new YT.Player('videoDiv', {
-			height: '423',
-			width: '752',
-			videoId: 'ylLzyHk54Z0',
-			playerVars: {
-				'controls': 0,
-				'showinfo': 0
-			},
-			events: {
-				'onReady': onYouTubePlayerReady
-			}
-		});
-		if (ytplayer) {console.log("ytplayer defined");}
-		else {console.log("ytplayer definition failed");}
-	}
 	
 	function onYouTubeIframeAPIReady() {
 		console.log("Iframe API Ready");
