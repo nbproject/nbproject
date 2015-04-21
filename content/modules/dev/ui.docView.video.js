@@ -1,7 +1,7 @@
 /* docView Plugin 
  * Depends:
  *    ui.core.js
- *     ui.view.js
+ *    ui.view.js
  *
 
  Author 
@@ -15,6 +15,12 @@
 
 var ytplayer = null;
 var NB_vid = {};
+// Resolves when API is loaded and should define ytplayer
+var ytApiCallbacks = jQuery.Deferred();
+// Resolves when ytplayer is fully defined
+var ytDefineCallbacks = jQuery.Deferred();
+// Resolves when duration of video is available
+var ytMetadataCallbacks = jQuery.Deferred();
 
 	//Update a particular HTML element with a new value
 	function updateHTML(elmId, value) {
@@ -136,21 +142,12 @@ var NB_vid = {};
 
 		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
 
-		//This hack is an attempt to eliminate the big red play button by default
-		//it prevents the default play button from playing the video without changing my own play button
-		//it also starts the loading of the video sooner
-		window.setTimeout(function() {
-			ytplayer.playVideo();
-			ytplayer.pauseVideo(); //comment this out if using the gatherThumbnailHandler
-		}, 0);
-
 		// This causes the updatePlayerInfo function to be called every 250ms to
 		// get fresh data from the player
 		NB_vid.methods.updatePlayerInfo();		
 		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
 		ytplayer.addEventListener("onError", "onPlayerError");
-		//Load an initial video into the player
-		ytplayer.cueVideoById("ylLzyHk54Z0");
+		ytDefineCallbacks.resolve();
 	}
 
 	function defineYouTubePlayer() {
@@ -167,16 +164,8 @@ var NB_vid = {};
 				'onReady': onYouTubePlayerReady
 			}
 		});
-		if (ytplayer) {console.log("ytplayer defined");}
+		if (ytplayer) {console.log("ytplayer defined!");}
 		else {console.log("ytplayer definition failed");}
-	}
-
-
-	
-	function defineYouTubeIfReady() {
-		console.log("YouTube ready check");
-		if (NB_vid.apiLoaded) {defineYouTubePlayer();}
-		else {setTimeout(defineYouTubeIfReady, 100);}
 	}
 	
 	NB_vid = {
@@ -193,24 +182,21 @@ var NB_vid = {};
 			"muteVideo": muteVideo,
 			"unMuteVideo": unMuteVideo
 		},
-		"define": defineYouTubeIfReady,
+		"define": defineYouTubePlayer,
 		"defaultTickWidth": 2,
-		"isPlaying": false,
+		"isPlaying": true,
 		"wasPlaying": false, // Whether the player was playing before a note was started
 		"hoveredTick": null,
 		"selectedTick": null,
 		"currentID": "",
-		"ytLoaded": false,
-		"apiLoaded": false
+		"ytLoaded": false
 		};
 
 	
 	
 	function onYouTubeIframeAPIReady() {
 		console.log("Iframe API Ready");
-		//defineYouTubePlayer();
-		NB_vid.apiLoaded = true;
-		//setTimeout(defineYouTubePlayer, 1000);
+                ytApiCallbacks.resolve();
 	}
 		
 (function($) {
@@ -223,7 +209,7 @@ var NB_vid = {};
 			'<div class="selections"></div>',
 		'</div>',
 		'<div class = "videoMenu">',
-			'<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/play.png"></div>',
+			'<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/pause.png"></div>',
 			'<div class = "playback"><img class = "playback" src="/content/data/images/refresh.png"></div>',
 			'<div class = "progressbar_container">',
 				'<div id= "dragRangeContainer">',
@@ -343,6 +329,7 @@ var NB_vid = {};
 		//calculate the tick location given the time in ms where the associated comment is given
 		function calculateTickLoc(milliseconds){
 			var duration = ytplayer.getDuration()*100;
+			console.log(duration);
 			var ratio = milliseconds/duration;
 			//console.log(milliseconds, duration, ratio);
 			var xLoc = $("#progressbar").width()*ratio;
@@ -370,6 +357,7 @@ var NB_vid = {};
 		
 		//This function should be called to add ticks to the tick bar
 		function addAllTicks(payload) {
+			console.log("Adding Ticks");
 			var newNoteObj;
 			var tickStr;
 			var tickmark;
@@ -608,7 +596,6 @@ var NB_vid = {};
 		$.ui.view.prototype._create.call(this);
 			var self = this;
 			self.element.append(PLAYER_HTML_TEMPLATE);
-			NB_vid.define();
 			
 			self._last_clicked_selection =  0;
 			// Fill in width and height of player; Only tested with current values
@@ -629,8 +616,9 @@ var NB_vid = {};
 			self._id_location = null; //location_id of selected thread
 			self._metronome = null;
 			self._ignoremetronome = false;
-				
-				self._attachListeners();
+			
+			ytApiCallbacks.done(NB_vid.define);
+			self._attachListeners();
         },
         _playORpause: function() {
 			var self = this;
@@ -761,17 +749,35 @@ var NB_vid = {};
 			var id_source = $.concierge.get_state("file");
 			self._id_source =  id_source; 
 			self._model =  model;
-			self._generate_contents();
-			self._render();
-			if (init_event){
-				$.concierge.trigger(init_event);
-			}
-			else{
-				$.concierge.trigger({type:"page", value: 1});
-			}
-			if ($.concierge.activeView == null){
-				$.concierge.activeView = self; //init. 
-			}
+			ytDefineCallbacks.done(function() {
+				self._generate_contents();
+				self._render();
+				if (init_event){
+					$.concierge.trigger(init_event);
+				}
+				else{
+					$.concierge.trigger({type:"page", value: 1});
+				}
+				if ($.concierge.activeView == null){
+					$.concierge.activeView = self; //init. 
+				}
+			});
+
+			ytDefineCallbacks.done(function() {
+				var md_poll = function() {
+					if ("getDuration" in ytplayer) {
+						if (ytplayer.getDuration() > 0) {
+							console.log("Metadata Loaded");
+							ytMetadataCallbacks.resolve();
+						} else {
+							window.setTimeout(md_poll, 100);
+						}
+					} else {
+						window.setTimeout(md_poll, 100);
+					}
+				};
+				md_poll();
+			});
         },
         _keydown: function(event){
 			var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
@@ -825,21 +831,8 @@ var NB_vid = {};
 					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
 					this._page =  1;
 					this._render();
-					var autoProgress = $.Deferred();
-					var f_poll = function(){
-						if (!ytplayer) {
-							console.log("NULL ytplayer");
-							setTimeout(f_poll, 100);
-						}
-						else if ("getDuration" in ytplayer){
-							autoProgress.resolve();
-						}
-						else{
-							setTimeout(f_poll, 100);
-						}
-					};
-					f_poll(); //initiate polling 
-					autoProgress.done(function () {
+ 
+					ytMetadataCallbacks.done(function () {
 						warnIfUsingFlash();
 						NB_vid.methods.addAllTicks(payload);
 						NB_vid.methods.updatePlayerInfo();
@@ -862,18 +855,12 @@ var NB_vid = {};
         _generate_contents: function() {
 			var self = this;
 			
-			// Wait until ytplayer is loaded
-			if (!NB_vid.ytLoaded) {
-				window.setTimeout(function() {
-				self._generate_contents();
-				}, 100);
-				return;
-			}
-			
 			self._metronome = initializeYouTubeMetronome(self.T_METRONOME);
 			// Play and pause to load metadata
-			ytplayer.loadVideoById(self._model.get("youtubeinfo", {}).first().key);
-			ytplayer.pauseVideo();
+			console.log("Cueing Correct Video");
+			ytplayer.cueVideoById(self._model.get("youtubeinfo", {}).first().key);
+			ytplayer.playVideo();
+			self._metronome.play();
 			self.element.addClass("docView");
 			$("#videoCover").drawable({model: self._model});
         },
