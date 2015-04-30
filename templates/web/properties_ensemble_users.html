@@ -6,28 +6,52 @@ span.lowcontrast{
 }
 div.section{
 	color: #404040;
-	margin-left: 30px;	
+	margin-left: 30px;
 }
 table{
-	border-spacing: 15px 3px;	
+	border-spacing: 15px 3px;
 }
-{% endblock %} 
+.tablesorter-default .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-unsorted.gif);
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+	padding: 4px 15px 4px 0px;
+}
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-asc.gif);
+}
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-desc.gif);
+}
+.tablesorter-default thead .sorter-false {
+	background-image: none;
+	cursor: default;
+	padding: 4px;
+}
+{% endblock %}
 {% block content %}
-
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/js/jquery.tablesorter.min.js'></script>
   <h1>Users of {{ensemble.name}}</h1>
 
 <h2>{{memberships.count}} registered users</h2>
 <div class='section'>
 	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
-      <table>
+      <table id='reg'>
       	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Section</th><th>Actions</th></tr></thead>
       	<tbody>
-	{% for o in memberships %}	
+	{% for o in memberships %}
 		<tr>
 			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
-			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>
 			<td>
 				<form method="POST" action="?action=setsection&membership_id={{o.id}}">
 				<select name="section_id" data_membership_id="{{o.id}}">
@@ -47,27 +71,26 @@ table{
             </td>
 		</tr>
         {% endfor %}
-	
+
 	</tbody>
       </table>
       </div>
 
 <h2>{{pendinginvites.count}} pending invitations</h2>
-
-      <div class='section'>
+  	<div class='section' >
   	<p>The following users have been sent an invite but haven't yet replied to it. If you notice that the invite has been sent a long time ago, it might a good idea to check if you have the correct email for those users or ask them to check their spam folders (NB invites sometimes get blocked by spam programs) </p>
 
-   <table>
+   <table id='pendingInvites'>
       	<thead><tr><th>Email</th><th>Role</th><th>Section</th></tr></thead>
       	<tbody>
-	{% for o in pendinginvites %}	
+	{% for o in pendinginvites %}
 		<tr>
 			<td>{{o.user.email}}</td>
 			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>
 			<td>{{o.section.name}}</td>
 		</tr>
         {% endfor %}
-	
+
 	</tbody>
       </table>
       </div>
@@ -77,34 +100,34 @@ table{
  <div class='section'>
   	<p>The following users have used the subscribe link but haven't confirmed their email yet.  </p>
 
-   <table>
+   <table id='pendingConf'>
      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th></tr></thead>
       	<tbody>
-	{% for o in pendingconfirmations %}	
+	{% for o in pendingconfirmations %}
 		<tr>
 			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
 		</tr>
-        {% endfor %}	
+        {% endfor %}
 	</tbody>
       </table>
       </div>
-{% endif %}      
+{% endif %}
 
 {% if deleted_memberships %}
 <h2>{{deleted_memberships.count}} deleted memberships</h2>
  <div class='section'>
   	<p>The following users have been removed from this group.  </p>
-   <table>
+   <table id='deleted'>
       	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
       	<tbody>
-	{% for o in deleted_memberships %}	
+	{% for o in deleted_memberships %}
 		<tr>
 			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
 			<td>{{o.user.email}}</td>
-			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>	
+			<td>{% if o.admin %}staff{% else %}<span class='lowcontrast'>student</span>{% endif %}</td>
             <td><a href='?action=undelete&membership_id={{o.id}}'>Undelete</a></td>
 
 		</tr>
@@ -123,6 +146,24 @@ $("select[name=section_id]").change(function(){
       {section_id: section_id} );
 
 });
+
+$(document).ready(function(){
+	var config = {
+		headers:{
+			0: {sorter: "text"},
+			1: {sorter: "text"},
+			2:{sorter: "email"},
+			3:{sorter: false},
+			4:{sorter: false},
+			5:{sorter: false}
+		},
+		ignoreCase: true,
+		sortReset: true
+	}
+	$('#reg').tablesorter(config);
+	$('#pendingInvites').tablesorter({headers:{1:{sorter:false}, 2:{sorter:false}}});
+	$('#pendingConf').tablesorter(config);
+	$('#deleted').tablesorter(config);
+});
 </script>
 {% endblock %}
-
