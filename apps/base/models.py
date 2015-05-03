@@ -114,7 +114,7 @@ class Invite(models.Model):                                                     
     user                = ForeignKey(User)                                      # old: id_user
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
     admin               = BooleanField(default=False)                           # old: admin integer
-    ctime               = DateTimeField(null=True, default=datetime.now())
+    ctime               = DateTimeField(null=True, default=datetime.now(), db_index=True)
     section             = ForeignKey(Section, null=True)
 
     def __unicode__(self):
@@ -175,7 +175,7 @@ class Ownership(models.Model):                                                  
     source              = ForeignKey(Source)                                    # old: id_source integer
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
     folder              = ForeignKey(Folder, null=True)                         # old: id_folder integer
-    published           = DateTimeField(default=datetime.now)                   # old: published timestamp without time zone DEFAULT now() 
+    published           = DateTimeField(default=datetime.now, db_index=True)    # old: published timestamp without time zone DEFAULT now() 
     deleted             = BooleanField(default=False)
     assignment          = BooleanField(default=False)
     due                 = DateTimeField(default=datetime.now(), null=True)
@@ -205,9 +205,9 @@ class HTML5Location(models.Model):
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
     location            = ForeignKey(Location)                                  # old: id_location integer
-    parent              = ForeignKey('self', null=True)                        # old: id_parent integer
+    parent              = ForeignKey('self', null=True)                         # old: id_parent integer
     author              = ForeignKey(User)                                      # old: id_author integer,
-    ctime               = DateTimeField(default=datetime.now)                   # old: ctime timestamp 
+    ctime               = DateTimeField(default=datetime.now, db_index=True)    # old: ctime timestamp 
     body                = TextField(blank=True, null=True)
     type                = IntegerField(choices=TYPES)
     signed              = BooleanField(default=True)                            # old: signed integer DEFAULT 0,
@@ -235,7 +235,7 @@ class ThreadMark(models.Model):
     TYPES               = ((1, "question"), (2, "star"), (3, "summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
-    ctime               = DateTimeField(default=datetime.now)                    
+    ctime               = DateTimeField(default=datetime.now, db_index=True)                    
     location            = ForeignKey(Location)
     comment             = ForeignKey(Comment, null=True)                        #this is optional
     user                = ForeignKey(User)
@@ -250,7 +250,7 @@ class ReplyRating(models.Model):
     TYPES               = ((TYPE_UNRESOLVED, "unresolved"), (TYPE_RESOLVED, "resolved"), (TYPE_THANKS, "thanks"))
     threadmark          = ForeignKey(ThreadMark)
     comment             = ForeignKey(Comment)
-    ctime               = DateTimeField(default=datetime.now)                    
+    ctime               = DateTimeField(default=datetime.now, db_index=True)                    
     status              = IntegerField(choices=TYPES)   
     
 class ThreadMarkHistory(models.Model):    
