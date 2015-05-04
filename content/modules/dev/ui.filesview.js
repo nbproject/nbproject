@@ -90,7 +90,13 @@
             }
             download = "<td>"+download+"</td>";
         }
-        var stats = f_stats ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a  title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":"<td/>";
+        var stats; 
+        if(f_stats){
+            stats = f_stats.mine ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a>" : "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a>"; 
+            stats += (f_stats.total-f_stats.seen) ? " <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a>":" <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a>";
+            stats += f_stats.total ? " <a title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":" <a title='There are "+f_stats.total+" comments on this file.' class='collagelink'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>";
+        }
+        else{stats = "<td/>";}
         var type_class = 'pdficon';
         if (f.filetype === 4) { type_class = 'html5icon'; } // TODO: 4 should not be hardcoded
         if (f.filetype === 2) { type_class = 'youtubeicon'; } // TODO: 2 should not be hardcoded
