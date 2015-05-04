@@ -92,9 +92,13 @@
         }
         var stats; 
         if(f_stats){
-            stats = f_stats.mine ? "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a>" : "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink'><span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a>"; 
-            stats += (f_stats.total-f_stats.seen) ? " <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a>":" <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink'><span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a>";
-            stats += f_stats.total ? " <a title='There are "+f_stats.total+" comments on this file.' class='collagelink' target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>":" <a title='There are "+f_stats.total+" comments on this file.' class='collagelink'><span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>";
+            stats = "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink'";
+            stats += f_stats.mine ? "target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'>": ">";
+            stats += "<span class='collagelink-caption'> me </span><div class='collagelink-number'> "+f_stats.mine+"</div></a> <a title=\"There are "+(f_stats.total-f_stats.seen)+" comments you haven't seen on this file.\" class='collagelink' ";
+            stats += (f_stats.total-f_stats.seen) ? "target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"&amp;unread=1'>": ">";
+            stats += "<span class='collagelink-caption'> unread </span><div class='collagelink-number'>"+(f_stats.total-f_stats.seen)+"</div></a> <a title='There are "+f_stats.total+" comments on this file.' class='collagelink' ";
+            stats += f_stats.total ? "target='_blank' href='/collage?q=auth_admin&amp;id_source="+f.ID+"'>": ">";
+            stats += "<span class='collagelink-caption'> all </span><div class='collagelink-number'> "+f_stats.total+"</div></a> </td>";
         }
         else{stats = "<td/>";}
         var type_class = 'pdficon';
