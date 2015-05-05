@@ -187,11 +187,8 @@
         $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
                 var m = GLOB.pers.store;
                 (function(){
-                    //comment needs to be removed if its parent not null and its location isn't in the locations
                     //find all comments whose parents aren't there, put into queue
-                    //remove locations associated with those values in the queue
                     var q = [];
-                    //get all keys
                     var keys = $.map(P["comments"], function(e,i){return Number.parseInt(i);});
                     for(var i in P["comments"]){
                         var c = P["comments"][i];
