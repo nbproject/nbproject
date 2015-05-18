@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     }
     //Global Config for multiple tasks
     var globalConfig = {
-        js: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'],
+        js: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js', "content/modules/{NB,auth,dom,mvc}.js"], //would rather use content/modules/*.js
         css: ['content/modules/*.css', 'content/modules/**/*.css', 'content/modules/**/**/*.css', 'content/ui/**/*.css']
     };
     var addPrefix = function(prefix, names){
