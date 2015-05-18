@@ -13,7 +13,7 @@
 (function(GLOB){
     GLOB.auth = {};
     GLOB.auth.set_cookie = function( name, value, expires_year, expires_month, expires_day, path, domain, secure ){
-	var cookie_string = name + "=" + escape ( value );
+	var cookie_string = name + "=" + encodeURI ( value );
     
 	if ( expires_year )  {
 	    var expires = new Date ( expires_year, expires_month, expires_day );
@@ -21,13 +21,13 @@
 	}
 
 	if ( path ){
-	    cookie_string += "; path=" + escape ( path );
+	    cookie_string += "; path=" + encodeURI( path );
 	} else {
 	    cookie_string += "; path=/";
 	}
 
 	if ( domain ){
-	    cookie_string += "; domain=" + escape ( domain );
+	    cookie_string += "; domain=" + encodeURI( domain );
 	}
 	if ( secure ){
 	    cookie_string += "; secure";
@@ -42,7 +42,7 @@
     GLOB.auth.get_cookie = function ( cookie_name ){
 	var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
 	if ( results ){
-	    return ( unescape ( results[2] ) );
+	    return ( decodeURI( results[2] ) );
 	}
 	else{
 	    return null;
