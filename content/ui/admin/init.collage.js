@@ -156,7 +156,7 @@ GLOB.pers.init = function(){
         });
     
     $.concierge.addComponents({
-        notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+        notes_loader: function(P, cb){GLOB.pers.__components.notes_loader(P, cb);}, 
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   

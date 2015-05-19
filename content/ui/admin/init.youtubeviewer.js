@@ -101,7 +101,7 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
     $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
     $.concierge.addComponents({
-        notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+        notes_loader: function(P, cb){GLOB.pers.__components.notes_loader(P, cb);},
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   
@@ -168,23 +168,6 @@ GLOB.pers.createStore = function(payload){
     document.title = $.E(f.title);
     $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
         var m = GLOB.pers.store;
-        (function(){
-            //find all comments whose parents aren't there, put into queue
-            var q = [];
-            var keys = $.map(P["comments"], function(e,i){return Number.parseInt(i);});
-            for(var i in P["comments"]){
-                var c = P["comments"][i];
-                //if comment is not null && its parent is not in the other comments
-                if(c.id_parent !== null && $.inArray(c.id_parent, keys)===-1 ){
-                    q.push(c); //to be removed
-                }
-            }
-            $.each(q, function(i, v){//remove comments, locations, & seen if applicable
-                delete P["seen"][v.ID];
-                delete P["locations"][v.ID_location];
-                delete P["comments"][v.ID];
-            });
-        })();
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
         m.add("location", P["locations"]);
