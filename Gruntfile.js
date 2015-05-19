@@ -412,7 +412,7 @@ module.exports = function(grunt) {
     for (i in CSS_TARGETS){
         ALL_TARGETS[i+"_css"] = CSS_TARGETS[i];
     }
-    //    console.log(JSON.stringify(CSS_TARGETS));
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -466,23 +466,43 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
+        replace: {
+            html: {
+                src: ['templates/src/*.html'],
+                dest: 'templates/web/',
+                replacements: [{
+                    from: '%CDN_JQUERY%',
+                    to: 'jquery/1.8.3/jquery.min.js'
+                },
+                {
+                    from: '%LOCAL_JQUERY%',
+                    to: 'jquery/1.8.3/jquery.min.js'
+                },
+                {
+                    from: '%CDN_UIJQUERY%',
+                    to: 'jqueryui/1.9.2/jquery-ui.min.js'
+                },
+                {
+                    from:'%LOCAL_UIJQUERY%',
+                    to: 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js'
+                }]
+            }
+        },
         watch: {
             files: '<config:lint.files>',
             tasks: 'lint qunit'
-        },        
+        },
         uglify: {}
     });
-    
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-text-replace');
 
-
-    
-    
     // Default task.
     // grunt.registerTask('default', 'lint qunit concat min');
 //    grunt.registerTask('lint', ['jshint']);
-    grunt.registerTask('default', ['jshint', 'concat', 'cssmin']);
+    grunt.registerTask('default', ['jshint', 'concat', 'cssmin', 'replace']);
 };
