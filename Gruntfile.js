@@ -6,6 +6,11 @@ module.exports = function(grunt) {
     if (serverport !== "80"){
         servername += ":"+serverport;
     }
+    //Global Config for multiple tasks
+    var globalConfig = {
+        js: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'],
+        css: ['content/modules/*.css', 'content/modules/**/*.css', 'content/modules/**/**/*.css', 'content/ui/**/*.css']
+    };
     var addPrefix = function(prefix, names){
         /*
          * given a prefix and an array, returns a new array where each element 
@@ -189,7 +194,7 @@ module.exports = function(grunt) {
 
     TARGETS.DESKTOP = {
         src_js: [].concat(
-            addPrefix(MODULE_DIR, ["jquery/1.8.3/jquery.min.js", "jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js", "dev/ui.concierge.js"]), 
+            addPrefix(MODULE_DIR, ["dev/ui.concierge.js"]), 
             addPrefix(MODULE_DIR, ["dev/ui.view.js", "dev/ui.perspective.js"]),
             TARGETS.API.src_js,
             MODS.FILTERWIZARD.src_js,
@@ -415,6 +420,7 @@ module.exports = function(grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        globalConfig: globalConfig,
         pkg: grunt.file.readJSON('package.json'),
         meta: {
             banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
@@ -424,7 +430,7 @@ module.exports = function(grunt) {
                 ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
         },
         jshint: {           
-            src: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'], 
+            src: globalConfig.js, 
             options: {
                 globals: {
                     jQuery: false,
@@ -485,13 +491,33 @@ module.exports = function(grunt) {
                 {
                     from:'%LOCAL_UIJQUERY%',
                     to: 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js'
+                },
+                {
+                    from: '%CDN_CSS_UIJQUERY%',
+                    to: 'jqueryui/1.11.4/themes/smoothness/jquery-ui.css'
+                },
+                {
+                    from: '%LOCAL_CSS_UIJQUERY%',
+                    to: 'jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.min.css'
                 }]
             }
         },
         watch: {
-            files: '<config:lint.files>',
-            tasks: 'lint qunit'
-        },
+            scripts: {
+                files: globalConfig.js,
+                tasks: ['jshint', 'concat'],
+                options: {
+                    livereload: true
+                }
+            },
+            styles: {
+                files: globalConfig.css,
+                tasks: ['cssmin'],
+                options:{
+                    livereload: true
+                }
+            }
+        },     
         uglify: {}
     });
 
