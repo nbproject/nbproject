@@ -282,7 +282,13 @@
                     $.concierge.get_component(component_name)(msg, f_on_save);
                     $.concierge.trigger({type: "editor_saving", value: 0});
                 };
-                $("button[action=save]",self.element).click(f_save);
+                $("button[action=save]",self.element).click(function(){
+                    if(!$("textarea", self.element)[0].value){//empty string is falsy = no more empty comments
+                        return;
+                    }else{
+                        f_save();
+                    }
+                });
                 $("button[action=discard]",self.element).click(f_discard);
                 if (self._sel){
                     var p = self._selection.parent();
