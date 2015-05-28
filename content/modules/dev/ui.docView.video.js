@@ -687,8 +687,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				self._page = self._model.o.location[self._id_location].page;
 				//move player if it was far enough: 
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME){
+					console.log("Seek");
 					ytplayer.seekTo(self._page/self.SEC_MULT_FACTOR);
-				}
+				} else {console.log("No Seek");}
 				NB_vid.methods.updatePlayerInfo();
 				NB_vid.methods.updateProgressbar();
 				NB_vid.methods.tickSelect(self._id_location);
