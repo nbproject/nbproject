@@ -6,6 +6,11 @@ module.exports = function(grunt) {
     if (serverport !== "80"){
         servername += ":"+serverport;
     }
+    //Global Config for multiple tasks
+    var globalConfig = {
+        js: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'],
+        css: ['content/modules/*.css', 'content/modules/**/*.css', 'content/modules/**/**/*.css', 'content/ui/**/*.css']
+    };
     var addPrefix = function(prefix, names){
         /*
          * given a prefix and an array, returns a new array where each element 
@@ -412,9 +417,10 @@ module.exports = function(grunt) {
     for (i in CSS_TARGETS){
         ALL_TARGETS[i+"_css"] = CSS_TARGETS[i];
     }
-    //    console.log(JSON.stringify(CSS_TARGETS));
+
     // Project configuration.
     grunt.initConfig({
+        globalConfig: globalConfig,
         pkg: grunt.file.readJSON('package.json'),
         meta: {
             banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
@@ -424,7 +430,7 @@ module.exports = function(grunt) {
                 ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
         },
         jshint: {           
-            src: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'], 
+            src: globalConfig.js, 
             options: {
                 globals: {
                     jQuery: false,
@@ -467,20 +473,29 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: '<config:lint.files>',
-            tasks: 'lint qunit'
-        },        
+            scripts: {
+                files: globalConfig.js,
+                tasks: ['jshint', 'concat'],
+                options: {
+                    livereload: true
+                }
+            },
+            styles: {
+                files: globalConfig.css,
+                tasks: ['cssmin'],
+                options:{
+                    livereload: true
+                }
+            }
+        },     
         uglify: {}
     });
-    
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
-
-    
-    
     // Default task.
     // grunt.registerTask('default', 'lint qunit concat min');
 //    grunt.registerTask('lint', ['jshint']);
