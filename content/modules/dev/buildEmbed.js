@@ -36,9 +36,9 @@
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
-                notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
-                    note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
-                    note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
+                notes_loader: function(P, cb){GLOB.pers.__components.notes_loader(P, cb);},
+                note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+                note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
             });   
         GLOB.pers.store = new GLOB.models.Store();
         GLOB.pers.call(

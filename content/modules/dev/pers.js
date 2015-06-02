@@ -148,65 +148,65 @@
 
         },
         location_closestpage:  function(p, cb){ 
-        /* given a location and id (in payload) returns "closest" location id found on a different page: 
-           - if "direction" is "down": "closest" is the location at the top-most position of the next page which has a location
-           - if "direction" is "up": "closest" is the location at the bottom-most position of the previous page which has a location
-        */
-        var m = p.model;
-        var loc = m.o.location[p.id];
-        var me = $.concierge.get_component("get_userinfo")();
-        var file = m.o.file[loc.id_source];
-        var page = loc.page;
-        var f_sort_down = function(o1, o2){return o1.top-o2.top;};    
-        var TYPE_STAR = $.concierge.get_constant("STAR");
-        var TYPE_QUESTION = $.concierge.get_constant("QUESTION");
-        var new_id = null;    
-        var i, ids;
-        var locs;
-        if (p.direction === "down"){
-        i = page+1;
-        while (i<=file.numpages){
-            locs = m.get("location", {id_source: loc.id_source, page: i});
-            if (p.filters){
-            if (p.filters.me){
-                locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+            /* given a location and id (in payload) returns "closest" location id found on a different page: 
+               - if "direction" is "down": "closest" is the location at the top-most position of the next page which has a location
+               - if "direction" is "up": "closest" is the location at the bottom-most position of the previous page which has a location
+            */
+            var m = p.model;
+            var loc = m.o.location[p.id];
+            var me = $.concierge.get_component("get_userinfo")();
+            var file = m.o.file[loc.id_source];
+            var page = loc.page;
+            var f_sort_down = function(o1, o2){return o1.top-o2.top;};    
+            var TYPE_STAR = $.concierge.get_constant("STAR");
+            var TYPE_QUESTION = $.concierge.get_constant("QUESTION");
+            var new_id = null;    
+            var i, ids;
+            var locs;
+            if (p.direction === "down"){
+            i = page+1;
+            while (i<=file.numpages){
+                locs = m.get("location", {id_source: loc.id_source, page: i});
+                if (p.filters){
+                if (p.filters.me){
+                    locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+                }
+                if (p.filters.star){
+                    locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+                }
+                if (p.filters.question){
+                    locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+                }
+                }
+                if (locs.length()){
+                    new_id = locs.min("top");
+                    break;
+                    }
+                    i++;
+                }
             }
-            if (p.filters.star){
-                locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+            else{
+                i = page-1;
+                while (i>0){
+                    locs = m.get("location", {id_source: loc.id_source, page: i});
+                    if (p.filters){
+                    if (p.filters.me){
+                        locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+                    }
+                    if (p.filters.star){
+                        locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
+                    }
+                    if (p.filters.question){
+                        locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
+                    }
+                    }
+                    if (locs.length()){
+                    new_id = locs.max("top");
+                    break;
+                    }
+                    i--;
+                }
             }
-            if (p.filters.question){
-                locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
-            }
-            }
-            if (locs.length()){
-            new_id = locs.min("top");
-            break;
-            }
-            i++;
-        }
-        }
-        else{
-        i = page-1;
-        while (i>0){
-            locs = m.get("location", {id_source: loc.id_source, page: i});
-            if (p.filters){
-            if (p.filters.me){
-                locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
-            }
-            if (p.filters.star){
-                locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_STAR }).values("location_id"));
-            }
-            if (p.filters.question){
-                locs = locs.intersect(m.get("threadmark", {active: true, type: TYPE_QUESTION }).values("location_id"));
-            }
-            }
-            if (locs.length()){
-            new_id = locs.max("top");
-            break;
-            }
-            i--;
-        }
-        }
         return new_id;
     }, 
     register_user_menu : function(P, cb){
@@ -372,6 +372,28 @@
     }, 
     get_metronome_period_s: function(){
 	return 1;
+    },
+
+    notes_loader: function(P, cb){
+        GLOB.pers.call("getNotes", P, function(P){
+            //find all comments whose parents aren't there, put into queue
+            var q = [];
+            var keys = $.map(P["comments"], function(e,i){return Number.parseInt(i);});
+            for(var i in P["comments"]){
+                var c = P["comments"][i];
+                //if comment is not null && its parent is not in the other comments OR if the body is empty
+                if( (c.id_parent !== null && $.inArray(c.id_parent, keys) === -1) || !c.body ){
+                    q.push(c); //to be removed
+                }
+            }
+            $.each(q, function(i, v){//remove comments, locations, & seen if applicable
+                delete P["seen"][v.ID];
+                delete P["locations"][v.ID_location];
+                delete P["comments"][v.ID];
+            });
+            //now continue callbacks
+            cb(P);
+        });
     }
     };
 })(NB);

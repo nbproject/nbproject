@@ -101,7 +101,7 @@ GLOB.pers.init = function(){
     GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
     $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
     $.concierge.addComponents({
-        notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+        notes_loader: function(P, cb){GLOB.pers.__components.notes_loader(P, cb);},
         note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
         note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
         });   
