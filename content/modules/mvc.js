@@ -31,7 +31,7 @@
     GLOB.mvc.model.prototype.unregister = function(obs){
 	var i;
 	for (i in this.observers){
-	    if (this.observers[i] == obs){
+	    if (this.observers[i] === obs){
 		delete this.observers[i];
 		return;
 	    }
@@ -108,17 +108,17 @@
     GLOB.mvc.collection.prototype.modify = function(action, payload, items_fieldname){
 	var i;
 	var items = payload[items_fieldname];
-	if (action == "create"){	
+	if (action === "create"){	
 	    for (i=0;i<items.length;i++){
 		this.items[items[i].id] = items[i];
 	    }
 	}
-	else if (action == "add" || action == "update"){
+	else if (action === "add" || action === "update"){
 	    for (i=0;i<items.length;i++){
 		this.items[items[i].id] = items[i];
 	    }
 	}
-	else if (action == "delete"){
+	else if (action === "delete"){
 	    for (i=0;i<items.length;i++){
 		delete this.items[items[i].id];
 	    }
