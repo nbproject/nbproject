@@ -14,3 +14,4 @@ content/ui/admin/conf_local.js
 content/data
 content/.settings
 node_modules/
+db_dumps/
