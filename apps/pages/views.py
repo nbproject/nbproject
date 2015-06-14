@@ -53,12 +53,8 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
-<<<<<<< HEAD
-    r = render_to_response(tpl, {"o": o}, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
-=======
 
     r = render_to_response(tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
->>>>>>> update_1.7
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
 
@@ -139,8 +135,7 @@ def source(req, n, allow_guest=False):
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
     else:
-<<<<<<< HEAD
-        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
 def source_analytics(req, n):
     pages, chart_stats = doc_analytics.get_page_stats(n)
@@ -154,13 +149,10 @@ def source_analytics(req, n):
         'numpages': source.numpages
     }
     return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, mimetype="text/html")
-=======
-        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
 
 def your_settings(req):
     return __serve_page(req, 'web/your_settings.html', content_type="text/html")
->>>>>>> update_1.7
 
 def embedopenid(req):
     return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
