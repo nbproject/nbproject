@@ -14,6 +14,8 @@ if "." not in sys.path:
     sys.path.append(".")
 if "DJANGO_SETTINGS_MODULE" not in os.environ or __name__=="__main__": 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
+import django
+django.setup()
 from django.conf import settings
 import base.utils as utils, base.models as M
 from django.template.loader import render_to_string
@@ -210,7 +212,7 @@ def do_auth_immediate():
                              settings.EMAIL_FROM,
                              (c.author.email, ), 
                              (settings.EMAIL_BCC, ))
-        email.send()
+        email.send(fail_silently=True)
         try: 
             print msg
         except UnicodeEncodeError: 
@@ -234,7 +236,7 @@ def do_all_immediate():
                                  settings.EMAIL_FROM,
                                  (m.user.email, ), 
                                  (settings.EMAIL_BCC, ))
-            email.send()              
+            email.send(fail_silently=True)
             try: 
                 print msg
             except UnicodeEncodeError: 
@@ -260,7 +262,7 @@ def do_reply_immediate():
                 msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
-                email.send()
+                email.send(fail_silently=True)
                 try: 
                     print msg
                 except UnicodeEncodeError: 
@@ -282,7 +284,7 @@ def do_watchdog_longpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
         
 def do_watchdog_notstartedpdfprocess():
@@ -298,7 +300,7 @@ def do_watchdog_notstartedpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
     
 def do_auth_digest():
@@ -395,6 +397,16 @@ def do_upgrade(t_args):
     #if u.password != None and u.saltedhash == None:
     do_auth_salt_upgrade()
 
+def do_testwrite(t_args): 
+    try: 
+        f = open("testwrite", "w")
+    except IOError:
+        email = EmailMessage("NB: IO Error on server %s" % settings.NB_SERVERNAME,
+                             "unable to write file on server %s\nCheck that all partitions are mounted in r/w mode" %  settings.NB_SERVERNAME, 
+                             settings.EMAIL_FROM,
+                             (settings.ADMINS[0][1],))
+        email.send()
+
 @transaction.commit_on_success
 def do_auth_salt_upgrade():
     # This method does not handle database migrations, only schema
@@ -426,7 +438,8 @@ if __name__ == "__main__" :
         "watchdog": do_watchdog,
         "extract": do_extract, 
         "dumpensemble": do_dumpensemble,
-        "upgrade": do_upgrade
+        "upgrade": do_upgrade, 
+        "testwrite": do_testwrite
         }
     utils.process_cli(__file__, ACTIONS)
 
