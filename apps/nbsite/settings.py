@@ -29,6 +29,8 @@ FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
 GOOGLE_DEVELOPER_KEY =  settings_credentials.__dict__.get("GOOGLE_DEVELOPER_KEY", "CHANGE_ME")
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     print msg_credentials()
     exit(1)
