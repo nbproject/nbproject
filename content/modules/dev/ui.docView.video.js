@@ -48,6 +48,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		}
 	}
 
+	// Sets time display to given time, useful if updating immediately after seek
+	function setPlayerInfo(time) {
+		// Also check that at least one function exists since when IE unloads the
+		// page, it will destroy the SWF before clearing the interval.
+		if(ytplayer && ytplayer.getDuration) {
+			NB_vid.methods.updateHTML("videoTimeDisplay", NB_vid.methods.calculateTime(time)); //seen under progressbar
+			NB_vid.methods.updateHTML("videoTotalTimeDisplay", NB_vid.methods.calculateTime(ytplayer.getDuration()));
+		}
+	}
 
 	// Allow the user to set the volume from 0-100
 	function setVideoVolume(volume) {
@@ -174,6 +183,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			"onPlayerError": onPlayerError,
 			"onPlayerStateChange": onPlayerStateChange,
 			"updatePlayerInfo": updatePlayerInfo,
+			"setPlayerInfo": setPlayerInfo,
 			"calculateTime": calculateTime,
 			"calculateTime_stringToNum": calculateTime_stringToNum,
 			"setVideoVolume": setVideoVolume,
@@ -183,6 +193,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			"unMuteVideo": unMuteVideo
 		},
 		"define": defineYouTubePlayer,
+		"defaultCommentDuration": 2,
 		"defaultTickWidth": 2,
 		"isPlaying": true,
 		"wasPlaying": false, // Whether the player was playing before a note was started
@@ -224,6 +235,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				'<div id = "zoomTick"><div class = "rightTooltipDiv" style = "float: right"></div></div>',
 				'<div class = "tickmark_holder">',
 
+				'</div>',
+
+				'<div id = "durationEditor">',
+					'<text>Duration: </text><input id="durationInput" type="text" size="3" value="--------" /><text> seconds</text>',
 				'</div>',
 
 				'<div id ="showTime">',
@@ -296,6 +311,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var percentage = 100*ytplayer.getCurrentTime()/ytplayer.getDuration();
 			$("#progressbar_filler").css("width", percentage+"%");
 		} 
+
+		// Sets progress bar to given time, useful if updating immediately after seek
+		function setProgressbar(time){
+			var percentage = 100*time/ytplayer.getDuration();
+			$("#progressbar_filler").css("width", percentage+"%");
+		}
 	
 		//update the time of the ytplayer given the mouse x-location
 		function progressbar_click(xloc){
@@ -329,22 +350,21 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		//calculate the tick location given the time in ms where the associated comment is given
 		function calculateTickLoc(milliseconds){
 			var duration = ytplayer.getDuration()*100;
-			console.log(duration);
 			var ratio = milliseconds/duration;
 			//console.log(milliseconds, duration, ratio);
 			var xLoc = $("#progressbar").width()*ratio;
 			return xLoc;
 		}
 
-		//calculate the tick width given the starting and end time associated with the comment
-		function calculateTickWidth(startTime, endTime){
-			if (endTime !== 0){
-				var leftLoc = NB_vid.methods.calculateTickLoc(startTime);
-				var rightLoc = NB_vid.methods.calculateTickLoc(endTime);
+		//calculate the tick width given the duration associated with the comment
+		function calculateTickWidth(duration){
+			if (duration !== 0){
+				var leftLoc = NB_vid.methods.calculateTickLoc(0);
+				var rightLoc = NB_vid.methods.calculateTickLoc(duration*100);
 				var width = rightLoc - leftLoc;
 				return width;
 			}else{
-				return "1";
+				return "2";
 			}
 		}
 
@@ -376,7 +396,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			for (var id in payload.diff) {
 				newNoteObj = payload.diff[id];
 				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-				var newTickHTML = NB_vid.methods.tickHTML(tickX, NB_vid.defaultTickWidth, id);
+
+				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.duration);
+
+				console.log("id: "+id+"; duration: "+newNoteObj.duration+"; width: "+tickWidth);
+
+				var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
 				
 				//copy the htmlText - stores the current tick mark divs (if any)
 				var htmlText = $(".tickmark_holder").html();
@@ -511,6 +536,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				"muteORunmute": muteORunmute,
 				"goToTime" : goToTime,
 				"updateProgressbar": updateProgressbar,
+				"setProgressbar": setProgressbar,
 				"progressbar_click": progressbar_click,
 				"updateProgressbarClick": updateProgressbarClick,
 				"progressbarOffsetX": progressbarOffsetX,
@@ -564,6 +590,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		};
 		Metronome.prototype.play = function(){
 			if (this.state === METRONOME_STATES.PAUSED){
+				console.log("Playing Metronome");
 				this.state = METRONOME_STATES.PLAYING;
 				this.__go();
 			}
@@ -573,6 +600,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		};
 	
 		Metronome.prototype.__go = function(){
+			console.log("Go!");
 			if (!( this.position_helper)){
 				console.error("[metronome] position helper not set !");
 				return;
@@ -585,6 +613,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		};
 
 		Metronome.prototype.pause = function(){
+			console.log("Pausing Metronome");
 			this.state = METRONOME_STATES.PAUSED;
 		};
 		
@@ -688,10 +717,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				//move player if it was far enough: 
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME){
 					console.log("Seek");
-					ytplayer.seekTo(self._page/self.SEC_MULT_FACTOR);
-				} else {console.log("No Seek");}
-				NB_vid.methods.updatePlayerInfo();
-				NB_vid.methods.updateProgressbar();
+					var newTime = self._page/self.SEC_MULT_FACTOR;
+					ytplayer.seekTo(newTime);
+					NB_vid.methods.setPlayerInfo(newTime);
+					NB_vid.methods.setProgressbar(newTime);
+				} else {
+					console.log("No Seek");
+					NB_vid.methods.updatePlayerInfo();
+					NB_vid.methods.updateProgressbar();
+				}
 				NB_vid.methods.tickSelect(self._id_location);
 				self._render();
 			break;
@@ -707,6 +741,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				// Update store time as an attribute for the editorView to grab later
 				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
 				$("#videoCover").attr("page", self._page);
+				$("#durationInput").attr("value", NB_vid.defaultCommentDuration);
 			break;
 			case "editor_prepare":
 				// Update store time as an attribute for the editorView to grab later
@@ -719,6 +754,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				} else {
 					self._pause();
 				}
+				$("#durationInput").attr("value", "---");
 			break;
 			case "editor_delete":
 				if (NB_vid.wasPlaying) {
@@ -726,8 +762,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				} else {
 					self._pause();
 				}
+				$("#durationInput").attr("value", "---");
 			break;
 			case "metronome":
+				console.log("Tick");
 				if (!self._ignoremetronome){
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
