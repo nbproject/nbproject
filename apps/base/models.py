@@ -192,6 +192,7 @@ class Location(models.Model):                                                   
     w                   = IntegerField()
     h                   = IntegerField()
     page                = IntegerField()
+    duration		= IntegerField(null=True)
     def __unicode__(self):
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
