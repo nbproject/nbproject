@@ -120,6 +120,7 @@
 			if (!locs.is_empty()){
             var firstlocid = String(locs.first().ID);
             if (firstlocid !== self._id_location){
+				console.log("New Thread");
 				$.concierge.trigger({type:"select_thread", value: firstlocid});
             }
 			}
