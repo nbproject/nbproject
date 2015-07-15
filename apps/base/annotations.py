@@ -64,6 +64,7 @@ __NAMES = {
         "top": "location.y",
         "left": "location.x",
         "page": "location.page",
+	"duration": "location.duration",
         "id_source": "location.source_id",
         "w": "location.w",
         "h": "location.h",
@@ -693,6 +694,9 @@ def addNote(payload):
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
+	# Duration for YouTube comments
+	if "duration" in payload:
+		location.duration = payload["duration"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
 
         #refuse if similar comment

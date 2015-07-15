@@ -257,6 +257,7 @@
                             throw "editorview: HTML5VIDEO not implemented";
                         case FILETYPES.TYPE_YOUTUBE:
                             drawingarea = self._sel.parent();
+			    var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
                             s_inv_w = 1000.0/drawingarea.width();
                             s_inv_h = 1000.0/drawingarea.height();
                             msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
@@ -266,6 +267,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
+			    msg.duration = self._sel ? parseInt(durationBox.value):0;
                             break;
                         }
                         component_name =  "note_creator";
