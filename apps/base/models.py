@@ -224,6 +224,13 @@ class Comment(models.Model):                                                    
         else:
             return str(calendar.timegm(self.ctime.astimezone(pytz.utc).timetuple()))
 
+# Represents Users tagged in a comment
+class Tag(models.Model):
+    TYPES               = ((1, "Individual"),)
+    type                = IntegerField(choices=TYPES)
+    individual          = ForeignKey(User, null=True)
+    comment		= ForeignKey(Comment) 
+
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
     TYPES               = ((1, "answerplease"), (3, "approve"), (5, "reject"), (7, "favorite"), (9, "hide"))     
