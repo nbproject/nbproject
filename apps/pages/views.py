@@ -59,7 +59,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
     return r
 
 # o is a dictionary representing the variables
-def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, mimetype=None):
+def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, content_type=None):
     """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
     user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
     if user is None:
@@ -69,7 +69,7 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, mim
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
-    r = render_to_response(tpl, o, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
+    r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
 
@@ -131,7 +131,14 @@ def ondemand(req, ensemble_id):
 def source(req, n, allow_guest=False):
     source = M.Source.objects.get(pk=n)
     if source.type==M.Source.TYPE_YOUTUBE:
-        return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , content_type="text/html")
+        ownership = M.Ownership.objects.get(source=source)
+        memberships = M.Membership.objects.filter(ensemble=ownership.ensemble.id)
+        user_list = []
+        for membership in memberships:
+            user_list.append({"id": membership.user.id, "firstname": membership.user.firstname, "lastname": membership.user.lastname, "pseudonym": membership.user.pseudonym})
+	json_user_list = json.dumps(user_list)
+        o = {"o": {"class_members": json_user_list}}
+        return __serve_page_with_vars(req, settings.YOUTUBE_TEMPLATE, o, allow_guest , content_type="text/html")
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
     else:
@@ -148,7 +155,7 @@ def source_analytics(req, n):
         'highlights': highlights,
         'numpages': source.numpages
     }
-    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, mimetype="text/html")
+    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, content_type="text/html")
 
 
 def your_settings(req):
