@@ -387,6 +387,9 @@
                     });
             }
         };
+
+	var f_context = {};
+
         $("a.replymenu", $pane).click(f_reply);
         $("div.commentlabel_container", $pane).click(f_comment_label);
         $("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
