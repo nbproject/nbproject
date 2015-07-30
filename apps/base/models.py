@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateTimeField, EmailField
-from django.db.models.fields.related import ForeignKey, OneToOneField, ManyToManyField
+from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.utils.tzinfo import FixedOffset, LocalTimezone
 from datetime import datetime
 import time
@@ -223,18 +223,6 @@ class Comment(models.Model):                                                    
             return str(calendar.timegm(pytz.utc.localize(self.ctime).timetuple()))
         else:
             return str(calendar.timegm(self.ctime.astimezone(pytz.utc).timetuple()))
-
-# Represents Groups set up to be tagged as a unit
-##class UserGroup(models.Model):
-##    name		= CharField(max_length=256)
-##    members		= ManyToManyField(User)
-
-# Represents Users or Groups tagged in a Comment
-class Tag(models.Model):
-    TYPES		= ((1, "Individual"),)
-    type		= IntegerField(choices=TYPES)
-    individual		= ForeignKey(User, null=True)
-    comment		= ForeignKey(Comment)
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
