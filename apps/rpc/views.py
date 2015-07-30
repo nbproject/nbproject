@@ -34,7 +34,8 @@ __EXPORTS = [
     "getMyNotes", 
     "getCommentLabels", 
     "getGuestFileInfo", 
-    "getSectionsInfo", 
+    "getSectionsInfo",
+    "getEnsembleMembers", 
     "getHTML5Info",
     "markNote", 
     "request_source_id",
@@ -333,6 +334,15 @@ def getSectionsInfo(payload, req):
         output={"sections": UR.qs2dict(m[0].ensemble.section_set.all())};
         return UR.prepare_response(output)
     return UR.prepare_response({}, 1, "NOT ALLOWED")
+
+def getEnsembleMembers(payload, req):
+    uid = UR.getUserId(req)
+    if "id_ensemble" not in payload:
+        return UR.prepare_response({}, 1, "MISSING id_ensemble")
+    id_ensemble = payload["id_ensemble"]
+    members = M.Membership.objects.filter(ensemble__id=id_ensemble, deleted=False)
+    output={"members": UD.qs2dict(members)}
+    return UR.prepare_response(output)
 
 def editPoll(payload, req): 
     uid = UR.getUserId(req)
