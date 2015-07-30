@@ -111,8 +111,7 @@ __NAMES = {
         "signed": None,
         "type": None,
         "fullname": Template("{{V.author.firstname}} {{V.author.lastname}}"),
-        "admin": None,
-	"duration": None        
+        "admin": None        
 },
     "location_stats": {
         "id_location": None,
