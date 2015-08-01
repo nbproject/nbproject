@@ -34,8 +34,7 @@ __EXPORTS = [
     "getMyNotes", 
     "getCommentLabels", 
     "getGuestFileInfo", 
-    "getSectionsInfo",
-    "getEnsembleMembers", 
+    "getSectionsInfo", 
     "getHTML5Info",
     "markNote", 
     "request_source_id",
@@ -335,15 +334,6 @@ def getSectionsInfo(payload, req):
         return UR.prepare_response(output)
     return UR.prepare_response({}, 1, "NOT ALLOWED")
 
-def getEnsembleMembers(payload, req):
-    uid = UR.getUserId(req)
-    if "id_ensemble" not in payload:
-        return UR.prepare_response({}, 1, "MISSING id_ensemble")
-    id_ensemble = payload["id_ensemble"]
-    members = M.Membership.objects.filter(ensemble__id=id_ensemble, deleted=False)
-    output={"members": UD.qs2dict(members)}
-    return UR.prepare_response(output)
-
 def editPoll(payload, req): 
     uid = UR.getUserId(req)
     if uid is None or ("id_poll" not in payload) or not annotations.canEditPoll(uid, payload["id_poll"]):
@@ -479,8 +469,9 @@ def getStats2(payload, req):
 def getMembers(payload, req): 
     uid = UR.getUserId(req)
     if "id_ensemble" in payload: 
-        if auth.canGetMembers(uid, payload["id_ensemble"]): 
-            return UR.prepare_response(annotations.get_members(payload["id_ensemble"]))
+        if auth.canGetMembers(uid, payload["id_ensemble"]):
+            members = annotations.get_members(payload["id_ensemble"]) 
+            return UR.prepare_response(members)
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
 
