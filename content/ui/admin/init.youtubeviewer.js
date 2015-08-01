@@ -125,16 +125,36 @@ GLOB.pers.createStore = function(payload){
         mark: {}, 
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
-        seen:{references: {id_location: "location"}}
+        seen:{references: {id_location: "location"}},
+        members: {}
     });
 
+    var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
+//    console.log("Ensemble ID:");
+//    console.log(ensembleID);
+
+    GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){console.log("getMembers dummy callback");});
+
     //get the section info as well as info whether user is admin: 
-    GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+    GLOB.pers.call("getSectionsInfo", {id_ensemble: ensembleID}, function(P3){
+        console.log("getSectionsInfo callback start");
         var m = GLOB.pers.store;
         m.add("section", P3["sections"]);
         NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
     });
-    
+
+//    GLOB.pers.call("getMembers", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P4){
+//        console.log("getMembers callback start");
+//        var m = GLOB.pers.store;
+//        m.add("members", P4["members"]);
+
+//        console.log("Added Members");
+
+//        var q = m.get("members", {});
+//        for (var rec in q.items) {
+//            console.log(rec);
+//        }
+//    });    
 
     //here we override the callback so that we can get new notes.
     var cb2 = function(P2){    

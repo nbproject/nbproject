@@ -389,7 +389,8 @@
         };
         $("a.replymenu", $pane).click(f_reply);
         $("div.commentlabel_container", $pane).click(f_comment_label);
-        $("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
+//        var f_context = {};
+//        $("a.optionmenu", $pane).contextMenu({menu: "contextmenu_threadview", leftButton: true}, f_context);
         $("#contextmenu_threadview").bind("beforeShow", function(event, el){
             var id_item = el.closest("div.note-lens").attr("id_item");
             var m    = self._model;                   
