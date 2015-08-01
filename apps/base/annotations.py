@@ -261,7 +261,26 @@ and (m.section_id is null or vc.section_id = m.section_id or vc.section_id is nu
 and vc.ensemble_id=? 
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
-    
+
+def get_members(eid):
+    memberships = M.Membership.objects.filter(ensemble__id=eid, deleted=False)
+    users = {}
+    for membership in memberships:
+        user = M.User.objects.get(id=membership.user.id)
+        user_entry = UR.model2dict(user)
+
+        # Remove unnecessary fields
+        del user_entry["guest"]
+        del user_entry["confkey"]
+        del user_entry["valid"]
+        del user_entry["saltedhash"]
+        del user_entry["salt"]
+        del user_entry["password"]
+
+        # Add user dictionary to users
+        users[user.id] = user_entry
+    return users
+
 def get_stats_ensemble(payload):    
     import db
     id_ensemble = payload["id_ensemble"] 

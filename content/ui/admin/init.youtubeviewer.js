@@ -126,18 +126,21 @@ GLOB.pers.createStore = function(payload){
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{references: {id_location: "location"}},
-        members: {}
+        members: {references: {id_ensemble: "ensemble"}}
     });
 
     var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
-//    console.log("Ensemble ID:");
-//    console.log(ensembleID);
 
-    GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){console.log("getMembers dummy callback");});
+    GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){
+        console.log("getMembers callback");
+        console.log(P5);
+        for (var o in P5) {
+            console.log(P5[o]);
+        }
+    });
 
     //get the section info as well as info whether user is admin: 
     GLOB.pers.call("getSectionsInfo", {id_ensemble: ensembleID}, function(P3){
-        console.log("getSectionsInfo callback start");
         var m = GLOB.pers.store;
         m.add("section", P3["sections"]);
         NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
