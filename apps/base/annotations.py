@@ -696,7 +696,7 @@ def addNote(payload):
 
     #putting this in factor for duplicate detection: 
     similar_comments = M.Comment.objects.filter(parent=parent, ctime__gt=datetime.datetime.now()-datetime.timedelta(0,10,0), author=author, body=payload["body"]);
-    
+
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
@@ -758,6 +758,19 @@ def addNote(payload):
         comment.type = payload["type"]
         comment.signed = payload["signed"] == 1
         comment.save()
+
+        # Add any tags
+        if "tags" in payload:
+            new_tags = payload["tags"]
+            for tag_id in new_tags:
+                tagged_user = M.User.objects.get(pk=tag_id)
+
+                tag = M.Tag()
+                tag.type = 1
+                tag.comment = comment
+                tag.individual = tagged_user
+                tag.save()
+
         return [comment]
 
 def setLocationSection(id_location, id_section):
