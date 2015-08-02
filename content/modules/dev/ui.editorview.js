@@ -169,8 +169,47 @@
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr><tr><td><label for='tag'>Select user to tag</label><select name='tag' id='tag'><option selected='selected'>--Select User--</option></select></td><td><table id='current_tags'></table></td></tr> </table></div></div>"].join(""));
+                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr><tr><td><label for='tag'>Select user to tag</label><select name='tag' id='tag'><option value='0' selected='selected'>--Select User--</option></select></td><td><table id='current_tags'></table></td></tr> </table></div></div>"].join(""));
+
+                console.log("Tag List setup");
+
                 self.element.append(contents);
+
+                // Set Up Tagging
+
+                var tag_list = $("#tag");
+                var member_query = self._model.get("members", {});
+                var pending_tagset = {};
+
+                // Add members to drop down menu of taggable people
+                for (var member_id in member_query.items) {
+                    var member = member_query.items[member_id];
+                    console.log(member);
+
+                    tag_list.append("<option value='" + member_id + "'>" + member.firstname + " " + member.lastname + "</option>");
+                }
+
+                // User selected someone to tag, add them to tag list
+                tag_list.change(function() {
+                    // The member of the class we are tagging
+                    var tagged_member = member_query.items[tag_list.val()];
+
+                    // List selected tag in UI and pending_tagset
+                    if (!(tagged_member.id in pending_tagset)) {
+                        pending_tagset[tagged_member.id] = tagged_member;
+                        var ui_taglist = $("#current_tags");
+                        var tag_table_row = "<tr id='tagrow_" + tagged_member.id + "'><td>" + tagged_member.firstname + " " + tagged_member.lastname + "</td><td><button type='button' id='remove_tag_" + tagged_member.id + "'>Remove</button></td></tr>";
+
+                        ui_taglist.append(tag_table_row);
+
+                        // Add listener that will remove tag when remove button is clicked
+                        $("#remove_tag_" + tagged_member.id).click(function() {
+                            delete pending_tagset[tagged_member.id];
+                            $("#tagrow_" + tagged_member.id).remove();
+                        });
+                    }
+                });
+
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
@@ -217,7 +256,8 @@
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-                        marks: {}
+                        marks: {},
+                        tags: pending_tagset
                     };
                     
                     
