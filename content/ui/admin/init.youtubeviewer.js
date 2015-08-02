@@ -126,17 +126,15 @@ GLOB.pers.createStore = function(payload){
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{references: {id_location: "location"}},
-        members: {references: {id_ensemble: "ensemble"}}
+        members: {}
     });
 
     var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
 
     GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){
         console.log("getMembers callback");
-        console.log(P5);
-        for (var o in P5) {
-            console.log(P5[o]);
-        }
+
+        GLOB.pers.store.add("members", P5);
     });
 
     //get the section info as well as info whether user is admin: 
