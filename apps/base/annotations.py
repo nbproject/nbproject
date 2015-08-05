@@ -71,6 +71,11 @@ __NAMES = {
         "body": None,
         "section_id": "location.section_id",
 },
+    "tag": {
+        "ID": "id",
+        "user_id": "individual_id",
+        "comment_id": "comment_id"
+},
        "html5location":{
         "ID": "id", 
         "id_location": "location_id", 
@@ -262,6 +267,7 @@ and vc.ensemble_id=?
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
 
+# Get members of an ensemble
 def get_members(eid):
     memberships = M.Membership.objects.filter(ensemble__id=eid, deleted=False)
     users = {}
@@ -488,18 +494,22 @@ def getCommentsByFile(id_source, uid, after):
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
 
+    # Get Tags
+    tags = M.Tag.objects.filter(comment__in=comments)
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     html5locations_dict = UR.qs2dict(html5locations, __NAMES["html5location"], "ID")
     threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
+    tag_dict = UR.qs2dict(tags, __NAMES["tag"], "ID")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
-    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
+    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict
 
 def get_comments_collection(uid, P):
     output = {}

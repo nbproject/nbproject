@@ -126,7 +126,8 @@ GLOB.pers.createStore = function(payload){
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{references: {id_location: "location"}},
-        members: {}
+        members: {},
+        tags: {references: {user_id: "members", comment_id: "comment"}}
     });
 
     var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
@@ -143,19 +144,7 @@ GLOB.pers.createStore = function(payload){
         m.add("section", P3["sections"]);
         NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
     });
-
-//    GLOB.pers.call("getMembers", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P4){
-//        console.log("getMembers callback start");
-//        var m = GLOB.pers.store;
-//        m.add("members", P4["members"]);
-
-//        console.log("Added Members");
-
-//        var q = m.get("members", {});
-//        for (var rec in q.items) {
-//            console.log(rec);
-//        }
-//    });    
+    
 
     //here we override the callback so that we can get new notes.
     var cb2 = function(P2){    
@@ -188,12 +177,15 @@ GLOB.pers.createStore = function(payload){
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title);
     var noteLoaderCallback = function(P) {
+        console.log("noteLoaderCallback:");
+        console.log(P["tags"]);
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
         m.add("location", P["locations"]);
         m.add("link", P["links"]);
         m.add("threadmark", P["threadmarks"]);
+        m.add("tags", P["tags"]);
         //now check if need to move to a given annotation: 
         if ("c" in GLOB.pers.params){
         window.setTimeout(function(){
