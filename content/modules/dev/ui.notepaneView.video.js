@@ -285,6 +285,13 @@
      var $pane    = $("div.notepaneView-comments[page="+page+"]", self.element).empty();
      var locs    = m.get("location", {id_source:    self._id_source });
      var me = $.concierge.get_component("get_userinfo")();
+
+    // Test print tags
+//    console.log("Testing Tags");
+//    var tags = m.get("tags", {user_id: me.id});
+//    console.log(tags.items);
+//    console.log(Object.keys(tags.items).length);
+
      if (self._filters.me){
     locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
      }
