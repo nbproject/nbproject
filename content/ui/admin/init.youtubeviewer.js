@@ -126,7 +126,8 @@ GLOB.pers.createStore = function(payload){
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{references: {id_location: "location"}},
-        members: {}
+        members: {},
+        tags: {references: {user_id: "members", comment_id: "comment"}}
     });
 
     var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
@@ -176,12 +177,15 @@ GLOB.pers.createStore = function(payload){
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title);
     var noteLoaderCallback = function(P) {
+        console.log("noteLoaderCallback:");
+        console.log(P["tags"]);
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
         m.add("location", P["locations"]);
         m.add("link", P["links"]);
         m.add("threadmark", P["threadmarks"]);
+        m.add("tags", P["tags"]);
         //now check if need to move to a given annotation: 
         if ("c" in GLOB.pers.params){
         window.setTimeout(function(){
