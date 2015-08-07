@@ -732,8 +732,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				var o = model.o.location[evt.value];
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
-				//move player if it was far enough: 
-				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME){
+                                var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
+				//move player if it was far enough and autoseek not disabled: 
+				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
 					console.log("Seek");
 					var newTime = self._page/self.SEC_MULT_FACTOR;
 					ytplayer.seekTo(newTime);
@@ -797,6 +798,11 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                         var cur_locs = self._get_in_range_locs(cur_page);
                                         if (cur_locs.is_empty()) {
                                             $.concierge.trigger({type: "deselect_all_threads"});
+                                        } else {
+                                            var sel_loc = cur_locs.sort(self.options.loc_sort_fct)[0];
+                                            if (sel_loc.ID !== self._id_location) {
+                                                $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
+                                            }
                                         }
 				}
 			break;
