@@ -200,7 +200,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"hoveredTick": null,
 		"selectedTick": null,
 		"currentID": "",
-		"ytLoaded": false
+		"ytLoaded": false,
+                "replayTime": 0
 		};
 
 	
@@ -287,18 +288,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		//given the time in seconds, goes to corresponding time in the video
 		function goToTime(seconds){
 			ytplayer.seekTo(seconds,true);
-			NB_vid.methods.updatePlayerInfo();
-			NB_vid.methods.updateProgressbar();
+			NB_vid.methods.setPlayerInfo(seconds);
+			NB_vid.methods.setProgressbar(seconds);
 		}
 			
 		// called when the playback/"refresh" button is clicked
 		function playback(){
-			var time = ytplayer.getCurrentTime();
-			if (time > 5){
-				NB_vid.methods.goToTime(time - 5);
-			}else{
-				NB_vid.methods.goToTime(0);
-			}
+                        var cur_time = ytplayer.getCurrentTime();
+                        if (cur_time === NB_vid.replayTime) {NB_vid.replayTime = 0;}
+			NB_vid.methods.goToTime(NB_vid.replayTime);
 		}
 		
 		function videoClicked() {
@@ -732,13 +730,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
                                 var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
+                                var newTime = self._page/self.SEC_MULT_FACTOR;
+                                NB_vid.replayTime = newTime;
 				//move player if it was far enough and autoseek not disabled: 
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
 					console.log("Seek");
-					var newTime = self._page/self.SEC_MULT_FACTOR;
-					ytplayer.seekTo(newTime);
-					NB_vid.methods.setPlayerInfo(newTime);
-					NB_vid.methods.setProgressbar(newTime);
+                                        NB_vid.methods.goToTime(newTime);
 				} else {
 					console.log("No Seek");
 					NB_vid.methods.updatePlayerInfo();
