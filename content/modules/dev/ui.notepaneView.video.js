@@ -133,24 +133,6 @@
             }	
 		}	
         },
-        // Given current timestamp (page) returns locations that have started and not ended
-        _get_in_range_locs: function(page){
-            var self = this;
-            var m = self._model;
-            // Get locations that have started
-            var started_locs = m.get("location", {page__in: [0, page]});
-            // Get locations that have not ended
-            var not_ended_ids = {};
-            for (var i in started_locs.items) {
-                var cur_loc = started_locs.items[i];
-                // Handle null duration here
-                if (cur_loc.duration === null) {cur_loc.duration = 2;}
-                var end_page = cur_loc.page + (cur_loc.duration * self.SEC_MULT_FACTOR);
-                if (page < end_page) {not_ended_ids[cur_loc.ID] = cur_loc.ID;}
-            }
-            // Return the intersection of locations that started and locations that didn't end
-            return started_locs.intersect(not_ended_ids);
-        },
         // Given user me and full location set locs
         // Returns locs intersected with the ids of all locations user me is tagged in
         _get_tagged_locs: function(me, locs){
