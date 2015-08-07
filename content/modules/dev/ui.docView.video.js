@@ -441,7 +441,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Removes tick selecting
 		function removeTickSelect() {
-			if (NB_vid.highlightedTick !== null) {
+			if (NB_vid.selectedTick !== null) {
 				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
 			}
 			NB_vid.selectedTick = null;
@@ -781,12 +781,21 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				}
 				$("#durationInput").attr("value", "---");
 			break;
+                        case "deselect_all_threads":
+                            self._page = null;
+                            self._id_location = null;
+                            NB_vid.methods.removeTickSelect();
+                            self._render();
+                        break;
 			case "metronome":
 				if (!self._ignoremetronome){
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
                                         var cur_page = self.SEC_MULT_FACTOR*ytplayer.getCurrentTime();
-                                        console.log(self._get_in_range_locs(cur_page).items);
+                                        var cur_locs = self._get_in_range_locs(cur_page);
+                                        if (cur_locs.is_empty()) {
+                                            $.concierge.trigger({type: "deselect_all_threads"});
+                                        }
 				}
 			break;
 			}
@@ -1008,7 +1017,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			editor_saving: null,
 			metronome: null,
 			editor_delete: null,
-			editor_prepare: null
+			editor_prepare: null,
+                        deselect_all_threads: null
 		}
 	};
 })(jQuery);
