@@ -431,7 +431,17 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var tickmark = $(tickStr);
 			NB_vid.methods.highlightTick(tickmark, "green");
 			if (NB_vid.selectedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                // We are selecting an already selected tick
+                                if (tickmark[0] === NB_vid.selectedTick[0]) {return;}
+                                if (NB_vid.hoveredTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.methods.highlightTick(NB_vid.hoveredTick, "blue");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                }
 			}
 			NB_vid.selectedTick = tickmark;
 			NB_vid.currentID = NB_vid.methods.tickNumFromIdStr(idStr);
@@ -440,7 +450,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		// Removes tick selecting
 		function removeTickSelect() {
 			if (NB_vid.selectedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                if (NB_vid.hoveredTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.methods.highlightTick(NB_vid.hoveredTick, "blue");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                }
 			}
 			NB_vid.selectedTick = null;
 			NB_vid.currentID = "";
@@ -450,16 +468,30 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		function tickHover(id) {
 			var tickStr = "#tickmark" + id;
 			var tickmark = $(tickStr);
-			NB_vid.methods.highlightTick(tickmark, "blue");
+                        if (NB_vid.selectedTick === null) {
+                            NB_vid.methods.highlightTick(tickmark, "blue");
+                        } else {
+                            if (tickmark[0] !== NB_vid.selectedTick[0]) {
+			        NB_vid.methods.highlightTick(tickmark, "blue");
+                            }
+                        }
 			if (NB_vid.hoveredTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                if (NB_vid.selectedTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.highlightTick(NB_vid.selectedTick, "green");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                }
 			}
 			NB_vid.hoveredTick = tickmark;
 		}
 		
 		// Removed tick hovering
 		function removeTickHover() {
-			if (NB_vid.hoveredTick !== null) {
+			if (NB_vid.hoveredTick !== null && NB_vid.hoveredTick !== NB_vid.selectedTick) {
 				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
 			}
 			NB_vid.hoveredTick = null;
@@ -498,11 +530,13 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Selects thread of given id
 		function threadSelect(id){
+                        console.log("Thread Select");
 			$.concierge.trigger({type:"select_thread", value: String(id)});
 		}
 		
 		// Listener for clicks on ticks
 		function tickClickListen(evt) {
+                        console.log("Click Listener");
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.threadSelect(tickNum);
@@ -510,7 +544,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Listener for mouseenter on ticks
 		function tickMouseEnterListen(evt) {
-			console.log("mouseenter");
+                        console.log("mouseenter");
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.tickHover(tickNum);
@@ -999,7 +1033,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
             });
 			var sel = model.o.location[self._id_location];
 			if (sel && sel.page===page){//highlight selection
-                                console.log("New Highlight");
 				$(".selection[id_item="+self._id_location+"]",self.element).addClass("selected");
 			}
         }
