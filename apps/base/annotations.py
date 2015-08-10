@@ -58,7 +58,7 @@ __NAMES = {
         "body": "substring(body, 0, 95) || replace(substring(body, 95, 5), '&', '') as body",
         "big": "cast(length(body)>100 as integer) as big"
 },
-        "location_v_comment2":{
+    "location_v_comment2":{
         "ID": "location_id",
         "id_ensemble": "location.ensemble_id",
         "top": "location.y",
@@ -69,7 +69,8 @@ __NAMES = {
         "w": "location.w",
         "h": "location.h",
         "body": None,
-        "section_id": "location.section_id",
+        "is_title": "location.is_title",
+        "section_id": "location.section_id"
 },
     "tag": {
         "ID": "id",
@@ -116,7 +117,7 @@ __NAMES = {
         "signed": None,
         "type": None,
         "fullname": Template("{{V.author.firstname}} {{V.author.lastname}}"),
-        "admin": None        
+        "admin": None       
 },
     "location_stats": {
         "id_location": None,
@@ -726,6 +727,8 @@ def addNote(payload):
 	# Duration for YouTube comments
 	if "duration" in payload:
 		location.duration = payload["duration"]
+        if "title" in payload:
+                location.is_title = payload["title"] == 1
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
 
         #refuse if similar comment
