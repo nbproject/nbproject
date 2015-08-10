@@ -238,9 +238,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 
 				'</div>',
 
-				'<div id = "durationEditor">',
-					'<text>Duration: </text><input id="durationInput" type="text" size="3" value="--------" /><text> seconds</text>',
-				'</div>',
+				//'<div id = "durationEditor">',
+				//	'<text>Duration: </text><input id="durationInput" type="text" size="3" value="--------" /><text> seconds</text>',
+				//'</div>',
 
 				'<div id ="showTime">',
 					'<div id = "videoTimeDisplay">--:--</div><text> /</text>',
@@ -354,11 +354,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			return xLoc;
 		}
 
-		//calculate the tick width given the duration associated with the comment
-		function calculateTickWidth(duration){
+		//calculate the tick width given the start time and duration associated with the comment
+		function calculateTickWidth(start, duration){
 			if (duration !== 0){
-				var leftLoc = NB_vid.methods.calculateTickLoc(0);
-				var rightLoc = NB_vid.methods.calculateTickLoc(duration*100);
+                                var end = start + duration*100;
+				var leftLoc = NB_vid.methods.calculateTickLoc(start);
+				var rightLoc = NB_vid.methods.calculateTickLoc(end);
+                                var progressbar_width = $("#progressbar").width();
+                                if (rightLoc > progressbar_width) {rightLoc = progressbar_width;}  
 				var width = rightLoc - leftLoc;
 				return width;
 			}else{
@@ -395,7 +398,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				newNoteObj = payload.diff[id];
 				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
 
-				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.duration);
+				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
 
 				console.log("id: "+id+"; duration: "+newNoteObj.duration+"; width: "+tickWidth);
 
