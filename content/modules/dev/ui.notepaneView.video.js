@@ -44,15 +44,16 @@
 		self._id_location	= null; //location_id of selected thread
 		self._is_first_stroke	= true;
 		self._rendered		= false;
-		self._filters		= {me: false, star: false, question: false, tag: false};
+		self._filters		= {me: false, star: false, question: false, tag: false, title: false};
 		self.QUESTION		= null;
 		self.STAR		= null;
-		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'><a title='toggle filter: threads in which I am tagged' class='filter' action='tag' id='filter_tag'><span>tag</span><div class='filter-count'>...</div></a><a title='toggle filter: threads in which I participated' class='filter' action='me' id='filter_me'><span>me</span><div class='filter-count'>...</div></a><a title='toggle filter: starred threads' class='filter' action='star' id='filter_star'><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a><a title='toggle filter: threads with standing questions' class='filter' action='question' id='filter_question'><span>    <div class='nbicon questionicon' style='margin-top: -3px'/>    </span><div class='filter-count'>...</div></a></div><span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span></div><div class='notepaneView-pages'/>");
+		self.element.addClass("notepaneView").append("<div class='notepaneView-header'><div class='filter-controls'><a title='toggle filter: threads in which I am tagged' class='filter' action='tag' id='filter_tag'><span>tag</span><div class='filter-count'>...</div></a><a title='toggle filter: threads which are section titles' class='filter' action='title' id='filter_title'><span>title</span><div class='filter-count'>...</div></a><a title='toggle filter: threads in which I participated' class='filter' action='me' id='filter_me'><span>me</span><div class='filter-count'>...</div></a><a title='toggle filter: starred threads' class='filter' action='star' id='filter_star'><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a><a title='toggle filter: threads with standing questions' class='filter' action='question' id='filter_question'><span>    <div class='nbicon questionicon' style='margin-top: -3px'/>    </span><div class='filter-count'>...</div></a></div><span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span></div><div class='notepaneView-pages'/>");
 
                 $("#filter_me").click(function() {$.concierge.trigger({type: "filter_toggle", value: "me"});});
                 $("#filter_star").click(function() {$.concierge.trigger({type: "filter_toggle", value: "star"});});
                 $("#filter_question").click(function() {$.concierge.trigger({type: "filter_toggle", value: "question"});});
                 $("#filter_tag").click(function() {$.concierge.trigger({type: "filter_toggle", value: "tag"});});
+                $("#filter_title").click(function() {$.concierge.trigger({type: "filter_toggle", value: "title"});});
         },
         _defaultHandler: function(evt){
 		var self=this;
@@ -151,10 +152,11 @@
 		var $filter_star = $filters.filter("[action=star]");
 		var $filter_question = $filters.filter("[action=question]");
                 var $filter_tag = $filters.filter("[action=tag]");
-  var locs_me        = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
+                var $filter_title = $filters.filter("[action=title]");
+        var locs_me        = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
         var locs_star        = m.get("threadmark", {active: true, type: self._STAR });
         var locs_question    = m.get("threadmark", {active: true, type: self._QUESTION });
-
+        var locs_title = locs.intersect(m.get("location", {id_source: self._id_source, is_title: true}).values("ID"));
                 var locs_tag = self._get_tagged_locs(me, locs);
 
         var locs_filtered = locs;
@@ -167,6 +169,11 @@
             $filter_me.addClass("active");
             filters_on = true;
             locs_filtered = locs_filtered.intersect(locs_me.items);
+        }
+        if (self._filters.title){
+            $filter_title.addClass("active");
+            filters_on = true;
+            locs_filtered = locs_filtered.intersect(locs_title.items);
         }
         if (self._filters.star){
             $filter_star.addClass("active");
@@ -182,11 +189,13 @@
         var n_me =  locs_me;
         var n_star = locs_star;
         var n_question = locs_question;
+        var n_title = locs_title;
 
      $("div.filter-count", $filter_tag).text(n_tag.length());
      $("div.filter-count", $filter_me).text(n_me.length());
      $("div.filter-count", $filter_star).text(n_star.length());    
-     $("div.filter-count", $filter_question).text(n_question.length());    
+     $("div.filter-count", $filter_question).text(n_question.length());
+     $("div.filter-count", $filter_title).text(n_title.length());    
      if (filters_on){
     $("span.filter-msg-unfiltered", self.element).hide();
     $("span.filter-msg-filtered", self.element).show();
@@ -310,6 +319,9 @@
 
     if (self._filters.tag) {
         locs = self._get_tagged_locs(me, locs);
+    }
+    if (self._filters.title){
+        locs = locs.intersect(m.get("location", {id_source: self._id_source, is_title: true}).values("ID"));
     }
     if (self._filters.me){
         locs = locs.intersect(m.get("comment", {id_author: me.id}).values("ID_location"));
