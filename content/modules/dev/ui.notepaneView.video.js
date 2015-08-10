@@ -213,12 +213,13 @@
      var lf_numnotes =    "<ins class='locationflag "+(numnew>0?"lf-numnewnotes":"lf-numnotes")+"'>"+numnotes+"</ins>";
      var lf_admin    = m.get("comment", {ID_location: l.ID, admin:1}).is_empty() ? "" : "<ins class='locationflag'><div class='nbicon adminicon' title='An instructor/admin has participated to this thread'>&nbsp;</div></ins>";
      var lf_me_private =    m.get("comment", {ID_location: l.ID, id_author:me.id}).is_empty() ? "": (m.get("comment", {ID_location: l.ID, type:1}).is_empty() ?    "<ins class='locationflag'><div class='nbicon meicon' title='I participated to this thread'/></ins>" : "<ins class='locationflag'><div class='nbicon privateicon' title='I have private comments in    this thread'/></ins>" );
-     var bold_cl    = numnew > 0 ? "location-bold" : "";
+     var bold_cl    = numnew > 0 ? "location-bold " : " ";
+     var title_cl   = l.is_title ? "location-title" : "";
      var lf_star    = numstar > 0 ? "<ins class='locationflag'><div class='nbicon staricon-hicontrast' title='This thread has been starred'/></ins>" : "";
      var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : "";
      var root =    m.get("comment", {ID_location: l.ID, id_parent: null}).first();
      var body = root.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
-     return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+"'>"+body+"</div></div>";
+     return "<div class='location-flags'>"+lf_numnotes+lf_admin+lf_me_private+lf_star+lf_question+"</div><div class='location-shortbody "+(numquestion>0?"replyrequested":"")+"'><div class='location-shortbody-text "+bold_cl+title_cl+"'>"+body+"</div></div>";
      }, 
      _keydown: function(event){
      var self=this;
@@ -322,7 +323,7 @@
      var locs_array = locs.sort(self.options.loc_sort_fct);
      var o;
      if (locs_array.length){
-    $pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+" on page "+page+"</div>");
+    $pane.append("<div class='location-pagesummary' page='"+page+"'>"+locs_array.length+" thread"+$.pluralize(locs_array.length)+"</div>");
      }
      for (var i=0;i<locs_array.length;i++){
     o = locs_array[i];

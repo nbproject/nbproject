@@ -165,7 +165,7 @@
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
                 var titleoption = "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> ";
-                var checkbox_options = questionoption+signoption;
+                var checkbox_options = questionoption+titleoption+signoption;
                 var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
@@ -174,6 +174,18 @@
                                   "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr><tr><td><label for='tag'>Select user to tag</label><select name='tag' id='tag'><option value='0' selected='selected'>--Select User--</option></select></td><td><table id='current_tags'></table></td></tr> </table></div></div>"].join(""));
 
                 self.element.append(contents);
+
+                $("#checkbox_title").click(function() {
+                    var is_checked = $("#checkbox_title").prop("checked");
+                    var dur_box = $("#duration");
+                    if (is_checked) {
+                        dur_box.val(1);
+                        dur_box.prop("disabled", true);
+                    } else {
+                        dur_box.val(2);
+                        dur_box.prop("disabled", false);
+                    }
+                });
 
                 // Set Up Tagging
 
@@ -257,6 +269,7 @@
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {},
+                        title: $("input[value=title]:checked", self.element).length,
                         tags: pending_tagset
                     };
                     

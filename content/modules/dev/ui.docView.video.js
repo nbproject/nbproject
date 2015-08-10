@@ -201,7 +201,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"selectedTick": null,
 		"currentID": "",
 		"ytLoaded": false,
-                "replayTime": 0
+                "replayTime": 0,
+                "titleTicks": {}
 		};
 
 	
@@ -382,25 +383,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var newNoteObj;
 			var tickStr;
 			var tickmark;
-			function clickHandlerFactory() {
-				return function(evt) {
-					console.log("click handle win");
-					console.log(evt.target);
-				};
-			}
-			function hoverHandlerFactory() {
-				return function(evt) {
-					console.log("hover handle win");
-					console.log(evt.target);
-				};
-			}
 			for (var id in payload.diff) {
 				newNoteObj = payload.diff[id];
+                                console.log(newNoteObj);
+                                NB_vid.titleTicks[id] = newNoteObj.is_title;
 				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-
 				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
-
-				console.log("id: "+id+"; duration: "+newNoteObj.duration+"; width: "+tickWidth);
 
 				var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
 				
@@ -411,6 +399,11 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				//get the html of the new tick mark as a string then insert it (bc .append was buggy)
 				htmlText += newTickHTML;
 				$(".tickmark_holder").html(htmlText);
+
+                                if (newNoteObj.is_title) {
+                                    var title_tick = $("#tickmark" + String(id));
+                                    NB_vid.methods.changeTickCSS(title_tick, "black", "No Change", "1");
+                                }
 			}
 			
 			// Attach Listeners to tickmarks
@@ -419,11 +412,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
 
 		// Highlights the given tickmark the given color
 		function highlightTick(tickmark, color) {
+                        console.log(tickmark);
+                        if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {return;}
 			NB_vid.methods.changeTickCSS(tickmark, color, "No Change", "1");
 		}
 		
 		// Unhighlights a given tick
 		function unhighlightTick(tickmark) {
+			if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {return;}
 			NB_vid.methods.changeTickCSS(tickmark, "red", "No Change", ".4");
 		}
 		
@@ -469,6 +465,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Highlights a hovered tick green and saves it as hovered
 		function tickHover(id) {
+                        console.log("Hover");
 			var tickStr = "#tickmark" + id;
 			var tickmark = $(tickStr);
                         if (NB_vid.selectedTick === null) {
@@ -481,7 +478,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			if (NB_vid.hoveredTick !== null) {
                                 if (NB_vid.selectedTick !== null) {
                                     if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
-                                        NB_vid.highlightTick(NB_vid.selectedTick, "green");
+                                        NB_vid.methods.highlightTick(NB_vid.selectedTick, "green");
                                     } else {
 				        NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
                                     }
@@ -530,6 +527,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		function tickNumFromIdStr(idStr) {
 			return idStr.substr(8, idStr.length-1);
 		}
+
+                function tickNumFromSelector(selector) {
+                	return parseInt(selector.substr(9, selector.length-1));
+                }
 		
 		// Selects thread of given id
 		function threadSelect(id){
@@ -589,6 +590,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				"changeTickCSS": changeTickCSS,
 				"threadSelect": threadSelect,
 				"tickNumFromIdStr": tickNumFromIdStr,
+				"tickNumFromSelector": tickNumFromSelector,
 				"tickClickListen": tickClickListen,
 				"tickMouseEnterListen": tickMouseEnterListen,
 				"tickMouseLeaveListen": tickMouseLeaveListen
@@ -765,6 +767,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			break;
 			case "select_thread":
 				var o = model.o.location[evt.value];
+                                console.log(o);
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
                                 var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
@@ -794,7 +797,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				// Update store time as an attribute for the editorView to grab later
 				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
 				$("#videoCover").attr("page", self._page);
-				$("#durationInput").attr("value", NB_vid.defaultCommentDuration);
 			break;
 			case "editor_prepare":
 				// Update store time as an attribute for the editorView to grab later
@@ -807,7 +809,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				} else {
 					self._pause();
 				}
-				$("#durationInput").attr("value", "---");
 			break;
 			case "editor_delete":
 				if (NB_vid.wasPlaying) {
@@ -815,7 +816,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				} else {
 					self._pause();
 				}
-				$("#durationInput").attr("value", "---");
 			break;
                         case "deselect_all_threads":
                             self._page = null;
