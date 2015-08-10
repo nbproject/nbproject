@@ -164,14 +164,13 @@
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
+                var titleoption = "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> ";
                 var checkbox_options = questionoption+signoption;
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
                                   "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr><tr><td><label for='tag'>Select user to tag</label><select name='tag' id='tag'><option value='0' selected='selected'>--Select User--</option></select></td><td><table id='current_tags'></table></td></tr> </table></div></div>"].join(""));
-
-                console.log("Tag List setup");
 
                 self.element.append(contents);
 
@@ -297,7 +296,8 @@
                             throw "editorview: HTML5VIDEO not implemented";
                         case FILETYPES.TYPE_YOUTUBE:
                             drawingarea = self._sel.parent();
-			    var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
+                            var durationBox = $("#duration")[0];
+			    //var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
                             s_inv_w = 1000.0/drawingarea.width();
                             s_inv_h = 1000.0/drawingarea.height();
                             msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
