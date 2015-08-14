@@ -203,7 +203,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"ytLoaded": false,
                 "replayTime": 0,
                 "titleTicks": {},
-                "renderedInitialTicks": false
+                "renderedInitialTicks": false,
+                "tickVisibility": {}
 		};
 
 	
@@ -385,25 +386,28 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var tickStr;
 			var tickmark;
 			for (var id in payload.diff) {
-				newNoteObj = payload.diff[id];
-                                console.log(newNoteObj);
-                                NB_vid.titleTicks[id] = newNoteObj.is_title;
-				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
+                                if (!(id in NB_vid.tickVisibility)) {
+				    newNoteObj = payload.diff[id];
+                                    NB_vid.tickVisibility[id] = true;
+                                    console.log(newNoteObj);
+                                    NB_vid.titleTicks[id] = newNoteObj.is_title;
+				    var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
+				    var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
 
-				var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
+				    var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
 				
-				//copy the htmlText - stores the current tick mark divs (if any)
-				var htmlText = $(".tickmark_holder").html();
-				//clear the content in the tickholder div
-				$(".tickmark_holder").html("");
-				//get the html of the new tick mark as a string then insert it (bc .append was buggy)
-				htmlText += newTickHTML;
-				$(".tickmark_holder").html(htmlText);
+				    //copy the htmlText - stores the current tick mark divs (if any)
+				    var htmlText = $(".tickmark_holder").html();
+				    //clear the content in the tickholder div
+				    $(".tickmark_holder").html("");
+				    //get the html of the new tick mark as a string then insert it (bc .append was buggy)
+				    htmlText += newTickHTML;
+				    $(".tickmark_holder").html(htmlText);
 
-                                if (newNoteObj.is_title) {
-                                    var title_tick = $("#tickmark" + String(id));
-                                    NB_vid.methods.changeTickCSS(title_tick, "black", "No Change", "1");
+                                    if (newNoteObj.is_title) {
+                                        var title_tick = $("#tickmark" + String(id));
+                                        NB_vid.methods.changeTickCSS(title_tick, "black", "No Change", "1");
+                                    }
                                 }
 			}
 			
@@ -936,10 +940,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			if (action === "add" && items_fieldname==="location"){
 				var id_source	= this._id_source; 
 				var page		= this._page;
-				//if (page == null || id_source == null ){
                                 if (!NB_vid.renderedInitialTicks) {
 					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
-					//this._page =  1;
                                         NB_vid.renderedInitialTicks = true;
 					this._init_render();
 
