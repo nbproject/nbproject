@@ -400,8 +400,10 @@ def saveNote(payload, req):
             tms[tm.id] = UR.model2dict(tm)  
     retval["locations"], retval["html5locations"] = annotations.getLocation(a[0].location_id)
     retval["comments"] = {}
+    retval["tags"] = {}
     for annotation in a:
         retval["comments"].update(annotations.getComment(annotation.id, uid))
+        retval["tags"].update(annotations.getTagsByComment(annotation.id))
     retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
