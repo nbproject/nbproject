@@ -213,6 +213,10 @@ float: right
 	width: 752px;
 }
 
+.tagListContainer{
+	visibility: hidden;
+}
+
 .videoContainer{
 	max-height: 423px;
 }
