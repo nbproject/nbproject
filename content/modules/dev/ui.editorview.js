@@ -240,6 +240,8 @@
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
                     model.add("threadmark", payload["threadmarks"]);
+                    console.log(payload["tags"]);
+                    model.add("tags", payload["tags"]);
 
                     if ("html5locations" in payload){
                         model.add("html5location", payload["html5locations"]);
