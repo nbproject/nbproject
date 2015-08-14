@@ -201,7 +201,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"selectedTick": null,
 		"currentID": "",
 		"ytLoaded": false,
-                "replayTime": 0,
                 "titleTicks": {},
                 "renderedInitialTicks": false,
                 "tickVisibility": {}
@@ -241,10 +240,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 
 				'</div>',
 
-				//'<div id = "durationEditor">',
-				//	'<text>Duration: </text><input id="durationInput" type="text" size="3" value="--------" /><text> seconds</text>',
-				//'</div>',
-
 				'<div id ="showTime">',
 					'<div id = "videoTimeDisplay">--:--</div><text> /</text>',
 					'<div id = "videoTotalTimeDisplay">--:--</div>',
@@ -258,6 +253,11 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			
 			'<button onclick = "NB_vid.zoom.zoomClose()" type="button" class="close closeEnlarged" style = "margin-top: 10px; margin-right: 8px; float: right">&times;</button>',
 			'<div class = "enlargedTickEnd">--:--</div>',
+		'</div>',
+		'<div class = "tagListContainer">',
+		'<table id = "tagList">',
+		'<tr><td><b>Tagged:</b></td></tr>',
+		'</table>',
 		'</div>',
 	'</div>'].join('\n');
 	
@@ -297,9 +297,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			
 		// called when the playback/"refresh" button is clicked
 		function playback(){
-                        var cur_time = ytplayer.getCurrentTime();
-                        if (cur_time === NB_vid.replayTime) {NB_vid.replayTime = 0;}
-			NB_vid.methods.goToTime(NB_vid.replayTime);
+			NB_vid.methods.goToTime(0);
 		}
 		
 		function videoClicked() {
@@ -542,7 +540,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                         console.log("Thread Select");
 			$.concierge.trigger({type:"select_thread", value: String(id)});
 		}
-		
+	
 		// Listener for clicks on ticks
 		function tickClickListen(evt) {
                         console.log("Click Listener");
@@ -725,6 +723,30 @@ var ytMetadataCallbacks = jQuery.Deferred();
             
             NB_vid.methods.updateProgressbarClick();
         },
+        // Given location id, get all users tagged at that location
+        _get_tagged_users: function(loc_id){
+            var self = this;
+            var m = self._model;
+            var comments = m.get("comment", {ID_location: loc_id});
+            console.log(comments.first());
+            var users = {};
+            for (var comment_id in comments.items) {
+                var tags = m.get("tags", {comment_id: comment_id});
+                for (var tag_id in tags.items) {
+                    users[tags.items[tag_id].user_id] = null;
+                }
+            }
+            return m.get("members", {}).intersect(users);
+        },
+        _populate_tag_list: function(tagged_users){
+            var tag_table = $("#tagList");
+            $("#tagList tr[class=data]").remove();
+            for (var id in tagged_users) {
+                var user = tagged_users[id];
+                var entry = "<tr class='data'><td>"+user.firstname+" "+user.lastname+"</tr></td>";
+                tag_table.append(entry);
+            }
+        },
         // Given current timestamp (page) returns locations that have started and not ended
         _get_in_range_locs: function(page){
             var self = this;
@@ -772,11 +794,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			case "select_thread":
 				var o = model.o.location[evt.value];
                                 console.log(o);
+                                var tagged_users = self._get_tagged_users(evt.value);
+                                console.log(tagged_users.items);
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
                                 var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
                                 var newTime = self._page/self.SEC_MULT_FACTOR;
-                                NB_vid.replayTime = newTime;
 				//move player if it was far enough and autoseek not disabled: 
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
 					console.log("Seek");
@@ -787,6 +810,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 					NB_vid.methods.updateProgressbar();
 				}
 				NB_vid.methods.tickSelect(self._id_location);
+                                self._populate_tag_list(tagged_users.items);
+                                $(".tagListContainer").css("visibility", "visible");
 				self._render();
 			break;
 			case "doc_scroll_down": 
@@ -825,6 +850,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                             self._page = null;
                             self._id_location = null;
                             NB_vid.methods.removeTickSelect();
+                            $(".tagListContainer").css("visibility", "hidden");
                             self._render();
                         break;
 			case "metronome":

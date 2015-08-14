@@ -470,6 +470,10 @@ def getComment(id, uid):
     names = __NAMES["comment2"]
     comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
     return UR.model2dict(comment, names, "ID")
+
+def getTagsByComment(comment_id):
+    tags = M.Tag.objects.filter(comment__id=comment_id)
+    return UR.qs2dict(tags, __NAMES["tag"], "ID")
     
 def getCommentsByFile(id_source, uid, after):
     names_location = __NAMES["location_v_comment2"]
