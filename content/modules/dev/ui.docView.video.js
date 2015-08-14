@@ -202,7 +202,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"currentID": "",
 		"ytLoaded": false,
                 "replayTime": 0,
-                "titleTicks": {}
+                "titleTicks": {},
+                "renderedInitialTicks": false
 		};
 
 	
@@ -933,10 +934,13 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			if (action === "add" && items_fieldname==="location"){
 				var id_source	= this._id_source; 
 				var page		= this._page;
-				if (page == null || id_source == null ){
+				//if (page == null || id_source == null ){
+                                if (!NB_vid.renderedInitialTicks) {
 					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
-					this._page =  1;
-					this._render();
+					//this._page =  1;
+                                        NB_vid.renderedInitialTicks = true;
+					this._init_render();
+
  
 					ytMetadataCallbacks.done(function () {
 						warnIfUsingFlash();
@@ -991,6 +995,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			*/
 			var p = this._page;
 			this._render_one(p);
+        },
+        _init_render: function(){
+            var self = this;
+            self._draw_selections(1);
         }, 
         _render_one: function(page){
 			var self	= this;
