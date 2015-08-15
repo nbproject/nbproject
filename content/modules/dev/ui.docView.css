@@ -204,9 +204,16 @@ float: right
 .nav{
 	font-size: 12pt;
 }
+
+.titleContainer{
+	height: 25px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
 .videoView, .commentsView, .videoInfo, .tickmarkView{
 	position: absolute;
-	top: 50px;
+	top: 25px;
 	margin-left: 5px;
 }
 .videoView, .videoContainer, .videoInfo, .videoMenu{
