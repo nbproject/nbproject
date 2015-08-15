@@ -37,6 +37,10 @@ width: 100%;
 margin: 5px 0px 5px 0px;
 }
 
+#tagBoxes{
+width: 100%;
+}
+
 div.editor button[action=save]{
 width: 100%;
 min-height: 40px;
