@@ -216,6 +216,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 (function($) {
     var PLAYER_HTML_TEMPLATE = 
     ['<div class = "videoView">',
+                '<div class = "titleContainer">',
+                '</div>',
 		'<div class = "videoContainer">',
 			'<div id="videoDiv">Loading...</div>',
 			'<div id = "videoCover">',
@@ -537,7 +539,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Selects thread of given id
 		function threadSelect(id){
-                        console.log("Thread Select");
 			$.concierge.trigger({type:"select_thread", value: String(id)});
 		}
 	
@@ -766,6 +767,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
             // Return the intersection of locations that started and locations that didn't end
             return started_locs.intersect(not_ended_ids);
         },
+        _get_last_title: function(page){
+            var self = this;
+            var m = self._model;
+            var past_titles = m.get("location", {page__in: [0, page], is_title: true});
+            if (past_titles.is_empty()) {return null;}
+            var cmpfunc = function(loc1, loc2) {return loc2.page - loc1.page;};
+            return past_titles.sort(cmpfunc)[0].body;
+        },
         _defaultHandler: function(evt){
 			var self	= this;
 			var id_source	= self._id_source;
@@ -794,7 +803,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			break;
 			case "select_thread":
 				var o = model.o.location[evt.value];
-                                console.log(o);
                                 var tagged_users = self._get_tagged_users(evt.value);
                                 console.log(tagged_users.items);
 				self._id_location = evt.value;
@@ -803,16 +811,18 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                 var newTime = self._page/self.SEC_MULT_FACTOR;
 				//move player if it was far enough and autoseek not disabled: 
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
-					console.log("Seek");
                                         NB_vid.methods.goToTime(newTime);
 				} else {
-					console.log("No Seek");
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
 				}
 				NB_vid.methods.tickSelect(self._id_location);
-                                self._populate_tag_list(tagged_users.items);
-                                $(".tagListContainer").css("visibility", "visible");
+                                if (!tagged_users.is_empty()) {
+                                    self._populate_tag_list(tagged_users.items);
+                                    $(".tagListContainer").css("visibility", "visible");
+                                } else {
+                                    $(".tagListContainer").css("visibility", "hidden");
+                                }
 				self._render();
 			break;
 			case "doc_scroll_down": 
@@ -861,6 +871,18 @@ var ytMetadataCallbacks = jQuery.Deferred();
 					NB_vid.methods.updateProgressbar();
                                         var cur_page = self.SEC_MULT_FACTOR*ytplayer.getCurrentTime();
                                         var cur_locs = self._get_in_range_locs(cur_page);
+                                        var last_title = self._get_last_title(cur_page);
+                                        
+                                        if (last_title === null) {
+                                            $(".titleContainer").each(function(index, element) {
+                                                element.innerHTML = self._model.o.file[self._id_source].title;
+                                            });
+                                        } else {
+                                            $(".titleContainer").each(function(index, element) {
+                                                element.innerHTML = last_title;
+                                            });
+                                        }
+
                                         if (cur_locs.is_empty()) {
                                             $.concierge.trigger({type: "deselect_all_threads"});
                                         } else {
@@ -891,6 +913,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			ytDefineCallbacks.done(function() {
 				self._generate_contents();
 				self._render();
+                                $(".titleContainer").each(function(index, element) {
+                                    element.innerHTML = self._model.o.file[self._id_source].title;
+                                });
 				if (init_event){
 					$.concierge.trigger(init_event);
 				}
