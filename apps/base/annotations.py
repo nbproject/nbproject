@@ -499,6 +499,10 @@ def getCommentsByFile(id_source, uid, after):
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
 
+    # Filter out private tags that aren't yours
+    comments_tagged_in = M.Tag.objects.filter(individual__id=uid).values_list("comment_id")
+    comments = comments.filter(Q(author__id=uid) | ~Q(type__in=[4]) | Q(id__in=comments_tagged_in))
+
     # Get Tags
     tags = M.Tag.objects.filter(comment__in=comments)
 
