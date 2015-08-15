@@ -210,7 +210,7 @@
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
                 var titleoption = self._note === null ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
                 var checkbox_options = questionoption+titleoption+signoption;
-                var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
+                var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE && !self._doEdit ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
@@ -266,7 +266,6 @@
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
                     model.add("threadmark", payload["threadmarks"]);
-                    console.log(payload["tags"]);
                     model.add("tags", payload["tags"]);
 
                     if ("html5locations" in payload){
