@@ -25,7 +25,7 @@ from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 from django.db import transaction
 
-VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
+VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class", 4: "Private to Tags"}
 
 pending_inserts = []
 def extract_obj(o, from_class, cut_at):
@@ -219,6 +219,45 @@ def do_auth_immediate():
             print "not displaying msg b/c of unicode issues"
     latestNotif.atime = latestCtime
     latestNotif.save()
+
+def do_tag_reminders(t_args):
+    ids = [61, 62, 63]
+    users = M.User.objects.filter(id__in=ids)
+    all_tags = M.Tag.objects.filter(individual__id__in=ids)
+
+    # Assemble list of unseen tags
+    unseen_tags = M.Tag.objects.filter(individual__id__in=ids)
+    for tag in all_tags:
+        seen = M.CommentSeen.objects.filter(comment=tag.comment, user=tag.individual)
+        if seen.exists():
+            unseen_tags = unseen_tags.exclude(id=tag.id)
+
+    # Assemble a dict of recipients and comments they need to be notified about
+    messages = {}
+    for tag in unseen_tags:
+        if tag.individual.id not in messages:
+            messages[tag.individual.id] = [tag.comment.id]
+        else:
+            messages[tag.individual.id].append(tag.comment.id)
+
+    print messages
+
+    # Send Emails
+    subject = "You have unread tags on NB..."
+    V = {"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
+    for recipient_id in messages:
+        recipient = users.get(id=recipient_id)
+        comments = []
+        for comment_id in messages[recipient_id]:
+            comments.append(M.Comment.objects.get(id=comment_id))
+        msg = render_to_string("email/msg_tag_reminder",{"V":V, "comments": comments, "recipient": recipient})
+        email = EmailMessage(subject, msg, settings.EMAIL_FROM, (recipient.email,), (settings.EMAIL_BCC,))
+        email.send(fail_silently=True)
+
+    # Update last reminder
+    for tag in unseen_tags:
+        tag.last_reminder = datetime.datetime.now()
+        tag.save()
     
 def do_all_immediate():
     #send email to for all new msg in group where I'm an admin
@@ -439,7 +478,8 @@ if __name__ == "__main__" :
         "extract": do_extract, 
         "dumpensemble": do_dumpensemble,
         "upgrade": do_upgrade, 
-        "testwrite": do_testwrite
+        "testwrite": do_testwrite,
+	"tagreminders": do_tag_reminders
         }
     utils.process_cli(__file__, ACTIONS)
 
