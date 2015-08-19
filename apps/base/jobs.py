@@ -221,12 +221,12 @@ def do_auth_immediate():
     latestNotif.save()
 
 def do_tag_reminders(t_args):
-    ids = [61, 62, 63]
-    users = M.User.objects.filter(id__in=ids)
-    all_tags = M.Tag.objects.filter(individual__id__in=ids)
+    print "------------ SENDING TAG REMINDERS ------------"
+    users = M.User.objects.all()
+    all_tags = M.Tag.objects.all()
 
     # Assemble list of unseen tags
-    unseen_tags = M.Tag.objects.filter(individual__id__in=ids)
+    unseen_tags = M.Tag.objects.all()
     for tag in all_tags:
         seen = M.CommentSeen.objects.filter(comment=tag.comment, user=tag.individual)
         if seen.exists():
@@ -239,8 +239,6 @@ def do_tag_reminders(t_args):
             messages[tag.individual.id] = [tag.comment.id]
         else:
             messages[tag.individual.id].append(tag.comment.id)
-
-    print messages
 
     # Send Emails
     subject = "You have unread tags on NB..."
@@ -258,6 +256,8 @@ def do_tag_reminders(t_args):
     for tag in unseen_tags:
         tag.last_reminder = datetime.datetime.now()
         tag.save()
+
+    print "------------ TAG REMINDERS COMPLETE ------------"
     
 def do_all_immediate():
     #send email to for all new msg in group where I'm an admin
