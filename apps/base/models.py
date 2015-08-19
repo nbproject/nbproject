@@ -230,7 +230,8 @@ class Tag(models.Model):
     TYPES               = ((1, "Individual"),)
     type                = IntegerField(choices=TYPES)
     individual          = ForeignKey(User, null=True)
-    comment		= ForeignKey(Comment) 
+    comment		= ForeignKey(Comment)
+    last_reminder	= DateTimeField(null=True) 
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
