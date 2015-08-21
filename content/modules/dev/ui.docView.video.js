@@ -1098,7 +1098,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				$.concierge.trigger({type:"select_thread", value: evt.currentTarget.getAttribute("id_item")});
             });
 			var sel = model.o.location[self._id_location];
-			if (sel && sel.page===page){//highlight selection
+			if (sel && sel.page===page && !sel.is_title){//highlight selection
 				$(".selection[id_item="+self._id_location+"]",self.element).addClass("selected");
 			}
         }
