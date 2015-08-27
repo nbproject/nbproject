@@ -360,7 +360,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		//calculate the tick width given the start time and duration associated with the comment
 		function calculateTickWidth(start, duration){
 			if (duration !== 0){
-                                var end = start + duration*100;
+                                var end = start + duration;
 				var leftLoc = NB_vid.methods.calculateTickLoc(start);
 				var rightLoc = NB_vid.methods.calculateTickLoc(end);
                                 var progressbar_width = $("#progressbar").width();
@@ -759,8 +759,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
             for (var i in started_locs.items) {
                 var cur_loc = started_locs.items[i];
                 // Handle null duration here
-                if (cur_loc.duration === null) {cur_loc.duration = 2;}
-                var end_page = cur_loc.page + (cur_loc.duration * self.SEC_MULT_FACTOR);
+                if (cur_loc.duration === null) {cur_loc.duration = 200;}
+                var end_page = cur_loc.page + cur_loc.duration;
                 if (page < end_page) {not_ended_ids[cur_loc.ID] = cur_loc.ID;}
             }
             // Return the intersection of locations that started and locations that didn't end
