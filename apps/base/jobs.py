@@ -220,6 +220,15 @@ def do_auth_immediate():
     latestNotif.atime = latestCtime
     latestNotif.save()
 
+# Multiplies all durations by 100 to switch scaling
+def do_duration_update(t_args):
+    print "------------ UPDATING DURATIONS ------------"
+    for location in M.Location.objects.all():
+        if location.duration != None:
+            location.duration = location.duration*100
+            location.save()
+    print "------------ DURATION UPDATE FINISHED ------------"
+
 def do_tag_reminders(t_args):
     print "------------ SENDING TAG REMINDERS ------------"
     users = M.User.objects.all()
