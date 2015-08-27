@@ -24,6 +24,7 @@
                 var O        = self.options;
                 self._allowStaffOnly = O.allowStaffOnly;
                 self._allowAnonymous = O.allowAnonymous;
+		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
             }, 
             _defaultHandler: function(evt){
                 var self        = this;
@@ -355,7 +356,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
-			    msg.duration = self._sel ? parseInt(durationBox.value):0;
+			    msg.duration = self._sel ? parseInt(durationBox.value)*self._SEC_MULT_FACTOR:0;
                             break;
                         }
                         component_name =  "note_creator";
