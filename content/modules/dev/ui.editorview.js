@@ -124,6 +124,10 @@
                     // We assume the thread is already rendered, we simply focus
                     $("textarea", self.element).focus();
                     break;
+		case "set_duration_box":
+		    var durationBox = $("#duration")[0];
+		    durationBox.value = evt.value;
+		break;
                 case "discard_if_empty":
                     // only allow one current editor if draft is not empty
                     if (self.element.children().length){
@@ -211,12 +215,17 @@
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
                 var titleoption = self._note === null ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
                 var checkbox_options = questionoption+titleoption+signoption;
-                var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE && !self._doEdit ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
+
+		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
+
+                var duration_option = is_video && !self._doEdit ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2.00' disabled /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
+
+		var set_time_buttons = is_video && !self.doEdit ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option><option value='4'>Myself and Tagged Users</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Tagged Users:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
+                                  "<option value='1'>Myself only</option><option value='4'>Myself and Tagged Users</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Tagged Users:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
 
                 self.element.append(contents);
 
@@ -225,18 +234,6 @@
                 } else {
                     $("#tagBoxes").css("visibility", "visible");
                 }
-
-                $("#checkbox_title").click(function() {
-                    var is_checked = $("#checkbox_title").prop("checked");
-                    var dur_box = $("#duration");
-                    if (is_checked) {
-                        dur_box.val(1);
-                        dur_box.prop("disabled", true);
-                    } else {
-                        dur_box.val(2);
-                        dur_box.prop("disabled", false);
-                    }
-                });
 
                 // Set Up Tagging
                 self._populate_tag_list();
@@ -376,8 +373,21 @@
                     $.concierge.get_component(component_name)(msg, f_on_save);
                     $.concierge.trigger({type: "editor_saving", value: 0});
                 };
+
+		var f_set_start = function() {
+		    $.concierge.trigger({type: "set_start_time"});
+		};
+
+		var f_set_end = function() {
+		    $.concierge.trigger({type: "set_end_time"});
+		};
+
                 $("button[action=save]",self.element).click(f_save);
                 $("button[action=discard]",self.element).click(f_discard);
+		if (is_video && !self._doEdit) {
+		    $("button[action=start]",self.element).click(f_set_start);
+		    $("button[action=end]",self.element).click(f_set_end);
+		}
                 if (self._sel){
                     var p = self._selection.parent();
                     // Make annotation box resizable
@@ -423,7 +433,8 @@
             reply_thread: null, 
             edit_thread: null,
             focus_thread: null,
-            discard_if_empty: null
+            discard_if_empty: null,
+	    set_duration_box: null
         },
         id_source: null, 
         note: null, 
