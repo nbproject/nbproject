@@ -374,7 +374,7 @@
 	return 100;
     }, 
     get_metronome_period_s: function(){
-	return 1;
+	return 0.2;
     }
     };
 })(NB);
