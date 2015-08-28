@@ -224,10 +224,10 @@
 
 		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
 
-                var duration_option = is_video && !self._doEdit ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2.00' disabled /> seconds<br/>" : " ";
+                var duration_option = is_video && !self._doEdit && !self._inReplyTo ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2.00' disabled /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
-		var set_time_buttons = is_video && !self.doEdit ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
+		var set_time_buttons = is_video && !self._doEdit && !self._inReplyTo ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
