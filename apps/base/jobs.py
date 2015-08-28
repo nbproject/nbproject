@@ -438,6 +438,30 @@ ds.name='email_confirmation_reply_author' and
         except UnicodeEncodeError: 
             print "not displaying msg b/c of unicode issues"            
 
+def do_add_tag_email_setting(t_args):
+    print "------------ ADDING SETTINGS ------------"
+    ds = M.DefaultSetting()
+    ds.id = 6
+    ds.name = "email_confirmation_tags"
+    ds.value = 1
+    ds.save()
+
+    sl0 = M.SettingLabel()
+    sl0.id = 16
+    sl0.setting = ds
+    sl0.value = 0
+    sl0.label = "Daily reminders only"
+
+    sl1 = M.SettingLabel()
+    sl1.id = 17
+    sl1.setting = ds
+    sl1.value = 1
+    sl1.label = "For each new tag"
+
+    sl0.save()
+    sl1.save()
+    print "------------ SETTINGS ADDED ------------"
+
 def do_upgrade(t_args):
     # We will see if we need to upgrade and call
     # the appropriate upgrade metods when needed
@@ -488,6 +512,7 @@ if __name__ == "__main__" :
         "dumpensemble": do_dumpensemble,
         "upgrade": do_upgrade, 
         "testwrite": do_testwrite,
+	"addsettings": do_add_tag_email_setting,
 	"tagreminders": do_tag_reminders
         }
     utils.process_cli(__file__, ACTIONS)
