@@ -10,6 +10,8 @@ License
 from django.db.models import Q, Max
 from django.db.models import Count
 from django.db import transaction
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 import datetime, os, re, json 
 import models as M
 import constants as CST
@@ -706,6 +708,23 @@ def getMark(uid, payload):
     return UR.qs2dict(o, names, "ID")    
     #return DB().getIndexedObjects(names, "ID", "nb2_v_mark3", "id=? and id_user=?", (int(payload["id_comment"]),uid));
 
+def instantTagReminder(comment, recipient):
+    # Email Data
+    subject = "You were tagged in a new note on NB!"
+    V = {"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME}
+
+    # Send Email
+    default_setting = M.DefaultSetting.objects.get(name="email_confirmation_tags")
+    try:
+        user_setting = M.UserSetting.objects.get(setting=default_setting, user=recipient)
+    except M.UserSetting.DoesNotExist:
+        user_setting = default_setting
+    if user_setting.value > 0:
+        context = {"V": V, "comment": comment, "recipient": recipient}
+        msg = render_to_string("email/msg_instant_tag_reminder", context)
+        email = EmailMessage(subject, msg, settings.EMAIL_FROM, (recipient.email,), (settings.EMAIL_BCC,))
+        email.send(fail_silently=True)
+
 def addNote(payload):
     id_location = None
     author =  M.User.objects.get(pk=payload["id_author"])
@@ -791,6 +810,8 @@ def addNote(payload):
                 tag.comment = comment
                 tag.individual = tagged_user
                 tag.save()
+
+                instantTagReminder(comment, tagged_user)
 
         return [comment]
 
@@ -932,6 +953,7 @@ def editNote(payload):
                 tag.comment = comment
                 tag.individual = tagged_user
                 tag.save()
+                instantTagReminder(comment, tagged_user)
         # If tag exists on this comment and not in tagset, delete it
         deleted_tags = comment_tags.exclude(individual__id__in=tagset)
         deleted_tags.delete()
