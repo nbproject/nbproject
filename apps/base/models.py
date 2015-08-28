@@ -81,7 +81,8 @@ class Ensemble(models.Model):                                                   
     name                = CharField(max_length=255)                             # old: name text
     description         = CharField(max_length=255, default="No description available") 
     allow_staffonly     = BooleanField(default=True, verbose_name="Allow users to write 'staff-only' comments")                           
-    allow_anonymous     = BooleanField(default=True, verbose_name="Allow users to write anonymous comments")  
+    allow_anonymous     = BooleanField(default=True, verbose_name="Allow users to write anonymous comments")
+    allow_tag_private	= BooleanField(default=True, verbose_name="Allow users to make comments private to tagged users only")  
     allow_guest         = BooleanField(default=False, verbose_name="Allow guests (i.e. non-members) to access the site")      
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")

@@ -173,7 +173,8 @@ __NAMES = {
                           "description": "ensemble.description",
                           "allow_guest": "ensemble.allow_guest", 
                           "allow_anonymous": "ensemble.allow_anonymous", 
-                          "allow_staffonly": "ensemble.allow_staffonly",  
+                          "allow_staffonly": "ensemble.allow_staffonly",
+                          "allow_tag_private": "ensemble.allow_tag_private",  
                           "use_invitekey": "ensemble.use_invitekey",
                            } , 
            "folders2":{                       
