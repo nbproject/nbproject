@@ -59,7 +59,7 @@ GLOB.pers.init = function(){
                                   content: function($div){
                     var m = GLOB.pers.store;
                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
-                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
+                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous, allowTagPrivate: ensemble.allow_tag_private});
                     $div.editorview("set_model",GLOB.pers.store );                
                 }
             };
