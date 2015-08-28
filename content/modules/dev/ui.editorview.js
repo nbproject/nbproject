@@ -138,6 +138,12 @@
                     break;
                 }
             },
+            _get_tags_at_comment: function(comment_id){
+                var self = this;
+                var m = self._model;
+		var tags = m.get("tags", {comment_id: comment_id});
+                return tags;
+            },
             _populate_tag_list: function(){
                 var self = this;
                 var m = self._model;
@@ -229,11 +235,15 @@
 
                 self.element.append(contents);
 
-                if (self._doEdit) {
-                    $("#tagBoxes").css("visibility", "hidden");
-                } else {
-                    $("#tagBoxes").css("visibility", "visible");
-                }
+                $("#tagBoxes").css("visibility", "visible");
+
+//                if (self._doEdit) {
+//                    $("#tagBoxes").css("visibility", "hidden");
+//                    var tags = self._get_tags_at_comment(self._note.ID);
+//                    console.log(tags.items);
+//                } else {
+//                    $("#tagBoxes").css("visibility", "visible");
+//                }
 
                 // Set Up Tagging
                 self._populate_tag_list();
@@ -245,6 +255,22 @@
                 $("#deselect_all_button").click(function() {
                     $("#tagBoxes input").prop("checked", false);
                 });
+
+                // Check boxes for tagged people if editing
+                if (self._doEdit) {
+                    var tags = self._get_tags_at_comment(self._note.ID);
+                    var tagged_users = tags.values("user_id");
+                    $("#tagBoxes input").each(function(index, element) {
+                        var id = parseInt(element.value);
+                        if (id in tagged_users) {
+                            element.checked = true;
+                        } else {
+                            element.checked = false;
+                        }
+                    });
+                } else {
+                    $("#tagBoxes input").prop("checked", false);
+                }
 
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
