@@ -908,11 +908,36 @@ def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type)
 
 def editNote(payload):
     id_type = payload["type"]
-    comment = M.Comment.objects.get(pk=payload["id_comment"])
+    comment_id = payload["id_comment"]
+    comment = M.Comment.objects.get(pk=comment_id)
     comment.body = payload["body"]
     comment.type = id_type
     comment.signed = payload["signed"]
     comment.save()
+
+    # Edit Tags if they are in payload
+    if "tags" in payload:
+        tagset = payload["tags"]
+        comment_tags = M.Tag.objects.filter(comment__id=comment_id)
+        # If user in tagset and not yet tagged, add tag
+        for user_id in tagset:
+            try:
+                # If no exception, the tag is already there
+                tag = comment_tags.get(individual__id=user_id)
+            except M.Tag.DoesNotExist:
+                # Tag in tagset but not database, add to database
+                tagged_user = M.User.objects.get(pk=user_id)
+                tag = M.Tag()
+                tag.type = 1
+                tag.comment = comment
+                tag.individual = tagged_user
+                tag.save()
+        # If tag exists on this comment and not in tagset, delete it
+        deleted_tags = comment_tags.exclude(individual__id__in=tagset)
+        deleted_tags.delete()
+#        for tag in comment_tags:
+#            if not (tag.individual.id in tagset):
+#                tag.delete()
     
 def deleteNote(payload):
     id = int(payload["id_comment"])    
