@@ -194,7 +194,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		},
 		"define": defineYouTubePlayer,
 		"defaultCommentDuration": 2,
-		"defaultTickWidth": 2,
+		"defaultTickWidth": 6,
 		"isPlaying": true,
 		"wasPlaying": false, // Whether the player was playing before a note was started
 		"hoveredTick": null,
@@ -392,7 +392,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                     console.log(newNoteObj);
                                     NB_vid.titleTicks[id] = newNoteObj.is_title;
 				    var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-				    var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
+				    var tickWidth = newNoteObj.duration == null || newNoteObj.is_title ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
 
 				    var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
 				
