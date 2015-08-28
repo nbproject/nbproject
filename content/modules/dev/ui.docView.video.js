@@ -680,7 +680,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			self._scale = 33;
 			self.SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
 			self.T_METRONOME = $.concierge.get_component("get_metronome_period_s")();
-			self._page =  null; 
+			self._page =  null;
+			self._start_page = null;
+			self._end_page = null; 
 			self._id_source =  null;
 			self._id_location = null; //location_id of selected thread
 			self._metronome = null;
@@ -778,6 +780,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var self	= this;
 			var id_source	= self._id_source;
 			var model	= self._model;
+			var new_duration = null;
 			if (id_source !== $.concierge.get_state("file")){
 				return;
 			}
@@ -835,12 +838,30 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				self._pause();
 				// Update store time as an attribute for the editorView to grab later
 				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
+				self._start_page = self._page;
+				self._end_page = Math.floor(self._page + self.SEC_MULT_FACTOR*2);
 				$("#videoCover").attr("page", self._page);
+			break;
+			case "set_start_time":
+				var newPage = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
+				if (newPage <= self._end_page) {
+					self._start_page = newPage;
+					new_duration = (self._end_page - self._start_page)/self.SEC_MULT_FACTOR;
+					$.concierge.trigger({type: "set_duration_box", value: new_duration});
+				}
+			break;
+			case "set_end_time":
+				var newEndPage = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
+				if (newEndPage >= self._start_page) {
+					self._end_page = newEndPage;
+					new_duration = (self._end_page - self._start_page)/self.SEC_MULT_FACTOR;
+					$.concierge.trigger({type: "set_duration_box", value: new_duration});
+				}
 			break;
 			case "editor_prepare":
 				// Update store time as an attribute for the editorView to grab later
-				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
-				$("#videoCover").attr("page", self._page);
+				self._page = self._start_page;
+				$("#videoCover").attr("page", self._start_page);
 			break;
 			case "editor_saving":
 				if (NB_vid.wasPlaying) {
@@ -1118,7 +1139,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			metronome: null,
 			editor_delete: null,
 			editor_prepare: null,
-                        deselect_all_threads: null
+                        deselect_all_threads: null,
+			set_start_time: null,
+			set_end_time: null
 		}
 	};
 })(jQuery);
