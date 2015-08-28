@@ -826,6 +826,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                 } else {
                                     $(".tagListContainer").css("visibility", "hidden");
                                 }
+				if (o.is_title) {self._id_location = null;}
 				self._render();
 			break;
 			case "doc_scroll_down": 
@@ -1088,7 +1089,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var t,l,w,h, ID, locs, o, sel_contents, s_w=self._w/1000.0, s_h=self._h/1000.0;
 			var file = model.o.file[id_source];
 			contents="";
-			locs = model.get("location", {id_source: id_source, page: page}).sort(self.options.loc_sort_fct);
+			locs = model.get("location", {id_source: id_source, page: page, is_title: false}).sort(self.options.loc_sort_fct);
 			var me =  $.concierge.get_component("get_userinfo")();
 			for (var i=0;i<locs.length;i++){
 				o = locs[i];
@@ -1119,7 +1120,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				$.concierge.trigger({type:"select_thread", value: evt.currentTarget.getAttribute("id_item")});
             });
 			var sel = model.o.location[self._id_location];
-			if (sel && sel.page===page && !sel.is_title){//highlight selection
+			if (sel && sel.page===page){//highlight selection
 				$(".selection[id_item="+self._id_location+"]",self.element).addClass("selected");
 			}
         }
