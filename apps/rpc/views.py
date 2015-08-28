@@ -414,8 +414,10 @@ def editNote(payload, req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         annotations.editNote(payload)
+    tags = {}
+    tags.update(annotations.getTagsByComment(payload["id_comment"]))
     #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
-    return UR.prepare_response({"comments":  [annotations.getComment(payload["id_comment"], uid)] })
+    return UR.prepare_response({"comments":  [annotations.getComment(payload["id_comment"], uid)], "tags": tags, "cid": payload["id_comment"]})
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)

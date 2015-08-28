@@ -292,6 +292,18 @@
                     model.add("threadmark", payload["threadmarks"]);
                     model.add("tags", payload["tags"]);
 
+                    if ("cid" in payload) {
+                        var cid = payload["cid"];
+                        // Remove tags not in payload
+                        var remove_tags = {};
+                        for (var tag_id in model.get("tags", {comment_id: cid}).items) {
+                            if (!(tag_id in payload["tags"])) {
+                                remove_tags[tag_id] = null;
+                            }
+                        }
+                        model.remove("tags", remove_tags);
+                    }
+
                     if ("html5locations" in payload){
                         model.add("html5location", payload["html5locations"]);
                     }
