@@ -176,6 +176,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		if (ytplayer) {console.log("ytplayer defined!");}
 		else {console.log("ytplayer definition failed");}
 	}
+
+	function videoLocSort(a, b) {
+		return b.page - a.page;
+	}
 	
 	NB_vid = {
 		"methods": {
@@ -203,6 +207,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		"ytLoaded": false,
                 "titleTicks": {},
                 "renderedInitialTicks": false,
+		"videoSortFunc": videoLocSort,
                 "tickVisibility": {}
 		};
 
@@ -908,7 +913,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                         if (cur_locs.is_empty()) {
                                             $.concierge.trigger({type: "deselect_all_threads"});
                                         } else {
-                                            var sel_loc = cur_locs.sort(self.options.loc_sort_fct)[0];
+                                            var sel_loc = cur_locs.sort(NB_vid.videoSortFunc)[0];
                                             if (sel_loc.ID !== self._id_location) {
                                                 $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
                                             }
