@@ -480,7 +480,16 @@ def getComment(id, uid):
 def getTagsByComment(comment_id):
     tags = M.Tag.objects.filter(comment__id=comment_id)
     return UR.qs2dict(tags, __NAMES["tag"], "ID")
-    
+   
+# Returns a QuerySet of Locations in a thread that the user is tagged somewhere in
+def getLocationsTaggedIn(uid):
+    tags = M.Tag.objects.filter(individual__id=uid)
+    comments = M.Comment.objects.filter(id__in=tags.values_list("comment_id"))
+    loc_set = {}
+    for comment in comments:
+        loc_set[comment.location.id] = None
+    return M.Location.objects.filter(id__in=loc_set.keys())
+ 
 def getCommentsByFile(id_source, uid, after):
     names_location = __NAMES["location_v_comment2"]
     names_comment = __NAMES["comment2"]
@@ -506,8 +515,9 @@ def getCommentsByFile(id_source, uid, after):
         threadmarks = threadmarks.filter(ctime__gt=after)
 
     # Filter out private tags that aren't yours
-    comments_tagged_in = M.Tag.objects.filter(individual__id=uid).values_list("comment_id")
-    comments = comments.filter(Q(author__id=uid) | ~Q(type__in=[4]) | Q(id__in=comments_tagged_in))
+    #comments_tagged_in = M.Tag.objects.filter(individual__id=uid).values_list("comment_id")
+    locations_tagged_in = getLocationsTaggedIn(uid)
+    comments = comments.filter(Q(author__id=uid) | ~Q(type__in=[4]) | Q(location__in=locations_tagged_in))
 
     # Get Tags
     tags = M.Tag.objects.filter(comment__in=comments)
