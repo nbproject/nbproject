@@ -394,7 +394,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                 if (!(id in NB_vid.tickVisibility)) {
 				    newNoteObj = payload.diff[id];
                                     NB_vid.tickVisibility[id] = true;
-                                    console.log(newNoteObj);
+//                                    console.log("Single Tick Add");
+//                                    console.log(newNoteObj);
                                     NB_vid.titleTicks[id] = newNoteObj.is_title;
 				    var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
 				    var tickWidth = newNoteObj.duration == null || newNoteObj.is_title ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
@@ -557,7 +558,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Listener for mouseenter on ticks
 		function tickMouseEnterListen(evt) {
-                        console.log("mouseenter");
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.tickHover(tickNum);
@@ -565,7 +565,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		
 		// Listener for mouseleave on ticks
 		function tickMouseLeaveListen(evt) {
-			console.log("mouseleave");
 			var idStr = evt.target.getAttribute("id");
 			NB_vid.methods.removeTickHover();
 			var currentSelectStr = "tickmark" + NB_vid.currentID;
@@ -812,7 +811,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			case "select_thread":
 				var o = model.o.location[evt.value];
                                 var tagged_users = self._get_tagged_users(evt.value);
-                                console.log(tagged_users.items);
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
                                 var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
@@ -847,6 +845,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
 				self._start_page = self._page;
 				self._end_page = Math.floor(self._page + self.SEC_MULT_FACTOR*2);
+				$("#videoCover").attr("page", self._page);
+			break;
+			case "edit_thread":
+				$.concierge.trigger({type: "select_thread", value: self._id_location});
+				NB_vid.wasPlaying = NB_vid.isPlaying;
+				self._pause();
+				var dur = self._model.o.location[self._id_location].duration;
+				self._start_page = self._page;
+				self._end_page = self._page + dur;
 				$("#videoCover").attr("page", self._page);
 			break;
 			case "set_start_time":
@@ -891,6 +898,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
                             $(".tagListContainer").css("visibility", "hidden");
                             self._render();
                         break;
+			case "remove_tick":
+			    $("#tickmark"+String(evt.value)).remove();
+			    delete NB_vid.tickVisibility[evt.value];
+			break;
 			case "metronome":
 				console.log("Tick");
 				if (!self._ignoremetronome){
@@ -1028,6 +1039,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
 						warnIfUsingFlash();
 						NB_vid.methods.addAllTicks(payload);
 						NB_vid.methods.updatePlayerInfo();
+						var cover = $("#videoCover");
+						$.concierge.trigger({type: "set_video_cover", value: cover});
 					});
 					//TODO: in other  "add location" cases we may have to use different method, that forces a to redraw the pages that have been rendered already.
 				}
@@ -1041,6 +1054,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			}
             else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
                 var D		= payload.diff;
+		console.log("REMOVE EVENT");
                 $.L("[docView11] TODO: remove");
             } 
         },
@@ -1149,7 +1163,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			editor_prepare: null,
                         deselect_all_threads: null,
 			set_start_time: null,
-			set_end_time: null
+			set_end_time: null,
+			edit_thread: null,
+			remove_tick: null
 		}
 	};
 })(jQuery);
