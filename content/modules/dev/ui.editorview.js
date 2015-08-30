@@ -26,6 +26,7 @@
                 self._allowAnonymous = O.allowAnonymous;
                 self._allowTagPrivate = O.allowTagPrivate;
 		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
+		self._videoCover = null;
             }, 
             _defaultHandler: function(evt){
                 var self        = this;
@@ -35,6 +36,9 @@
                 var id_item, draft, drafts;
                 console.log("Editor Event: "+evt.type);
                 switch (evt.type){
+		case "set_video_cover":
+		    self._videoCover = evt.value;
+		break;
                 case "new_thread":
                     if (me.guest === 1){
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
@@ -193,6 +197,8 @@
                 var self        = this;
                 var model        = self._model;
                 self.element.trigger("restore");
+		console.log("Video Cover");
+		console.log(self._videoCover);
                 //Various ways to create a selection
                 if (self._selection){ //editor connected to a location
                     self._sel = self._selection.clone();
@@ -225,11 +231,15 @@
                 var checkbox_options = questionoption+titleoption+signoption;
 
 		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
-
-                var duration_option = is_video && !self._doEdit && !self._inReplyTo ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2.00' disabled /> seconds<br/>" : " ";
+                // Determines whether setting time and duration should be allowed
+                var allow_time_set = is_video && !self._inReplyTo && (!self._doEdit || (self._note && self._note.id_parent == null));
+		var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
+                var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration/self._SEC_MULT_FACTOR) : "2.00";
+                
+                var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' disabled /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
-		var set_time_buttons = is_video && !self._doEdit && !self._inReplyTo ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
+		var set_time_buttons = allow_time_set ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
@@ -323,6 +333,19 @@
                             model.add("location", locs);
                         }
                     }
+
+                    // Location was edited, reflect in display
+                    if ("edit_location" in payload) {
+                        var new_loc = payload["edit_location"];
+                        var new_loc_id = new_loc.ID;
+                        // Hack to remove tick since remove event doesn't work
+                        $.concierge.trigger({type: "remove_tick", value: new_loc_id});
+                        var _locs = model.get("location", {}).items;
+                        _locs[new_loc_id] = new_loc;
+			console.log(model.get("location", {}).items);
+			model.set("location", _locs);
+			console.log(model.get("location", {}).items);
+                    }
                     f_cleanup();
                 };
                 var f_save = function(evt){
@@ -350,8 +373,9 @@
                         msg.marks.question = true;
                     }
                     var component_name;
+                    var file = model.o.file[self._file];
                     if (!(self._note)){ //new note, local or global
-                        var file = model.o.file[self._file], s_inv, fudge, drawingarea, s_inv_w, s_inv_h;
+                        var s_inv, fudge, drawingarea, s_inv_w, s_inv_h;
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
                         switch (file.filetype){
@@ -393,7 +417,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
-			    msg.duration = self._sel ? parseInt(durationBox.value)*self._SEC_MULT_FACTOR:0;
+			    msg.duration = self._sel ? Math.floor(parseFloat(durationBox.value)*self._SEC_MULT_FACTOR):0;
                             break;
                         }
                         component_name =  "note_creator";
@@ -404,12 +428,18 @@
                         if  (self._doEdit){
                             msg.id_comment = self._note.ID;
                             component_name =  "note_editor";
+                            console.log(self._sel);
+                            if (file.filetype === FILETYPES.TYPE_YOUTUBE && self._videoCover) {
+                                msg.page = parseInt(self._videoCover.attr("page"));
+                                msg.duration = Math.floor(parseFloat($("#duration")[0].value)*self._SEC_MULT_FACTOR);
+                            }
                         }
                         else{
                             msg.id_parent = self._note.ID;
                             component_name =  "note_creator";
                         }
                     }
+                    console.log(msg);
                     $.concierge.get_component(component_name)(msg, f_on_save);
                     $.concierge.trigger({type: "editor_saving", value: 0});
                 };
@@ -424,7 +454,7 @@
 
                 $("button[action=save]",self.element).click(f_save);
                 $("button[action=discard]",self.element).click(f_discard);
-		if (is_video && !self._doEdit) {
+		if (allow_time_set) {
 		    $("button[action=start]",self.element).click(f_set_start);
 		    $("button[action=end]",self.element).click(f_set_end);
 		}
@@ -474,7 +504,8 @@
             edit_thread: null,
             focus_thread: null,
             discard_if_empty: null,
-	    set_duration_box: null
+	    set_duration_box: null,
+	    set_video_cover: null
         },
         id_source: null, 
         note: null, 
