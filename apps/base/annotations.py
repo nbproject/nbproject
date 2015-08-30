@@ -39,14 +39,16 @@ __NAMES = {
         "h": None,
 },
     "location2": {
-         "id_ensemble": "ensemble_id",
+        "id_ensemble": "ensemble_id",
         "top": "y",
         "left": "x",
         "page": None,
+	"duration": None,
         "id_source": "source_id",
         "ID": "id",
         "w": None,
         "h": None,
+	"section_id": None
 },
     "location_v_comment": {
         "id_ensemble": None,
@@ -72,6 +74,7 @@ __NAMES = {
         "h": "location.h",
         "body": None,
         "is_title": "location.is_title",
+	"duration": "location.duration",
         "section_id": "location.section_id"
 },
     "tag": {
@@ -937,6 +940,14 @@ def editNote(payload):
     comment.signed = payload["signed"]
     comment.save()
 
+    retval = None
+    # Edit time and duration if they are in payload
+    if ("page" in payload) and ("duration" in payload):
+        comment.location.page = payload["page"]
+        comment.location.duration = payload["duration"]
+        comment.location.save()
+        retval = comment.location
+
     # Edit Tags if they are in payload
     if "tags" in payload:
         tagset = payload["tags"]
@@ -958,9 +969,15 @@ def editNote(payload):
         # If tag exists on this comment and not in tagset, delete it
         deleted_tags = comment_tags.exclude(individual__id__in=tagset)
         deleted_tags.delete()
-#        for tag in comment_tags:
-#            if not (tag.individual.id in tagset):
-#                tag.delete()
+
+    if not retval == None:
+        retval = UR.model2dict(retval, __NAMES["location2"], "ID")
+        for loc_id in retval:
+            retval = retval[loc_id]
+            break
+        retval["body"] = M.Comment.objects.get(location__id=loc_id, parent=None).body
+
+    return retval
     
 def deleteNote(payload):
     id = int(payload["id_comment"])    
