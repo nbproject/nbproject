@@ -27,6 +27,7 @@
                 self._allowTagPrivate = O.allowTagPrivate;
 		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
 		self._videoCover = null;
+		self._lastDuration = "";
             }, 
             _defaultHandler: function(evt){
                 var self        = this;
@@ -239,7 +240,7 @@
                 var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' disabled /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
-		var set_time_buttons = allow_time_set ? "<button action='start'>Set Start Time Here</button><button action='end'>Set End Time Here</button>" : "";
+		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
@@ -247,15 +248,22 @@
 
                 self.element.append(contents);
 
-                $("#tagBoxes").css("visibility", "visible");
+                $("#checkbox_title").click(function() {
+                    var dur_box = $("#duration")[0];
+                    if ($("#checkbox_title")[0].checked) {
+                        console.log("ON");
+                        self._lastDuration = dur_box.value;
+                        dur_box.value = "-----";
+                        $(".time_button").prop("disabled", true);
+                    } else {
+                        console.log("OFF");
+                        dur_box.value = self._lastDuration;
+                        self._lastDuration = "";
+                        $(".time_button").prop("disabled", false);
+                    }
+                });
 
-//                if (self._doEdit) {
-//                    $("#tagBoxes").css("visibility", "hidden");
-//                    var tags = self._get_tags_at_comment(self._note.ID);
-//                    console.log(tags.items);
-//                } else {
-//                    $("#tagBoxes").css("visibility", "visible");
-//                }
+                $("#tagBoxes").css("visibility", "visible");
 
                 // Set Up Tagging
                 self._populate_tag_list();
