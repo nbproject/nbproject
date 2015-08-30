@@ -413,11 +413,14 @@ def editNote(payload, req):
     if not auth.canEdit(uid,  payload["id_comment"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
-        annotations.editNote(payload)
+        edited_loc = annotations.editNote(payload)
     tags = {}
     tags.update(annotations.getTagsByComment(payload["id_comment"]))
-    #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
-    return UR.prepare_response({"comments":  [annotations.getComment(payload["id_comment"], uid)], "tags": tags, "cid": payload["id_comment"]})
+    #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor
+    retval = {"comments":  [annotations.getComment(payload["id_comment"], uid)], "tags": tags, "cid": payload["id_comment"]}
+    if not edited_loc == None:
+        retval["edit_location"] = edited_loc
+    return UR.prepare_response(retval)
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)
