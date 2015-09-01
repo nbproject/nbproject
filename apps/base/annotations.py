@@ -290,6 +290,12 @@ def get_members(eid):
         del user_entry["salt"]
         del user_entry["password"]
 
+        # Add section
+	if membership.section == None:
+            user_entry["section"] = None
+        else:
+            user_entry["section"] = membership.section.id
+
         # Add user dictionary to users
         users[user.id] = user_entry
     return users
