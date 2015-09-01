@@ -158,7 +158,7 @@ def newsite(req):
             email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname),
                 render_to_string("email/confirm_newsite", p), 
-                settings.EMAIL_FROM, 
+                settings.EMAIL_INVITE_FROM, 
                 (user.email, ), 
                 (settings.EMAIL_BCC, ))
             email.send()
@@ -343,7 +343,7 @@ def subscribe(req):
                 email = EmailMessage(
                 "Welcome to NB, %s" % (user.firstname,),
                 render_to_string("email/confirm_subscribe", p), 
-                settings.EMAIL_FROM, 
+                settings.EMAIL_INVITE_FROM, 
                 (user.email, ), 
                 (settings.EMAIL_BCC, ))
                 email.send()

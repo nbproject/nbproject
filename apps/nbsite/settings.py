@@ -258,8 +258,11 @@ SMTP_CC_LOSTPASSWORD =  "planet.nb+lostpassword@gmail.com"
 EMAIL_HOST              = settings_credentials.__dict__.get("EMAIL_HOST", 'localhost')
 EMAIL_PORT              = settings_credentials.__dict__.get("EMAIL_PORT", 25)
 
-EMAIL_FROM              = settings_credentials.__dict__.get("EMAIL_FROM", "NB Notifications <nbnotifications@csail.mit.edu>")
-EMAIL_WATCHDOG          = settings_credentials.__dict__.get("EMAIL_WATCHDOG", "NB Watchdog <nbnotifications@csail.mit.edu>")
+EMAIL_NOTIFICATION_FROM              = settings_credentials.__dict__.get("EMAIL_NOTIFICATION_FROM", "NB Notifications <nbnotifications@csail.mit.edu>")
+EMAIL_WATCHDOG_FROM     = settings_credentials.__dict__.get("EMAIL_WATCHDOG", "NB Watchdog <nbwatchdog@csail.mit.edu>")
+EMAIL_INVITE_FROM      = settings_credentials.__dict__.get("EMAIL_INVITE_FROM", "NB Invitations <nbinvites@csail.mit.edu>")
+EMAIL_PASSWDRESET_FROM  = settings_credentials.__dict__.get("EMAIL_PASSWDRESET_FROM", "NB Password Reset <nbpasswordreset@csail.mit.edu>")
+
 EMAIL_HOST_USER		= settings_credentials.__dict__.get("EMAIL_HOST_USER",  "")
 EMAIL_HOST_PASSWORD     = settings_credentials.__dict__.get("EMAIL_HOST_PASSWORD",  "")
 EMAIL_USE_TLS		= settings_credentials.__dict__.get("EMAIL_USE_TLS", False)

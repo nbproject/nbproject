@@ -172,7 +172,7 @@ def sendInvites(payload, req):
         bcc = [] if settings.SMTP_CC_USER is None else (settings.SMTP_CC_USER,)
         e = EmailMessage("You're invited on the %s channel !" % (p["name"],), 
                          msg, 
-                         settings.EMAIL_FROM,
+                         settings.EMAIL_INVITE_FROM,
                          (email, ), 
                          bcc,connection=connection)
         emailmessages.append(e)
@@ -193,7 +193,7 @@ def register_user(P, req):
     email = EmailMessage(
         "Welcome to NB, %s !" % (p2["firstname"], ),
         msg, 
-        settings.EMAIL_FROM,
+        settings.EMAIL_INVITE_FROM,
         (P["email"], ), 
         (settings.EMAIL_BCC, ))
     email.send()

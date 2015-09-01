@@ -131,7 +131,7 @@ def upload(req):
             email = EmailMessage(
                 "The PDF file that you've submitted is now ready on NB.", 
                 msg,
-                settings.EMAIL_FROM,
+                settings.EMAIL_NOTIFICATION_FROM,
                 (V["email"], settings.SMTP_CC_USER ), 
                 (settings.EMAIL_BCC, ))
             email.send()
@@ -152,7 +152,7 @@ def upload(req):
             email = EmailMessage(
                 "NB was unable to read a PDF file that you've submitted", 
                 msg,  
-                settings.EMAIL_FROM,
+                settings.EMAIL_NOTIFICATION_FROM,
                 (V["email"], settings.SMTP_CC_PDFERROR ), (settings.EMAIL_BCC, ))
             email.send()
         r.content =  UR.prepare_response({})

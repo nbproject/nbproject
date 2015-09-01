@@ -207,7 +207,7 @@ def do_auth_immediate():
         msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type]})
         email = EmailMessage("You've posted a new note on NB...",
                              msg, 
-                             settings.EMAIL_FROM,
+                             settings.EMAIL_NOTIFICATION_FROM,
                              (c.author.email, ), 
                              (settings.EMAIL_BCC, ))
         email.send(fail_silently=True)
@@ -231,7 +231,7 @@ def do_all_immediate():
             msg = render_to_string("email/msg_all_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type], "m": m})    
             email = EmailMessage("%s %s just wrote a comment on %s" % (c.author.firstname, c.author.lastname, c.location.source.title),
                                  msg, 
-                                 settings.EMAIL_FROM,
+                                 settings.EMAIL_NOTIFICATION_FROM,
                                  (m.user.email, ), 
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
@@ -259,7 +259,7 @@ def do_reply_immediate():
                 emailed_uids.append(c.author_id)
                 msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
-                msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
+                msg, settings.EMAIL_NOTIFICATION_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
                 email.send(fail_silently=True)
                 try: 
                     print msg
@@ -279,7 +279,7 @@ def do_watchdog_longpdfprocess():
             recipients = [i[1] for i in settings.ADMINS]
             email = EmailMessage("NB Watchdog warning: long pdf process",
                                  msg,  
-                                 settings.EMAIL_WATCHDOG,
+                                 settings.EMAIL_WATCHDOG_FROM,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
@@ -295,7 +295,7 @@ def do_watchdog_notstartedpdfprocess():
             recipients = [i[1] for i in settings.ADMINS]
             email = EmailMessage("NB Watchdog warning: some pdf processes haven't started yet",
                                  msg,  
-                                 settings.EMAIL_WATCHDOG,
+                                 settings.EMAIL_WATCHDOG_FROM,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
@@ -401,7 +401,7 @@ def do_testwrite(t_args):
     except IOError:
         email = EmailMessage("NB: IO Error on server %s" % settings.NB_SERVERNAME,
                              "unable to write file on server %s\nCheck that all partitions are mounted in r/w mode" %  settings.NB_SERVERNAME, 
-                             settings.EMAIL_FROM,
+                             settings.EMAIL_WATCHDOG_FROM,
                              (settings.ADMINS[0][1],))
         email.send()
 

@@ -334,7 +334,7 @@ def process_next(args=[]):
                 msg = render_to_string("email/msg_pdferror",V)
                 email = EmailMessage("NB was unable to read a PDF file that you've submitted", 
                                      msg,  
-                                     settings.EMAIL_FROM,
+                                     settings.EMAIL_NOTIFICATION_FROM,
                                      (V["email"], settings.SMTP_CC_PDFERROR ), 
                                      (settings.EMAIL_BCC, ))
                 email.send()
@@ -359,7 +359,7 @@ def process_next(args=[]):
         email = EmailMessage(
             "The PDF file that you've submitted is now ready on NB.", 
             msg,  
-            settings.EMAIL_FROM,
+            settings.EMAIL_NOTIFICATION_FROM,
             (V["email"], settings.SMTP_CC_USER ), 
             (settings.EMAIL_BCC, ))
         email.send()
