@@ -222,14 +222,14 @@
                         self._sel.remove();
                     }            
                 };
+		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
                 var tagPrivateOption = self._allowTagPrivate ? "<option value='4'>Myself and Tagged Users</option>" : " ";
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
-                var titleoption = self._note === null ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
+                var titleoption = self._note === null && is_video ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
                 var checkbox_options = questionoption+titleoption+signoption;
 
-		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
                 // Determines whether setting time and duration should be allowed
                 var allow_time_set = is_video && !self._inReplyTo && (!self._doEdit || (self._note && self._note.id_parent == null));
 		var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
