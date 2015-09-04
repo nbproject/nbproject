@@ -235,7 +235,7 @@
 		var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
                 var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration/self._SEC_MULT_FACTOR) : "2.00";
                 
-                var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' disabled /> seconds<br/>" : " ";
+                var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
 		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
@@ -267,12 +267,10 @@
                 $("#checkbox_title").click(function() {
                     var dur_box = $("#duration")[0];
                     if ($("#checkbox_title")[0].checked) {
-                        console.log("ON");
                         self._lastDuration = dur_box.value;
                         dur_box.value = "-----";
                         $(".time_button").prop("disabled", true);
                     } else {
-                        console.log("OFF");
                         dur_box.value = self._lastDuration;
                         self._lastDuration = "";
                         $(".time_button").prop("disabled", false);
