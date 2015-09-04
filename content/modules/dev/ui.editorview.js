@@ -24,6 +24,10 @@
                 var O        = self.options;
                 self._allowStaffOnly = O.allowStaffOnly;
                 self._allowAnonymous = O.allowAnonymous;
+                self._allowTagPrivate = O.allowTagPrivate;
+		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
+		self._videoCover = null;
+		self._lastDuration = "";
             }, 
             _defaultHandler: function(evt){
                 var self        = this;
@@ -33,6 +37,9 @@
                 var id_item, draft, drafts;
                 console.log("Editor Event: "+evt.type);
                 switch (evt.type){
+		case "set_video_cover":
+		    self._videoCover = evt.value;
+		break;
                 case "new_thread":
                     if (me.guest === 1){
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
@@ -123,6 +130,10 @@
                     // We assume the thread is already rendered, we simply focus
                     $("textarea", self.element).focus();
                     break;
+		case "set_duration_box":
+		    var durationBox = $("#duration")[0];
+		    durationBox.value = evt.value;
+		break;
                 case "discard_if_empty":
                     // only allow one current editor if draft is not empty
                     if (self.element.children().length){
@@ -132,6 +143,56 @@
                     }
                     break;
                 }
+            },
+            _get_tags_at_comment: function(comment_id){
+                var self = this;
+                var m = self._model;
+		var tags = m.get("tags", {comment_id: comment_id});
+                return tags;
+            },
+            _populate_tag_list: function(){
+                var self = this;
+                var m = self._model;
+                var members = m.get("members", {});
+                var n_members = members.length();
+                var num_rows = Math.floor(n_members / 3);
+                var remainder = n_members % 3;
+                var member_list = new Array(n_members);
+                var tag_table = $("#tagBoxes");
+                var i = 0;
+                for (var id in members.items) {
+                    member_list[i] = members.items[id];
+                    i++;
+                }
+                // Helper for generating checkbox HTML
+                var get_checkbox_html = function(member){
+                    return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'>";
+                };
+                // Add full rows
+                for (i = 0; i < num_rows; i++) {
+                    var member1 = member_list[i*3];
+                    var member2 = member_list[i*3+1];
+                    var member3 = member_list[i*3+2];
+                    var member1_html = "<td>"+get_checkbox_html(member1)+" "+member1.firstname+" "+member1.lastname+"</td>";
+                    var member2_html = "<td>"+get_checkbox_html(member2)+" "+member2.firstname+" "+member2.lastname+"</td>";
+                    var member3_html = "<td>"+get_checkbox_html(member3)+" "+member3.firstname+" "+member3.lastname+"</td>";
+                    var row_html = "<tr class='data'>"+member1_html+member2_html+member3_html+"</tr>";
+                    tag_table.append(row_html);
+                }
+                // Add remainder
+                var final_row_html = "<tr class='data'>";
+                var first_index = num_rows * 3;
+                for (i = 0; i < 3; i++) {
+                    if (i < remainder) {
+                        var member = member_list[first_index+i];
+                        var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
+                        final_row_html += member_html;
+                    } else {
+                        final_row_html += "<td></td>";
+                    }
+                }
+                final_row_html += "</tr>";
+                tag_table.append(final_row_html);
             },
             _render: function(id_item, suppress_focus){
                 var self        = this;
@@ -161,16 +222,90 @@
                         self._sel.remove();
                     }            
                 };
+		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
+                var tagPrivateOption = self._allowTagPrivate ? "<option value='4'>Myself and Tagged Users</option>" : " ";
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
-                var checkbox_options = questionoption+signoption;
+                var titleoption = self._note === null && is_video ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
+                var checkbox_options = questionoption+titleoption+signoption;
+
+                // Determines whether setting time and duration should be allowed
+                var allow_time_set = is_video && !self._inReplyTo && (!self._doEdit || (self._note && self._note.id_parent == null));
+		var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
+                var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration/self._SEC_MULT_FACTOR) : "2.00";
+                
+                var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
+		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
+
+                var section_tag_option = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
+
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
+
                 self.element.append(contents);
+
+                var sections = model.get("section", {});
+                for (var sec_id in sections.items) {
+                    var sec_obj = sections.items[sec_id];
+                    var section_html = "<option value='"+String(sec_obj.id)+"'>"+String(sec_obj.name)+"</option>";
+                    $("#section_tag").append(section_html);
+                }
+
+                $("#section_tag").change(function() {
+                    var tagged_section_id = parseInt($(this).val());
+                    $(this).val("0");
+                    var section_members = model.get("members", {section: tagged_section_id});
+                    for (var tagged_member_id in section_members.items) {
+                        $("#tag_checkbox_"+String(tagged_member_id)).prop("checked", true);
+                    }
+                });
+
+                $("#checkbox_title").click(function() {
+                    var dur_box = $("#duration")[0];
+                    if ($("#checkbox_title")[0].checked) {
+                        self._lastDuration = dur_box.value;
+                        dur_box.value = "-----";
+                        $(".time_button").prop("disabled", true);
+                    } else {
+                        dur_box.value = self._lastDuration;
+                        self._lastDuration = "";
+                        $(".time_button").prop("disabled", false);
+                    }
+                });
+
+                $("#tagBoxes").css("visibility", "visible");
+
+                // Set Up Tagging
+                self._populate_tag_list();
+
+                $("#select_all_button").click(function() {
+                    $("#tagBoxes input").prop("checked", true);
+                });
+
+                $("#deselect_all_button").click(function() {
+                    $("#tagBoxes input").prop("checked", false);
+                });
+
+                // Check boxes for tagged people if editing
+                if (self._doEdit) {
+                    var tags = self._get_tags_at_comment(self._note.ID);
+                    var tagged_users = tags.values("user_id");
+                    $("#tagBoxes input").each(function(index, element) {
+                        var id = parseInt(element.value);
+                        if (id in tagged_users) {
+                            element.checked = true;
+                        } else {
+                            element.checked = false;
+                        }
+                    });
+                } else {
+                    $("#tagBoxes input").prop("checked", false);
+                }
+
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
@@ -189,6 +324,19 @@
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
                     model.add("threadmark", payload["threadmarks"]);
+                    model.add("tags", payload["tags"]);
+
+                    if ("cid" in payload) {
+                        var cid = payload["cid"];
+                        // Remove tags not in payload
+                        var remove_tags = {};
+                        for (var tag_id in model.get("tags", {comment_id: cid}).items) {
+                            if (!(tag_id in payload["tags"])) {
+                                remove_tags[tag_id] = null;
+                            }
+                        }
+                        model.remove("tags", remove_tags);
+                    }
 
                     if ("html5locations" in payload){
                         model.add("html5location", payload["html5locations"]);
@@ -207,17 +355,39 @@
                             model.add("location", locs);
                         }
                     }
+
+                    // Location was edited, reflect in display
+                    if ("edit_location" in payload) {
+                        var new_loc = payload["edit_location"];
+                        var new_loc_id = new_loc.ID;
+                        // Hack to remove tick since remove event doesn't work
+                        $.concierge.trigger({type: "remove_tick", value: new_loc_id});
+                        var _locs = model.get("location", {}).items;
+                        _locs[new_loc_id] = new_loc;
+			console.log(model.get("location", {}).items);
+			model.set("location", _locs);
+			console.log(model.get("location", {}).items);
+                    }
                     f_cleanup();
                 };
                 var f_save = function(evt){
                     $("button[action=save]", self.element).attr("disabled", "disabled");
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
                     $.concierge.trigger({type: "editor_prepare", value: 0});
+                    var tagset = {};
+                    $("#tagBoxes input:checked").each(function(index, element) {
+                        var members = model.get("members", {}).items;
+                        var id = parseInt(element.value);
+                        tagset[id] = members[id];
+                    });
+
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-                        marks: {}
+                        marks: {},
+                        title: $("input[value=title]:checked", self.element).length,
+                        tags: tagset
                     };
                     
                     
@@ -225,8 +395,9 @@
                         msg.marks.question = true;
                     }
                     var component_name;
+                    var file = model.o.file[self._file];
                     if (!(self._note)){ //new note, local or global
-                        var file = model.o.file[self._file], s_inv, fudge, drawingarea, s_inv_w, s_inv_h;
+                        var s_inv, fudge, drawingarea, s_inv_w, s_inv_h;
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
                         switch (file.filetype){
@@ -257,6 +428,8 @@
                             throw "editorview: HTML5VIDEO not implemented";
                         case FILETYPES.TYPE_YOUTUBE:
                             drawingarea = self._sel.parent();
+                            var durationBox = $("#duration")[0];
+			    //var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
                             s_inv_w = 1000.0/drawingarea.width();
                             s_inv_h = 1000.0/drawingarea.height();
                             msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
@@ -266,6 +439,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
+			    msg.duration = self._sel ? Math.floor(parseFloat(durationBox.value)*self._SEC_MULT_FACTOR):0;
                             break;
                         }
                         component_name =  "note_creator";
@@ -276,17 +450,36 @@
                         if  (self._doEdit){
                             msg.id_comment = self._note.ID;
                             component_name =  "note_editor";
+                            console.log(self._sel);
+                            if (file.filetype === FILETYPES.TYPE_YOUTUBE && self._videoCover) {
+                                msg.page = parseInt(self._videoCover.attr("page"));
+                                msg.duration = Math.floor(parseFloat($("#duration")[0].value)*self._SEC_MULT_FACTOR);
+                            }
                         }
                         else{
                             msg.id_parent = self._note.ID;
                             component_name =  "note_creator";
                         }
                     }
+                    console.log(msg);
                     $.concierge.get_component(component_name)(msg, f_on_save);
                     $.concierge.trigger({type: "editor_saving", value: 0});
                 };
+
+		var f_set_start = function() {
+		    $.concierge.trigger({type: "set_start_time"});
+		};
+
+		var f_set_end = function() {
+		    $.concierge.trigger({type: "set_end_time"});
+		};
+
                 $("button[action=save]",self.element).click(f_save);
                 $("button[action=discard]",self.element).click(f_discard);
+		if (allow_time_set) {
+		    $("button[action=start]",self.element).click(f_set_start);
+		    $("button[action=end]",self.element).click(f_set_end);
+		}
                 if (self._sel){
                     var p = self._selection.parent();
                     // Make annotation box resizable
@@ -332,7 +525,9 @@
             reply_thread: null, 
             edit_thread: null,
             focus_thread: null,
-            discard_if_empty: null
+            discard_if_empty: null,
+	    set_duration_box: null,
+	    set_video_cover: null
         },
         id_source: null, 
         note: null, 

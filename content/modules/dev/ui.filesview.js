@@ -452,7 +452,7 @@
         },
         _RATING_LABELS: {1: "<div class='nbicon refuseicon'/>Dismiss",
                  2: "<div class='nbicon checkicon'/>Accept",
-                 3: "<div class='nbicon thankscheckicon'/> Thanks, this <i>really</i> helped !"
+                 3: "<div style='display: none' class='nbicon thankscheckicon'/> Thanks, this <i>really</i> helped !"
         }
     });
 
