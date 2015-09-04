@@ -423,15 +423,20 @@ var ytMetadataCallbacks = jQuery.Deferred();
 
 		// Highlights the given tickmark the given color
 		function highlightTick(tickmark, color) {
-                        console.log(tickmark);
-                        if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {return;}
+                        if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {
+                            if (color.toLowerCase() === "blue") {color = "darkgray";}
+                            if (!(color.toLowerCase() === "black" || color.toLowerCase() === "darkgray")) {return;}
+                        }
 			NB_vid.methods.changeTickCSS(tickmark, color, "No Change", "1");
 		}
 		
 		// Unhighlights a given tick
 		function unhighlightTick(tickmark) {
-			if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {return;}
-			NB_vid.methods.changeTickCSS(tickmark, "red", "No Change", ".4");
+			if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {
+                            NB_vid.methods.changeTickCSS(tickmark, "black", "No Change", "1");
+                        } else {
+			    NB_vid.methods.changeTickCSS(tickmark, "red", "No Change", ".4");
+                        }
 		}
 		
 		// Highlights a selected tick green and saves it as selected
