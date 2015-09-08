@@ -169,7 +169,10 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+#            'class': 'django.utils.log.AdminEmailHandler'
+            'class' : 'logging.FileHandler',
+            'filename': "%s/%s" % (ROOTDIR, 'requests.log')
+
             }, 
         'scrolling': {
             'level': 'INFO',
