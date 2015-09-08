@@ -156,10 +156,13 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
-        'scrolling': {
-            'format': '%(message)s'
-            },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
+        'scrolling': {
+            'format': '%(message)s',
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -169,27 +172,31 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-#            'class': 'django.utils.log.AdminEmailHandler'
-            'class' : 'logging.FileHandler',
-            'filename': "%s/%s" % (ROOTDIR, 'requests.log')
-
+            'class': 'django.utils.log.AdminEmailHandler'
             }, 
         'scrolling': {
             'level': 'INFO',
             'class' : 'logging.FileHandler',
             'formatter': 'scrolling',
             'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
-            }
+            }, 
+        'errorlog': {
+            'level': 'ERROR',
+            'class' : 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': "%s/%s" % (ROOTDIR, 'errors.log'),
+            }, 
         },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['errorlog'],
             'level': 'ERROR',
-            'propagate': True,
+            'propagate': False,
         },
         'scrolling':{
             'handlers': ['scrolling'], 
-            'level': 'INFO'
+            'level': 'INFO',
+            'propagate': False,
             }
         }
     }
