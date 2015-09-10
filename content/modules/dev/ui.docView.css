@@ -248,7 +248,7 @@ float: right
 .videoMenu{
 	max-width: 742px;
 	padding: 5px;
-	height:50px;
+	height:60px;
 	/*background: #E6E6E6;*/
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -356,6 +356,16 @@ float: right
 	margin-top: -5px;
 	text-align: right;	
 	height: 100%;
+	display: inline-block;
+	float: right;
+}
+
+#durationEditor{
+	display: inline-block;
+}
+
+#durationInput{
+	size: 3;
 }
 
 #videoTimeDisplay, #videoTotalTimeDisplay{
