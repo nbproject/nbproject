@@ -1,7 +1,7 @@
 /* docView Plugin 
  * Depends:
  *    ui.core.js
- *     ui.view.js
+ *    ui.view.js
  *
 
  Author 
@@ -15,6 +15,12 @@
 
 var ytplayer = null;
 var NB_vid = {};
+// Resolves when API is loaded and should define ytplayer
+var ytApiCallbacks = jQuery.Deferred();
+// Resolves when ytplayer is fully defined
+var ytDefineCallbacks = jQuery.Deferred();
+// Resolves when duration of video is available
+var ytMetadataCallbacks = jQuery.Deferred();
 
 	//Update a particular HTML element with a new value
 	function updateHTML(elmId, value) {
@@ -28,7 +34,7 @@ var NB_vid = {};
 
 	// This function is called when the player changes state
 	function onPlayerStateChange(newState) {
-		updateHTML("playerState", newState);
+		//updateHTML("playerState", newState);
 	}
 
 	// Display information about the current state of the player
@@ -42,6 +48,15 @@ var NB_vid = {};
 		}
 	}
 
+	// Sets time display to given time, useful if updating immediately after seek
+	function setPlayerInfo(time) {
+		// Also check that at least one function exists since when IE unloads the
+		// page, it will destroy the SWF before clearing the interval.
+		if(ytplayer && ytplayer.getDuration) {
+			NB_vid.methods.updateHTML("videoTimeDisplay", NB_vid.methods.calculateTime(time)); //seen under progressbar
+			NB_vid.methods.updateHTML("videoTotalTimeDisplay", NB_vid.methods.calculateTime(ytplayer.getDuration()));
+		}
+	}
 
 	// Allow the user to set the volume from 0-100
 	function setVideoVolume(volume) {
@@ -126,6 +141,41 @@ var NB_vid = {};
 	function videoClicked() {
 		NB_vid.methods.playORpause();
 	}
+
+
+	// This function is automatically called by the player once it loads
+	function onYouTubePlayerReady(event) {
+		console.log("ytplayer ready");
+		
+		NB_vid.ytLoaded = true;
+
+		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
+
+		// This causes the updatePlayerInfo function to be called every 250ms to
+		// get fresh data from the player
+		NB_vid.methods.updatePlayerInfo();		
+		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
+		ytplayer.addEventListener("onError", "onPlayerError");
+		ytDefineCallbacks.resolve();
+	}
+
+	function defineYouTubePlayer() {
+		console.log("defining ytplayer");
+		ytplayer = new YT.Player('videoDiv', {
+			height: '423',
+			width: '752',
+			videoId: 'ylLzyHk54Z0',
+			playerVars: {
+				'controls': 0,
+				'showinfo': 0
+			},
+			events: {
+				'onReady': onYouTubePlayerReady
+			}
+		});
+		if (ytplayer) {console.log("ytplayer defined!");}
+		else {console.log("ytplayer definition failed");}
+	}
 	
 	NB_vid = {
 		"methods": {
@@ -133,6 +183,7 @@ var NB_vid = {};
 			"onPlayerError": onPlayerError,
 			"onPlayerStateChange": onPlayerStateChange,
 			"updatePlayerInfo": updatePlayerInfo,
+			"setPlayerInfo": setPlayerInfo,
 			"calculateTime": calculateTime,
 			"calculateTime_stringToNum": calculateTime_stringToNum,
 			"setVideoVolume": setVideoVolume,
@@ -141,39 +192,25 @@ var NB_vid = {};
 			"muteVideo": muteVideo,
 			"unMuteVideo": unMuteVideo
 		},
+		"define": defineYouTubePlayer,
+		"defaultCommentDuration": 2,
 		"defaultTickWidth": 2,
-		"isPlaying": false,
+		"isPlaying": true,
 		"wasPlaying": false, // Whether the player was playing before a note was started
 		"hoveredTick": null,
 		"selectedTick": null,
 		"currentID": "",
-		"ytLoaded": false
+		"ytLoaded": false,
+                "replayTime": 0
 		};
 
-	// This function is automatically called by the player once it loads
-	function onYouTubePlayerReady(playerId) {
-		console.log("ytplayer ready");
-		ytplayer = document.getElementById("ytPlayer");
-		NB_vid.ytLoaded = true;
-
-		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
-
-		//This hack is an attempt to eliminate the big red play button by default
-		//it prevents the default play button from playing the video without changing my own play button
-		//it also starts the loading of the video sooner
-		window.setTimeout(function() {
-			ytplayer.playVideo();
-			ytplayer.pauseVideo(); //comment this out if using the gatherThumbnailHandler
-		}, 0);
-
-		// This causes the updatePlayerInfo function to be called every 250ms to
-		// get fresh data from the player
-		NB_vid.methods.updatePlayerInfo();		
-		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
-		ytplayer.addEventListener("onError", "onPlayerError");
-		//Load an initial video into the player
-		ytplayer.cueVideoById("ylLzyHk54Z0");
+	
+	
+	function onYouTubeIframeAPIReady() {
+		console.log("Iframe API Ready");
+                ytApiCallbacks.resolve();
 	}
+		
 (function($) {
     var PLAYER_HTML_TEMPLATE = 
     ['<div class = "videoView">',
@@ -184,7 +221,7 @@ var NB_vid = {};
 			'<div class="selections"></div>',
 		'</div>',
 		'<div class = "videoMenu">',
-			'<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/play.png"></div>',
+			'<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/pause.png"></div>',
 			'<div class = "playback"><img class = "playback" src="/content/data/images/refresh.png"></div>',
 			'<div class = "progressbar_container">',
 				'<div id= "dragRangeContainer">',
@@ -200,6 +237,10 @@ var NB_vid = {};
 				'<div class = "tickmark_holder">',
 
 				'</div>',
+
+				//'<div id = "durationEditor">',
+				//	'<text>Duration: </text><input id="durationInput" type="text" size="3" value="--------" /><text> seconds</text>',
+				//'</div>',
 
 				'<div id ="showTime">',
 					'<div id = "videoTimeDisplay">--:--</div><text> /</text>',
@@ -247,18 +288,15 @@ var NB_vid = {};
 		//given the time in seconds, goes to corresponding time in the video
 		function goToTime(seconds){
 			ytplayer.seekTo(seconds,true);
-			NB_vid.methods.updatePlayerInfo();
-			NB_vid.methods.updateProgressbar();
+			NB_vid.methods.setPlayerInfo(seconds);
+			NB_vid.methods.setProgressbar(seconds);
 		}
 			
 		// called when the playback/"refresh" button is clicked
 		function playback(){
-			var time = ytplayer.getCurrentTime();
-			if (time > 5){
-				NB_vid.methods.goToTime(time - 5);
-			}else{
-				NB_vid.methods.goToTime(0);
-			}
+                        var cur_time = ytplayer.getCurrentTime();
+                        if (cur_time === NB_vid.replayTime) {NB_vid.replayTime = 0;}
+			NB_vid.methods.goToTime(NB_vid.replayTime);
 		}
 		
 		function videoClicked() {
@@ -271,6 +309,12 @@ var NB_vid = {};
 			var percentage = 100*ytplayer.getCurrentTime()/ytplayer.getDuration();
 			$("#progressbar_filler").css("width", percentage+"%");
 		} 
+
+		// Sets progress bar to given time, useful if updating immediately after seek
+		function setProgressbar(time){
+			var percentage = 100*time/ytplayer.getDuration();
+			$("#progressbar_filler").css("width", percentage+"%");
+		}
 	
 		//update the time of the ytplayer given the mouse x-location
 		function progressbar_click(xloc){
@@ -310,15 +354,18 @@ var NB_vid = {};
 			return xLoc;
 		}
 
-		//calculate the tick width given the starting and end time associated with the comment
-		function calculateTickWidth(startTime, endTime){
-			if (endTime !== 0){
-				var leftLoc = NB_vid.methods.calculateTickLoc(startTime);
-				var rightLoc = NB_vid.methods.calculateTickLoc(endTime);
+		//calculate the tick width given the start time and duration associated with the comment
+		function calculateTickWidth(start, duration){
+			if (duration !== 0){
+                                var end = start + duration*100;
+				var leftLoc = NB_vid.methods.calculateTickLoc(start);
+				var rightLoc = NB_vid.methods.calculateTickLoc(end);
+                                var progressbar_width = $("#progressbar").width();
+                                if (rightLoc > progressbar_width) {rightLoc = progressbar_width;}  
 				var width = rightLoc - leftLoc;
 				return width;
 			}else{
-				return "1";
+				return "2";
 			}
 		}
 
@@ -331,6 +378,7 @@ var NB_vid = {};
 		
 		//This function should be called to add ticks to the tick bar
 		function addAllTicks(payload) {
+			console.log("Adding Ticks");
 			var newNoteObj;
 			var tickStr;
 			var tickmark;
@@ -349,7 +397,12 @@ var NB_vid = {};
 			for (var id in payload.diff) {
 				newNoteObj = payload.diff[id];
 				var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
-				var newTickHTML = NB_vid.methods.tickHTML(tickX, NB_vid.defaultTickWidth, id);
+
+				var tickWidth = newNoteObj.duration == null ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
+
+				console.log("id: "+id+"; duration: "+newNoteObj.duration+"; width: "+tickWidth);
+
+				var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
 				
 				//copy the htmlText - stores the current tick mark divs (if any)
 				var htmlText = $(".tickmark_holder").html();
@@ -381,7 +434,17 @@ var NB_vid = {};
 			var tickmark = $(tickStr);
 			NB_vid.methods.highlightTick(tickmark, "green");
 			if (NB_vid.selectedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                // We are selecting an already selected tick
+                                if (tickmark[0] === NB_vid.selectedTick[0]) {return;}
+                                if (NB_vid.hoveredTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.methods.highlightTick(NB_vid.hoveredTick, "blue");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                }
 			}
 			NB_vid.selectedTick = tickmark;
 			NB_vid.currentID = NB_vid.methods.tickNumFromIdStr(idStr);
@@ -389,8 +452,16 @@ var NB_vid = {};
 		
 		// Removes tick selecting
 		function removeTickSelect() {
-			if (NB_vid.highlightedTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+			if (NB_vid.selectedTick !== null) {
+                                if (NB_vid.hoveredTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.methods.highlightTick(NB_vid.hoveredTick, "blue");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.selectedTick);
+                                }
 			}
 			NB_vid.selectedTick = null;
 			NB_vid.currentID = "";
@@ -400,16 +471,30 @@ var NB_vid = {};
 		function tickHover(id) {
 			var tickStr = "#tickmark" + id;
 			var tickmark = $(tickStr);
-			NB_vid.methods.highlightTick(tickmark, "blue");
+                        if (NB_vid.selectedTick === null) {
+                            NB_vid.methods.highlightTick(tickmark, "blue");
+                        } else {
+                            if (tickmark[0] !== NB_vid.selectedTick[0]) {
+			        NB_vid.methods.highlightTick(tickmark, "blue");
+                            }
+                        }
 			if (NB_vid.hoveredTick !== null) {
-				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                if (NB_vid.selectedTick !== null) {
+                                    if (NB_vid.hoveredTick[0] === NB_vid.selectedTick[0]) {
+                                        NB_vid.highlightTick(NB_vid.selectedTick, "green");
+                                    } else {
+				        NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                    }
+                                } else {
+                                    NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
+                                }
 			}
 			NB_vid.hoveredTick = tickmark;
 		}
 		
 		// Removed tick hovering
 		function removeTickHover() {
-			if (NB_vid.hoveredTick !== null) {
+			if (NB_vid.hoveredTick !== null && NB_vid.hoveredTick !== NB_vid.selectedTick) {
 				NB_vid.methods.unhighlightTick(NB_vid.hoveredTick);
 			}
 			NB_vid.hoveredTick = null;
@@ -448,11 +533,13 @@ var NB_vid = {};
 		
 		// Selects thread of given id
 		function threadSelect(id){
+                        console.log("Thread Select");
 			$.concierge.trigger({type:"select_thread", value: String(id)});
 		}
 		
 		// Listener for clicks on ticks
 		function tickClickListen(evt) {
+                        console.log("Click Listener");
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.threadSelect(tickNum);
@@ -460,7 +547,7 @@ var NB_vid = {};
 		
 		// Listener for mouseenter on ticks
 		function tickMouseEnterListen(evt) {
-			console.log("mouseenter");
+                        console.log("mouseenter");
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.tickHover(tickNum);
@@ -484,6 +571,7 @@ var NB_vid = {};
 				"muteORunmute": muteORunmute,
 				"goToTime" : goToTime,
 				"updateProgressbar": updateProgressbar,
+				"setProgressbar": setProgressbar,
 				"progressbar_click": progressbar_click,
 				"updateProgressbarClick": updateProgressbarClick,
 				"progressbarOffsetX": progressbarOffsetX,
@@ -537,6 +625,7 @@ var NB_vid = {};
 		};
 		Metronome.prototype.play = function(){
 			if (this.state === METRONOME_STATES.PAUSED){
+				console.log("Playing Metronome");
 				this.state = METRONOME_STATES.PLAYING;
 				this.__go();
 			}
@@ -558,6 +647,7 @@ var NB_vid = {};
 		};
 
 		Metronome.prototype.pause = function(){
+			console.log("Pausing Metronome");
 			this.state = METRONOME_STATES.PAUSED;
 		};
 		
@@ -569,6 +659,7 @@ var NB_vid = {};
 		$.ui.view.prototype._create.call(this);
 			var self = this;
 			self.element.append(PLAYER_HTML_TEMPLATE);
+			
 			self._last_clicked_selection =  0;
 			// Fill in width and height of player; Only tested with current values
 			var playerWidth = 752;
@@ -589,16 +680,8 @@ var NB_vid = {};
 			self._metronome = null;
 			self._ignoremetronome = false;
 			
-			// Lets Flash from another domain call JavaScript
-			var params = { allowScriptAccess: "always" };
-			// The element id of the Flash embed
-			var atts = { id: "ytPlayer" };
-			
-			swfobject.embedSWF("http://www.youtube.com/apiplayer?" +
-				"enablejsapi=1&version=3&playerapiid=player1", 
-				"videoDiv", playerWidth.toString(), playerHeight.toString(), "9", null, null, params, atts);
-				
-				self._attachListeners();
+			ytApiCallbacks.done(NB_vid.define);
+			self._attachListeners();
         },
         _playORpause: function() {
 			var self = this;
@@ -635,6 +718,24 @@ var NB_vid = {};
             
             NB_vid.methods.updateProgressbarClick();
         },
+        // Given current timestamp (page) returns locations that have started and not ended
+        _get_in_range_locs: function(page){
+            var self = this;
+            var m = self._model;
+            // Get locations that have started
+            var started_locs = m.get("location", {page__in: [0, page]});
+            // Get locations that have not ended
+            var not_ended_ids = {};
+            for (var i in started_locs.items) {
+                var cur_loc = started_locs.items[i];
+                // Handle null duration here
+                if (cur_loc.duration === null) {cur_loc.duration = 2;}
+                var end_page = cur_loc.page + (cur_loc.duration * self.SEC_MULT_FACTOR);
+                if (page < end_page) {not_ended_ids[cur_loc.ID] = cur_loc.ID;}
+            }
+            // Return the intersection of locations that started and locations that didn't end
+            return started_locs.intersect(not_ended_ids);
+        },
         _defaultHandler: function(evt){
 			var self	= this;
 			var id_source	= self._id_source;
@@ -665,12 +766,18 @@ var NB_vid = {};
 				var o = model.o.location[evt.value];
 				self._id_location = evt.value;
 				self._page = self._model.o.location[self._id_location].page;
-				//move player if it was far enough: 
-				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME){
-					ytplayer.seekTo(self._page/self.SEC_MULT_FACTOR);
+                                var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
+                                var newTime = self._page/self.SEC_MULT_FACTOR;
+                                NB_vid.replayTime = newTime;
+				//move player if it was far enough and autoseek not disabled: 
+				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
+					console.log("Seek");
+                                        NB_vid.methods.goToTime(newTime);
+				} else {
+					console.log("No Seek");
+					NB_vid.methods.updatePlayerInfo();
+					NB_vid.methods.updateProgressbar();
 				}
-				NB_vid.methods.updatePlayerInfo();
-				NB_vid.methods.updateProgressbar();
 				NB_vid.methods.tickSelect(self._id_location);
 				self._render();
 			break;
@@ -686,6 +793,7 @@ var NB_vid = {};
 				// Update store time as an attribute for the editorView to grab later
 				self._page = Math.floor(self.SEC_MULT_FACTOR*ytplayer.getCurrentTime());
 				$("#videoCover").attr("page", self._page);
+				$("#durationInput").attr("value", NB_vid.defaultCommentDuration);
 			break;
 			case "editor_prepare":
 				// Update store time as an attribute for the editorView to grab later
@@ -698,6 +806,7 @@ var NB_vid = {};
 				} else {
 					self._pause();
 				}
+				$("#durationInput").attr("value", "---");
 			break;
 			case "editor_delete":
 				if (NB_vid.wasPlaying) {
@@ -705,11 +814,28 @@ var NB_vid = {};
 				} else {
 					self._pause();
 				}
+				$("#durationInput").attr("value", "---");
 			break;
+                        case "deselect_all_threads":
+                            self._page = null;
+                            self._id_location = null;
+                            NB_vid.methods.removeTickSelect();
+                            self._render();
+                        break;
 			case "metronome":
 				if (!self._ignoremetronome){
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
+                                        var cur_page = self.SEC_MULT_FACTOR*ytplayer.getCurrentTime();
+                                        var cur_locs = self._get_in_range_locs(cur_page);
+                                        if (cur_locs.is_empty()) {
+                                            $.concierge.trigger({type: "deselect_all_threads"});
+                                        } else {
+                                            var sel_loc = cur_locs.sort(self.options.loc_sort_fct)[0];
+                                            if (sel_loc.ID !== self._id_location) {
+                                                $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
+                                            }
+                                        }
 				}
 			break;
 			}
@@ -729,17 +855,35 @@ var NB_vid = {};
 			var id_source = $.concierge.get_state("file");
 			self._id_source =  id_source; 
 			self._model =  model;
-			self._generate_contents();
-			self._render();
-			if (init_event){
-				$.concierge.trigger(init_event);
-			}
-			else{
-				$.concierge.trigger({type:"page", value: 1});
-			}
-			if ($.concierge.activeView == null){
-				$.concierge.activeView = self; //init. 
-			}
+			ytDefineCallbacks.done(function() {
+				self._generate_contents();
+				self._render();
+				if (init_event){
+					$.concierge.trigger(init_event);
+				}
+				else{
+					$.concierge.trigger({type:"page", value: 1});
+				}
+				if ($.concierge.activeView == null){
+					$.concierge.activeView = self; //init. 
+				}
+			});
+
+			ytDefineCallbacks.done(function() {
+				var md_poll = function() {
+					if ("getDuration" in ytplayer) {
+						if (ytplayer.getDuration() > 0) {
+							console.log("Metadata Loaded");
+							ytMetadataCallbacks.resolve();
+						} else {
+							window.setTimeout(md_poll, 100);
+						}
+					} else {
+						window.setTimeout(md_poll, 100);
+					}
+				};
+				md_poll();
+			});
         },
         _keydown: function(event){
 			var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
@@ -793,21 +937,8 @@ var NB_vid = {};
 					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
 					this._page =  1;
 					this._render();
-					var autoProgress = $.Deferred();
-					var f_poll = function(){
-						if (!ytplayer) {
-							console.log("NULL ytplayer");
-							setTimeout(f_poll, 100);
-						}
-						else if ("getDuration" in ytplayer){
-							autoProgress.resolve();
-						}
-						else{
-							setTimeout(f_poll, 100);
-						}
-					};
-					f_poll(); //initiate polling 
-					autoProgress.done(function () {
+ 
+					ytMetadataCallbacks.done(function () {
 						warnIfUsingFlash();
 						NB_vid.methods.addAllTicks(payload);
 						NB_vid.methods.updatePlayerInfo();
@@ -830,18 +961,12 @@ var NB_vid = {};
         _generate_contents: function() {
 			var self = this;
 			
-			// Wait until ytplayer is loaded
-			if (!NB_vid.ytLoaded) {
-				window.setTimeout(function() {
-				self._generate_contents();
-				}, 100);
-				return;
-			}
-			
 			self._metronome = initializeYouTubeMetronome(self.T_METRONOME);
 			// Play and pause to load metadata
-			ytplayer.loadVideoById(self._model.get("youtubeinfo", {}).first().key);
-			ytplayer.pauseVideo();
+			console.log("Cueing Correct Video");
+			ytplayer.cueVideoById(self._model.get("youtubeinfo", {}).first().key);
+			ytplayer.playVideo();
+			self._metronome.play();
 			self.element.addClass("docView");
 			$("#videoCover").drawable({model: self._model});
         },
@@ -931,7 +1056,8 @@ var NB_vid = {};
 			editor_saving: null,
 			metronome: null,
 			editor_delete: null,
-			editor_prepare: null
+			editor_prepare: null,
+                        deselect_all_threads: null
 		}
 	};
 })(jQuery);

@@ -164,13 +164,52 @@
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
+                var titleoption = "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> ";
                 var checkbox_options = questionoption+signoption;
+                var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr><tr><td><label for='tag'>Select user to tag</label><select name='tag' id='tag'><option value='0' selected='selected'>--Select User--</option></select></td><td><table id='current_tags'></table></td></tr> </table></div></div>"].join(""));
+
                 self.element.append(contents);
+
+                // Set Up Tagging
+
+                var tag_list = $("#tag");
+                var member_query = self._model.get("members", {});
+                var pending_tagset = {};
+
+                // Add members to drop down menu of taggable people
+                for (var member_id in member_query.items) {
+                    var member = member_query.items[member_id];
+                    console.log(member);
+
+                    tag_list.append("<option value='" + member_id + "'>" + member.firstname + " " + member.lastname + "</option>");
+                }
+
+                // User selected someone to tag, add them to tag list
+                tag_list.change(function() {
+                    // The member of the class we are tagging
+                    var tagged_member = member_query.items[tag_list.val()];
+
+                    // List selected tag in UI and pending_tagset
+                    if (!(tagged_member.id in pending_tagset)) {
+                        pending_tagset[tagged_member.id] = tagged_member;
+                        var ui_taglist = $("#current_tags");
+                        var tag_table_row = "<tr id='tagrow_" + tagged_member.id + "'><td>" + tagged_member.firstname + " " + tagged_member.lastname + "</td><td><button type='button' id='remove_tag_" + tagged_member.id + "'>Remove</button></td></tr>";
+
+                        ui_taglist.append(tag_table_row);
+
+                        // Add listener that will remove tag when remove button is clicked
+                        $("#remove_tag_" + tagged_member.id).click(function() {
+                            delete pending_tagset[tagged_member.id];
+                            $("#tagrow_" + tagged_member.id).remove();
+                        });
+                    }
+                });
+
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
@@ -217,7 +256,8 @@
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-                        marks: {}
+                        marks: {},
+                        tags: pending_tagset
                     };
                     
                     
@@ -257,6 +297,8 @@
                             throw "editorview: HTML5VIDEO not implemented";
                         case FILETYPES.TYPE_YOUTUBE:
                             drawingarea = self._sel.parent();
+                            var durationBox = $("#duration")[0];
+			    //var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
                             s_inv_w = 1000.0/drawingarea.width();
                             s_inv_h = 1000.0/drawingarea.height();
                             msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
@@ -266,6 +308,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
+			    msg.duration = self._sel ? parseInt(durationBox.value):0;
                             break;
                         }
                         component_name =  "note_creator";
