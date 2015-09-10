@@ -204,13 +204,24 @@ float: right
 .nav{
 	font-size: 12pt;
 }
+
+.titleContainer{
+	height: 25px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
 .videoView, .commentsView, .videoInfo, .tickmarkView{
 	position: absolute;
-	top: 50px;
+	top: 25px;
 	margin-left: 5px;
 }
 .videoView, .videoContainer, .videoInfo, .videoMenu{
 	width: 752px;
+}
+
+.tagListContainer{
+	visibility: hidden;
 }
 
 .videoContainer{
@@ -248,7 +259,7 @@ float: right
 .videoMenu{
 	max-width: 742px;
 	padding: 5px;
-	height:50px;
+	height: 55px;
 	/*background: #E6E6E6;*/
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -281,7 +292,6 @@ float: right
 .progressbar_container{
 	position:relative;
 	height: 10px;
-	top: 8px;
 	margin-bottom: 13px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -356,6 +366,16 @@ float: right
 	margin-top: -5px;
 	text-align: right;	
 	height: 100%;
+	display: inline-block;
+	float: right;
+}
+
+#durationEditor{
+	display: inline-block;
+}
+
+#durationInput{
+	size: 3;
 }
 
 #videoTimeDisplay, #videoTotalTimeDisplay{

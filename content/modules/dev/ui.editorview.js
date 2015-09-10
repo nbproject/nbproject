@@ -133,6 +133,50 @@
                     break;
                 }
             },
+            _populate_tag_list: function(){
+                var self = this;
+                var m = self._model;
+                var members = m.get("members", {});
+                var n_members = members.length();
+                var num_rows = Math.floor(n_members / 3);
+                var remainder = n_members % 3;
+                var member_list = new Array(n_members);
+                var tag_table = $("#tagBoxes");
+                var i = 0;
+                for (var id in members.items) {
+                    member_list[i] = members.items[id];
+                    i++;
+                }
+                // Helper for generating checkbox HTML
+                var get_checkbox_html = function(member){
+                    return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'>";
+                };
+                // Add full rows
+                for (i = 0; i < num_rows; i++) {
+                    var member1 = member_list[i*3];
+                    var member2 = member_list[i*3+1];
+                    var member3 = member_list[i*3+2];
+                    var member1_html = "<td>"+get_checkbox_html(member1)+" "+member1.firstname+" "+member1.lastname+"</td>";
+                    var member2_html = "<td>"+get_checkbox_html(member2)+" "+member2.firstname+" "+member2.lastname+"</td>";
+                    var member3_html = "<td>"+get_checkbox_html(member3)+" "+member3.firstname+" "+member3.lastname+"</td>";
+                    var row_html = "<tr class='data'>"+member1_html+member2_html+member3_html+"</tr>";
+                    tag_table.append(row_html);
+                }
+                // Add remainder
+                var final_row_html = "<tr class='data'>";
+                var first_index = num_rows * 3;
+                for (i = 0; i < 3; i++) {
+                    if (i < remainder) {
+                        var member = member_list[first_index+i];
+                        var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
+                        final_row_html += member_html;
+                    } else {
+                        final_row_html += "<td></td>";
+                    }
+                }
+                final_row_html += "</tr>";
+                tag_table.append(final_row_html);
+            },
             _render: function(id_item, suppress_focus){
                 var self        = this;
                 var model        = self._model;
@@ -164,13 +208,46 @@
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
                 var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
-                var checkbox_options = questionoption+signoption;
+                var titleoption = self._note === null ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
+                var checkbox_options = questionoption+titleoption+signoption;
+                var duration_option = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE && !self._doEdit ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='2' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'><label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr> </table></div></div>"].join(""));
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<option value='1'>Myself only</option><option value='4'>Myself and Tagged Users</option></select><br/>"+checkbox_options+"</td><td class='save-cancel'><button action='save' >Submit</button><button action='discard' >Cancel</button></td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Tagged Users:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
+
                 self.element.append(contents);
+
+                if (self._doEdit) {
+                    $("#tagBoxes").css("visibility", "hidden");
+                } else {
+                    $("#tagBoxes").css("visibility", "visible");
+                }
+
+                $("#checkbox_title").click(function() {
+                    var is_checked = $("#checkbox_title").prop("checked");
+                    var dur_box = $("#duration");
+                    if (is_checked) {
+                        dur_box.val(1);
+                        dur_box.prop("disabled", true);
+                    } else {
+                        dur_box.val(2);
+                        dur_box.prop("disabled", false);
+                    }
+                });
+
+                // Set Up Tagging
+                self._populate_tag_list();
+
+                $("#select_all_button").click(function() {
+                    $("#tagBoxes input").prop("checked", true);
+                });
+
+                $("#deselect_all_button").click(function() {
+                    $("#tagBoxes input").prop("checked", false);
+                });
+
                 $("a[role='button']", self.element).click(f_cleanup).hover(function(e){$(this).addClass('ui-state-hover').removeClass('ui-view-semiopaque');},function(e){$(this).removeClass('ui-state-hover').addClass('ui-view-semiopaque');} );
                 var $textarea = $("textarea", self.element).keypress(function(e){
                         if(e.keyCode === 27 && this.value.length === 0){
@@ -189,6 +266,7 @@
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
                     model.add("threadmark", payload["threadmarks"]);
+                    model.add("tags", payload["tags"]);
 
                     if ("html5locations" in payload){
                         model.add("html5location", payload["html5locations"]);
@@ -213,11 +291,20 @@
                     $("button[action=save]", self.element).attr("disabled", "disabled");
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
                     $.concierge.trigger({type: "editor_prepare", value: 0});
+                    var tagset = {};
+                    $("#tagBoxes input:checked").each(function(index, element) {
+                        var members = model.get("members", {}).items;
+                        var id = parseInt(element.value);
+                        tagset[id] = members[id];
+                    });
+
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
-                        marks: {}
+                        marks: {},
+                        title: $("input[value=title]:checked", self.element).length,
+                        tags: tagset
                     };
                     
                     
@@ -257,6 +344,8 @@
                             throw "editorview: HTML5VIDEO not implemented";
                         case FILETYPES.TYPE_YOUTUBE:
                             drawingarea = self._sel.parent();
+                            var durationBox = $("#duration")[0];
+			    //var durationBox = drawingarea.parent().parent().find("#durationInput")[0];
                             s_inv_w = 1000.0/drawingarea.width();
                             s_inv_h = 1000.0/drawingarea.height();
                             msg.top = self._sel ? s_inv_h*parseInt(self._sel.css("top"), 10):0;
@@ -266,6 +355,7 @@
                             msg.x0= 0;
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
+			    msg.duration = self._sel ? parseInt(durationBox.value):0;
                             break;
                         }
                         component_name =  "note_creator";
