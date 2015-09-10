@@ -1,5 +1,5 @@
 drop view if exists base_v_comment;
-create view  base_v_comment as SELECT c.id, l.source_id, l.ensemble_id, c.type, c.author_id, l.page, c.parent_id, c.ctime, l.y, l.x, l.w, l.h, l.section_id
+create view  base_v_comment as SELECT c.id, l.source_id, l.ensemble_id, c.type, c.author_id, l.page, c.parent_id, c.ctime, l.y, l.x, l.w, l.h, l.section_id, c.location_id
    FROM base_comment c, base_location l
   WHERE c.location_id = l.id AND c.deleted = false AND c.moderated = false;
 
@@ -21,17 +21,17 @@ INSERT INTO base_defaultsetting VALUES (3, 'email_confirmation_reply_answerpleas
 INSERT INTO base_defaultsetting VALUES (4, 'email_confirmation_reply_unclear', NULL, 2);
 INSERT INTO base_defaultsetting VALUES (5, 'email_confirmation_all', NULL, 0);
 INSERT INTO base_settinglabel VALUES (1, 1, 2, 'For each note I write');
-INSERT INTO base_settinglabel VALUES (2, 1, 1, 'Once a day, as a digest');
+--INSERT INTO base_settinglabel VALUES (2, 1, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (3, 1, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (4, 2, 2, 'For each reply');
-INSERT INTO base_settinglabel VALUES (5, 2, 1, 'Once a day, as a digest');
+--INSERT INTO base_settinglabel VALUES (5, 2, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (6, 2, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (7, 3, 2, 'For each reply');
-INSERT INTO base_settinglabel VALUES (8, 3, 1, 'Once a day, as a digest');
+--INSERT INTO base_settinglabel VALUES (8, 3, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (9, 3, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (10, 4, 2, 'For each reply');
-INSERT INTO base_settinglabel VALUES (11, 4, 1, 'Once a day, as a digest');
+--INSERT INTO base_settinglabel VALUES (11, 4, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (12, 4, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (13, 5, 2, 'For each note');
-INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
+--INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (15, 5, 0, 'Never');
