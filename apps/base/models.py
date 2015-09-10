@@ -81,7 +81,8 @@ class Ensemble(models.Model):                                                   
     name                = CharField(max_length=255)                             # old: name text
     description         = CharField(max_length=255, default="No description available") 
     allow_staffonly     = BooleanField(default=True, verbose_name="Allow users to write 'staff-only' comments")                           
-    allow_anonymous     = BooleanField(default=True, verbose_name="Allow users to write anonymous comments")  
+    allow_anonymous     = BooleanField(default=True, verbose_name="Allow users to write anonymous comments")
+    allow_tag_private	= BooleanField(default=True, verbose_name="Allow users to make comments private to tagged users only")  
     allow_guest         = BooleanField(default=False, verbose_name="Allow guests (i.e. non-members) to access the site")      
     invitekey           = CharField(max_length=63,  blank=True, null=True)      # new
     use_invitekey       = BooleanField(default=True, verbose_name="Allow users who have the 'subscribe link' to register by themselves")
@@ -192,6 +193,8 @@ class Location(models.Model):                                                   
     w                   = IntegerField()
     h                   = IntegerField()
     page                = IntegerField()
+    duration		= IntegerField(null=True)
+    is_title		= BooleanField(default=False)
     def __unicode__(self):
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
@@ -203,7 +206,7 @@ class HTML5Location(models.Model):
     offset2               = IntegerField()
 
 class Comment(models.Model):                                                    # old: nb2_comment
-    TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"))     
+    TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"), (4, "Tag Private"))     
     location            = ForeignKey(Location)                                  # old: id_location integer
     parent              = ForeignKey('self', null=True)                        # old: id_parent integer
     author              = ForeignKey(User)                                      # old: id_author integer,
@@ -222,6 +225,14 @@ class Comment(models.Model):                                                    
             return str(calendar.timegm(pytz.utc.localize(self.ctime).timetuple()))
         else:
             return str(calendar.timegm(self.ctime.astimezone(pytz.utc).timetuple()))
+
+# Represents Users tagged in a comment
+class Tag(models.Model):
+    TYPES               = ((1, "Individual"),)
+    type                = IntegerField(choices=TYPES)
+    individual          = ForeignKey(User, null=True)
+    comment		= ForeignKey(Comment)
+    last_reminder	= DateTimeField(null=True) 
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
@@ -347,7 +358,7 @@ class FileDownload(models.Model):
     ctime               = DateTimeField(default=datetime.now())
     user                = ForeignKey(User)
     source              = ForeignKey(Source)
-    annotated           = BooleanField()
+    annotated           = BooleanField(default=False)
 
 class Notification(models.Model):
     type                = CharField(max_length=127)

@@ -14,6 +14,8 @@ if "." not in sys.path:
     sys.path.append(".")
 if "DJANGO_SETTINGS_MODULE" not in os.environ or __name__=="__main__": 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'nbsite.settings'
+import django
+django.setup()
 from django.conf import settings
 import base.utils as utils, base.models as M
 from django.template.loader import render_to_string
@@ -23,7 +25,7 @@ from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 from django.db import transaction
 
-VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class"}
+VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class", 4: "Private to Tags"}
 
 pending_inserts = []
 def extract_obj(o, from_class, cut_at):
@@ -210,13 +212,61 @@ def do_auth_immediate():
                              settings.EMAIL_FROM,
                              (c.author.email, ), 
                              (settings.EMAIL_BCC, ))
-        email.send()
+        email.send(fail_silently=True)
         try: 
             print msg
         except UnicodeEncodeError: 
             print "not displaying msg b/c of unicode issues"
     latestNotif.atime = latestCtime
     latestNotif.save()
+
+# Multiplies all durations by 100 to switch scaling
+def do_duration_update(t_args):
+    print "------------ UPDATING DURATIONS ------------"
+    for location in M.Location.objects.all():
+        if location.duration != None:
+            location.duration = location.duration*100
+            location.save()
+    print "------------ DURATION UPDATE FINISHED ------------"
+
+def do_tag_reminders(t_args):
+    print "------------ SENDING TAG REMINDERS ------------"
+    users = M.User.objects.all()
+    all_tags = M.Tag.objects.all()
+
+    # Assemble list of unseen tags
+    unseen_tags = M.Tag.objects.all()
+    for tag in all_tags:
+        seen = M.CommentSeen.objects.filter(comment=tag.comment, user=tag.individual)
+        if seen.exists():
+            unseen_tags = unseen_tags.exclude(id=tag.id)
+
+    # Assemble a dict of recipients and comments they need to be notified about
+    messages = {}
+    for tag in unseen_tags:
+        if tag.individual.id not in messages:
+            messages[tag.individual.id] = [tag.comment.id]
+        else:
+            messages[tag.individual.id].append(tag.comment.id)
+
+    # Send Emails
+    subject = "You have unread tags on NB..."
+    V = {"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
+    for recipient_id in messages:
+        recipient = users.get(id=recipient_id)
+        comments = []
+        for comment_id in messages[recipient_id]:
+            comments.append(M.Comment.objects.get(id=comment_id))
+        msg = render_to_string("email/msg_tag_reminder",{"V":V, "comments": comments, "recipient": recipient})
+        email = EmailMessage(subject, msg, settings.EMAIL_FROM, (recipient.email,), (settings.EMAIL_BCC,))
+        email.send(fail_silently=True)
+
+    # Update last reminder
+    for tag in unseen_tags:
+        tag.last_reminder = datetime.datetime.now()
+        tag.save()
+
+    print "------------ TAG REMINDERS COMPLETE ------------"
     
 def do_all_immediate():
     #send email to for all new msg in group where I'm an admin
@@ -234,7 +284,7 @@ def do_all_immediate():
                                  settings.EMAIL_FROM,
                                  (m.user.email, ), 
                                  (settings.EMAIL_BCC, ))
-            email.send()              
+            email.send(fail_silently=True)
             try: 
                 print msg
             except UnicodeEncodeError: 
@@ -260,7 +310,7 @@ def do_reply_immediate():
                 msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
-                email.send()
+                email.send(fail_silently=True)
                 try: 
                     print msg
                 except UnicodeEncodeError: 
@@ -282,7 +332,7 @@ def do_watchdog_longpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
         
 def do_watchdog_notstartedpdfprocess():
@@ -298,7 +348,7 @@ def do_watchdog_notstartedpdfprocess():
                                  settings.EMAIL_WATCHDOG,
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
-            email.send()
+            email.send(fail_silently=True)
             print msg
     
 def do_auth_digest():
@@ -388,12 +438,46 @@ ds.name='email_confirmation_reply_author' and
         except UnicodeEncodeError: 
             print "not displaying msg b/c of unicode issues"            
 
+def do_add_tag_email_setting(t_args):
+    print "------------ ADDING SETTINGS ------------"
+    ds = M.DefaultSetting()
+    ds.id = 6
+    ds.name = "email_confirmation_tags"
+    ds.value = 1
+    ds.save()
+
+    sl0 = M.SettingLabel()
+    sl0.id = 16
+    sl0.setting = ds
+    sl0.value = 0
+    sl0.label = "Daily reminders only"
+
+    sl1 = M.SettingLabel()
+    sl1.id = 17
+    sl1.setting = ds
+    sl1.value = 1
+    sl1.label = "For each new tag"
+
+    sl0.save()
+    sl1.save()
+    print "------------ SETTINGS ADDED ------------"
+
 def do_upgrade(t_args):
     # We will see if we need to upgrade and call
     # the appropriate upgrade metods when needed
     #u = M.User.objects.all()[0]
     #if u.password != None and u.saltedhash == None:
     do_auth_salt_upgrade()
+
+def do_testwrite(t_args): 
+    try: 
+        f = open("testwrite", "w")
+    except IOError:
+        email = EmailMessage("NB: IO Error on server %s" % settings.NB_SERVERNAME,
+                             "unable to write file on server %s\nCheck that all partitions are mounted in r/w mode" %  settings.NB_SERVERNAME, 
+                             settings.EMAIL_FROM,
+                             (settings.ADMINS[0][1],))
+        email.send()
 
 @transaction.commit_on_success
 def do_auth_salt_upgrade():
@@ -426,7 +510,10 @@ if __name__ == "__main__" :
         "watchdog": do_watchdog,
         "extract": do_extract, 
         "dumpensemble": do_dumpensemble,
-        "upgrade": do_upgrade
+        "upgrade": do_upgrade, 
+        "testwrite": do_testwrite,
+	"addsettings": do_add_tag_email_setting,
+	"tagreminders": do_tag_reminders
         }
     utils.process_cli(__file__, ACTIONS)
 
