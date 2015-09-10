@@ -352,7 +352,7 @@ def getNotes(payload, req):
         if auth.canReadFile(uid, id_source, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
-            output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, after)
+            output["locations"], output["html5locations"], output["comments"], output["threadmarks"], output["tags"] = annotations.getCommentsByFile(id_source, uid, after)
             #TODO: 
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
@@ -469,8 +469,9 @@ def getStats2(payload, req):
 def getMembers(payload, req): 
     uid = UR.getUserId(req)
     if "id_ensemble" in payload: 
-        if auth.canGetMembers(uid, payload["id_ensemble"]): 
-            return UR.prepare_response(annotations.get_members(payload["id_ensemble"]))
+        if auth.canGetMembers(uid, payload["id_ensemble"]):
+            members = annotations.get_members(payload["id_ensemble"]) 
+            return UR.prepare_response(members)
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
 
@@ -647,7 +648,7 @@ def log_history(payload, req):
         if R["type"] == "newNotesOnFile": 
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
-                output["locations"], output["html5locations"], output["comments"], output["threadmarks"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
+                output["locations"], output["html5locations"], output["comments"], output["threadmarks"], output["tags"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
         elif R["type"] == "newPending":
             #for now, we retrieve all the pending stuff. 
             output = annotations.getPending(uid, payload)

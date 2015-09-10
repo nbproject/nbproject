@@ -192,6 +192,8 @@ class Location(models.Model):                                                   
     w                   = IntegerField()
     h                   = IntegerField()
     page                = IntegerField()
+    duration		= IntegerField(null=True)
+    is_title		= BooleanField(default=False)
     def __unicode__(self):
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
@@ -222,6 +224,13 @@ class Comment(models.Model):                                                    
             return str(calendar.timegm(pytz.utc.localize(self.ctime).timetuple()))
         else:
             return str(calendar.timegm(self.ctime.astimezone(pytz.utc).timetuple()))
+
+# Represents Users tagged in a comment
+class Tag(models.Model):
+    TYPES               = ((1, "Individual"),)
+    type                = IntegerField(choices=TYPES)
+    individual          = ForeignKey(User, null=True)
+    comment		= ForeignKey(Comment) 
 
 ### Those aren't used anymore (threadmarks are used instead)
 class Mark(models.Model):                                                       # old: nb2_mark
@@ -347,7 +356,7 @@ class FileDownload(models.Model):
     ctime               = DateTimeField(default=datetime.now())
     user                = ForeignKey(User)
     source              = ForeignKey(Source)
-    annotated           = BooleanField()
+    annotated           = BooleanField(default=False)
 
 class Notification(models.Model):
     type                = CharField(max_length=127)
