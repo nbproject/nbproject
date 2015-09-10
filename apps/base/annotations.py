@@ -64,11 +64,17 @@ __NAMES = {
         "top": "location.y",
         "left": "location.x",
         "page": "location.page",
+	"duration": "location.duration",
         "id_source": "location.source_id",
         "w": "location.w",
         "h": "location.h",
         "body": None,
         "section_id": "location.section_id",
+},
+    "tag": {
+        "ID": "id",
+        "user_id": "individual_id",
+        "comment_id": "comment_id"
 },
        "html5location":{
         "ID": "id", 
@@ -260,7 +266,27 @@ and (m.section_id is null or vc.section_id = m.section_id or vc.section_id is nu
 and vc.ensemble_id=? 
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
-    
+
+# Get members of an ensemble
+def get_members(eid):
+    memberships = M.Membership.objects.filter(ensemble__id=eid, deleted=False)
+    users = {}
+    for membership in memberships:
+        user = M.User.objects.get(id=membership.user.id)
+        user_entry = UR.model2dict(user)
+
+        # Remove unnecessary fields
+        del user_entry["guest"]
+        del user_entry["confkey"]
+        del user_entry["valid"]
+        del user_entry["saltedhash"]
+        del user_entry["salt"]
+        del user_entry["password"]
+
+        # Add user dictionary to users
+        users[user.id] = user_entry
+    return users
+
 def get_stats_ensemble(payload):    
     import db
     id_ensemble = payload["id_ensemble"] 
@@ -468,18 +494,22 @@ def getCommentsByFile(id_source, uid, after):
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
 
+    # Get Tags
+    tags = M.Tag.objects.filter(comment__in=comments)
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     html5locations_dict = UR.qs2dict(html5locations, __NAMES["html5location"], "ID")
     threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
+    tag_dict = UR.qs2dict(tags, __NAMES["tag"], "ID")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
-    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
+    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict
 
 def get_comments_collection(uid, P):
     output = {}
@@ -676,7 +706,7 @@ def addNote(payload):
 
     #putting this in factor for duplicate detection: 
     similar_comments = M.Comment.objects.filter(parent=parent, ctime__gt=datetime.datetime.now()-datetime.timedelta(0,10,0), author=author, body=payload["body"]);
-    
+
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
@@ -693,6 +723,9 @@ def addNote(payload):
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
+	# Duration for YouTube comments
+	if "duration" in payload:
+		location.duration = payload["duration"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
 
         #refuse if similar comment
@@ -735,6 +768,19 @@ def addNote(payload):
         comment.type = payload["type"]
         comment.signed = payload["signed"] == 1
         comment.save()
+
+        # Add any tags
+        if "tags" in payload:
+            new_tags = payload["tags"]
+            for tag_id in new_tags:
+                tagged_user = M.User.objects.get(pk=tag_id)
+
+                tag = M.Tag()
+                tag.type = 1
+                tag.comment = comment
+                tag.individual = tagged_user
+                tag.save()
+
         return [comment]
 
 def setLocationSection(id_location, id_section):
@@ -1132,7 +1178,7 @@ def markActivity(cid):
     if cid=="0" or cid=="1":
         return None, None #temporary fix 
     try: 
-        session = M.Session.objects.get(ctime=cid)
+        session = M.Session.objects.filter(ctime=cid)[0]
         previous_activity = session.lastactivity
         session.lastactivity = datetime.datetime.now()
         session.save()
@@ -1148,7 +1194,7 @@ def getPending(uid, payload):
     locations = M.Location.objects.filter(comment__in=comments)
     all_comments = M.Comment.objects.filter(location__in=locations)
     unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
-    questions = questions.exclude(location__comment__in=unrated_replies)
+    questions = questions.exclude(location__comment__in=list(unrated_replies))
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))

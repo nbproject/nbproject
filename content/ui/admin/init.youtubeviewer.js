@@ -125,11 +125,21 @@ GLOB.pers.createStore = function(payload){
         mark: {}, 
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
-        seen:{references: {id_location: "location"}}
+        seen:{references: {id_location: "location"}},
+        members: {},
+        tags: {references: {user_id: "members", comment_id: "comment"}}
+    });
+
+    var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
+
+    GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){
+        console.log("getMembers callback");
+
+        GLOB.pers.store.add("members", P5);
     });
 
     //get the section info as well as info whether user is admin: 
-    GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+    GLOB.pers.call("getSectionsInfo", {id_ensemble: ensembleID}, function(P3){
         var m = GLOB.pers.store;
         m.add("section", P3["sections"]);
         NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
@@ -167,12 +177,15 @@ GLOB.pers.createStore = function(payload){
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title);
     var noteLoaderCallback = function(P) {
+        console.log("noteLoaderCallback:");
+        console.log(P["tags"]);
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
         m.add("location", P["locations"]);
         m.add("link", P["links"]);
         m.add("threadmark", P["threadmarks"]);
+        m.add("tags", P["tags"]);
         //now check if need to move to a given annotation: 
         if ("c" in GLOB.pers.params){
         window.setTimeout(function(){
