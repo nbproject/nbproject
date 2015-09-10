@@ -85,6 +85,10 @@ font-family: arial;
 color: #222266;
 }
 
+div.location-title{
+text-decoration: underline;
+}
+
 div.location-bold{
 font-weight: bold;
 }
