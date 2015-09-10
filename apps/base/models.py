@@ -347,7 +347,7 @@ class FileDownload(models.Model):
     ctime               = DateTimeField(default=datetime.now())
     user                = ForeignKey(User)
     source              = ForeignKey(Source)
-    annotated           = BooleanField()
+    annotated           = BooleanField(default=False)
 
 class Notification(models.Model):
     type                = CharField(max_length=127)
