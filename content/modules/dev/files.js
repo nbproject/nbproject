@@ -37,12 +37,6 @@ GLOB.files.set_model = function(model){
 "<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'/>        </td></tr> "+
 "<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'/>        </td></tr> "+
 "<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'/>        </td></tr>"+
-"<tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'>No</input> </td></tr> "+
-"<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'>No</input>        </td></tr> "+
-"<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'>No</input>        </td></tr> "+
-"<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'>No</input>        </td></tr> "+
-"<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'>No</input>        </td></tr> "+
-"<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'>No</input>        </td></tr>"+
 "</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>")
     .append(
         "<div id='invite_users_dialog' >" +
