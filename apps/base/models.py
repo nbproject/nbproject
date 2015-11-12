@@ -291,6 +291,18 @@ class PageSeen(models.Model):
     user                = ForeignKey(User, null=True) #duplicate (cf session) but inlined for performance
     ctime               = DateTimeField(default=datetime.now) 
 
+class AnalyticsVisit(models.Model):
+    source              = ForeignKey(Source)
+    user                = ForeignKey(User, null=True)
+    ctime               = DateTimeField(default=datetime.now)
+
+class AnalyticsClick(models.Model):
+    source              = ForeignKey(Source)
+    user                = ForeignKey(User, null=True)
+    ctime               = DateTimeField(default=datetime.now)
+    control             = CharField(max_length=30)
+    value               = CharField(max_length=30)
+
 class Landing(models.Model):
     user                = ForeignKey(User)
     ctime               = DateTimeField(default=datetime.now)

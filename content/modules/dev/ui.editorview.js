@@ -31,6 +31,7 @@
                 var me            = $.concierge.get_component("get_userinfo")();
                 var guest_msg    = "<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to post a reply...</span>";
                 var id_item, draft, drafts;
+                console.log("Editor Event: "+evt.type);
                 switch (evt.type){
                 case "new_thread":
                     if (me.guest === 1){
@@ -183,6 +184,7 @@
 
                 var f_discard = function(evt){
                     f_cleanup();
+                    $.concierge.trigger({type:"editor_delete", value: ""});
                 };
                 var f_on_save = function(payload){
                     model.add("comment", payload["comments"]);
@@ -210,6 +212,7 @@
                 var f_save = function(evt){
                     $("button[action=save]", self.element).attr("disabled", "disabled");
                     timeout_save_button = window.setTimeout(function() { timeout_func(self); } , 3000);
+                    $.concierge.trigger({type: "editor_prepare", value: 0});
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
                         body:  $("textarea", self.element)[0].value,            
@@ -286,7 +289,8 @@
                 $("button[action=discard]",self.element).click(f_discard);
                 if (self._sel){
                     var p = self._selection.parent();
-                    self._sel.addClass("ui-drawable-selection").removeClass("ui-drawable-helper").appendTo(p).draggable({drag: f_sel, containment: 'parent' });
+                    // Make annotation box resizable
+                    self._sel.addClass("ui-drawable-selection").removeClass("ui-drawable-helper").resizable().appendTo(p).draggable({drag: f_sel, containment: 'parent' });
                     //animate transition so user understands that the editor is connected to the selection
                     self._sel.effect("transfer",{to: self.element} , 500);
                 }        

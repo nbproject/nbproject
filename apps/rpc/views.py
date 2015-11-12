@@ -8,7 +8,7 @@ License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 """
-from base import annotations
+from base import annotations, doc_analytics
 import  json, sys, datetime, time
 from base import  auth, signals, constants, models as M, utils_response as UR
 #TODO import responder
@@ -28,7 +28,8 @@ __EXPORTS = [
     "getNotes",
     "saveNote", 
     "editNote", 
-    "deleteNote", 
+    "deleteNote",
+    "deleteThread",
     "getStats",
     "getMyNotes", 
     "getCommentLabels", 
@@ -67,6 +68,8 @@ __EXPORTS = [
     "advanced_filter",
     "get_top_comments_from_locations",
     "bulk_import_annotations",
+    "set_location_section",
+    "promote_location_by_copy"
     ]
 __AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
@@ -272,19 +275,22 @@ def getGuestFileInfo(payload, req):
     return UR.prepare_response(output)
 
 def getHTML5Info(payload, req):
-    if "url" not in payload: 
+    if "url" not in payload:
         return UR.prepare_response({}, 1, "missing url !")
-    url = payload["url"].partition("#")[0] #remove hash part of the URL by default. 
+    url = payload["url"].partition("#")[0] #remove hash part of the URL by default.
     #TODO: use optional argument id_ensemble to disambiguate if provided. 
     sources_info = M.HTML5Info.objects.filter(url=url)
     ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
+    if not ownerships.exists():
+        return UR.prepare_response({}, 1, "this URL is not recognized: ")
+
     output = {
          "files": UR.qs2dict(ownerships, annotations.__NAMES["files2"] , "ID"),
          "ensembles": UR.qs2dict(ownerships, annotations.__NAMES["ensembles2"] , "ID") ,
          "folders": UR.qs2dict(ownerships, annotations.__NAMES["folders2"] , "ID") ,
-         }    
-    for i in output["ensembles"]: 
-        if  not (output["ensembles"][i]["allow_guest"] or  auth.isMember(UR.getUserId(req), i)): 
+    }
+    for i in output["ensembles"]:
+        if not (output["ensembles"][i]["allow_guest"] or auth.isMember(UR.getUserId(req), i)):
             return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
     return UR.prepare_response(output)
 
@@ -379,7 +385,7 @@ def saveNote(payload, req):
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
-    if a is None: 
+    if len(a) == 0:
         return UR.prepare_response({}, 2,  "DUPLICATE") 
     tms = {}
     for mark in payload["marks"]:
@@ -388,12 +394,14 @@ def saveNote(payload, req):
         if len(m_types): #old clients may return types we don't have in DB so ignore them 
             tm.type = m_types[0]
             tm.user_id = uid         
-            tm.comment=a
-            tm.location_id=a.location_id
+            tm.comment=a[0]
+            tm.location_id=tm.comment.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"], retval["html5locations"] = annotations.getLocation(a.location_id)
-    retval["comments"] = annotations.getComment(a.id, uid)
+    retval["locations"], retval["html5locations"] = annotations.getLocation(a[0].location_id)
+    retval["comments"] = {}
+    for annotation in a:
+        retval["comments"].update(annotations.getComment(annotation.id, uid))
     retval["threadmarks"] =  tms
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
@@ -405,7 +413,7 @@ def editNote(payload, req):
     else:
         annotations.editNote(payload)
     #no need to worry about threadmarks: they can't be changed from an "edit-mode" editor        
-    return UR.prepare_response({"comments":  annotations.getComment(payload["id_comment"], uid)})
+    return UR.prepare_response({"comments":  [annotations.getComment(payload["id_comment"], uid)] })
 
 def deleteNote(payload, req): 
     uid = UR.getUserId(req)
@@ -415,6 +423,14 @@ def deleteNote(payload, req):
     else:
         annotations.deleteNote(payload)
         return UR.prepare_response({"id_comment": payload["id_comment"] })
+
+def deleteThread(payload, req):
+    uid = UR.getUserId(req)
+    if not auth.canDeleteThread(uid, payload["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    else:
+        annotations.deleteThread(payload)
+        return UR.prepare_response({"id_location": payload["id_location"]})
 
 def getPending(payload, req):
     uid = UR.getUserId(req)
@@ -635,6 +651,10 @@ def log_history(payload, req):
         elif R["type"] == "newPending":
             #for now, we retrieve all the pending stuff. 
             output = annotations.getPending(uid, payload)
+    if "analytics" in payload and cid != 0:
+        doc_analytics.markAnalyticsVisit(uid, payload["analytics"])
+    if "analyticsClick" in payload and cid != 0:
+        doc_analytics.markAnalyticsClick(uid, payload["analyticsClick"])
     return UR.prepare_response(output)
   
 def get_location_info(payload, req): 
@@ -721,6 +741,37 @@ def bulk_import_annotations(P, req):
     if not auth.canImportAnnotation(uid, P["from_source_id"], P["to_source_id"]):
         return UR.prepare_response({}, 1, "NOT ALLOWED")
     return UR.prepare_response( annotations.bulkImportAnnotations(P["from_source_id"], P["to_source_id"], P["locs_array"], P["import_type"]))
+
+def set_location_section(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canAdministrateLocation(uid, P["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    result = annotations.setLocationSection(P["id_location"], P["id_section"])
+    locations, html5locations = annotations.getLocation(result.pk)
+    return UR.prepare_response( locations )
+
+
+def promote_location_by_copy(P, req):
+    uid = UR.getUserId(req)
+    if not auth.canAdministrateLocation(uid, P["id_location"]):
+        return UR.prepare_response({}, 1, "NOT ALLOWED")
+    location_ids, comment_ids = annotations.promoteLocationByCopy(P["id_location"])
+    retval = {}
+    retval["comments"] = {}
+    for cid in comment_ids:
+        retval["comments"].update(annotations.getComment(cid, uid))
+    retval["locations"] = {}
+    retval["html5locations"] = {}
+    for lid in location_ids:
+        locations, html5locations = annotations.getLocation(lid)
+        retval["locations"].update(locations)
+        if not html5locations:
+            retval["html5locations"].update(html5locations)
+
+    # clear out html5locations if none exist
+    if retval["html5locations"]:
+        del retval["html5locations"]
+    return UR.prepare_response( retval )
 
 @csrf_exempt
 def other(req):

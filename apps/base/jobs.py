@@ -391,9 +391,9 @@ ds.name='email_confirmation_reply_author' and
 def do_upgrade(t_args):
     # We will see if we need to upgrade and call
     # the appropriate upgrade metods when needed
-    u = M.User.objects.all()[0]
-    if u.password != None and u.saltedhash == None:
-        do_auth_salt_upgrade()
+    #u = M.User.objects.all()[0]
+    #if u.password != None and u.saltedhash == None:
+    do_auth_salt_upgrade()
 
 def do_testwrite(t_args): 
     try: 
@@ -416,13 +416,18 @@ def do_auth_salt_upgrade():
     #     ADD COLUMN saltedhash varchar(128);
     #
     # The query can be run from manage.py dbshell
-
-    for u in M.User.objects.all():
+    usercount = 0
+    print "begin update..."
+    for u in M.User.objects.filter(salt=None):        
+        if usercount >0 and usercount%100 == 0:
+            print "updated a chunk of 100 users..."
+        usercount+=1
         if u.password != None and u.saltedhash == None:
             u.set_password(u.password)
             # we will unset the password manually later
             # u.password = None
             u.save()
+    print "update done: success"
 
 if __name__ == "__main__" :
     ACTIONS = {

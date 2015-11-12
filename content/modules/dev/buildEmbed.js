@@ -36,10 +36,34 @@
         //TODO: get id_ensemble from cookie or localStorage if available. 
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
-                notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
-                    note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
-                    note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);}
-            });   
+            notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+            note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+            note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);},
+            bulk_import_annotations: function(P, cb) {
+                GLOB.pers.call("bulk_import_annotations", {
+                    locs_array: P.locs_array,
+                    from_source_id: P.from_source_id,
+                    to_source_id: P.to_source_id,
+                    import_type: P.import_type
+                }, cb);
+            },
+            set_location_section: function (P, cb) {
+                GLOB.pers.call("set_location_section", {
+                    id_location: P.id_location,
+                    id_section: P.id_section
+                }, cb);
+            },
+            promote_location_by_copy: function (P, cb) {
+                GLOB.pers.call("promote_location_by_copy", {
+                    id_location: P.id_location
+                }, cb);
+            },
+            delete_thread: function (P, cb) {
+                GLOB.pers.call("deleteThread", {
+                    id_location: P.id_location
+                }, cb);
+            }
+        });
         GLOB.pers.store = new GLOB.models.Store();
         GLOB.pers.call(
             "getHTML5Info", {id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, "")},

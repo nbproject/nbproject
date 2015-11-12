@@ -13,6 +13,6 @@
     "grunt-contrib-concat": "~0.5.1"
   },
   "dependencies": {
-    "execSync": ">= 0.0.0"
+    "execSync": ">= 0.9"
   }
 }

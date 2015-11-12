@@ -119,14 +119,38 @@
         GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
-                set_comment_label: function(P,cb){
-                    GLOB.pers.call("set_comment_label", P, cb);
-                },
-                notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
-                    note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
-                    note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);},
-                    commentlabels_loader:    function(P, cb){GLOB.pers.call("getCommentLabels", P, cb);}                    
-            });   
+            set_comment_label: function(P,cb){
+                GLOB.pers.call("set_comment_label", P, cb);
+            },
+            notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+            note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+            note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);},
+            commentlabels_loader:    function(P, cb){GLOB.pers.call("getCommentLabels", P, cb);},
+            bulk_import_annotations: function(P, cb) {
+                GLOB.pers.call("bulk_import_annotations", {
+                    locs_array: P.locs_array,
+                    from_source_id: P.from_source_id,
+                    to_source_id: P.to_source_id,
+                    import_type: P.import_type
+                }, cb);
+            },
+            set_location_section: function (P, cb) {
+                GLOB.pers.call("set_location_section", {
+                    id_location: P.id_location,
+                    id_section: P.id_section
+                }, cb);
+            },
+            promote_location_by_copy: function (P, cb) {
+                GLOB.pers.call("promote_location_by_copy", {
+                    id_location: P.id_location
+                }, cb);
+            },
+            delete_thread: function (P, cb) {
+                GLOB.pers.call("deleteThread", {
+                    id_location: P.id_location
+                }, cb);
+            }
+        });   
     };
     
     GLOB.pers.createStore = function(payload){
