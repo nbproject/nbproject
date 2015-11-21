@@ -966,7 +966,7 @@ def copy_file(uid, P):
     new_ownership.source = new_source
     new_ownership.published = datetime.datetime.now()
     new_ownership.deleted = False
-    new_ownership.due = None
+    # new_ownership.due = None
 
     if P["target_type"] == "ensemble":
         new_ownership.ensemble_id = P["target_id"]
