@@ -7,6 +7,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 
 div.notepaneView{
 overflow: hidden;
+background-color: #EFEBE7;
 }
 
 div.location-lens{
@@ -14,6 +15,7 @@ margin: 0px 0px 0px 0px;
 padding-top: 3px;
 padding-bottom: 3px;
 cursor: pointer;
+position: relative
 }
 
 div.notepaneView div.lens-odd{
@@ -45,6 +47,10 @@ div.notepaneView span.gradeitem.selected{
 font-weight: bold; 
 background-color: #707070;
 color: #ffe0d0;
+}
+
+div.mode-select div.location-shortbody {
+    padding-right: 80px;
 }
 
 div.location-shortbody{
@@ -117,12 +123,91 @@ overflow-y: auto;
     border-width: 0 1px 0 1px;
     border-style: solid;
     border-color: #DDD;
+    background-color: #FFF;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 2px 8px -3px inset;
+}
+
+div.notepaneView-selected {
+    display: none;
+}
+
+div.action-bar {
+    position: absolute;
+    z-index: 5;
+    bottom: 2px;
+}
+
+div.notepaneView-selected span {
+    font-weight: bold;
+}
+
+div.mode-select div.notepaneView-selected {
+    display: block;
+    position: relative;
+    padding: 3px 5px;
+    color: #888;
+}
+
+.help-tip {
+    display: none;
 }
 
 div.location-flags{
 float: left;
 min-width: 60px;
 margin-left: 3px;
+}
+
+div.location-lens input[type=button].threadselect {
+    position: absolute;
+    right: 0;
+    height: 20px;
+    display: none;
+}
+
+div.mode-select div.location-lens:hover input[type=button].threadselect {
+    display: inline-block;
+}
+
+div.mode-select div.location-lens input[type=button].threadselect.selected {
+    display: inline-block;
+}
+
+.select-bar div.labels,
+.select-bar div.select-all {
+    position: relative;
+    height: 1.25em;
+    left: 5px;
+}
+
+.select-bar div.select-all label {
+    position: absolute;
+    right: 120px;
+}
+
+.select-bar div.labels > abbr {
+    cursor: help;
+    display: block;
+    text-align: center;
+    position: absolute;
+}
+
+div.mode-select .selectors > span {
+    display: block;
+    text-align: center;
+    position: absolute;
+}
+
+.select-bar div.labels > abbr:nth-child(1),
+div.mode-select .selectors > span:nth-child(1) {
+    width: 32px;
+    right: 56px;
+}
+
+.select-bar div.labels > abbr:nth-child(2),
+div.mode-select .selectors > span:nth-child(2) {
+    width: 48px;
+    right: 4px;
 }
 
 ins.locationflag{
@@ -284,6 +369,14 @@ background-color: #F8F8F8;
 color: #707070;
 }
 
+div.filter-controls > a.filter[action=advanced] {
+display: none;
+}
+
+.admin div.filter-controls > a.filter[action=advanced] {
+display: inline-block;
+}
+
 div.filter-controls > a.filter.active{
 background-color: #70A0F0;
 color: #FCFCFC;
@@ -312,9 +405,7 @@ text-align: center;
 div.notepaneView-header{
 background-color: #EFEBE7;
 height: 24px;
-border-bottom: thin solid #DDD;
 padding: 3px 5px;
-box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2);
 }
 
 span.filter-msg-unfiltered, span.filter-msg-filtered{
