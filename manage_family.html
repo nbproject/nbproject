@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/api_client.js"></script>
+	<script type="text/javascript" src="js/verify.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+	<script type="text/javascript" src="external_js/date.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
+	<script type="text/javascript" src="static_js/member.js"></script>
+	<script type="text/javascript" src="js/manage_family.js"></script>
+	
+
+	<script src="js/vendor/jquery.ui.widget.js"></script>
+	<script src="js/jquery.iframe-transport.js"></script>
+	<script src="js/jquery.fileupload.js"></script>
+
+
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<link rel="stylesheet" type="text/css" href="edit_family.css" />
+	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
+	<link rel="stylesheet" type="text/css" href="task_list.css"/>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="task_completion.css" />
+
+
+	<title>Cork Together</title>
+</head>
+<body>
+	<div id="outer">
+	<div id="content">
+		<div style="position: relative;" id="titleButton">
+			<img class="pin_left" src="assets/pushpin.png">
+			<h1>Cork Together</h1>
+			<ul class="nav nav-pills family_button">
+				<li class="dropdown">
+				  <button id="fam" class="active dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <li><a href="manage_family.html" class="active">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
+				  </ul>
+				</li>
+			</ul>
+		</div>
+
+
+		<div id="navigation">
+			
+			<div class="tabs_container">
+				<ul id="tabs">
+					<li><div id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
+				</ul>
+			</div>
+
+			<div class="family_container">
+				<ul id="family">
+					
+				</ul>
+			</div>
+		</div>
+		<div id="manageFamily">
+			<div>
+				<h2>Manage Family </h2>
+			</div>
+    
+		    
+		    <div id="containsTable">
+		    <button id="addMember" class="btn btn-warning" type="button">Add Family Member</button>
+		    
+		    <br>
+		    
+		    <table id="familyTable">
+		    <tbody id="familyMemberList">
+		    
+		    </tbody>
+
+		    </table>
+			</div>
+		</div>
+	
+</body>
+</html>

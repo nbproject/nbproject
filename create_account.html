@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Create New Account</title>
+
+<!-- Load style sheets -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<link rel="stylesheet" type="text/css" href="corkboard_theme.css" />
+<link rel="stylesheet" type="text/css" href="create_account.css" />
+
+<!-- Load any supplemental Javascript libraries here: jQuery UI -->
+<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static_js/task.js"></script>
+<script type="text/javascript" src="static_js/member.js"></script>
+<script type="text/javascript" src="static_js/family.js"></script>
+<script type="text/javascript" src="js/api_client.js"></script>
+<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
+
+<script type="text/javascript">
+
+    // This allows the Javascript code inside this block to only run when the page
+    // has finished loading in the browser.
+    $(document).ready(function() {
+    
+    	hideError();
+    
+    	// Instantiate API Client
+    	var client = new ApiClient();
+    
+    	// Create Button
+    	$("#createButton").click(function() {
+    		var familyName = $("#familyName").val();
+    		var email = $("#email").val();
+    		var password = $("#password").val();
+    		var file = document.getElementById('yourPic').files[0];
+    		// Create Family Object
+    		var family = new Family(familyName, email, password);
+    		
+    		client.createFamily(family, function(data) {
+    			var familyData = data;
+    		
+    			// Set client family id
+    			client.familyId = data._id;
+    			
+    			// Create Initial Member
+    			var memberName = $("#yourName").val();
+    			var memberPicUrl = "";
+    			var member = {'name': memberName, 'pictureURL':memberPicUrl};
+
+                // Upload the image to imgur:
+                if (file != null) {
+                    upload(file, function(resp) {
+                        memberPicUrl = resp.data.link;
+                        member = {'name': memberName, 'pictureURL':memberPicUrl};
+
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    }, function (err) {
+                        client.createMember(member, function(data) {
+                            handleLogin(familyData);
+                        });
+                    });
+                } else {
+                    // Proceed without image.
+                    client.createMember(member, function(data) {
+                        handleLogin(familyData);
+                    });
+                }
+    		});
+
+    		
+            if (file != null) {
+                upload(file);
+            }
+    		
+    	});
+    
+    	// Cancel Button
+    	$("#cancelButton").click(function() {
+    		window.location = 'login.html';
+    	});
+    	
+    	function showError(message) {
+    		$("#errorText").text(message);
+    		$("#errorText").show();
+    	}
+    	
+    	function hideError() {
+    		$("#errorText").hide();
+    	}
+
+        function handleFileSelect(evt) {
+            var files = evt.target.files; // FileList object
+
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+
+                console.log(f.type);
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    continue;
+                }
+                var reader = new FileReader();
+                var fileName = f.name;
+
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                return function(e) {
+                    $('#picPreview').attr('src', e.target.result);
+                    $('#picDesc').html('Uploading: <div id="picName"></div>');
+                    $('#picName').text(fileName);
+                };
+                })(f);
+
+                reader.readAsDataURL(f);
+            }
+        }
+    	$('#yourPic').change(handleFileSelect);
+
+        function upload(file, success, err) {
+          // file is from a <input> tag or from Drag'n Drop
+          // Is the file an image?
+         
+          if (!file.type.match('image.*')) {
+                return;
+            }
+          // It is!
+          // Let's build a FormData object
+         
+          var fd = new FormData();
+          fd.append("image", file); // Append the file
+          // Get your own key: http://api.imgur.com/
+
+          $.ajax({
+                url: 'https://api.imgur.com/3/image',
+                type: 'POST',
+                beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Client-ID 7058a2b30655903');},
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: success,
+                error: err
+            });
+         }
+    });
+
+</script>
+
+
+</head>
+
+<body>
+    <div id="outer">
+    
+<form class="form-signin" enctype="multipart/form-data">
+<img class="pin_left" src="assets/pushpin.png">
+<br>
+<h2 class="form-signin-heading">New Family</h2>
+<input id="familyName" class="input-block-level" type="text" placeholder="Family Name">
+<input id="email" class="input-block-level" type="email" placeholder="Email address">
+<input id="password" class="input-block-level" type="password" placeholder="Password">
+<div class="userInfo">
+<span class="btn btn-success fileinput-button">
+    <img id="picPreview" src="assets/unknown_person.jpg"/>
+    <div id="picDesc">Upload Your Picture</div>
+    <input id="yourPic" name="files[]" class="input-block-level" type="file" >
+</span>
+</div>
+<input id="yourName" class="input-block-level" type="text" placeholder="Your Name">
+<button id="createButton" class="btn btn-large btn-warning" type="button">Create</button>
+<span id="errorText">Error</span>
+<br><br>
+<button id="cancelButton" class="btn" type="button">Cancel</button>
+</form>
+
+
+    </div>
+</body>
+
+</html>

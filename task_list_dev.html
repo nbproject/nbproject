@@ -1,0 +1,119 @@
+<html>
+<head>
+	<style type="text/css">
+		#taskContainer{
+			margin:10px;
+			border:1px solid black;
+			padding:10px;
+			background-color:#DDDDDD;
+		}
+		#taskRowTemplate{
+			display: none;
+		}
+
+		.taskRow{		
+			border:1px solid #CCC;
+			height:50px;		
+			font-family:'Arial', serif;
+			border:5px solid #FFF;
+			background-color:#FFD;
+			margin:10px;
+			box-shadow: 2px 2px 4px #888888;
+			position:relative;
+		}
+		.taskRowInner{
+			position:absolute;			
+			border:3px solid #EED;
+			bottom:0;
+			top:0;
+			left:0;
+			right:0;
+		}
+
+		.taskComplete{
+			position: absolute;
+			left:10px;
+			margin-top:12px;
+		}
+
+		.taskLabel{
+			position: absolute;			
+			left:100px;
+			right:100px;
+			margin-top:12px;
+			font-weight: bold;
+			font-size: 1.2em;
+		}
+
+		.taskDue{
+			position: absolute;
+			right:10px;			
+			margin-top:12px;
+		}
+
+	</style>
+
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
+	<script type="text/javascript" src="js/task_itemrenderer.js"></script>
+	<script type="text/javascript">
+
+		//TODO:
+		//Make the list container
+		//Make the row container nicer
+		//Add a label for the task name
+		//Add a place for icon, complete buttons
+		
+		var items = new Array();
+		var itemRenderer = new TaskListRenderer();
+
+		//wrapper tracing function
+		function line(txt){
+			console.log(txt);
+		}
+
+		$(document).ready(function() {	
+
+			for (var i = 0; i < 10; i++) {
+				var task = new Task("Do laundry #" + i, items.length);
+				task.name = "Do your fucking dishes";
+				task.id = i;
+				task.due = "Today";
+				makeRow(task);
+			};
+							
+		});
+
+		function makeRow(task){
+			var template = $("#taskRowTemplate");
+			var container = $("#taskContainer");
+			var taskDiv = template.clone().attr('id', task.id);			
+			taskDiv.appendTo(container);
+			var complete = $(taskDiv).find(".taskComplete");
+			complete.html("To Do");
+			var label = taskDiv.find(".taskLabel");
+			label.html(task.name);
+			var taskDue = taskDiv.find(".taskDue");		
+			taskDue.html(task.due);
+		}
+
+		function taskClick(elem){			
+			var item = $(elem);
+			line(item.attr('id'));
+		}
+
+	</script>
+</head>
+<body>
+	<div id="taskContainer">
+		<div id="taskRowTemplate" class="taskRow" onclick="javascript:taskClick(this)">
+			<div class="taskRowInner">
+				<div class="taskComplete"></div>
+				<div class="taskLabel"></div>
+				<div class="taskDue"></div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

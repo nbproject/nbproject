@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<!-- Bootstrap -->
+	<script type="text/javascript" src="external_js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<script src="external_js/jquery-cookie-master/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/api_client.js"></script>
+	<script type="text/javascript" src="js/verify.js"></script>
+	<link rel="stylesheet" type="text/css" href="corkboard_theme.css"/>
+	<link rel="stylesheet" type="text/css" href="task_list.css"/>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script type="text/javascript" src="external_js/jquery-ui-1.10.0.custom.min.js"></script>
+	<script type="text/javascript" src="external_js/date.js"></script>
+	<script type="text/javascript" src="static_js/task.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" type="text/css" href="task_completion.css" />
+
+	<script type="text/javascript">
+
+
+	//wrapper tracing function
+	function line(txt){
+		console.log(txt);
+	}
+
+	function dummy() {
+
+	}
+
+	function showPopup(){
+		$("#popContainer").show();
+		taskPopupRefresh();
+		popup = true;
+	}
+
+	function hidePopup(){
+		$("#popContainer").hide();
+		popup = false;
+	}
+
+	function taskClaimed(id, imgurl, Claimname){
+		line("--taskClaimed--: " + id);
+		hidePopup();
+		var item = $("#taskContainer #" + id);
+		item.addClass('statusClaimed');
+		item.removeClass('statusComplete');
+		item.find('.taskButton').text('Finish');
+//		item.css("background-color", "#77D");
+//		item.find(".taskRowInner").css("border", "1px solid #336");
+		item.find(".taskDue").html("Working!")
+		var complete = item.find(".taskComplete");
+		complete.html("<img class=\"completeIcon\" src='" + imgurl + "'/>" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
+
+		var taskClaimed = "";
+		var memberClaimed = "";
+		var family = getFamilyObject();
+		client.getFamilyInfo(family._id, function(data){
+			var datatasks = data.tasks;
+
+			for (var i = 0; i < datatasks.length; i++) {
+				var curDataTask = datatasks[i];
+				if (curDataTask.id.toString() === id.toString()) {
+					taskClaimed = curDataTask;
+				}
+			};	
+			
+
+			var datamembers = data.members;
+			for (var i = 0; i < datamembers.length; i++) {
+				var member = datamembers[i];
+				var name = member.name;
+				if (Claimname === name) {
+					memberClaimed = member;
+				}
+			}
+
+			taskClaimed.assignedTo = memberClaimed._id;
+			taskClaimed.status = "Claimed";
+			client.modifyTask(taskClaimed, function(){});
+		});	
+
+
+	}
+
+	function taskCompleted(id, imgurl, Claimedname){
+
+		line("--taskComplete--: " + id);
+		hidePopup();
+		var item = $("#taskContainer #" + id);
+		item.addClass('statusComplete');
+		item.removeClass('statusClaimed');
+//		item.css("background-color", "#7D7");
+//		item.find(".taskRowInner").css("border", "1px solid #363");
+		item.find(".taskDue").html("Complete!");		
+		var complete = item.find(".taskComplete");
+		complete.html("<img class=\"completeIcon\" src='" + imgurl + "' />" + '<img class="deleteIcon hidden" src="assets/delete.png"/>');
+
+		var taskClaimed = "";
+		var memberClaimed = "";
+		var family = getFamilyObject();
+		client.getFamilyInfo(family._id, function(data){
+			var datatasks = data.tasks;
+
+			for (var i = 0; i < datatasks.length; i++) {
+				var curDataTask = datatasks[i];
+				if (curDataTask.id.toString() === id.toString()) {
+					taskClaimed = curDataTask;
+				}
+			};	
+
+			var datamembers = data.members;
+			for (var i = 0; i < datamembers.length; i++) {
+				var member = datamembers[i];
+				var name = member.name;
+				if (Claimedname === name) {
+					memberClaimed = member;
+				}
+			}
+
+			taskClaimed.finished = memberClaimed._id;
+			taskClaimed.status = "Finished";
+			client.modifyTask(taskClaimed, function(){});
+		});	
+	}
+
+	function taskClick(){
+		if (editModeOn) {
+			return;
+		}
+		var id = $(this).parents('.taskRow').attr('id');
+		console.log('taskClick thinks id=' + id);
+		task = tasks[id];
+		showPopup();
+	}	
+
+	var TaskListId = 0;
+	var beforeEditHTML = "";
+	var editModeOn = false;
+	function updateTaskList(task){
+		var template = $("#taskRowTemplate");
+		var container = $("#taskContainer");
+		var taskDiv = template.clone().attr('id', task.id);			
+		taskDiv.prependTo(container);
+		var complete = $(taskDiv).find(".taskComplete");		
+		var label = taskDiv.find(".taskLabel");
+		label.attr("id", "l" + task.id);
+		label.html(task.name);
+		var taskDue = taskDiv.find(".taskDue");	
+		taskDue.attr("id", "d" + task.id);	
+		taskDue.html("Due: " + task.duedate);
+		var button = taskDiv.find(".taskRowInner");
+		var sideButton = taskDiv.find(".taskButton")
+		//console.log(button);
+		$(button).hover(function() {
+			if (!editModeOn)
+				$(sideButton).addClass("taskHover");
+		}, function() {
+			$(sideButton).removeClass("taskHover");
+		});
+		$(button).click( taskClick);
+
+	}
+
+	
+	function validateTaskInput() {
+		var form = $('form#new_task');
+		var txtinput = form.find('[name="taskname"]');
+		var dueinput = form.find('[name="due"]');
+
+		if (txtinput.val().trim().length == 0) {
+			//txtinput.blur_reset();
+			txtinput.css('color', 'red');
+			txtinput.css('font-weight', 'bold');
+			return false;
+		}
+		return true;
+	}
+
+	function taskPopupRefresh() {
+		document.getElementById("taskName").innerHTML = task.name;
+	}
+
+	(function($) {
+		$(function() {
+
+			// Handle the input field defaults.
+			//$('.remember').blur_default();
+
+			// Insert weekdays from tomorrow till a week from today.
+			var duedd = $('#due');
+			var day_start = (2).day().fromNow();
+			for (var i = 0; i < 5; ++i) {
+				var day_name = day_start.toString('dddd');
+				duedd.append('<option value="'+day_name+'">Due: '
+					+day_name+'</option>');
+				day_start = day_start.add(1).day();
+			}
+			var form = $('form#new_task');
+			tasks = new Array();
+			form.submit(function(e) {
+				e.preventDefault();
+				var taskInput = form.find('[name="taskname"]');
+				var taskTxt = taskInput.val();
+				var taskDue = form.find('[name="due"]').val();
+				if (taskTxt.trim().length == 0) {
+					taskInput.addClass('error');
+					return;
+				} else {
+					taskInput.removeClass('error');
+				}
+
+				var task = new Task(taskTxt, null,TaskListId);
+				
+				task.duedate = taskDue;
+				tasks[TaskListId.toString()] = task;
+				task.status = "Unclaimed";
+				client.createTask(task, dummy);
+				updateTaskList(task);
+				taskInput.val('');
+				++TaskListId;
+			});
+			
+			$('.profile').click(function(evt) {
+    			//window.location = 'member_history.html?member=' + evt.target.id.slice(3);
+    		});
+
+    		// Claim Button
+		$('#btnClaim').click(function(evt) {
+			var currently_selected = $('.selectionPic.selected').id;
+			var pic = $('.selectionPic.selected').attr('src');
+
+			var selectedName = $("#selectedName").text();
+
+            console.log('btnClaim thinks id=' + task.id);
+    		task.status = 'claimed';
+    		task.assignedTo = currently_selected;
+    		var imgurl = pic;
+    		taskClaimed(task.id, imgurl, selectedName);
+    	});
+    	
+    	// Complete Button
+		$('#btnComplete').click(function(evt) {
+			var currently_selected = $('.selectionPic.selected').id;
+			var pic = $('.selectionPic.selected').attr('src');
+            console.log('btnComplete thinks id=' + task.id);
+    		task.status = 'completed';
+    		var selectedName = $("#selectedName").text();
+    		task.assignedTo = currently_selected;
+    		task.finished = currently_selected;
+    		var imgurl = pic;
+    		taskCompleted(task.id, imgurl, selectedName);
+    	});
+    		
+    		$("#popClose").click(function(evt){
+    			
+    		});
+
+    		$(".edit").click(function(evt) {
+    			if (editModeOn) {
+    				// Turn edit mode off:
+	    			$('.taskComplete .deleteIcon').hide();
+	    			$('.taskComplete .completeIcon').show();
+	    			$(this).text('Edit');
+
+	    			var rows = $('.taskRow');
+	    			for (var i = 0; i < rows.length; ++i) {
+	    				var row = $(rows[i]);
+	    				var textInput = row.find('input[type="text"]');
+	    				var dueInput = row.find('select');
+	    				// Update client:
+	    				row.find('.taskLabel').text(textInput.val());
+	    				row.find('.taskDue').text(dueInput.find('option:selected').text());
+
+	    				// Update server:
+	    				var taskid = row.attr('id');
+	    			}
+
+
+	    			$('.taskLabel').show();
+	    			$('.taskDue').show();
+
+	    			$('.geninput').remove();
+
+    			} else {
+    				// Turn edit mode on:
+    				$('.taskComplete .deleteIcon').show();
+	    			$('.taskComplete .completeIcon').hide();
+	    			$(this).text('Done Editing');
+	    			
+	    			var labels = $('.taskLabel');
+	    			for (var i = 0; i < labels.length; ++i) {
+	    				var lbl = $(labels[i]);
+	    				var text = lbl.text();
+	    				var input = $('<input class="geninput" type="text" value="'+text+'">');
+	    				lbl.after(input);
+	    				lbl.hide();
+	    			}
+
+	    			$('.geninput')[0].select();
+
+	    			var dues = $('.taskDue');
+	    			for (var i = 0; i < dues.length; ++i) {
+	    				var due = $(dues[i]);
+	    				var text = due.text();
+	    				var input = $('#due').clone();
+	    				$('#due option').each(function (i, v) {
+	    					if (v.text == text)
+	    						$(input.find('option')[i]).attr('selected','selected');
+	    				});
+	    				input.addClass('geninput');
+	    				due.after(input);
+	    				due.hide();
+	    			}
+
+    			}
+    			editModeOn = !editModeOn;
+
+    		});
+
+    		$('.deleteIcon').click(function(evt) {
+    			var task_id = $(this).parents('.taskRow').attr('id');
+    		});
+
+    		/*
+    		$(".labelWrapper").dotdotdot({
+				//	configuration goes here
+				ellipsis: '... '
+			}); */
+
+
+
+
+
+
+
+
+
+
+	//task management
+
+	function getAndRenderTasks() {
+		//for each task, render new
+	}
+
+	function editTask(task) {
+
+	}
+
+	function addNewTask(task) {
+
+	}
+
+	function renderNewTask(task) {
+
+	}
+
+
+	    });
+	})(jQuery);
+	</script>
+
+	<script type="text/javascript" src="js/index.js"></script>
+	<title>Cork Together</title>
+</head>
+<body>
+	<div id="outer">
+	<div id="content">
+		<div style="position: relative;" id="titleButton">
+			<img class="pin_left" src="assets/pushpin.png">
+			<h1>Cork Together</h1>
+			<ul class="nav nav-pills family_button">
+				<li class="dropdown">
+				  <button id="fam" class="dropdown-toggle btn" data-toggle="dropdown" type="button">Barathian <b class="caret"></b></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <li><a href="manage_family.html">Edit Family</a></lI>
+				    <li><a href="javascript:logout()">Log Out</a></li>
+				  </ul>
+				</li>
+			</ul>
+		</div>
+
+		<div id="navigation">
+			
+			<div class="tabs_container">
+				<ul id="tabs">
+					<li><div class="active" id="boxTodo"><img src="assets/checkbox.png" id="checkbox"><h3>To-Do</h3></div></li>
+				</ul>
+			</div>
+
+			<div class="family_container">
+				<ul id="family">
+					
+				</ul>
+			</div>
+		</div>
+
+		<div id="tasklist" class="body">
+			<div>
+				<h2>To-Do <a class="edit">Edit</a></h2>
+			</div>
+			<div id="item_entry">
+				<form id="new_task" class="form-inline" target="index.html">
+					<!--<button>?</button>-->
+					<input autofocus="autofocus" class="remember" type="text" name="taskname" placeholder="Enter Task Name">
+					<!-- <label for="due">Due</label>-->
+					<select name="due" id="due">
+						<option value="ASAP">Due: ASAP</option>
+						<option value="Today">Due: Today</option>
+						<option value="Tomorrow">Due: Tomorrow</option>
+						<!-- Javascript will add next 5 days -->
+					</select>
+					<button class="btn" id="add_task">Add</button>
+				</form>
+			</div>
+			<div id="taskContainer">
+				<div id="taskRowTemplate" class="taskRow" >
+					<div class="taskRowInner">
+						<div class="taskComplete"><div class="completeIcon"></div><img class="deleteIcon hidden" src="assets/delete.png"/></div>
+						<p class="taskLabel"></p>
+						<div class="taskDue"></div>					</div>
+					<button class="taskButton">Claim</button>
+				</div>
+			</div>		
+		</div>
+	</div>
+	<div id="popContainer">
+		<div id="popup">
+			<div id="taskPopup">
+				<div id="completionWindow">
+
+					<span id="taskName">Task Name</span>
+					<br>
+
+					<img src="assets/unknown_person.jpg" id="selectedPerson"></img>
+					<br>
+
+					<span id="selectedName">Select Family Member</span>
+					<br>
+
+					<table id="selectionTable"><tr>
+
+					</tr></table>
+					<br>
+
+					<table id="buttonTable"><tr>
+
+						<td><input id="btnCancel" class="completeButton" type="button" name="new" value="Cancel"/></td>
+
+						<td><input id="btnClaim" class="completeButton" disabled="true" type="button" name="new" value="I'm Working On It!"/></td>
+
+						<td><input id="btnComplete" class="completeButton" disabled="true" type="button" name="new" value="I'm Finished!"/></td> 
+
+
+					</tr></table>
+
+				</div>
+			</div>
+		<div>
+		</div>
+	</div>
+</body>
+</html>
