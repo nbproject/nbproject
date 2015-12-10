@@ -931,6 +931,8 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                         } else {
                                             var sel_loc = cur_locs.sort(NB_vid.videoSortFunc)[0];
                                             if (sel_loc.ID !== self._id_location) {
+                                                $(".playORpause").attr("src", "/content/data/images/play.png");
+                                                NB_vid.methods.pauseVideo();
                                                 $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
                                             }
                                         }
