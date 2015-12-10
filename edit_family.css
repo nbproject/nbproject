@@ -1,0 +1,62 @@
+
+
+#nameEditor {
+	margin-left: 15px;
+	margin-top: 15px;
+}
+
+h1 {
+	margin-left: 15px;
+}
+
+#addMember {
+	margin-top: 20px;
+	margin-left: 15px;
+	margin-bottom: 10px;
+}
+
+#familyTable {
+	margin-left: 15px;
+	display: inline;
+}
+
+#testPic {
+	height: 50px;
+	width: 50px;
+}
+
+#newPic {
+	height: 50px;
+	width: 50px;
+}
+
+#newName {
+	width: 100px;
+}
+
+.left {
+	padding-right: 20px;
+}
+
+.center {
+	padding-right:20px;
+}
+
+.right {
+	padding-left: 0px;
+}
+
+
+h2 {
+	display: inline;
+	font-size: 1.5em;
+}
+
+#containsTable {
+	border: 2px solid black;
+	text-align: center;
+}
+
+button {
+	margin-right:2px;
+}

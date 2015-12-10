@@ -30,7 +30,7 @@ GLOB.files.labelfields = {file: "title", folder: "name"};
 GLOB.files.set_model = function(model){
     GLOB.files.model = model;
     var $util_window = $.concierge.get_component("get_util_window")();
-    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form><div><a id='add_file_html' href='#'>Add a HTML page</a></div><div><a id='add_file_youtube' href='#'>Add a YouTube video</a></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
+    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <table width='275'><tr><td><input type='radio' id='file_select' name='upload_type' value='file_select' checked></td><td><input type='radio' id='html_select' name='upload_type' value='html_select'></td><td><input type='radio' id='youtube_select' name='upload_type' value='youtube_select'></td></tr><tr><td>PDF</td><td>HTML</td><td>YouTube</td></tr></table><div id='add_file_div'> <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form></div><div style='display:none;' id='add_html_div'><form id='html_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''> <table><tr><td>Title</td><td><input type='text' name='title' id='html_input_title'></input></td></tr><tr><td>URL</td><td><input type='text' name='url' id='html_input_url'></input></td></tr></table></form><br><p>Don't forget to add the NB annotation tag!  Follow the link below for more detailed instructions.</p><div><a id='add_file_html' href='#'>Detailed HTML Upload Instructions</a></div></div><div style='display:none' id='add_youtube_div'> <form id='youtube_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''> <table><tr><td>URL</td><td><input type='text' name='url' maxlength='1024' id='youtube_input_url'></input></td></tr></table></form></table></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>"+
 "<tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'/> </td></tr> "+
 "<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'/>        </td></tr> "+
 "<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'/>        </td></tr> "+
@@ -54,10 +54,41 @@ GLOB.files.set_model = function(model){
     .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");
 };
 
+// Returns 'file', 'html', or 'youtube' depending on the selected upload type ('' if there is an error)
+function getUploadType() {
+    if (document.getElementById('file_select').checked) {return 'file';}
+    if (document.getElementById('html_select').checked) {return 'html';}
+    if (document.getElementById('youtube_select').checked) {return 'youtube';}
+    return '';
+}
+
+function updateVisibility(e) {
+    if (getUploadType() === 'file') {
+        $("#add_file_div").css("display", "inline");
+        $("#add_html_div").css("display", "none");
+        $("#add_youtube_div").css("display", "none");
+    }
+
+    if (getUploadType() === 'html') {
+        $("#add_file_div").css("display", "none");
+        $("#add_html_div").css("display", "inline");
+        $("#add_youtube_div").css("display", "none");
+    }
+
+    if (getUploadType() === 'youtube') {
+        $("#add_file_div").css("display", "none");
+        $("#add_html_div").css("display", "none");
+        $("#add_youtube_div").css("display", "inline");
+    }
+}
+
 
 GLOB.files.addFile = function(id_ensemble, id_folder){
     GLOB.files.currentEnsemble = id_ensemble;
     GLOB.files.currentFolder = id_folder;
+
+    $("input[name='upload_type']").on("change", updateVisibility);
+
     var foldername = (id_folder === null ) ? "": GLOB.files.model.o.folder[GLOB.files.currentFolder].name;
     $("#add_file_ensemble").html("<option id_ensemble='"+GLOB.files.currentEnsemble+"'>"+GLOB.pers.store.o.ensemble[GLOB.files.currentEnsemble].name+"</option>").attr("disabled", "disabled");
     $("#add_file_folder").html("<option id_folder='"+GLOB.files.currentFolder+"'>"+foldername+"</option>").attr("disabled", "disabled");
@@ -81,13 +112,32 @@ GLOB.files.addFile = function(id_ensemble, id_folder){
 };
 
 GLOB.files.proceedUpload = function(payload){
-    var form = $("#file_upload_form")[0];
-    // we need a way to pass the id_ensemble and id_folder: we do it in the URL
-    var folder_fragment = (GLOB.files.currentFolder === null) ? "" : "&id_folder="+GLOB.files.currentFolder;
-    var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
-    form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
-    form.submit();
-    //$.I("File added to remote repository");    
+    console.log("Upload Type:");
+    console.log(getUploadType());
+    // Handle HTML and YouTube uploads
+    if (getUploadType() === 'html') {
+        console.log("HTML Upload");
+        $('#html_upload_form').attr("action", "/addhtml/"+GLOB.files.currentEnsemble);
+        $('#html_upload_form').submit();
+        $('#html_upload_form').reset();
+    }
+    else if (getUploadType() === 'youtube') {
+        console.log("YouTube Upload");
+        $('#youtube_upload_form').attr("action", "/addyoutube/"+GLOB.files.currentEnsemble);
+        $('#youtube_upload_form').submit();
+        $('#youtube_upload_form').reset();
+    }
+    else {
+        console.log("File Upload");
+        var form = $("#file_upload_form")[0];
+        // we need a way to pass the id_ensemble and id_folder: we do it in the URL
+        var folder_fragment = (GLOB.files.currentFolder === null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+        var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
+        form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
+        form.submit();
+        form.reset();
+        //$.I("File added to remote repository");
+    }
     $('#add_file_dialog').dialog("destroy");
     //SACHA TODO: Fix this when we setup connectionIds
     window.setTimeout(function(){
@@ -95,10 +145,10 @@ GLOB.files.proceedUpload = function(payload){
         $.I("NB is processing your file... You should receive an email once your file is available on NB."); 
         var payload_objects = {types:["files"],  id: payload.id_source};
         if ("id_ensemble" in GLOB.pers.params){
-        payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
+            payload_objects["payload"]= {id_ensemble: GLOB.pers.params.id_ensemble};
         }
         GLOB.pers.call("getObjects", payload_objects, function(p){
-            GLOB.pers.store.add("file", p.files);
+        GLOB.pers.store.add("file", p.files);
         } );
     }, 3000);
 };

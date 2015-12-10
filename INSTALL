@@ -130,4 +130,23 @@ NOTE:  - packages in square brackets are optional)
         grunt      
 
 Questions (including how to install NB on other linux distributions): Use our forum at http://nbproject.vanillaforums.com/ more specifically, the deployers section: http://nbproject.vanillaforums.com/categories/deployers
-Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above). 
+Contact: nb-team@csail.mit.edu (NOTE: You'll likely get a much faster reply if you use the forum above).
+
+-----VIDEO ANNOTATOR UPDATE-----
+Since this commit, NB runs on Django 1.7.  This means changes to the database can now be handled with Django migrations!
+These instructions will get you up and running from a previous NB install.
+
+1) Run the database migrations included in the codebase
+    cd apps
+    ./manage.py migrate
+
+2) Add the new user option
+    python base/jobs.py addsettings
+(If this fails try changing the id fields in the function do_add_tag_email_setting)
+
+3) Schedule the CRON job for automated tag reminders
+(The following job runs daily at 8 PM)
+0 20 * * * (cd /home/ubuntu/nbgit/apps;  python -m 'base.jobs' tagreminders)
+
+The tagreminders option of the base/jobs.py script sends reminders to all users about unseen tagged comments.
+ 
