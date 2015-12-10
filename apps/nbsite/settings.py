@@ -29,6 +29,8 @@ FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
 GOOGLE_DEVELOPER_KEY =  settings_credentials.__dict__.get("GOOGLE_DEVELOPER_KEY", "CHANGE_ME")
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
     print msg_credentials()
     exit(1)
@@ -124,7 +126,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    abspath("%s/../../templates" % (ROOTDIR, ))
+    (abspath("%s/../../templates" % (ROOTDIR, ))),
 )
 ALLOWED_INCLUDE_ROOT = (abspath("%s/../templates/web" % (ROOTDIR, )),)
 

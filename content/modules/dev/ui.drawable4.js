@@ -18,7 +18,6 @@
         this._model =  this.options.model;
         var helper = $("<div class='ui-drawable-helper'/>");
         this.element.addClass("ui-drawable").append(helper);
-        this.contextmenu = $("<ul id='PNUP' class='contextMenu'><li class='comment'><a href='#comment'>Comment</a></li><li class='highlight menu-separator'><a href='#highlight'>Highlight</a></li><li class='hide'><a href='#hide'>Hide</a></li><li class='delete menu-separator'><a href='#delete'>Delete</a></li></ul>");
         this._helper =  helper;
     },
     destroy: function() {

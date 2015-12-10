@@ -23,17 +23,6 @@
         self._id_folder        = null;
         self._admin        = self.options.admin;
         self._me        = $.concierge.get_component("get_userinfo")();
-        self._menu_items    = $();
-        self._menu_items_reg = $("<ul id='contextmenu_filesview' class='contextMenu'/>");
-        self._menu_items_admin =
-            $("<ul id='contextmenu_filesview' class='contextMenu'>" +
-              "<li class='rename'><a href='#rename'>Rename</a></li>" +
-              "<li class='move'><a href='#move'>Move</a></li>" +
-              "<li class='update'><a href='#update'>Update</a></li>" +
-              "<li class='assignment'><a href='#assignment'>Edit Assignment</a></li>" +
-              "<li class='duplicate menu-separator'><a href='#duplicate'>Duplicate</a></li>" +
-              "<li class='delete menu-separator'><a href='#delete'>Delete</a></li>" +
-              "</ul>");
         self._scrollTimerID =  null;
         //self._firstrender = true;
         self._defaultopen = null;
@@ -49,6 +38,24 @@
             $.concierge.get_component("invite_users_menu")({id_ensemble: self._id_ensemble});
             });
 
+        // Declare Filesview Context Menu
+
+        $.contextMenu({
+            selector: 'tr.filesview_row',
+            build: function ($trigger, e) {
+
+                var item_object = self._context_build.call(self, $trigger, e);
+
+                return {
+                    callback: function (key, options) {
+                        // we use 'call' and supply 'self' so that _context
+                        // will use 'self' as 'this', not the context menu.
+                        self._context_callback.call(self, this, key, options);
+                    },
+                    items: item_object
+                };
+            }
+        });
         },
         _defaultHandler: function(evt){
         switch (evt.type){
@@ -72,9 +79,47 @@
         }
         this._render();
         },
+        _context_build: function (el, event) {
+
+            var self = this;
+            var items = {
+                "rename": { name: "Rename", icon: "rename" },
+                "move": { name: "Move", icon: "move" },
+                "update": { name: "Update", icon: "update" },
+                "assignment": { name: "Edit Assignment", icon: "assignment" },
+                "sep1": "---------",
+                "duplicate": { name: "Duplicate", icon: "duplicate" },
+                "sep2": "---------",
+                "delete": { name: "Delete", icon: "delete" }
+            };
+
+            if (self._model.get("ensemble", {ID: self._id_ensemble}).first().admin === false) {
+                return false;
+            }
+
+            if (el.closest(".filesview_row").attr("item_type") === "folder") {
+                delete items["update"];
+                delete items["assignment"];
+            }
+
+            return items;
+        },
+        _context_callback: function (el, action) {
+            switch (action) {
+                case "open":
+                    $.concierge.get_component("file_open")({ id: el.attr("id_item") });
+                    break;
+                case "foo":
+                    break;
+                default:
+                    $.concierge.get_component(action + "_file_menu")({ item_type: el.attr("item_type"), id: el.attr("id_item") });
+                    break;
+            }
+        },
         _filelens: function(f){
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
-        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
+        var analytics_link = (this._admin && f.filetype === 1) ?  "<br/><a href='/f/"+f.ID+"/analyze' target='_blank'>Analytics</a>" : "";
+        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a>"+analytics_link+"</td>" : "" ;
         var d = new Date(f.date_published);
         var date_added = d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2);
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
@@ -245,8 +290,9 @@
         var filesView_files = (self._id_ensemble === null) ?  "<!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->" : "<h3 id='filesView-files-header'><a href='#'>Contents of <span id='filesView-files-header-name'/></a></h3><div id='filesView-panel-files' class='filesView-panel'> Sort by <a href='#' data-id='0' class='sort-option asc'><span class='arrow'></span>date added</a> <a href='#' data-id='1' class='sort-option desc active'><span class='arrow'></span>name</a> <table id='contents-table' class='tablesorter'><thead><tr><th class='hidden'>Date Added</th><th>Name</th><th>Assignment</th><th id='th_download'>Download PDF</th><th>Stats</th>"+opts+"</tr></thead><tbody id='filesView-file-list'/></table></div>";
 
         self.element.html(header+ "<div id='filesView-accordion'>"+  filesView_files + filesView_pending + filesView_question +"</div>");
-
-        self._menu_items.remove();
+        if (self._menu_items){
+            self._menu_items.remove();
+        }
         self._menu_items = self._admin ? self._menu_items_admin : self._menu_items_reg;
         self.set_tablesort();
         $("body").append(self._menu_items);
@@ -284,28 +330,10 @@
             $tbody.append("<tr><td><div class='nofiles'>No files or folders</div></td></tr>");
             }
             $("table.tablesorter", self.element).trigger("update");
-            var f_context = function(action, el, pos){
-            switch (action){
-            case "open":
-            $.concierge.get_component("file_open")({id: el.attr("id_item")});
-            break;
-            case "foo":
-            break;
-            default:
-                $.concierge.get_component(action+"_file_menu")({item_type: el.attr("item_type"), id: el.attr("id_item")});
-            break;
-            }
-            };
-            var f_leftcontext = function(action, el, pos){
-            f_context(action, el.parent().parent(), pos);
-            };
-            $("tr.filesview_row", self.element).contextMenu({menu: "contextmenu_filesview"}, f_context);
-            $("a.optionmenu", self.element).contextMenu({menu:"contextmenu_filesview", leftButton:true }, f_leftcontext);
-            $("#contextmenu_filesview").bind("beforeShow", function(event, el){
-                $("li", this).show();
-                if (el.closest(".filesview_row").attr("item_type") ==="folder"){
-                $("li.update, li.assignment", this).hide();
-                }
+
+            $("a.optionmenu", self.element).click(function (e) {
+                e.preventDefault();
+                $(this).parents("tr.filesview_row").contextMenu();
             });
             /*
               $e_info = $("div.filesView-ensemble").empty();

@@ -119,14 +119,38 @@
         GLOB.pers.call("getGuestFileInfo", {id_source: GLOB.pers.id_source}, GLOB.pers.createStore, GLOB.pers.on_fileinfo_error );
         $.concierge.addConstants({res: 288, scale: 25, QUESTION: 1, STAR: 2 });
         $.concierge.addComponents({
-                set_comment_label: function(P,cb){
-                    GLOB.pers.call("set_comment_label", P, cb);
-                },
-                notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
-                    note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
-                    note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);},
-                    commentlabels_loader:    function(P, cb){GLOB.pers.call("getCommentLabels", P, cb);}                    
-            });   
+            set_comment_label: function(P,cb){
+                GLOB.pers.call("set_comment_label", P, cb);
+            },
+            notes_loader:    function(P, cb){GLOB.pers.call("getNotes", P, cb);}, 
+            note_creator:    function(P, cb){GLOB.pers.call("saveNote", P, cb);},
+            note_editor:    function(P, cb){GLOB.pers.call("editNote", P, cb);},
+            commentlabels_loader:    function(P, cb){GLOB.pers.call("getCommentLabels", P, cb);},
+            bulk_import_annotations: function(P, cb) {
+                GLOB.pers.call("bulk_import_annotations", {
+                    locs_array: P.locs_array,
+                    from_source_id: P.from_source_id,
+                    to_source_id: P.to_source_id,
+                    import_type: P.import_type
+                }, cb);
+            },
+            set_location_section: function (P, cb) {
+                GLOB.pers.call("set_location_section", {
+                    id_location: P.id_location,
+                    id_section: P.id_section
+                }, cb);
+            },
+            promote_location_by_copy: function (P, cb) {
+                GLOB.pers.call("promote_location_by_copy", {
+                    id_location: P.id_location
+                }, cb);
+            },
+            delete_thread: function (P, cb) {
+                GLOB.pers.call("deleteThread", {
+                    id_location: P.id_location
+                }, cb);
+            }
+        });   
     };
     
     GLOB.pers.createStore = function(payload){
@@ -145,8 +169,19 @@
             seen:{references: {id_location: "location"}}, 
             labelcategory:{references: {ensemble_id: "ensemble"}}, 
             commentlabel: {references: {category_id: "labelcategory"}},
-            labelcategorycaption: {references: {category_id: "labelcategory"}}
+            labelcategorycaption: {references: {category_id: "labelcategory"}},
+            members: {},
+            tags: {references: {user_id: "members", comment_id: "comment"}}
         });
+
+        var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
+
+        GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){
+            console.log("getMembers callback");
+
+            GLOB.pers.store.add("members", P5);
+        });
+
         //get the section info as well as info whether user is admin: 
         GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
             var m = GLOB.pers.store;

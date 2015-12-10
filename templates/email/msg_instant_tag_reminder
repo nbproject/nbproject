@@ -1,0 +1,10 @@
+Hello {{recipient.firstname}}, 
+
+You've just been tagged in a new comment on NB!
+
+Here's a link to it:
+{{V.protocol}}://{{V.hostname}}/c/{{comment.id}}
+
+Dutifully yours,
+
+NBNB  -  the NB Notification Bot

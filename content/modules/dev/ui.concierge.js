@@ -215,8 +215,11 @@ var NB$ = jQuery.noConflict();
     var popup = $("<div class='ui-view-popup'/>");
 
     $.L = function(){
-        if (window.console){
-            console.log(arguments);
+        if (window.console) {
+            var args = Array.prototype.slice.call(arguments);
+            args.forEach(function (arg) {
+                console.log(arg);
+            });
         }
     };
 
