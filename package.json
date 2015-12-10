@@ -14,9 +14,8 @@
   },
   "dependencies": {
     "execSync": ">= 0.9"
-  }
-}
-{
+  },
+  "_comment":{
   "name": "dashboard-server",
   "version": "0.0.1",
   "dependencies": {
@@ -27,4 +26,5 @@
     "node": "0.10.x",
     "npm": "1.2.x"
   }
+}
 }
