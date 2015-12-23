@@ -10,6 +10,8 @@ License
 from django.db.models import Q, Max
 from django.db.models import Count
 from django.db import transaction
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 import datetime, os, re, json 
 import models as M
 import constants as CST
@@ -37,14 +39,16 @@ __NAMES = {
         "h": None,
 },
     "location2": {
-         "id_ensemble": "ensemble_id",
+        "id_ensemble": "ensemble_id",
         "top": "y",
         "left": "x",
         "page": None,
+	"duration": None,
         "id_source": "source_id",
         "ID": "id",
         "w": None,
         "h": None,
+	"section_id": None
 },
     "location_v_comment": {
         "id_ensemble": None,
@@ -58,17 +62,25 @@ __NAMES = {
         "body": "substring(body, 0, 95) || replace(substring(body, 95, 5), '&', '') as body",
         "big": "cast(length(body)>100 as integer) as big"
 },
-        "location_v_comment2":{
+    "location_v_comment2":{
         "ID": "location_id",
         "id_ensemble": "location.ensemble_id",
         "top": "location.y",
         "left": "location.x",
         "page": "location.page",
+	"duration": "location.duration",
         "id_source": "location.source_id",
         "w": "location.w",
         "h": "location.h",
         "body": None,
-        "section_id": "location.section_id",
+        "is_title": "location.is_title",
+	"duration": "location.duration",
+        "section_id": "location.section_id"
+},
+    "tag": {
+        "ID": "id",
+        "user_id": "individual_id",
+        "comment_id": "comment_id"
 },
        "html5location":{
         "ID": "id", 
@@ -110,7 +122,7 @@ __NAMES = {
         "signed": None,
         "type": None,
         "fullname": Template("{{V.author.firstname}} {{V.author.lastname}}"),
-        "admin": None        
+        "admin": None       
 },
     "location_stats": {
         "id_location": None,
@@ -164,7 +176,8 @@ __NAMES = {
                           "description": "ensemble.description",
                           "allow_guest": "ensemble.allow_guest", 
                           "allow_anonymous": "ensemble.allow_anonymous", 
-                          "allow_staffonly": "ensemble.allow_staffonly",  
+                          "allow_staffonly": "ensemble.allow_staffonly",
+                          "allow_tag_private": "ensemble.allow_tag_private",  
                           "use_invitekey": "ensemble.use_invitekey",
                            } , 
            "folders2":{                       
@@ -260,7 +273,33 @@ and (m.section_id is null or vc.section_id = m.section_id or vc.section_id is nu
 and vc.ensemble_id=? 
 group by source_id) as v1"""
     return  db.Db().getIndexedObjects(names, "id", from_clause, "true" , (uid,uid, uid, uid, id_ensemble))
-    
+
+# Get members of an ensemble
+def get_members(eid):
+    memberships = M.Membership.objects.filter(ensemble__id=eid, deleted=False)
+    users = {}
+    for membership in memberships:
+        user = M.User.objects.get(id=membership.user.id)
+        user_entry = UR.model2dict(user)
+
+        # Remove unnecessary fields
+        del user_entry["guest"]
+        del user_entry["confkey"]
+        del user_entry["valid"]
+        del user_entry["saltedhash"]
+        del user_entry["salt"]
+        del user_entry["password"]
+
+        # Add section
+	if membership.section == None:
+            user_entry["section"] = None
+        else:
+            user_entry["section"] = membership.section.id
+
+        # Add user dictionary to users
+        users[user.id] = user_entry
+    return users
+
 def get_stats_ensemble(payload):    
     import db
     id_ensemble = payload["id_ensemble"] 
@@ -443,7 +482,20 @@ def getComment(id, uid):
     names = __NAMES["comment2"]
     comment = M.Comment.objects.select_related("location", "author").extra(select={"admin": 'select cast(admin as integer) from base_membership, base_location where base_membership.user_id=base_comment.author_id and base_membership.ensemble_id = base_location.ensemble_id and base_location.id=base_comment.location_id'}).get(pk=id)
     return UR.model2dict(comment, names, "ID")
-    
+
+def getTagsByComment(comment_id):
+    tags = M.Tag.objects.filter(comment__id=comment_id)
+    return UR.qs2dict(tags, __NAMES["tag"], "ID")
+   
+# Returns a QuerySet of Locations in a thread that the user is tagged somewhere in
+def getLocationsTaggedIn(uid):
+    tags = M.Tag.objects.filter(individual__id=uid)
+    comments = M.Comment.objects.filter(id__in=tags.values_list("comment_id"))
+    loc_set = {}
+    for comment in comments:
+        loc_set[comment.location.id] = None
+    return M.Location.objects.filter(id__in=loc_set.keys())
+ 
 def getCommentsByFile(id_source, uid, after):
     names_location = __NAMES["location_v_comment2"]
     names_comment = __NAMES["comment2"]
@@ -468,18 +520,27 @@ def getCommentsByFile(id_source, uid, after):
         comments = comments.filter(ctime__gt=after)
         threadmarks = threadmarks.filter(ctime__gt=after)
 
+    # Filter out private tags that aren't yours
+    #comments_tagged_in = M.Tag.objects.filter(individual__id=uid).values_list("comment_id")
+    locations_tagged_in = getLocationsTaggedIn(uid)
+    comments = comments.filter(Q(author__id=uid) | ~Q(type__in=[4]) | Q(location__in=locations_tagged_in))
+
+    # Get Tags
+    tags = M.Tag.objects.filter(comment__in=comments)
+
     html5locations = M.HTML5Location.objects.filter(location__comment__in=comments)
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     html5locations_dict = UR.qs2dict(html5locations, __NAMES["html5location"], "ID")
     threadmarks_dict = UR.qs2dict(threadmarks, __NAMES["threadmark"], "id")
+    tag_dict = UR.qs2dict(tags, __NAMES["tag"], "ID")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
     for k,c in comments_dict.iteritems(): 
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]): 
             c["fullname"]="Anonymous"
             c["id_author"]=0             
-    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict
+    return locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict
 
 def get_comments_collection(uid, P):
     output = {}
@@ -667,6 +728,23 @@ def getMark(uid, payload):
     return UR.qs2dict(o, names, "ID")    
     #return DB().getIndexedObjects(names, "ID", "nb2_v_mark3", "id=? and id_user=?", (int(payload["id_comment"]),uid));
 
+def instantTagReminder(comment, recipient):
+    # Email Data
+    subject = "You were tagged in a new note on NB!"
+    V = {"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME}
+
+    # Send Email
+    default_setting = M.DefaultSetting.objects.get(name="email_confirmation_tags")
+    try:
+        user_setting = M.UserSetting.objects.get(setting=default_setting, user=recipient)
+    except M.UserSetting.DoesNotExist:
+        user_setting = default_setting
+    if user_setting.value > 0:
+        context = {"V": V, "comment": comment, "recipient": recipient}
+        msg = render_to_string("email/msg_instant_tag_reminder", context)
+        email = EmailMessage(subject, msg, settings.EMAIL_FROM, (recipient.email,), (settings.EMAIL_BCC,))
+        email.send(fail_silently=True)
+
 def addNote(payload):
     id_location = None
     author =  M.User.objects.get(pk=payload["id_author"])
@@ -676,7 +754,7 @@ def addNote(payload):
 
     #putting this in factor for duplicate detection: 
     similar_comments = M.Comment.objects.filter(parent=parent, ctime__gt=datetime.datetime.now()-datetime.timedelta(0,10,0), author=author, body=payload["body"]);
-    
+
     #do we need to insert a location ? 
     if "id_location" in payload: 
         location = M.Location.objects.get(pk=payload["id_location"])
@@ -693,6 +771,11 @@ def addNote(payload):
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
+	# Duration for YouTube comments
+	if "duration" in payload:
+		location.duration = payload["duration"]
+        if "title" in payload:
+                location.is_title = payload["title"] == 1
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
 
         #refuse if similar comment
@@ -735,6 +818,21 @@ def addNote(payload):
         comment.type = payload["type"]
         comment.signed = payload["signed"] == 1
         comment.save()
+
+        # Add any tags
+        if "tags" in payload:
+            new_tags = payload["tags"]
+            for tag_id in new_tags:
+                tagged_user = M.User.objects.get(pk=tag_id)
+
+                tag = M.Tag()
+                tag.type = 1
+                tag.comment = comment
+                tag.individual = tagged_user
+                tag.save()
+
+                instantTagReminder(comment, tagged_user)
+
         return [comment]
 
 def setLocationSection(id_location, id_section):
@@ -851,11 +949,51 @@ def bulkImportAnnotations(from_source_id, to_source_id, locs_array, import_type)
 
 def editNote(payload):
     id_type = payload["type"]
-    comment = M.Comment.objects.get(pk=payload["id_comment"])
+    comment_id = payload["id_comment"]
+    comment = M.Comment.objects.get(pk=comment_id)
     comment.body = payload["body"]
     comment.type = id_type
     comment.signed = payload["signed"]
     comment.save()
+
+    retval = None
+    # Edit time and duration if they are in payload
+    if ("page" in payload) and ("duration" in payload):
+        comment.location.page = payload["page"]
+        comment.location.duration = payload["duration"]
+        comment.location.save()
+        retval = comment.location
+
+    # Edit Tags if they are in payload
+    if "tags" in payload:
+        tagset = payload["tags"]
+        comment_tags = M.Tag.objects.filter(comment__id=comment_id)
+        # If user in tagset and not yet tagged, add tag
+        for user_id in tagset:
+            try:
+                # If no exception, the tag is already there
+                tag = comment_tags.get(individual__id=user_id)
+            except M.Tag.DoesNotExist:
+                # Tag in tagset but not database, add to database
+                tagged_user = M.User.objects.get(pk=user_id)
+                tag = M.Tag()
+                tag.type = 1
+                tag.comment = comment
+                tag.individual = tagged_user
+                tag.save()
+                instantTagReminder(comment, tagged_user)
+        # If tag exists on this comment and not in tagset, delete it
+        deleted_tags = comment_tags.exclude(individual__id__in=tagset)
+        deleted_tags.delete()
+
+    if not retval == None:
+        retval = UR.model2dict(retval, __NAMES["location2"], "ID")
+        for loc_id in retval:
+            retval = retval[loc_id]
+            break
+        retval["body"] = M.Comment.objects.get(location__id=loc_id, parent=None).body
+
+    return retval
     
 def deleteNote(payload):
     id = int(payload["id_comment"])    
@@ -1148,7 +1286,7 @@ def getPending(uid, payload):
     locations = M.Location.objects.filter(comment__in=comments)
     all_comments = M.Comment.objects.filter(location__in=locations)
     unrated_replies = all_comments.extra(tables=["base_threadmark"], where=["base_threadmark.location_id=base_comment.location_id and base_threadmark.ctime<base_comment.ctime"]).exclude(replyrating__status=M.ReplyRating.TYPE_UNRESOLVED) 
-    questions = questions.exclude(location__comment__in=unrated_replies)
+    questions = questions.exclude(location__comment__in=list(unrated_replies))
     comments =  M.Comment.objects.filter(location__threadmark__in=questions, parent__id=None, type=3, deleted=False, moderated=False)
     locations = M.Location.objects.filter(comment__in=comments)
     locations = locations.filter(Q(section__membership__user__id=uid)|Q(section=None)|Q(ensemble__in=M.Ensemble.objects.filter(membership__section=None, membership__user__id=uid)))

@@ -1,0 +1,14 @@
+Hello {{recipient.firstname}}, 
+
+You've been tagged in comments on NB that you haven't seen yet
+
+Log on and see what you've missed!
+
+Links to Unread Comments you are tagged in:
+{% for c in comments%}
+{{V.protocol}}://{{V.hostname}}/c/{{c.id}}
+{% endfor %}
+
+Dutifully yours,
+
+NBNB  -  the NB Notification Bot
