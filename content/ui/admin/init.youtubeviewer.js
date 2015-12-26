@@ -37,29 +37,29 @@ GLOB.pers.init = function(){
             var pers_id        = "pers_"+id;
             var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo("body");
             var $pers        = $("<div id='"+pers_id+"'/>").appendTo($vp);
-            var docview        =  {priority: 1, min_width: 950, desired_width: 50, 
+            var docview        =  {priority: 1, min_width: 970, desired_width: 50, 
                                    content: function($div){
                     $div.docView({img_server: GLOB.conf.servers.img});
                     $div.docView("set_model",GLOB.pers.store );
                 }
             };
-            var notesview    =  {priority: 1, min_width: 650, desired_width: 35, min_height: 1000, desired_height: 50, 
+            var notesview    =  {priority: 1, min_width: 630, desired_width: 35, min_height: 1000, desired_height: 50, 
                         content: function($div){
                     $div.notepaneView();
                     $div.notepaneView("set_model",GLOB.pers.store );
                 }
             }; 
-            var threadview    = {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, 
+            var threadview    = {priority: 1, min_width: 630, desired_width: 35,  min_height: 1000, desired_height: 50, 
                        content: function($div){
                     $div.threadview();
                     $div.threadview("set_model",GLOB.pers.store );                
                 }
             };
-            var editorview    =  {priority: 1, min_width: 650, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
+            var editorview    =  {priority: 1, min_width: 630, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,  
                                   content: function($div){
                     var m = GLOB.pers.store;
                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];                    
-                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous});
+                    $div.editorview({allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous, allowTagPrivate: ensemble.allow_tag_private});
                     $div.editorview("set_model",GLOB.pers.store );                
                 }
             };
@@ -125,11 +125,21 @@ GLOB.pers.createStore = function(payload){
         mark: {}, 
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
-        seen:{references: {id_location: "location"}}
+        seen:{references: {id_location: "location"}},
+        members: {},
+        tags: {references: {user_id: "members", comment_id: "comment"}}
+    });
+
+    var ensembleID = NB.pers.store.get("ensemble", {}).first().ID;
+
+    GLOB.pers.call("getMembers", {id_ensemble: ensembleID}, function(P5){
+        console.log("getMembers callback");
+
+        GLOB.pers.store.add("members", P5);
     });
 
     //get the section info as well as info whether user is admin: 
-    GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+    GLOB.pers.call("getSectionsInfo", {id_ensemble: ensembleID}, function(P3){
         var m = GLOB.pers.store;
         m.add("section", P3["sections"]);
         NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
@@ -166,13 +176,16 @@ GLOB.pers.createStore = function(payload){
     $.concierge.trigger({type:"file", value: id_source});
     var f = GLOB.pers.store.o.file[id_source];
     document.title = $.E(f.title);
-    $.concierge.get_component("notes_loader")( {file:id_source }, function(P){
+    var noteLoaderCallback = function(P) {
+        console.log("noteLoaderCallback:");
+        console.log(P["tags"]);
         var m = GLOB.pers.store;
         m.add("seen", P["seen"]);
         m.add("comment", P["comments"]);
         m.add("location", P["locations"]);
         m.add("link", P["links"]);
         m.add("threadmark", P["threadmarks"]);
+        m.add("tags", P["tags"]);
         //now check if need to move to a given annotation: 
         if ("c" in GLOB.pers.params){
         window.setTimeout(function(){
@@ -197,6 +210,9 @@ GLOB.pers.createStore = function(payload){
             $.concierge.trigger({type: "page", value: 1});
             }, 300);
         }
+    };
+    $.concierge.get_component("notes_loader")( {file:id_source }, function(P) {
+        window.setTimeout(function() {noteLoaderCallback(P);}, 1000);
     });
 };
 

@@ -15,3 +15,5 @@ content/data
 content/.settings
 node_modules/
 apps/testwrite
+.DS_Store
+db_dumps/

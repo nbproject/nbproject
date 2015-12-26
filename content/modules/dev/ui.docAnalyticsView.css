@@ -1,0 +1,200 @@
+.nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
+	overflow: auto;
+}
+
+body {
+	background-color: rgb(22,73,90);
+}
+.main-wrapper {
+	margin: 10px 20px;
+}
+
+.controls {
+	display: inline-block;
+}
+
+.control-bar {
+	padding: 10px;
+	background-color: #D5D2D2;
+	border-radius: 12px 12px 0 0;
+}
+
+.controls select {
+	margin-right: 20px;
+}
+
+#pages-container {
+	clear: both;
+}
+
+.links {
+	text-align: right;
+	color: #fff;
+}
+
+.links a, .links a:visited {
+	color: white;
+}
+
+.links a:hover {
+	color: rgb(255,234,128);
+}
+
+.panel {
+	background-color: #fff;
+	border-radius: 12px 12px 0 0;
+	/*padding: 10px;*/
+	margin-bottom: 20px;
+}
+
+.panel-content {
+	padding: 10px;
+}
+
+.heatmap > .panel-content {
+	padding: 0;
+}
+
+label {
+	font-weight: bold;
+}
+.page-wrap {
+	float: left;
+	border: 1px solid;
+	font-size: 10px;
+	font-weight: bold;
+	position: relative;
+	background-color: #ebebeb;
+}
+
+.header-link {
+	text-decoration: none;
+	color: rgb(255,234,128);
+}
+
+.header-link:hover {
+	color: #fff;
+}
+
+.page-num {
+	font-size: 18px;
+	display: inline-block;
+	float: left;
+	margin: 5px;
+	padding: 5px 3px;
+	clear: both;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	min-width: 20px;
+	text-align: center;
+	background-color: #FAFAF5;
+	font-weight:normal;
+	color: #000;
+}
+
+.page-num {
+	cursor: pointer;
+}
+
+.page-num:hover {
+	color: #fff;
+	background-color: #6F6F6C;
+}
+
+.page-stats {
+	float: right;
+	margin: 4px;
+}
+
+.page-img {
+	float:left;
+}
+
+.clearfix {
+	clear: both;
+}
+
+.highlight {
+	background-color:rgba(255,245,48, 0.18);
+	position: absolute;
+	z-index: 2;
+	border: 1px solid rgba(0,0,0,0.4);
+}
+
+.pg-preview {
+	position:absolute;
+	z-index:3;
+	width:/*510px;
+	height*/:660px;
+	/*top: 50%;*/
+	top: 0;
+	left: 20%;
+/*	margin-top:-330px;
+	margin-left:-255px;*/
+	display:none;
+}
+
+.img-enlarged {
+	width: 510px;
+}
+
+.page-label {
+	cursor: default;
+}
+
+.color-stat {
+	opacity: 0.7;
+}
+
+.num-threads, .threads {
+	color: #3366CC;
+}
+
+.num-annotations, .annotations {
+	color: #DC3912;
+	color: #FF7100;
+}
+
+.num-questions, .questions {
+	color: #109618;
+}
+
+.num-participants, .participants {
+	color: #990099;
+}
+
+.chart-toggle {
+	color: #fff;
+	/*opacity: 0.5;*/
+	background: none transparent; 
+	border: none;
+	margin-left: 15px;
+}
+
+.chart-toggle.on {
+	opacity: 1.0;
+}
+
+.marker {
+    width: 1em;
+    height: 1em;
+    border-radius:50%;
+    background-color: green;
+    opacity: 0.2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.chart_div {
+	margin-bottom: 20px;
+}
+
+.tip {
+	margin-right: 20px;
+	float:right;
+	padding: 3px 10px;
+	font-style: italic;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+}
