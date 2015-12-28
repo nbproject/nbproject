@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import TemplateDoesNotExist
 import  urllib, json, base64, logging
-from base import auth, signals, annotations, utils_response as UR, models as M
+from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
 import string, random, forms
 from random import choice
@@ -133,9 +133,8 @@ def source(req, n, allow_guest=False):
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , content_type="text/html")
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
-    else:
-<<<<<<< HEAD
-        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, mimetype="text/html")
+    else:        
+        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
 def source_analytics(req, n):
     pages, chart_stats = doc_analytics.get_page_stats(n)
@@ -148,14 +147,10 @@ def source_analytics(req, n):
         'highlights': highlights,
         'numpages': source.numpages
     }
-    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, mimetype="text/html")
-=======
-        return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
-
+    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, content_type="text/html")
 
 def your_settings(req):
     return __serve_page(req, 'web/your_settings.html', content_type="text/html")
->>>>>>> django now uses content_type instead of mimetype
 
 def embedopenid(req):
     return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
