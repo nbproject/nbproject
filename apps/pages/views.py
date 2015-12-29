@@ -58,7 +58,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
     return r
 
 # o is a dictionary representing the variables
-def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, mimetype=None):
+def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, content_type=None):
     """Serve the template 'tpl' if user is in DB or allow_guest is True. If not, serve the welcome/login screen"""
     user       = UR.getUserInfo(req, allow_guest, __extra_confkey_getter)
     if user is None:
@@ -68,7 +68,7 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, mim
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
     signals.page_served.send("page", req=req, uid=user["id"])
-    r = render_to_response(tpl, o, mimetype=('application/xhtml+xml' if mimetype is None else mimetype))
+    r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
 
