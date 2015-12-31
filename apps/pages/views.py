@@ -53,6 +53,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
+
     r = render_to_response(tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
     return r
@@ -133,7 +134,7 @@ def source(req, n, allow_guest=False):
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , content_type="text/html")
     elif source.type==M.Source.TYPE_HTML5:
         return HttpResponseRedirect(M.HTML5Info.objects.get(source=source).url)
-    else:        
+    else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
 def source_analytics(req, n):
