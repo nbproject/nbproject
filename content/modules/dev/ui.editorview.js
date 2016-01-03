@@ -158,7 +158,7 @@
                 var num_rows = Math.floor(n_members / 3);
                 var remainder = n_members % 3;
                 var member_list = new Array(n_members);
-                var tag_table = $("#tagBoxes");
+                var tag_table = $("#tagBoxes").hide();
                 var i = 0;
                 for (var id in members.items) {
                     member_list[i] = members.items[id];
@@ -240,7 +240,8 @@
 
 		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
 
-                var section_tag_option = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
+                var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
+		var section_tag_option = ""; //hack to hide tags
 
                 var contents = $([
                                   "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
