@@ -1275,7 +1275,7 @@ def markActivity(cid):
         session.lastactivity = datetime.datetime.now()
         session.save()
         return session, previous_activity    
-    except M.Session.DoesNotExist, ValidationError: 
+    except (M.Session.DoesNotExist, ValidationError, IndexError): 
         pass     
     return None, None    
 
