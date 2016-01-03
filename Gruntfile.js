@@ -132,7 +132,7 @@ module.exports = function(grunt) {
     };
 
     MODS.RANGY = {
-        src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-cssclassapplier.js", "rangy-textrange.js", "termfix.js" ]),
+        src_js: addPrefix(MODULE_DIR+"rangy/",["rangy-core.js", "rangy-classapplier.js", "rangy-textrange.js", "termfix.js" ]),
         src_css:  []
     };
     MODS.SPREADSHEETVIEW = {
