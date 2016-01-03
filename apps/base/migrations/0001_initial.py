@@ -408,9 +408,9 @@ class Migration(migrations.Migration):
             name='SettingLabel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('setting', models.ForeignKey(to='base.DefaultSetting')),
                 ('value', models.IntegerField()),
                 ('label', models.TextField()),
-                ('setting', models.ForeignKey(to='base.DefaultSetting')),
             ],
             options={
             },
