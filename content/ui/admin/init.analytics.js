@@ -21,7 +21,7 @@ var Page = Backbone.Model.extend({
 
 var Highlight = Backbone.Model.extend();
 
-var Document = Backbone.Collection.extend({
+var PageCollection = Backbone.Collection.extend({
 	model: Page,
 
 	sort_key: 'page_num',

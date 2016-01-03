@@ -74,7 +74,7 @@
             // initialize page thumbnails
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
-            var doc = new Document();
+            var doc = new PageCollection();
             
             var orientation;
             if ({{ source.h }} > {{ source.w }}) {
