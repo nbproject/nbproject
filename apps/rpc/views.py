@@ -277,7 +277,7 @@ def getGuestFileInfo(payload, req):
 def getHTML5Info(payload, req):
     if "url" not in payload:
         return UR.prepare_response({}, 1, "missing url !")
-    url = payload["url"].partition("#")[0] #remove hash part of the URL by default.
+    url = payload["url"].partition("#")[0].rstrip("/") # remove hash part of the URL by default, as well as trailing slash.
     #TODO: use optional argument id_ensemble to disambiguate if provided. 
     sources_info = M.HTML5Info.objects.filter(url=url)
     ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
