@@ -114,7 +114,7 @@
         
         // Wrap elements with nb-comment-fresh which is then selected by jQuery and operated on properly;
         // the styled element must have an nb-comment-highlight class.
-        cssApplier = rangy.createCssClassApplier("nb-comment-fresh", { normalize: true });
+        cssApplier = rangy.createClassApplier("nb-comment-fresh", { normalize: true });
 
         // Make sure concierge won't steal our keys!
         $.concierge.keydown_block = false;
