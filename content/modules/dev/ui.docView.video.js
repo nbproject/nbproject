@@ -650,7 +650,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		};
 	
 		Metronome.prototype.__go = function(){
-			console.log("Go!");
 			if (!( this.position_helper)){
 				console.error("[metronome] position helper not set !");
 				return;
@@ -908,7 +907,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			    delete NB_vid.tickVisibility[evt.value];
 			break;
 			case "metronome":
-				console.log("Tick");
 				if (!self._ignoremetronome){
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
