@@ -81,7 +81,9 @@
                                    mark: {}, 
                                    threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
                                    draft: {},
-                                   seen:{references: {id_location: "location"}}
+                                   seen:{references: {id_location: "location"}},
+			   members: {},
+			   tags: {references: {user_id: "members", comment_id: "comment"}}
                            });
                        
                        //get the section info as well as info whether user is admin: 

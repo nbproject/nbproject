@@ -237,7 +237,10 @@ def add_html_doc(req, ensemble_id):
             ownership.save()
             info = M.HTML5Info()
             info.source = source
-            info.url = addform.cleaned_data['url']
+            # trailing slash is sometimes added by server redirects
+            # but person specifying upload url may not realize this
+            # so remove trailing slash as well as hash part of the URL
+            info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/") 
             info.save();
             return HttpResponseRedirect("/")
     return render_to_response("web/add_html_doc.html", {"form": addform})

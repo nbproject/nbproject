@@ -569,10 +569,14 @@
     var output = new GLOB.models.QuerySet(self, from);
     var f = this;
     var ref; 
-    var references = self.schema[from].references || {};
+    var references={};
     var i=null;
     var r = /(.*)__in$/; //for range querying
     var matches, v, width, bin, idx;
+
+    if (self.schema[from] && self.schema[from].references) {
+	references = self.schema[from].references;
+	}
     for (i in where){
         matches = r.exec(i);
         if (matches !== null){ //range query
