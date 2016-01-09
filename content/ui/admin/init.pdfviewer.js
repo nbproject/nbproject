@@ -156,7 +156,7 @@
     GLOB.pers.createStore = function(payload){
         GLOB.pers.store = new GLOB.models.Store();
         GLOB.pers.store.create(payload, {
-                ensemble:    {pFieldName: "ensembles"}, 
+            ensemble:    {pFieldName: "ensembles"}, 
             section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
             file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
             folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
