@@ -439,7 +439,7 @@ def getLocation(id):
         h5l = o[0].location.html5location if len(o) else None
     except M.HTML5Location.DoesNotExist: 
         pass
-    h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else {}
+    h5l_dict = UR.model2dict(h5l, __NAMES["html5location"], "ID") if h5l else None
     return (loc_dict, h5l_dict)
     
 def getTopCommentsFromLocations(location_ids):
