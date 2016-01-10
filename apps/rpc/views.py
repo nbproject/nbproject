@@ -398,7 +398,9 @@ def saveNote(payload, req):
             tm.location_id=tm.comment.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"], retval["html5locations"] = annotations.getLocation(a[0].location_id)
+    retval["locations"], html5 = annotations.getLocation(a[0].location_id)
+    if (html5 is not None):
+        retval["html5locations"]=html5
     retval["comments"] = {}
     retval["tags"] = {}
     for annotation in a:
