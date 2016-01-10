@@ -35,8 +35,11 @@
 	document.cookie = cookie_string;
     };
 
-    GLOB.auth.delete_cookie =function( cookie_name ){
-	document.cookie = cookie_name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;"; 
+    GLOB.auth.delete_cookie =function( cookie_name , path){
+	document.cookie = cookie_name 
+	    + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=" 
+	    + (path ? escape (path) : "/")
+	    + ";"
     };
 
     GLOB.auth.get_cookie = function ( cookie_name ){
