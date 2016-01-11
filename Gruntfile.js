@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     /* MODS are modules that serve as building blocks, without being built themselves */
     var MODS = {};
     MODS.CONTEXTMENU = {
-        src_js: addPrefix(MODULE_DIR,["contextmenu/jquery.contextMenu.js"]),
+        src_js: addPrefix(MODULE_DIR,["contextmenu/jquery.ui.position.js", "contextmenu/jquery.contextMenu.js"]),
         src_css:  addPrefix(MODULE_DIR, ["contextmenu/jquery.contextMenu.css"])
     };
     MODS.FILTERWIZARD = {
