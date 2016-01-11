@@ -290,7 +290,7 @@
                     GLOB.auth.set_cookie("userinfo", escape(JSON.stringify(evt.value)));
                     GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
-                    $("#splash-welcome").parent().dialog("destroy");
+                    $("#splash-welcome").parent().remove();
                     
                     f_after_successful_login();
                     
