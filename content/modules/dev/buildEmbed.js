@@ -85,13 +85,22 @@
 			   members: {},
 			   tags: {references: {user_id: "members", comment_id: "comment"}}
                            });
-                       
+
+		       var ensemble = NB.pers.store.get("ensemble", {}).first();
+                     
                        //get the section info as well as info whether user is admin: 
-                       GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+                       GLOB.pers.call("getSectionsInfo", {id_ensemble: ensemble.ID}, function(P3){
                            var m = GLOB.pers.store;
                            m.add("section", P3["sections"]);
-                           NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
+                           ensemble.admin=true; //we only get a callback if we're an admin for this ensemble
                        });
+
+
+		       GLOB.pers.call("getMembers", {id_ensemble: ensemble.ID}, function(P5){
+			   console.log("getMembers callback");
+
+			   GLOB.pers.store.add("members", P5);
+		       });
                        
                        //TODO: Take something else than first id_source
                        var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
