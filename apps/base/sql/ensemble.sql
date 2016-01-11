@@ -36,3 +36,6 @@ INSERT INTO base_settinglabel VALUES (12, 4, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (13, 5, 2, 'For each note');
 --INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (15, 5, 0, 'Never');
+INSERT INTO base_settinglabel VALUES (16, 6, 2, 'For each note');
+--INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
+INSERT INTO base_settinglabel VALUES (17, 6, 0, 'Never');
