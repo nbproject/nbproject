@@ -68,22 +68,28 @@
                 self._render();
             }
 
+	    var builder = function($trigger, e) {
+
+                var item_object = self._context_build.call(self, $trigger, e);
+
+                return {
+                    callback: function(key, options) {
+                        // we use 'call' and supply 'self' so that _context
+                        // will use 'self' as 'this', not the context menu.
+                        self._context_callback.call(self,this, key, options);
+                    },
+                    items: item_object
+                };
+            };
             // Declare Threadview Context Menu
             $.contextMenu({
-                selector: 'div.note-lens,a.optionmenu',
-                build: function($trigger, e) {
-
-                    var item_object = self._context_build.call(self, $trigger, e);
-
-                    return {
-                        callback: function(key, options) {
-                            // we use 'call' and supply 'self' so that _context
-                            // will use 'self' as 'this', not the context menu.
-                            self._context_callback.call(self,this, key, options);
-                        },
-                        items: item_object
-                    };
-                }
+                selector: 'div.note-lens',
+                build: builder
+            });
+            $.contextMenu({
+                selector: 'a.optionmenu',
+		trigger: 'left',
+                build: builder
             });
 
         },
