@@ -154,45 +154,31 @@
                 var self = this;
                 var m = self._model;
                 var members = m.get("members", {});
-                var n_members = members.length();
-                var num_rows = Math.floor(n_members / 3);
-                var remainder = n_members % 3;
-                var member_list = new Array(n_members);
-                var tag_table = $("#tagBoxes").hide();
+                var tag_table = $("#tagBoxes");
                 var i = 0;
-                for (var id in members.items) {
-                    member_list[i] = members.items[id];
-                    i++;
-                }
+		var row;
                 // Helper for generating checkbox HTML
                 var get_checkbox_html = function(member){
                     return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'>";
                 };
-                // Add full rows
-                for (i = 0; i < num_rows; i++) {
-                    var member1 = member_list[i*3];
-                    var member2 = member_list[i*3+1];
-                    var member3 = member_list[i*3+2];
-                    var member1_html = "<td>"+get_checkbox_html(member1)+" "+member1.firstname+" "+member1.lastname+"</td>";
-                    var member2_html = "<td>"+get_checkbox_html(member2)+" "+member2.firstname+" "+member2.lastname+"</td>";
-                    var member3_html = "<td>"+get_checkbox_html(member3)+" "+member3.firstname+" "+member3.lastname+"</td>";
-                    var row_html = "<tr class='data'>"+member1_html+member2_html+member3_html+"</tr>";
-                    tag_table.append(row_html);
-                }
-                // Add remainder
-                var final_row_html = "<tr class='data'>";
-                var first_index = num_rows * 3;
-                for (i = 0; i < 3; i++) {
-                    if (i < remainder) {
-                        var member = member_list[first_index+i];
-                        var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
-                        final_row_html += member_html;
-                    } else {
-                        final_row_html += "<td></td>";
-                    }
-                }
-                final_row_html += "</tr>";
-                tag_table.append(final_row_html);
+
+		members = members.items || {};
+		for (var id in members) {
+		    if (members.hasOwnProperty(id)) {
+			var member = members[id];
+			if (member.firstname !== null ||
+			    //hack to skip "guest" accounts
+			    member.lastname !== null) {
+			    var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
+			    if (i%3 === 0) {
+				row = $("<tr>").addClass('data')
+				    .appendTo(tag_table);
+			    }
+			    row.append(member_html);
+			    i++;
+			}
+		    }
+		}
             },
             _render: function(id_item, suppress_focus){
                 var self        = this;
