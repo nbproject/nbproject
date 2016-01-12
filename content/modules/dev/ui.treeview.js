@@ -59,10 +59,15 @@
             _f_sort_tree: function(a,b){
                 if (a.attr.rel === "ensemble" && a.attr.id_item === 0){
                     return -1;
-                }
-                if (b.attr.rel === "ensemble" && b.attr.id_item === 0){
+                } else if (b.attr.rel === "ensemble" && b.attr.id_item === 0){
                     return 1;
-                }
+                } else if (a.attr.rel === "ensemble" && 
+			   b.attr.rel === "ensemble") {
+		    return a.data.title < b.data.title ? -1 : 1;
+		} else if (a.attr.rel === "ensemble" && 
+			   b.attr.rel !== "ensemble") {
+		    return -1;
+		}
                 return a.data>b.data ? 1 : -1;
             },
             _render: function(){
