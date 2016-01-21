@@ -13,7 +13,7 @@
     "grunt-contrib-concat": "~0.5.1"
   },
   "dependencies": {
-    "execSync": ">= 0.9"
+    "sync-exec": "~0.6.x"
   },
   "_comment":{
   "name": "dashboard-server",

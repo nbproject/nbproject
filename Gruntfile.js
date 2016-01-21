@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
-    var execSync = require('execSync');
-    var execFct = execSync.exec || execSync.stdout; // in order to be compatible with both grunt 0.3 and 0.4
+    var execSync = require('sync-exec');
+    var execFct = execSync || execSync.stdout; // in order to be compatible with both grunt 0.3 and 0.4
     var servername = execFct("python -c 'from __future__ import print_function;from  apps.settings import NB_SERVERNAME;print(NB_SERVERNAME, end=\"\")'");
     var serverport = execFct("python -c 'from __future__ import print_function;from  apps.settings import NB_HTTP_PORT;print(NB_HTTP_PORT, end=\"\")'");
     if (serverport !== "80"){
