@@ -142,7 +142,7 @@
             GLOB.auth.delete_cookie("userinfo");
             GLOB.auth.delete_cookie("ckey");
             if (GLOB.pers.embedded){
-                document.location = document.location; //simply reload
+                document.location.reload();
             }
             else{
                 document.location.pathname ="/logout";

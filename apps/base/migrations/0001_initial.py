@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             name='AssignmentGrade',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 948057))),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 106732))),
                 ('grade', models.IntegerField()),
             ],
             options={
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             name='AssignmentGradeHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 948704))),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 108763))),
                 ('grade', models.IntegerField()),
             ],
             options={
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             name='Comment',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime.now)),
+                ('ctime', models.DateTimeField(default=datetime.datetime.now, db_index=True)),
                 ('body', models.TextField(null=True, blank=True)),
                 ('type', models.IntegerField(choices=[(1, b'Private'), (2, b'Staff'), (3, b'Class')])),
                 ('signed', models.BooleanField(default=True)),
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
             name='CommentLabel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 950598))),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 114097))),
                 ('grade', models.IntegerField()),
             ],
             options={
@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
             name='CommentLabelHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 951232))),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 115939))),
                 ('grade', models.IntegerField()),
             ],
             options={
@@ -140,8 +140,8 @@ class Migration(migrations.Migration):
             name='FileDownload',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 945809))),
-                ('annotated', models.BooleanField(default=False)),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 100411))),
+                ('annotated', models.BooleanField()),
             ],
             options={
             },
@@ -163,7 +163,7 @@ class Migration(migrations.Migration):
             name='GuestHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('t_start', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 946947), null=True)),
+                ('t_start', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 103522), null=True)),
                 ('t_end', models.DateTimeField(null=True)),
             ],
             options={
@@ -174,7 +174,7 @@ class Migration(migrations.Migration):
             name='GuestLoginHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 947517), null=True)),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 105093), null=True)),
             ],
             options={
             },
@@ -220,7 +220,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('key', models.CharField(max_length=255)),
                 ('admin', models.BooleanField(default=False)),
-                ('ctime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 930217), null=True)),
+                ('ctime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 53457), null=True, db_index=True)),
                 ('ensemble', models.ForeignKey(to='base.Ensemble')),
             ],
             options={
@@ -313,7 +313,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('type', models.CharField(max_length=127)),
-                ('atime', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 946494), null=True)),
+                ('atime', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 102190), null=True)),
             ],
             options={
             },
@@ -334,10 +334,10 @@ class Migration(migrations.Migration):
             name='Ownership',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('published', models.DateTimeField(default=datetime.datetime.now)),
+                ('published', models.DateTimeField(default=datetime.datetime.now, db_index=True)),
                 ('deleted', models.BooleanField(default=False)),
                 ('assignment', models.BooleanField(default=False)),
-                ('due', models.DateTimeField(default=datetime.datetime(2015, 7, 11, 17, 29, 24, 933728), null=True)),
+                ('due', models.DateTimeField(default=datetime.datetime(2016, 1, 1, 0, 52, 17, 64252), null=True)),
                 ('ensemble', models.ForeignKey(to='base.Ensemble')),
                 ('folder', models.ForeignKey(to='base.Folder', null=True)),
             ],
@@ -372,7 +372,7 @@ class Migration(migrations.Migration):
             name='ReplyRating',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime.now)),
+                ('ctime', models.DateTimeField(default=datetime.datetime.now, db_index=True)),
                 ('status', models.IntegerField(choices=[(1, b'unresolved'), (2, b'resolved'), (3, b'thanks')])),
                 ('comment', models.ForeignKey(to='base.Comment')),
             ],
@@ -408,9 +408,9 @@ class Migration(migrations.Migration):
             name='SettingLabel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('setting', models.ForeignKey(to='base.DefaultSetting')),
                 ('value', models.IntegerField()),
                 ('label', models.TextField()),
-                ('setting', models.ForeignKey(to='base.DefaultSetting')),
             ],
             options={
             },
@@ -456,7 +456,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('type', models.IntegerField(choices=[(1, b'question'), (2, b'star'), (3, b'summarize')])),
                 ('active', models.BooleanField(default=True)),
-                ('ctime', models.DateTimeField(default=datetime.datetime.now)),
+                ('ctime', models.DateTimeField(default=datetime.datetime.now, db_index=True)),
                 ('comment', models.ForeignKey(to='base.Comment', null=True)),
                 ('location', models.ForeignKey(to='base.Location')),
             ],
@@ -662,13 +662,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='guestloginhistory',
             name='guest',
-            field=models.ForeignKey(related_name=b'u1', to='base.User'),
+            field=models.ForeignKey(related_name='u1', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='guestloginhistory',
             name='user',
-            field=models.ForeignKey(related_name=b'u2', to='base.User'),
+            field=models.ForeignKey(related_name='u2', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -758,7 +758,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignmentgradehistory',
             name='grader',
-            field=models.ForeignKey(related_name=b'g_grade_h', to='base.User'),
+            field=models.ForeignKey(related_name='g_grade_h', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -770,13 +770,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignmentgradehistory',
             name='user',
-            field=models.ForeignKey(related_name=b'u_grade_h', to='base.User'),
+            field=models.ForeignKey(related_name='u_grade_h', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='assignmentgrade',
             name='grader',
-            field=models.ForeignKey(related_name=b'g_grade', to='base.User'),
+            field=models.ForeignKey(related_name='g_grade', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -788,7 +788,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignmentgrade',
             name='user',
-            field=models.ForeignKey(related_name=b'u_grade', to='base.User'),
+            field=models.ForeignKey(related_name='u_grade', to='base.User'),
             preserve_default=True,
         ),
         migrations.AddField(

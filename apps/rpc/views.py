@@ -277,7 +277,7 @@ def getGuestFileInfo(payload, req):
 def getHTML5Info(payload, req):
     if "url" not in payload:
         return UR.prepare_response({}, 1, "missing url !")
-    url = payload["url"].partition("#")[0] #remove hash part of the URL by default.
+    url = payload["url"].partition("#")[0].rstrip("/") # remove hash part of the URL by default, as well as trailing slash.
     #TODO: use optional argument id_ensemble to disambiguate if provided. 
     sources_info = M.HTML5Info.objects.filter(url=url)
     ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
@@ -398,7 +398,9 @@ def saveNote(payload, req):
             tm.location_id=tm.comment.location_id
             tm.save()
             tms[tm.id] = UR.model2dict(tm)  
-    retval["locations"], retval["html5locations"] = annotations.getLocation(a[0].location_id)
+    retval["locations"], html5 = annotations.getLocation(a[0].location_id)
+    if (html5 is not None):
+        retval["html5locations"]=html5
     retval["comments"] = {}
     retval["tags"] = {}
     for annotation in a:

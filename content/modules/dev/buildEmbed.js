@@ -81,15 +81,26 @@
                                    mark: {}, 
                                    threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
                                    draft: {},
-                                   seen:{references: {id_location: "location"}}
+                                   seen:{references: {id_location: "location"}},
+			   members: {},
+			   tags: {references: {user_id: "members", comment_id: "comment"}}
                            });
-                       
+
+		       var ensemble = NB.pers.store.get("ensemble", {}).first();
+                     
                        //get the section info as well as info whether user is admin: 
-                       GLOB.pers.call("getSectionsInfo", {id_ensemble: NB.pers.store.get("ensemble", {}).first().ID}, function(P3){
+                       GLOB.pers.call("getSectionsInfo", {id_ensemble: ensemble.ID}, function(P3){
                            var m = GLOB.pers.store;
                            m.add("section", P3["sections"]);
-                           NB.pers.store.get("ensemble", {}).first().admin=true; //we only get a callback if we're an admin for this ensemble
+                           ensemble.admin=true; //we only get a callback if we're an admin for this ensemble
                        });
+
+
+		       GLOB.pers.call("getMembers", {id_ensemble: ensemble.ID}, function(P5){
+			   console.log("getMembers callback");
+
+			   GLOB.pers.store.add("members", P5);
+		       });
                        
                        //TODO: Take something else than first id_source
                        var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
@@ -288,7 +299,7 @@
                     GLOB.auth.set_cookie("userinfo", escape(JSON.stringify(evt.value)));
                     GLOB.conf.userinfo = evt.value;
                     $.L("Welcome TO NB !");
-                    $("#splash-welcome").parent().dialog("destroy");
+                    $("#splash-welcome").parent().remove();
                     
                     f_after_successful_login();
                     

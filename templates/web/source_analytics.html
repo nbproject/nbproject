@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html class="nb_fullscreen">
   <head>
+    <meta charset="utf-8"/>
 <!--
    Author: cf AUTHORS.txt 
    License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -74,7 +75,7 @@
             // initialize page thumbnails
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
-            var doc = new Document();
+            var doc = new PageCollection();
             
             var orientation;
             if ({{ source.h }} > {{ source.w }}) {

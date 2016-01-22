@@ -20,6 +20,7 @@ INSERT INTO base_defaultsetting VALUES (2, 'email_confirmation_reply_author', NU
 INSERT INTO base_defaultsetting VALUES (3, 'email_confirmation_reply_answerplease', NULL, 2);
 INSERT INTO base_defaultsetting VALUES (4, 'email_confirmation_reply_unclear', NULL, 2);
 INSERT INTO base_defaultsetting VALUES (5, 'email_confirmation_all', NULL, 0);
+INSERT INTO base_defaultsetting VALUES (6,'email_confirmation_tags',NULL,2);
 INSERT INTO base_settinglabel VALUES (1, 1, 2, 'For each note I write');
 --INSERT INTO base_settinglabel VALUES (2, 1, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (3, 1, 0, 'Never');
@@ -35,3 +36,6 @@ INSERT INTO base_settinglabel VALUES (12, 4, 0, 'Never');
 INSERT INTO base_settinglabel VALUES (13, 5, 2, 'For each note');
 --INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
 INSERT INTO base_settinglabel VALUES (15, 5, 0, 'Never');
+INSERT INTO base_settinglabel VALUES (16, 6, 2, 'For each note');
+--INSERT INTO base_settinglabel VALUES (14, 5, 1, 'Once a day, as a digest');
+INSERT INTO base_settinglabel VALUES (17, 6, 0, 'Never');
