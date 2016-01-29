@@ -12,16 +12,16 @@
 (function(GLOB){
     if ("NB$" in window){
 	var $ = NB$;
-    };
+    }
     GLOB.dom = {};
     GLOB.dom.elementItem = function(node, n){ //0-based    
 	var i=0;
 	var child = node.firstChild;
 	while(true){
-	    while (child.nodeType != 1){
+	    while (child.nodeType !== 1){
 		child = child.nextSibling;
 	    }
-	    if (i==n){
+	    if (i===n){
 		return child;
 	    }
 	    else{
@@ -35,7 +35,7 @@
 
     GLOB.dom.firstElement = function(node){
 	var child = node.firstChild;
-	while (child.nodeType != 1){
+	while (child.nodeType !== 1){
 	    child = child.nextSibling;
 	}
 	return child;
@@ -44,7 +44,7 @@
     GLOB.dom.previousElement = function(node){
 	var n = node.previousSibling;
 	while(n){
-	    if (n.nodeType == 1){
+	    if (n.nodeType === 1){
 		return n;
 	    }
 	    else{
@@ -58,7 +58,7 @@
     GLOB.dom.nextElement = function(node){
 	var n = node.nextSibling;
 	while(n){
-	    if (n.nodeType == 1){
+	    if (n.nodeType === 1){
 		return n;
 	    }
 	    else{
@@ -95,13 +95,13 @@
     GLOB.dom.getParams = function(){
 	var s = document.location.search;
 	var params = {};
-	if (s != ""){	
+	if (s !== ""){	
 	    s = s.substring(1);
 	    var a = s.split("&");	
 	    for (var i in a){
 		var pos = a[i].search("=");
 		var len = a[i].length;
-		if (pos != -1){
+		if (pos !== -1){
 		    params[a[i].substring(0,pos)] = a[i].substring(pos+1, len);
 		}
 	    }

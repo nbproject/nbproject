@@ -9,6 +9,9 @@ License
     MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
  */
+//Suppress warnings for using NB variable 
+/* jshint -W079 */
+/* jshint -W020 */
 var NB;
 
 if (NB && (typeof NB !== "object")){
