@@ -22,7 +22,7 @@
             var self=this;
             self.element.empty();
 
-            var $h = $("<h3>Filter Threads&hellip;</h3>");
+            var $h = $("<h3>Filter Threads&#x2026;</h3>");
             var $e = $("<p>").addClass("error-message");
             var $p = $("<p>");
 
@@ -46,10 +46,10 @@
             var $go = $("<input>").attr("type", "button").attr("value", "Go");
             var $cancel = $("<input>").attr("type", "button").attr("value", "Cancel");
 
-            $p.append("Show me&nbsp;").
-                append($n).append("&nbsp;").
-                append($r).append("&nbsp;").
-                append($filterType).append(".&nbsp;").
+            $p.append("Show me&#160;").
+                append($n).append("&#160;").
+                append($r).append("&#160;").
+                append($filterType).append(".&#160;").
                 append($go).
                 append($cancel);
 
