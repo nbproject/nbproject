@@ -50,13 +50,16 @@
             var char = _char;
 
             // count text nodes as well (includes whitespace)
-            $(_this).contents().each(function() {
-                  if (this.nodeType === 1) {
-                      $(this).attr("data_char", char);
-                      countChildChars(char, this);
-                  }
-                  char += ($(this).text()).length;
-            });
+	    try { //avoid crashing on cross origin iframes
+		$(_this).contents().each(function() {
+                    if (this.nodeType === 1) {
+			$(this).attr("data_char", char);
+			countChildChars(char, this);
+                    }
+                    char += ($(this).text()).length;
+		});
+	    }
+	    catch(e) {}
         };
 
         countChildChars(0, $("body")[0]);

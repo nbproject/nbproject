@@ -310,7 +310,7 @@
         //tell who to make rpc requests to
         GLOB.conf.servers.rpc=GLOB.pers.server_url;
 
-        $("body").append("<div class='nb_sidebar' class='nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
+        $("body").append("<div class='nb_sidebar nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
         
         $("#nb_loginbutton").click(function(){
                 $.concierge.get_component("login_user_menu")();

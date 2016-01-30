@@ -159,7 +159,7 @@
 		var row;
                 // Helper for generating checkbox HTML
                 var get_checkbox_html = function(member){
-                    return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'>";
+                    return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'/>";
                 };
 
 		members = members.items || {};
@@ -211,7 +211,7 @@
 		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
                 var tagPrivateOption = self._allowTagPrivate ? "<option value='4'>Myself and Tagged Users</option>" : " ";
-                var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></div>": " ";
+                var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></span>": " ";
                 var questionoption = self._doEdit ? " " : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
                 var titleoption = self._note === null && is_video ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : " ";
                 var checkbox_options = questionoption+titleoption+signoption;
@@ -230,8 +230,8 @@
 		var section_tag_option = ""; //hack to hide tags
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&#160;with:&#160;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br/><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
 
                 self.element.append(contents);
 
