@@ -41,7 +41,7 @@
 		    self._videoCover = evt.value;
 		break;
                 case "new_thread":
-                    if (me.guest === 1){
+                    if (me.guest) {
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
                     }
@@ -73,7 +73,7 @@
                     self._render(id_item, evt.value.suppressFocus);
                     break;
                 case "reply_thread": 
-                    if (me.guest === 1){
+                    if (me.guest) {
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
                     }
