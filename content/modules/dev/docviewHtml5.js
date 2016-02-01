@@ -397,12 +397,21 @@
     };
 
     var getElementsByXPath = function (doc, xpath) {
-        var nodes = [];
+        var nodes = [], result, item;
 
         try {
-            var result = doc.evaluate(xpath, doc, null, XPathResult.ANY_TYPE, null);
-            for (var item = result.iterateNext() ; item; item = result.iterateNext()){
+            result = doc.evaluate(xpath, doc, null, XPathResult.ANY_TYPE, null);
+            for (item = result.iterateNext() ; item; item = result.iterateNext()){
                 nodes.push(item);}
+	    if (nodes.length === 0) {
+		//try a hack to handle namespace defaults in xhtml documents
+		xpath = xpath.replace(/\/([a-z])/ig, "/my:$1");
+		result = doc.evaluate(xpath, doc, function() {
+		    return document.body.namespaceURI;
+		    }, XPathResult.ANY_TYPE, null);
+		for (item = result.iterateNext() ; item; item = result.iterateNext()){
+                    nodes.push(item);}
+	    }
         }
         catch (exc) {
             // Invalid xpath expressions make their way here sometimes.  If that happens,
