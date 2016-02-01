@@ -154,31 +154,45 @@
                 var self = this;
                 var m = self._model;
                 var members = m.get("members", {});
+                var n_members = members.length();
+                var num_rows = Math.floor(n_members / 3);
+                var remainder = n_members % 3;
+                var member_list = new Array(n_members);
                 var tag_table = $("#tagBoxes");
                 var i = 0;
-		var row;
+                for (var id in members.items) {
+                    member_list[i] = members.items[id];
+                    i++;
+                }
                 // Helper for generating checkbox HTML
                 var get_checkbox_html = function(member){
                     return "<input type='checkbox' class='tag_checkbox' name='tags' value='"+member.id+"' id='tag_checkbox_"+member.id+"'>";
                 };
-
-		members = members.items || {};
-		for (var id in members) {
-		    if (members.hasOwnProperty(id)) {
-			var member = members[id];
-			if (member.firstname !== null ||
-			    //hack to skip "guest" accounts
-			    member.lastname !== null) {
-			    var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
-			    if (i%3 === 0) {
-				row = $("<tr>").addClass('data')
-				    .appendTo(tag_table);
-			    }
-			    row.append(member_html);
-			    i++;
-			}
-		    }
-		}
+                // Add full rows
+                for (i = 0; i < num_rows; i++) {
+                    var member1 = member_list[i*3];
+                    var member2 = member_list[i*3+1];
+                    var member3 = member_list[i*3+2];
+                    var member1_html = "<td>"+get_checkbox_html(member1)+" "+member1.firstname+" "+member1.lastname+"</td>";
+                    var member2_html = "<td>"+get_checkbox_html(member2)+" "+member2.firstname+" "+member2.lastname+"</td>";
+                    var member3_html = "<td>"+get_checkbox_html(member3)+" "+member3.firstname+" "+member3.lastname+"</td>";
+                    var row_html = "<tr class='data'>"+member1_html+member2_html+member3_html+"</tr>";
+                    tag_table.append(row_html);
+                }
+                // Add remainder
+                var final_row_html = "<tr class='data'>";
+                var first_index = num_rows * 3;
+                for (i = 0; i < 3; i++) {
+                    if (i < remainder) {
+                        var member = member_list[first_index+i];
+                        var member_html = "<td>"+get_checkbox_html(member)+" "+member.firstname+" "+member.lastname+"</td>";
+                        final_row_html += member_html;
+                    } else {
+                        final_row_html += "<td></td>";
+                    }
+                }
+                final_row_html += "</tr>";
+                tag_table.append(final_row_html);
             },
             _render: function(id_item, suppress_focus){
                 var self        = this;
@@ -222,15 +236,20 @@
                 var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration/self._SEC_MULT_FACTOR) : "2.00";
                 
                 var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' /> seconds<br/>" : " ";
+
+		var fetch_pause = self._note ? model.get("location", {ID: self._note.ID_location}).first().pause: null;
+		console.log("PAUSE: ",fetch_pause);
+		var pause_checked = " ";
+		if(fetch_pause) pause_checked = "checked";
+		var pause_option = is_video && self._allowStaffOnly? "<span><input type='checkbox' id='checkbox_pause' value='pause' "+pause_checked+"/><label for='checkbox_pause'>Pause on comment?</label></span><br/> ": " "; //TODO: add classwide option whether to show this or not
+
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
 
 		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
-
-                var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
-		var section_tag_option = ""; //hack to hide tags
+                var section_tag_option = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,pause_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
                                   "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
 
                 self.element.append(contents);
@@ -427,6 +446,7 @@
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
 			    msg.duration = self._sel ? Math.floor(parseFloat(durationBox.value)*self._SEC_MULT_FACTOR):0;
+			    msg.pause = self._sel ? $("#checkbox_pause")[0].checked:0;
                             break;
                         }
                         component_name =  "note_creator";
@@ -441,6 +461,7 @@
                             if (file.filetype === FILETYPES.TYPE_YOUTUBE && self._videoCover) {
                                 msg.page = parseInt(self._videoCover.attr("page"));
                                 msg.duration = Math.floor(parseFloat($("#duration")[0].value)*self._SEC_MULT_FACTOR);
+				msg.pause = $("#checkbox_pause")[0].checked	;
                             }
                         }
                         else{

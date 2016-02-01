@@ -153,6 +153,9 @@ def source_analytics(req, n):
 def your_settings(req):
     return __serve_page(req, 'web/your_settings.html', content_type="text/html")
 
+def your_settings(req):
+    return __serve_page(req, 'web/your_settings.html', content_type="text/html")
+
 def embedopenid(req):
     return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
 

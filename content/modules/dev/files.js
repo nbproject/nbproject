@@ -117,6 +117,25 @@ GLOB.files.proceedUpload = function(payload){
     // Handle HTML and YouTube uploads
     if (getUploadType() === 'html') {
         console.log("HTML Upload");
+        $('#html_upload_form').attr("action", "/addhtml/"+GLOB.files.currentEnsemble);
+        $('#html_upload_form').submit();
+        $('#html_upload_form').reset();
+    }
+    else if (getUploadType() === 'youtube') {
+        console.log("YouTube Upload");
+        $('#youtube_upload_form').attr("action", "/addyoutube/"+GLOB.files.currentEnsemble);
+        $('#youtube_upload_form').submit();
+        $('#youtube_upload_form').reset();
+    }
+    else {
+        console.log("File Upload");
+        var form = $("#file_upload_form")[0];
+        // we need a way to pass the id_ensemble and id_folder: we do it in the URL
+        var folder_fragment = (GLOB.files.currentFolder === null) ? "" : "&id_folder="+GLOB.files.currentFolder;
+        var newauth = ("ckey" in GLOB.conf.userinfo) ? "&ckey="+GLOB.conf.userinfo.ckey : ""; 
+        form.setAttribute("action", GLOB.conf.servers.upload+"/pdf3/upload?id_ensemble="+GLOB.files.currentEnsemble+"&id_source="+ payload.id_source+folder_fragment+newauth);
+        form.submit();
+        form.reset();
         $('#html_upload_form')
             .attr("action", "/addhtml/"+GLOB.files.currentEnsemble)
             .submit()[0]

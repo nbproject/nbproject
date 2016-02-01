@@ -48,7 +48,8 @@ __NAMES = {
         "ID": "id",
         "w": None,
         "h": None,
-	"section_id": None
+	"section_id": None,
+	"pause": None,
 },
     "location_v_comment": {
         "id_ensemble": None,
@@ -74,6 +75,7 @@ __NAMES = {
         "h": "location.h",
         "body": None,
         "is_title": "location.is_title",
+	"pause": "location.pause",
 	"duration": "location.duration",
         "section_id": "location.section_id"
 },
@@ -776,6 +778,8 @@ def addNote(payload):
 		location.duration = payload["duration"]
         if "title" in payload:
                 location.is_title = payload["title"] == 1
+	if "pause" in payload:
+		location.pause = payload["pause"]
         location.section = M.Membership.objects.get(user=author, ensemble=location.ensemble, deleted=False).section
 
         #refuse if similar comment
@@ -963,6 +967,11 @@ def editNote(payload):
         comment.location.duration = payload["duration"]
         comment.location.save()
         retval = comment.location
+
+    # Edit whether to pause on comment if in payload
+    if ("pause" in payload):
+        comment.location.pause = payload["pause"]
+        comment.location.save()
 
     # Edit Tags if they are in payload
     if "tags" in payload:

@@ -395,7 +395,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				    newNoteObj = payload.diff[id];
                                     NB_vid.tickVisibility[id] = true;
 //                                    console.log("Single Tick Add");
-//                                    console.log(newNoteObj);
+                                    console.log(newNoteObj);
                                     NB_vid.titleTicks[id] = newNoteObj.is_title;
 				    var tickX = NB_vid.methods.calculateTickLoc(newNoteObj.page);
 				    var tickWidth = newNoteObj.duration == null || newNoteObj.is_title ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
@@ -650,6 +650,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		};
 	
 		Metronome.prototype.__go = function(){
+			//console.log("Go!");
 			if (!( this.position_helper)){
 				console.error("[metronome] position helper not set !");
 				return;
@@ -907,6 +908,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			    delete NB_vid.tickVisibility[evt.value];
 			break;
 			case "metronome":
+				//console.log("Tick");
 				if (!self._ignoremetronome){
 					NB_vid.methods.updatePlayerInfo();
 					NB_vid.methods.updateProgressbar();
@@ -930,8 +932,13 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                             var sel_loc = cur_locs.sort(NB_vid.videoSortFunc)[0];
                                             if (sel_loc.ID !== self._id_location) {
                                                 // Pause on comment
-                                                // $(".playORpause").attr("src", "/content/data/images/play.png");
-                                                // NB_vid.methods.pauseVideo();
+						if(sel_loc.pause) {
+							$(".playORpause").attr("src", "/content/data/images/play.png");
+	                                                NB_vid.methods.pauseVideo();
+						}
+
+	console.log(sel_loc);
+
                                                 $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
                                             }
                                         }
@@ -1031,7 +1038,6 @@ var ytMetadataCallbacks = jQuery.Deferred();
                     $("div.contents", self.element).prepend("<div class='nb-flash-warning'>NB detected that you are using the Flash version of the YouTube player. You need to be using the HTML5 YouTube player in order to be able to annotate YouTube videos and see other's annotations. To do so, visit <a href='http://youtube.com/html5'>http://youtube.com/html5</a> and click on the <b>Join the HTML5 Trial</b> button.</div>");
                 }
             };
-
 			if (action === "add" && items_fieldname==="location"){
 				var id_source	= this._id_source; 
 				var page		= this._page;

@@ -126,9 +126,6 @@ GLOB.pers.createStore = function(payload){
         threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
         draft: {},
         seen:{references: {id_location: "location"}},
-        labelcategory:{references: {ensemble_id: "ensemble"}}, 
-        commentlabel: {references: {category_id: "labelcategory"}},
-        labelcategorycaption: {references: {category_id: "labelcategory"}},
         members: {},
         tags: {references: {user_id: "members", comment_id: "comment"}}
     });
