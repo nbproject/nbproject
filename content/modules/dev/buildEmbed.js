@@ -82,11 +82,11 @@
                                    threadmark: {pFieldName: "threadmarks", references: {location_id: "location"}},
                                    draft: {},
                                    seen:{references: {id_location: "location"}},
-			   members: {},
-			   tags: {references: {user_id: "members", comment_id: "comment"}}
+                           members: {},
+                           tags: {references: {user_id: "members", comment_id: "comment"}}
                            });
 
-		       var ensemble = NB.pers.store.get("ensemble", {}).first();
+                       var ensemble = NB.pers.store.get("ensemble", {}).first();
                      
                        //get the section info as well as info whether user is admin: 
                        GLOB.pers.call("getSectionsInfo", {id_ensemble: ensemble.ID}, function(P3){
@@ -96,11 +96,11 @@
                        });
 
 
-		       GLOB.pers.call("getMembers", {id_ensemble: ensemble.ID}, function(P5){
-			   console.log("getMembers callback");
+                       GLOB.pers.call("getMembers", {id_ensemble: ensemble.ID}, function(P5){
+                           console.log("getMembers callback");
 
-			   GLOB.pers.store.add("members", P5);
-		       });
+                           GLOB.pers.store.add("members", P5);
+                       });
                        
                        //TODO: Take something else than first id_source
                        var source = GLOB.pers.id_source = NB.pers.store.get("file").first();
@@ -255,17 +255,18 @@
                        $(function(){GLOB.html.init();});
                    },
                    function(P){
-                       $(".nb-widget-header").append("<button id='login_to_nb'>Login to NB</button>");
-                       $("#login_to_nb").click(function(evt){
+                       $("#login_to_nb").remove(); //in case one was already present
+                       $("<button id='login_to_nb'>Login to NB</button>")
+			   .appendTo(".nb-widget-header")
+			   .click(function(evt){
                                //sacha: disable this for now. 
                                //console.log("opening iframe");
-                               //                               $("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+                               //$("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
                                $.concierge.get_component("login_user_menu")();
-                               
                        });
                    });    
 
-};
+    };
     GLOB.pers.ckey_from_iframe = null;
     GLOB.pers.f_poll_iframe = function(){
         console.log("polling iframe");
@@ -310,7 +311,7 @@
         //tell who to make rpc requests to
         GLOB.conf.servers.rpc=GLOB.pers.server_url;
 
-        $("body").append("<div class='nb_sidebar' class='nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
+        $("body").append("<div class='nb_sidebar nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
         
         $("#nb_loginbutton").click(function(){
                 $.concierge.get_component("login_user_menu")();

@@ -28,7 +28,7 @@ NOTE:  - packages in square brackets are optional)
    
    ***MANUAL INSTALL PACKAGES***
    You now need to install packages that might not be part of ubuntu (at least in the required version): 
-     django (>=1.5): download and follow instructions from https://www.djangoproject.com/download/
+     django (>=1.7): download and follow instructions from https://www.djangoproject.com/download/
      python-django-openid-auth (for OpenId authentication) 
        - Note about django_openid_auth: We've tested w/ the version downloadable from launchpad.net (0.4 or 0.5), not w/ the ubuntu package:
        - Download the tarball from https://launchpad.net/django-openid-auth
@@ -67,6 +67,7 @@ NOTE:  - packages in square brackets are optional)
 	cd nbproject #(or whatever name you may have choosen for the root NB code directory).         
         npm install #in order to install specific grunt modules, such as grunt-css, execSync
         make django #create configuration files. You can safely ignore the "Error 127" message
+	#[copy apps/nbsite/settings_credentials.py.skel to settings_credentials.py and]
         #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
         sudo make create_dirs   #create root folder and some folders below that for nb data
         make django       #one more time...
