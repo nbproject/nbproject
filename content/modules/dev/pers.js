@@ -86,7 +86,7 @@
     };
 
 
-    GLOB.pers.__authenticate = function(init_ui){
+    GLOB.pers.__configure_user_menu = function(init_ui){
     var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: true}; 
     var nbhostname = GLOB.pers.server_url;
     var $login_contents;
@@ -130,7 +130,7 @@
         init_ui = true;
     }
     $.concierge.addComponents(GLOB.pers.__components);
-    GLOB.pers.__authenticate(init_ui);   
+    GLOB.pers.__configure_user_menu(init_ui);   
     if ("init" in GLOB.pers){ 
         GLOB.pers.init();
     }

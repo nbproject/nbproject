@@ -21,7 +21,7 @@
     var $vp;
     var id_ensemble = null;  
     GLOB.pers.iframe_id = "nb_iframe";
-    var f_after_successful_login = function(){
+    var f_prepare_sidebar = function(){
         //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
         //for now, just update user name and email on hover. :
         var uinfo = GLOB.conf.userinfo;
@@ -71,7 +71,7 @@
                        //TODO: refactor (same as in step16.js:createStore)
                        GLOB.pers.store.create(payload, {
                                ensemble:    {pFieldName: "ensembles"}, 
-            section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
+			   section:    {pFieldName: "sections", references: {id_ensemble: "ensemble"}},            
                                    file:    {pFieldName: "files", references: {id_ensemble: "ensemble", id_folder: "folder"}}, 
                                    folder: {pFieldName: "folders", references: {id_ensemble: "ensemble", id_parent: "folder"}}, 
                                    comment:{references: {id_location: "location"}},
@@ -255,6 +255,14 @@
                        $(function(){GLOB.html.init();});
                    },
                    function(P){
+		       //FIXME: login can break if ckey expires while
+		       //userinfo guest status still suggests user logged in
+		       //which confuses the interface
+		       //see issue #280
+		       //for now, a hack: if login fails, reset guest status
+		       GLOB.auth.set_cookie("userinfo",
+					    escape(JSON.stringify(
+						{guest: true})));
                        $("#login_to_nb").remove(); //in case one was already present
                        $("<button id='login_to_nb'>Login to NB</button>")
 			   .appendTo(".nb-widget-header")
@@ -302,7 +310,7 @@
                     $.L("Welcome TO NB !");
                     $("#splash-welcome").parent().remove();
                     
-                    f_after_successful_login();
+                    f_prepare_sidebar();
                     
                     
                 }
@@ -313,21 +321,22 @@
 
         $("body").append("<div class='nb_sidebar nb_inactive'></div><iframe src='"+GLOB.pers.openid_url+"' class='nb_iframe nb_hidden' id='"+GLOB.pers.iframe_id+"'></iframe>");
         
-        $("#nb_loginbutton").click(function(){
+        $("#login_to_nb").click(function(){
                 $.concierge.get_component("login_user_menu")();
             });
 
-        //if authenticated already, let's proceed: 
+        //if user identified already, let's proceed: 
         if (GLOB.conf.userinfo){
-            f_after_successful_login();
+	    //optimization to get this visibile faster
+	    //if ckey is invalid, sidebar will be erased
+	    //and replaced by a login button
+            f_prepare_sidebar();
         }
 
         window.addEventListener('message', function(e){
                 console.log("got event: ", e);
                 //TODO: clearTimeout
             }, false);
-
-        
 
     }; 
     
