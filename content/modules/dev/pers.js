@@ -86,22 +86,12 @@
     };
 
 
-    GLOB.pers.__authenticate = function(init_ui){
+    GLOB.pers.__configure_user_menu = function(init_ui){
     var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie("userinfo"))) || {guest: true}; 
     var nbhostname = GLOB.pers.server_url;
     var $login_contents;
     if (uinfo.guest){
         $login_contents = $("<ul class='dropdown-menu'><li><a id='login-name' href='#'>Guest</a><ul><li><a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>Log in</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>Register</a></li><li><a href='javascript:"+$str+".concierge.get_component(\"logout\")()'>Log out</a></li></ul></li></ul>");
-        var $util_window = $.concierge.get_component("get_util_window")();
-        $("#register_user_dialog, #login_user_dialog").remove();    
-
-        $util_window.append("<div id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\""+nbhostname+"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='"+nbhostname+"/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\""+nbhostname+"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
-
-        if (init_ui){
-        $("#login_user_password").keypress(function(e) {if(e.keyCode === 13 && this.value.length>0) {
-                $.L("using shortcut");
-                $("#login_user_dialog").parent().find("button:contains('Ok')").click();}});    
-        }
     }
     else{
         var screenname = uinfo.firstname === null ? $.E(uinfo.email): $.E(uinfo.firstname) + " " + $.E(uinfo.lastname); 
@@ -130,7 +120,7 @@
         init_ui = true;
     }
     $.concierge.addComponents(GLOB.pers.__components);
-    GLOB.pers.__authenticate(init_ui);   
+    GLOB.pers.__configure_user_menu(init_ui);   
     if ("init" in GLOB.pers){ 
         GLOB.pers.init();
     }
@@ -264,6 +254,16 @@
         $('#register_user_dialog').dialog("open");
     }, 
     login_user_menu: function(P,cb){
+	var nbhostname=GLOB.pers.server_url;
+        var $util_window = $.concierge.get_component("get_util_window")();
+        $("#register_user_dialog, #login_user_dialog").remove();    
+
+        $util_window.append("<div id=\"register_user_dialog\">   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type=\"text\" id=\"register_user_firstname\" /></td></tr> <tr><td>Lastname</td><td><input type=\"text\" id=\"register_user_lastname\" /></td></tr> <tr style=\"display: none;\"><td>Pseudonym</td><td><input type=\"text\" id=\"register_user_pseudonym\" /></td></tr><tr><td>Email</td><td><input type=\"text\" id=\"register_user_email\" /></td></tr><tr><td>Password</td><td><input type=\"password\" id=\"register_user_password1\" /></td></tr><tr><td>Confirm Password</td><td><input type=\"password\" id=\"register_user_password2\" /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\""+nbhostname+"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if("+$str+"(\"#termsandconditions:checked\").length){document.location=\"/openid/login?next="+(document.location.pathname==="/login" ? "/": document.location.pathname)+"\";}else{alert(\"In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below\");}'><img style='vertical-align: middle;' src='"+nbhostname+"/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type=\"checkbox\" id=\"termsandconditions\" />      <label for=\"termsandconditions\">I agree with <a target=\"_blank\" href=\""+nbhostname+"/terms_public_site\">NB Terms and Conditions</a></label></div>  <div class=\"form_errors\"></div> </div>").append($.concierge.get_component("get_login_dialog_markup")());
+
+        $("#login_user_password").keypress(function(e) {if(e.keyCode === 13 && this.value.length>0) {
+                $.L("using shortcut");
+                $("#login_user_dialog").parent().find("button:contains('Ok')").click();}});    
+
         $.L("login_user_menu");
         $('#login_user_dialog').dialog({
             title: "Log in...", 
