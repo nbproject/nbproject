@@ -131,7 +131,7 @@ def add_allcomments_sheet(source_id, workbook):
 def add_labeledcomments_sheet(uid, id_ensemble, workbook): 
     lcs = M.LabelCategory.objects.filter(ensemble__id=id_ensemble).order_by("id")
     lcs_ids = list(lcs.values_list('id', flat=True))
-    cls = M.CommentLabel.objects.select_related("comment", "location").filter(category__in=lcs, grader__id=uid).order_by("comment__location__source__id", "comment__id", "category__id")
+    cls = M.CommentLabel.objects.select_related("comment","comment__location").filter(category__in=lcs, grader__id=uid).order_by("comment__location__source__id", "comment__id", "category__id")
     if len(cls)>0:
         s_lc = workbook.add_sheet("labeled_comments")
         #Header row: 
