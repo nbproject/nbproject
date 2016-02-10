@@ -76,7 +76,7 @@ def serve_doc(req, id_source, annotated=False):
         except UnicodeEncodeError: 
             filename = id_source
         filename = "%s%s%s" % (filename, qual, ".pdf")        
-        response['Content-Disposition'] = "attachment; filename=%s" % (filename, )
+        response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename, )
         signals.file_downloaded.send("file", req=req, uid=uid, id_source=id_source, annotated=annotated)
         return response
     except Http404: 
