@@ -1,11 +1,11 @@
-/* docView Plugin 
+/* docView Plugin
  * Depends:
  *    ui.core.js
  *    ui.view.js
  *
 
- Author 
- cf AUTHORS.txt 
+ Author
+ cf AUTHORS.txt
 
  License
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -90,7 +90,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			ytplayer.unMute();
 		}
 	}
-	
+
 	//give the time in seconds, return the time as a string with (hours:)minutes:seconds
 	function calculateTime(givenTime){
 		var totalSec = parseInt(givenTime);
@@ -135,9 +135,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		}
 
 		var totalSeconds = hours*3600 + minutes*60 + seconds;
-		return totalSeconds;	
+		return totalSeconds;
 	}
-	
+
 	function videoClicked() {
 		NB_vid.methods.playORpause();
 	}
@@ -146,14 +146,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
 	// This function is automatically called by the player once it loads
 	function onYouTubePlayerReady(event) {
 		console.log("ytplayer ready");
-		
+
 		NB_vid.ytLoaded = true;
 
 		//ytplayer.addEventListener("onStateChange", "NB_vid.pbHover.gatherThumbnailHandler");
 
 		// This causes the updatePlayerInfo function to be called every 250ms to
 		// get fresh data from the player
-		NB_vid.methods.updatePlayerInfo();		
+		NB_vid.methods.updatePlayerInfo();
 		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
 		ytplayer.addEventListener("onError", "onPlayerError");
 		ytDefineCallbacks.resolve();
@@ -180,7 +180,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 	function videoLocSort(a, b) {
 		return b.page - a.page;
 	}
-	
+
 	NB_vid = {
 		"methods": {
 			"updateHTML": updateHTML,
@@ -211,15 +211,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
                 "tickVisibility": {}
 		};
 
-	
-	
+
+
 	function onYouTubeIframeAPIReady() {
 		console.log("Iframe API Ready");
                 ytApiCallbacks.resolve();
 	}
-		
+
 (function($) {
-    var PLAYER_HTML_TEMPLATE = 
+    var PLAYER_HTML_TEMPLATE =
     ['<div class = "videoView">',
                 '<div class = "titleContainer">',
                 '</div>',
@@ -257,7 +257,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		'<div class = "enlargedTickContainer">',
 			'<div class = "enlargedTickStart">--:--</div>',
 			'<div class = "enlargedTickBar"><div class = "tickmark currentPlayerLocationTick"></div></div>',
-			
+
 			'<button onclick = "NB_vid.zoom.zoomClose()" type="button" class="close closeEnlarged" style = "margin-top: 10px; margin-right: 8px; float: right">&times;</button>',
 			'<div class = "enlargedTickEnd">--:--</div>',
 		'</div>',
@@ -267,7 +267,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		'</table>',
 		'</div>',
 	'</div>'].join('\n');
-	
+
 	function completeMethods() {
 		// called when the play/pause button is clicked
 		// syncs the correct image with the action
@@ -282,7 +282,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				return false;
 			}
 		}
-			
+
 		// called when the mute/unmute button is clicked
 		// syncs the correct image with the action
 		function muteORunmute(){
@@ -294,52 +294,52 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				NB_vid.methods.unMuteVideo();
 			}
 		}
-			
+
 		//given the time in seconds, goes to corresponding time in the video
 		function goToTime(seconds){
 			ytplayer.seekTo(seconds,true);
 			NB_vid.methods.setPlayerInfo(seconds);
 			NB_vid.methods.setProgressbar(seconds);
 		}
-			
+
 		// called when the playback/"refresh" button is clicked
 		function playback(){
 			NB_vid.methods.goToTime(0);
 		}
-		
+
 		function videoClicked() {
 			NB_vid.methods.playORpause();
 		}
-		
+
 		// This function is called every 500 milliseconds
 		// It gets the current time from the youtube player and adjusts the progressbar_filler to match to the corresponding time
 		function updateProgressbar(){
 			var percentage = 100*ytplayer.getCurrentTime()/ytplayer.getDuration();
 			$("#progressbar_filler").css("width", percentage+"%");
-		} 
+		}
 
 		// Sets progress bar to given time, useful if updating immediately after seek
 		function setProgressbar(time){
 			var percentage = 100*time/ytplayer.getDuration();
 			$("#progressbar_filler").css("width", percentage+"%");
 		}
-	
+
 		//update the time of the ytplayer given the mouse x-location
 		function progressbar_click(xloc){
-			var percentage = xloc/$("#progressbar").width();  
+			var percentage = xloc/$("#progressbar").width();
 			//console.log(percentage);
 			$("#progressbar_filler").css("width", percentage*100 + "%"); //updates progressbar location
 			var currentSec = percentage*ytplayer.getDuration();
 
 			//updates ytplayer location in video
-			ytplayer.seekTo(currentSec, true); 
+			ytplayer.seekTo(currentSec, true);
 		}
 
 		//If progressbar is clicked (mouseup), calculate the position of the mouse relative to the progressbar
 		function updateProgressbarClick(){
 			//update progressbar if clicked
 			$("#progressbar").mouseup(function(e){
-				var parentOffset = $(this).parent().offset(); 
+				var parentOffset = $(this).parent().offset();
 				//or $(this).offset(); if you really just want the current element's offset
 				var relX = e.pageX - parentOffset.left;
 				var relY = e.pageY - parentOffset.top;
@@ -352,7 +352,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		function progressbarOffsetX(){
 			return $("#progressbar").parent().offset().left; //progressbar x offset
 		}
-		
+
 		//calculate the tick location given the time in ms where the associated comment is given
 		function calculateTickLoc(milliseconds){
 			var duration = ytplayer.getDuration()*100;
@@ -369,7 +369,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				var leftLoc = NB_vid.methods.calculateTickLoc(start);
 				var rightLoc = NB_vid.methods.calculateTickLoc(end);
                                 var progressbar_width = $("#progressbar").width();
-                                if (rightLoc > progressbar_width) {rightLoc = progressbar_width;}  
+                                if (rightLoc > progressbar_width) {rightLoc = progressbar_width;}
 				var width = rightLoc - leftLoc;
 				return width;
 			}else{
@@ -383,7 +383,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var html = "<div class = 'tickmark' id = 'tickmark"+ID + "' style="+style+"></div>";
 			return html;
 		}
-		
+
 		//This function should be called to add ticks to the tick bar
 		function addAllTicks(payload) {
 			console.log("Adding Ticks");
@@ -401,7 +401,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				    var tickWidth = newNoteObj.duration == null || newNoteObj.is_title ? NB_vid.defaultTickWidth : NB_vid.methods.calculateTickWidth(newNoteObj.page, newNoteObj.duration);
 
 				    var newTickHTML = NB_vid.methods.tickHTML(tickX, tickWidth, id);
-				
+
 				    //copy the htmlText - stores the current tick mark divs (if any)
 				    var htmlText = $(".tickmark_holder").html();
 				    //clear the content in the tickholder div
@@ -416,7 +416,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                     }
                                 }
 			}
-			
+
 			// Attach Listeners to tickmarks
 			$(".tickmark").click(NB_vid.methods.tickClickListen).mouseenter(NB_vid.methods.tickMouseEnterListen).mouseleave(NB_vid.methods.tickMouseLeaveListen);
 		}
@@ -429,7 +429,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                         }
 			NB_vid.methods.changeTickCSS(tickmark, color, "No Change", "1");
 		}
-		
+
 		// Unhighlights a given tick
 		function unhighlightTick(tickmark) {
 			if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {
@@ -438,7 +438,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			    NB_vid.methods.changeTickCSS(tickmark, "red", "No Change", ".4");
                         }
 		}
-		
+
 		// Highlights a selected tick green and saves it as selected
 		function tickSelect(id) {
 			var idStr = "tickmark" + id;
@@ -461,7 +461,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			NB_vid.selectedTick = tickmark;
 			NB_vid.currentID = NB_vid.methods.tickNumFromIdStr(idStr);
 		}
-		
+
 		// Removes tick selecting
 		function removeTickSelect() {
 			if (NB_vid.selectedTick !== null) {
@@ -478,7 +478,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			NB_vid.selectedTick = null;
 			NB_vid.currentID = "";
 		}
-		
+
 		// Highlights a hovered tick green and saves it as hovered
 		function tickHover(id) {
                         console.log("Hover");
@@ -504,7 +504,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			}
 			NB_vid.hoveredTick = tickmark;
 		}
-		
+
 		// Removed tick hovering
 		function removeTickHover() {
 			if (NB_vid.hoveredTick !== null && NB_vid.hoveredTick !== NB_vid.selectedTick) {
@@ -512,7 +512,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			}
 			NB_vid.hoveredTick = null;
 		}
-		
+
 		//This function should be called the the page is loading, it appends all the ticks to the tickholder
 		// NOT IMPLEMENTED
 		function createTickPopover(ID){
@@ -538,7 +538,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				tick.css("opacity", opacity);
 			}
 		}
-		
+
 		// Returns just the number of the tickmark (as a string) from the full ID string
 		function tickNumFromIdStr(idStr) {
 			return idStr.substr(8, idStr.length-1);
@@ -547,12 +547,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
                 function tickNumFromSelector(selector) {
                 	return parseInt(selector.substr(9, selector.length-1));
                 }
-		
+
 		// Selects thread of given id
 		function threadSelect(id){
 			$.concierge.trigger({type:"select_thread", value: String(id)});
 		}
-	
+
 		// Listener for clicks on ticks
 		function tickClickListen(evt) {
                         console.log("Click Listener");
@@ -560,14 +560,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.threadSelect(tickNum);
 		}
-		
+
 		// Listener for mouseenter on ticks
 		function tickMouseEnterListen(evt) {
 			var idStr = evt.target.getAttribute("id");
 			var tickNum = NB_vid.methods.tickNumFromIdStr(idStr);
 			NB_vid.methods.tickHover(tickNum);
 		}
-		
+
 		// Listener for mouseleave on ticks
 		function tickMouseLeaveListen(evt) {
 			var idStr = evt.target.getAttribute("id");
@@ -577,7 +577,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				NB_vid.methods.highlightTick(NB_vid.selectedTick, "green");
 			}
 		}
-		
+
 		var new_methods = {
 				"videoClicked": videoClicked,
 				"playORpause": playORpause,
@@ -608,16 +608,16 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				"tickMouseEnterListen": tickMouseEnterListen,
 				"tickMouseLeaveListen": tickMouseLeaveListen
 		};
-		
+
 		$.extend(NB_vid["methods"], new_methods);
 	}
 	completeMethods();
-    
+
 	var METRONOME_STATES = {
-		PLAYING: 1, 
+		PLAYING: 1,
 		PAUSED: 2
     };
-    //youtube player seems to only support 16/9 parameters, and fills in with black bands when not the case: 
+    //youtube player seems to only support 16/9 parameters, and fills in with black bands when not the case:
     //cf https://developers.google.com/youtube/2.0/reference#youtube_data_api_tag_yt:aspectratio
     var ASPECT_RATIO = 16.0/9;
     var pretty_print_time = function(t){
@@ -633,7 +633,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 	// Returns a metronome given t_metronome in seconds
 	function initializeYouTubeMetronome(t_metronome) {
 		var Metronome = function( position_helper, position, refresh_ms){
-			this.position = position || 0; 
+			this.position = position || 0;
 			this.refresh_ms = refresh_ms || 1000;
 			this.state = METRONOME_STATES.PAUSED;
 			this.position_helper = position_helper;
@@ -648,7 +648,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				console.log("[metronome.play] ignoring since state is already playing");
 			}
 		};
-	
+
 		Metronome.prototype.__go = function(){
 			if (!( this.position_helper)){
 				console.error("[metronome] position helper not set !");
@@ -665,16 +665,16 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			console.log("Pausing Metronome");
 			this.state = METRONOME_STATES.PAUSED;
 		};
-		
+
 		return new Metronome(function(){return  ytplayer.getCurrentTime();}, 0, t_metronome*1000);
     }
 
     var V_OBJ = $.extend({},$.ui.view.prototype,{
-        _create: function() {	
+        _create: function() {
 		$.ui.view.prototype._create.call(this);
 			var self = this;
 			self.element.append(PLAYER_HTML_TEMPLATE);
-			
+
 			self._last_clicked_selection =  0;
 			// Fill in width and height of player; Only tested with current values
 			var playerWidth = 752;
@@ -691,12 +691,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			self.T_METRONOME = $.concierge.get_component("get_metronome_period_s")();
 			self._page =  null;
 			self._start_page = null;
-			self._end_page = null; 
+			self._end_page = null;
 			self._id_source =  null;
 			self._id_location = null; //location_id of selected thread
 			self._metronome = null;
 			self._ignoremetronome = false;
-			
+
 			ytApiCallbacks.done(NB_vid.define);
 			self._attachListeners();
         },
@@ -720,19 +720,19 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		},
         _attachListeners: function() {
 			var self = this;
-			
+
 			$(".playORpause").click(function(evt){
 				self._playORpause();
             });
-            
+
             $(".muteORunmute").click(function(evt) {
 				NB_vid.methods.muteORunmute();
-           });  
-           
+           });
+
            $(".playback").click(function(evt){
 				NB_vid.methods.playback();
             });
-            
+
             NB_vid.methods.updateProgressbarClick();
         },
         // Given location id, get all users tagged at that location
@@ -794,10 +794,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				return;
 			}
 			/*
-			* From now on, we assume the event is directed to this view ! 
-			*/ 
+			* From now on, we assume the event is directed to this view !
+			*/
 			switch (evt.type){
-			case "note_hover": 
+			case "note_hover":
 				$("div.selection[id_item="+evt.value+"]", self.element).addClass("hovered");
 			break;
 			case "note_out":
@@ -807,7 +807,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				var fct = evt.value ? "show":"hide";
 				$("div.selections, self.element")[fct]();
 			break;
-			case "global_editor": 
+			case "global_editor":
 				var $editor = $("<div/>");
 				$("div.global-editors", this.element).append($editor);
 				$editor.editor();
@@ -819,7 +819,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				self._page = self._model.o.location[self._id_location].page;
                                 var autoseek = "disable_autoseek" in evt ? !evt.disable_autoseek : true;
                                 var newTime = self._page/self.SEC_MULT_FACTOR;
-				//move player if it was far enough and autoseek not disabled: 
+				//move player if it was far enough and autoseek not disabled:
 				if (Math.abs(self._page/self.SEC_MULT_FACTOR - ytplayer.getCurrentTime()) > self.T_METRONOME && autoseek){
                                         NB_vid.methods.goToTime(newTime);
 				} else {
@@ -836,11 +836,11 @@ var ytMetadataCallbacks = jQuery.Deferred();
 				if (o.is_title) {self._id_location = null;}
 				self._render();
 			break;
-			case "doc_scroll_down": 
-				$.L("[docView11] TODO: doc_scroll_down");		
+			case "doc_scroll_down":
+				$.L("[docView11] TODO: doc_scroll_down");
 			break;
-			case "doc_scroll_up": 
-				$.L("[docView11] TODO: doc_scroll_up");		
+			case "doc_scroll_up":
+				$.L("[docView11] TODO: doc_scroll_up");
 			break;
 			case "drawable_start":
 				NB_vid.wasPlaying = NB_vid.isPlaying;
@@ -913,7 +913,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                         var cur_page = self.SEC_MULT_FACTOR*ytplayer.getCurrentTime();
                                         var cur_locs = self._get_in_range_locs(cur_page);
                                         var last_title = self._get_last_title(cur_page);
-                                        
+
                                         if (last_title === null) {
                                             $(".titleContainer").each(function(index, element) {
                                                 element.innerHTML = self._model.o.file[self._id_source].title;
@@ -928,10 +928,11 @@ var ytMetadataCallbacks = jQuery.Deferred();
                                             $.concierge.trigger({type: "deselect_all_threads"});
                                         } else {
                                             var sel_loc = cur_locs.sort(NB_vid.videoSortFunc)[0];
-                                            if (sel_loc.ID !== self._id_location) {
-                                                // Pause on comment
-                                                // $(".playORpause").attr("src", "/content/data/images/play.png");
-                                                // NB_vid.methods.pauseVideo();
+                                            if (sel_loc.ID !== self._id_location) {                                                // Pause on comment
+                                    						if(sel_loc.pause) {
+                                    								$(".playORpause").attr("src", "/content/data/images/play.png");
+                                    	          		NB_vid.methods.pauseVideo();
+                                    						}
                                                 $.concierge.trigger({type: "select_thread", value: sel_loc.ID, disable_autoseek: true});
                                             }
                                         }
@@ -944,15 +945,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			if (id && id !== $.concierge.get_state("file")){
 				$.concierge.trigger({type:"file", value:this._id_source });
 			}
-		}, 
+		},
         set_model: function(model, init_event){
 			var self=this;
-			
+
 			// Register for location updates
 			model.register($.ui.view.prototype.get_adapter.call(this),  {location: null});
-			//build view: 
+			//build view:
 			var id_source = $.concierge.get_state("file");
-			self._id_source =  id_source; 
+			self._id_source =  id_source;
 			self._model =  model;
 			ytDefineCallbacks.done(function() {
 				self._generate_contents();
@@ -967,7 +968,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 					$.concierge.trigger({type:"page", value: 1});
 				}
 				if ($.concierge.activeView == null){
-					$.concierge.activeView = self; //init. 
+					$.concierge.activeView = self; //init.
 				}
 			});
 
@@ -988,7 +989,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			});
         },
         _keydown: function(event){
-			var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}}; 
+			var thread_codes = {37: {sel: "prev", no_sel: "last", dir: "up", msg:"No more comments above..."}, 39: {sel: "next", no_sel:"first", dir: "down", msg:"No more comments below..."}};
 			var scroll_codes = {38: "-=", 40: "+="};
 			var new_sel, id_item, id_new;
 			if (event.keyCode in thread_codes){
@@ -1022,25 +1023,25 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			else{
 				return true; // let the event be captured for other stuff
 			}
-		}, 
-        update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?             
+		},
+        update: function(action, payload, items_fieldname){            //TODO: this is exactly the same code as ui.notepaneview7.js: maybe we should factor it out ?
             var self = this;
             var warnIfUsingFlash = function(){
                 if ("cueVideoByFlashvars" in ytplayer && $(".nb-flash-warning", self.element).length===0){
-                    // http://stackoverflow.com/questions/12486655/detect-if-client-using-html5-youtube-player                    
+                    // http://stackoverflow.com/questions/12486655/detect-if-client-using-html5-youtube-player
                     $("div.contents", self.element).prepend("<div class='nb-flash-warning'>NB detected that you are using the Flash version of the YouTube player. You need to be using the HTML5 YouTube player in order to be able to annotate YouTube videos and see other's annotations. To do so, visit <a href='http://youtube.com/html5'>http://youtube.com/html5</a> and click on the <b>Join the HTML5 Trial</b> button.</div>");
                 }
             };
 
 			if (action === "add" && items_fieldname==="location"){
-				var id_source	= this._id_source; 
+				var id_source	= this._id_source;
 				var page		= this._page;
                                 if (!NB_vid.renderedInitialTicks) {
-					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set. 
+					//initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set.
                                         NB_vid.renderedInitialTicks = true;
 					this._init_render();
 
- 
+
 					ytMetadataCallbacks.done(function () {
 						warnIfUsingFlash();
 						NB_vid.methods.addAllTicks(payload);
@@ -1058,15 +1059,15 @@ var ytMetadataCallbacks = jQuery.Deferred();
 					}
 				}
 			}
-            else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed. 
+            else if (action === "remove" && items_fieldname === "location"){ //just re-render the pages where locations were just removed.
                 var D		= payload.diff;
 		console.log("REMOVE EVENT");
                 $.L("[docView11] TODO: remove");
-            } 
+            }
         },
         _generate_contents: function() {
 			var self = this;
-			
+
 			self._metronome = initializeYouTubeMetronome(self.T_METRONOME);
 			// Play and pause to load metadata
 			console.log("Cueing Correct Video");
@@ -1101,16 +1102,16 @@ var ytMetadataCallbacks = jQuery.Deferred();
         _init_render: function(){
             var self = this;
             self._draw_selections(1);
-        }, 
+        },
         _render_one: function(page){
 			var self	= this;
 			self._draw_selections(page);
-        }, 
+        },
         _draw_selections: function(page){
 			var self = this;
 			var contents;
 			var id_source = parseInt(self._id_source, 10) ;
-			var model = this._model;		
+			var model = this._model;
 			var t,l,w,h, ID, locs, o, sel_contents, s_w=self._w/1000.0, s_h=self._h/1000.0;
 			var file = model.o.file[id_source];
 			contents="";
@@ -1136,7 +1137,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
 					}
 				}
 				contents+=("<div class='selection' id_item='"+ID+"' style='top: "+t+"px; left: "+l+"px; width: "+w+"px; height: "+h+"px'>"+sel_contents+"</div>");
-			}    
+			}
 			$(".selections",  self.element).html(contents).children(".selection").mouseover(function(evt){
 				$.concierge.trigger({type:"note_hover", value: evt.currentTarget.getAttribute("id_item")});
             }).mouseout(function(evt){
@@ -1150,17 +1151,17 @@ var ytMetadataCallbacks = jQuery.Deferred();
 			}
         }
 	});
-    
+
     $.widget("ui.docView",V_OBJ );
     $.ui.docView.prototype.options = {
-		img_server: "http://localhost", 
+		img_server: "http://localhost",
 		loc_sort_fct: function(o1, o2){return o1.top-o2.top;},
-		provides: ["doc"], 
+		provides: ["doc"],
 		listens: {
-			note_hover: null, 
-			note_out: null, 
-			visibility: null, 
-			global_editor: null, 
+			note_hover: null,
+			note_out: null,
+			visibility: null,
+			global_editor: null,
 			select_thread: null,
 			drawable_start: null,
 			editor_saving: null,
@@ -1175,4 +1176,3 @@ var ytMetadataCallbacks = jQuery.Deferred();
 		}
 	};
 })(jQuery);
-	

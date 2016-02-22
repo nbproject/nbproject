@@ -135,7 +135,7 @@
             }
             download = "<td>"+download+"</td>";
         }
-        var stats; 
+        var stats;
         if(f_stats){
             stats = "<td><a title='You wrote  "+f_stats.mine+" comments on this file.' class='collagelink'";
             stats += f_stats.mine ? "target='_blank' href='/collage?q=auth&amp;id_source="+f.ID+"'>": ">";
@@ -278,6 +278,7 @@
         },
         _draw_frame: function(){
         var self = this;
+        console.log("bleh",self._model.o.ensemble,self._id_ensemble);
         self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
         var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_sections' target='_blank'>Sections</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : "";
         var opts    = self._admin ? "<th>Actions</th>" : "";
@@ -418,7 +419,7 @@
         },
         set_tablesort: function(){
             $("table.tablesorter").tablesorter({
-                headers: {4:{sorter: false}, 5:{sorter:false}, 6:{sorter:false}}, 
+                headers: {4:{sorter: false}, 5:{sorter:false}, 6:{sorter:false}},
                 sortList: [[1,0]], // default sorting by [col index, asc/desc] where the cols are [date added, name]. use 0 for asc, 1 for desc
                 textExtraction: function(node) {
                 var $n = $(node);
@@ -443,7 +444,7 @@
                 var sorting = [[col,dir]];
                 $("table").trigger("sorton", [sorting]);
                 var new_dir = dir === 0 ? "desc" : "asc";
-                $(".sort-option").removeClass("active"); 
+                $(".sort-option").removeClass("active");
                 $(_this).removeClass("asc").removeClass("desc").addClass(new_dir).addClass("active");
             }.bind(this));
         },

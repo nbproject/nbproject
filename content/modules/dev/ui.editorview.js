@@ -4,8 +4,8 @@
  *     ui.view.js
  *
 
- Author 
- cf AUTHORS.txt 
+ Author
+ cf AUTHORS.txt
 
  License
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -25,10 +25,12 @@
                 self._allowStaffOnly = O.allowStaffOnly;
                 self._allowAnonymous = O.allowAnonymous;
                 self._allowTagPrivate = O.allowTagPrivate;
-		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
-		self._videoCover = null;
-		self._lastDuration = "";
-            }, 
+                self._defaultPause = O.defaultPause;
+            		self._SEC_MULT_FACTOR = $.concierge.get_component("get_sec_mult_factor")();
+            		self._videoCover = null;
+            		self._lastDuration = "";
+    console.log(self.options);
+            },
             _defaultHandler: function(evt){
                 var self        = this;
                 var model        = self._model;
@@ -57,7 +59,7 @@
                     }
 
                     //TODO: if existting draft, sync its content w/ its model
-                    //now create new draft: 
+                    //now create new draft:
                     id_item        = (new Date()).getTime();
                     draft        = {};
                     draft[id_item]        = id_item;
@@ -66,13 +68,13 @@
                     self._doEdit        = false;
                     self._inReplyTo        = 0 ;
                     self._selection        = evt.value.selection;
-                    self._html5range    = evt.value.html5range; 
+                    self._html5range    = evt.value.html5range;
                     self._sel        = null;
                     self._note        = null;
                     model.add("draft", drafts);
                     self._render(id_item, evt.value.suppressFocus);
-                    break;
-                case "reply_thread": 
+                    break
+                case "reply_thread":
                     if (me.guest) {
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
                         return;
@@ -99,9 +101,9 @@
                     self._sel        = null;
                     self._note        = model.o.comment[evt.value];
                     model.add("draft", drafts);
-                    self._render(id_item);    
+                    self._render(id_item);
                     break;
-                case "edit_thread": 
+                case "edit_thread":
 
                     // only allow one current editor if draft is not empty
                     if (self.element.children().length){
@@ -124,7 +126,7 @@
                     self._sel        = null;
                     self._note        = model.o.comment[evt.value];
                     model.add("draft", drafts);
-                    self._render(id_item);    
+                    self._render(id_item);
                     break;
                 case "focus_thread":
                     // We assume the thread is already rendered, we simply focus
@@ -189,12 +191,12 @@
                     self._sel = self._selection.clone();
                 }
                 else if (self._inReplyTo){ //
-            
+
                 }
-    
+
                 //TODO: maybe other case to see if we should create selection from draft
 
-                //Now construct the editor. 
+                //Now construct the editor.
                 var timeout_save_button;
                 var timeout_func = function(self) { $("button[action=save]", self.element).removeAttr("disabled"); };
 
@@ -206,7 +208,7 @@
                     model.remove("draft", id_item);
                     if (self._sel){
                         self._sel.remove();
-                    }            
+                    }
                 };
 		var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
                 var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : " ";
@@ -218,21 +220,26 @@
 
                 // Determines whether setting time and duration should be allowed
                 var allow_time_set = is_video && !self._inReplyTo && (!self._doEdit || (self._note && self._note.id_parent == null));
-		var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
+                var fetch_duration = self._note ? model.get("location", {ID: self._note.ID_location}).first().duration: null;
                 var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration/self._SEC_MULT_FACTOR) : "2.00";
-                
+
                 var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='"+init_duration+"' /> seconds<br/>" : " ";
                 var header    = self._inReplyTo ? "Re: "+$.E($.ellipsis(self._note.body, 100)) : "New note...";
-
+                self._id_ensemble=model.o.file[self._file].ID_ensemble;
+                self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
+                var fetch_pause = self._note ? model.get("location", {ID: self._note.ID_location}).first().pause: self._defaultPause;
+            		var pause_checked = " ";
+            		if(fetch_pause) pause_checked = "checked";
+            		var pause_option = is_video&&self._admin? "<span><input type='checkbox' id='checkbox_pause' value='pause' "+pause_checked+"/><label for='checkbox_pause'>Pause on comment?</label></span><br/> ": " "; //TODO: add classwide option whether to show this or not
+                console.log(self.options);
 		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
 
                 var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
 		var section_tag_option = ""; //hack to hide tags
 
                 var contents = $([
-                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,"<label for='share_to'>Shared&#160;with:&#160;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption, 
-                                  "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br/><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
-
+                                  "<div class='editor-header'>",header,"</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><textarea/><br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,pause_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption,
+                                  "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
                 self.element.append(contents);
 
                 var sections = model.get("section", {});
@@ -370,14 +377,14 @@
 
                     var msg = {
                         type: $("select[name=vis_"+id_item+"]", self.element).val(),
-                        body:  $("textarea", self.element)[0].value,            
+                        body:  $("textarea", self.element)[0].value,
                         signed: self._allowAnonymous ? $("input[value=anonymous]:not(:checked)", self.element).length : 1,
                         marks: {},
                         title: $("input[value=title]:checked", self.element).length,
                         tags: tagset
                     };
-                    
-                    
+
+
                     if ($("input[value=question]:checked", self.element).length){
                         msg.marks.question = true;
                     }
@@ -388,7 +395,7 @@
                         msg.id_ensemble =file.ID_ensemble;
                         msg.id_source=self._file;
                         switch (file.filetype){
-                        case FILETYPES.TYPE_PDF: 
+                        case FILETYPES.TYPE_PDF:
                             s_inv =        100*$.concierge.get_constant("RESOLUTION_COORDINATES") / ($.concierge.get_constant("res")*$.concierge.get_state("scale")+0.0);
                             fudge = (file.rotation === 90 || file.rotation === 270 ? file.h : file.w)/612.0;
                             s_inv = s_inv/fudge;
@@ -400,7 +407,7 @@
                             msg.y0= 0;
                             msg.page= self._sel ? self._sel.parent().attr("page"):0;
                             break;
-                        case FILETYPES.TYPE_HTML5: 
+                        case FILETYPES.TYPE_HTML5:
                             msg.top = self._html5range.apparent_height;
                             msg.left= 0;
                             msg.w = 0;
@@ -427,6 +434,7 @@
                             msg.y0= 0;
                             msg.page= self._sel ? drawingarea.attr("page"):0;
 			    msg.duration = self._sel ? Math.floor(parseFloat(durationBox.value)*self._SEC_MULT_FACTOR):0;
+          msg.pause = self._sel ? $("#checkbox_pause")[0].checked:0;
                             break;
                         }
                         component_name =  "note_creator";
@@ -441,6 +449,7 @@
                             if (file.filetype === FILETYPES.TYPE_YOUTUBE && self._videoCover) {
                                 msg.page = parseInt(self._videoCover.attr("page"));
                                 msg.duration = Math.floor(parseFloat($("#duration")[0].value)*self._SEC_MULT_FACTOR);
+                                msg.pause = $("#checkbox_pause")[0].checked;
                             }
                         }
                         else{
@@ -473,10 +482,10 @@
                     self._sel.addClass("ui-drawable-selection").removeClass("ui-drawable-helper").resizable().appendTo(p).draggable({drag: f_sel, containment: 'parent' });
                     //animate transition so user understands that the editor is connected to the selection
                     self._sel.effect("transfer",{to: self.element} , 500);
-                }        
+                }
                 self.element.addClass("editor");
 
-                //if editing: fill in w/ exising values. 
+                //if editing: fill in w/ exising values.
                 if (self._doEdit){
                     $("textarea", self.element)[0].value = self._note.body;
                     $("input[name=vis_"+id_item+"]:checked", self.element).removeAttr("checked");
@@ -497,31 +506,32 @@
                 var self=this;
                 self._model =  model;
                 var id_source = $.concierge.get_state("file");
-                self._file =  id_source ; 
-                // add this to be notified of model events: 
+                self._file =  id_source ;
+                // add this to be notified of model events:
                 //model.register($.ui.view.prototype.get_adapter.call(this),  {YOUR_EVENT1: null});
             },
             update: function(action, payload, items_fieldname){
             }
         });
-             
+
     $.widget("ui.editorview",V_OBJ );
     $.ui.editorview.prototype.options = {
         listens: {
-            new_thread: null, 
-            reply_thread: null, 
+            new_thread: null,
+            reply_thread: null,
             edit_thread: null,
             focus_thread: null,
             discard_if_empty: null,
 	    set_duration_box: null,
 	    set_video_cover: null
         },
-        id_source: null, 
-        note: null, 
-        doEdit: false, 
-        selection: null, 
-        model: null, 
-        allowAnonymous: false, 
-        allowStaffOnly: false
+        id_source: null,
+        note: null,
+        doEdit: false,
+        selection: null,
+        model: null,
+        allowAnonymous: false,
+        allowStaffOnly: false,
+        defaultPause: false,
     };
 })(jQuery);
