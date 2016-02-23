@@ -12,9 +12,6 @@
     "grunt-contrib-jshint": "~0.11.2",
     "grunt-contrib-concat": "~0.5.1"
   },
-  "dependencies": {
-    "execSync": ">= 0.9"
-  },
   "_comment":{
   "name": "dashboard-server",
   "version": "0.0.1",
