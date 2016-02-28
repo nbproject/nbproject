@@ -5,6 +5,7 @@
 .project
 .pydevproject
 apps/apache/django.wsgi
+apps/nbsite/errors.log
 apps/nbsite/settings_credentials.py
 apps/nbsite/scrolling.log
 conf/nb_apache.conf

@@ -1,38 +1,56 @@
-div.spreadsheetView{
-overflow-y: auto;
-height: 100%;
+div.spreadsheetView
+{
+    overflow-y: auto;
+
+    height: 100%;
 }
 
-table.spreadsheet {
-border-collapse: collapse;
-border: this solid #c0c0c0;
+table.spreadsheet
+{
+    border-collapse: collapse;
+
+    border: this solid #c0c0c0;
 }
 
-table.spreadsheet td { border: thin solid #c0c0c0
-		     }
+table.spreadsheet td
+{
+    border: thin solid #c0c0c0;
+}
 
-table.spreadsheet th { border: thin solid #c0c0c0;
-		       	writing-mode:tb-rl;
-	-webkit-transform:rotate(300deg);
-	-moz-transform:rotate(300deg);
-	height: 100px;
-		       }
+table.spreadsheet th
+{
+    height: 100px;
 
-table.spreadsheet td.selected{
-    background-color: #a0c0ff;
+    -webkit-transform: rotate(300deg);
+       -moz-transform: rotate(300deg);
+
+    border: thin solid #c0c0c0;
+
+    writing-mode: tb-rl;
+}
+
+table.spreadsheet td.selected
+{
     border-color: #4070c0;
+    background-color: #a0c0ff;
 }
 
 
-table.spreadsheet span.grade{
-    color: #C04040;
-    float: right;
+table.spreadsheet span.grade
+{
     font-weight: bold;
+
+    float: right;
+
     margin-right: 5px;
+
+    color: #c04040;
 }
 
 
-table.spreadsheet span.stat{
-    color: #707070;
+table.spreadsheet span.stat
+{
     margin-left: 5px;
+
+    color: #707070;
 }

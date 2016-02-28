@@ -1,18 +1,50 @@
-.contextMenu {
-	font-family: Verdana,Arial,Helvetica,sans-serif;
+.contextMenu
+{
+    font-family: Verdana,Arial,Helvetica,sans-serif;
 }
-.contextMenu li.reply a { background-image: url(/content/data/icons/png/comment_16.png); }
-.contextMenu li.subscribe a { background-image: url(/content/data/icons/png/cloudy_16.png); }
-.contextMenu li.unsubscribe a { background-image: url(/content/data/icons/png/clear_16.png); }
-.contextMenu li.answerplease a { background-image: url(/content/data/icons/png/question_16.png); }
-.contextMenu li.answered a { background-image: url(/content/data/icons/png/happy_16.png); }
-.contextMenu li.highlight a { background-image: url(/content/data/icons/png/star_16.png); }
-.contextMenu li.hide a { background-image: url(/content/data/icons/png/close_16.png); }
-.contextMenu li.approve a { background-image: url(/content/data/icons/png/approve_16.png); }
-//.contextMenu li.approve.selected a { background-image: url(/content/data/icons/png/approve_selected_16.png); }
-.contextMenu li.reject a { background-image: url(/content/data/icons/png/reject_16.png); }
-//.contextMenu li.reject.selected a { background-image: url(/content/data/icons/png/reject_selected_16.png); }
-.contextMenu li.favorite a { background-image: url(/content/data/icons/png/star_16.png); }
-.contextMenu li.hide a { background-image: url(/content/data/icons/png/remove_16.png); }
-
-
+.contextMenu li.reply a
+{
+    background-image: url(/content/data/icons/png/comment_16.png);
+}
+.contextMenu li.subscribe a
+{
+    background-image: url(/content/data/icons/png/cloudy_16.png);
+}
+.contextMenu li.unsubscribe a
+{
+    background-image: url(/content/data/icons/png/clear_16.png);
+}
+.contextMenu li.answerplease a
+{
+    background-image: url(/content/data/icons/png/question_16.png);
+}
+.contextMenu li.answered a
+{
+    background-image: url(/content/data/icons/png/happy_16.png);
+}
+.contextMenu li.highlight a
+{
+    background-image: url(/content/data/icons/png/star_16.png);
+}
+.contextMenu li.hide a
+{
+    background-image: url(/content/data/icons/png/close_16.png);
+}
+.contextMenu li.approve a
+{
+    background-image: url(/content/data/icons/png/approve_16.png);
+}
+/*.contextMenu li.approve.selected a { background-image: url(/content/data/icons/png/approve_selected_16.png); }*/
+.contextMenu li.reject a
+{
+    background-image: url(/content/data/icons/png/reject_16.png);
+}
+/*.contextMenu li.reject.selected a { background-image: url(/content/data/icons/png/reject_selected_16.png); }*/
+.contextMenu li.favorite a
+{
+    background-image: url(/content/data/icons/png/star_16.png);
+}
+.contextMenu li.hide a
+{
+    background-image: url(/content/data/icons/png/remove_16.png);
+}

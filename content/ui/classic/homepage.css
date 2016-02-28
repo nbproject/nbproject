@@ -5,47 +5,63 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 */
 
 
-div.homepage{
-position: relative;
-margin: 5px;
-}
+div.homepage
+{
+    position: relative;
 
-table.homepage-layout{
-}
-
-td.numstat{
-text-align: center;
+    margin: 5px;
 }
 
 
-td.ensemble-name{
-font-weight: bold;
+
+td.numstat
+{
+    text-align: center;
 }
 
-div.homepanel{
-border: thin solid #A0A0A0;
-padding: 5px;
-background-color: #FFFFCC;
+
+td.ensemble-name
+{
+    font-weight: bold;
 }
 
-table.stats-notes{
-border: thin solid #A0A0A0;
-padding: 5px;
-background-color: #FFFFCC;
-border-collapse: collapse;
+div.homepanel
+{
+    padding: 5px;
+
+    border: thin solid #a0a0a0;
+    background-color: #ffc;
 }
 
-table.stats-notes td, table.stats-notes th{
-border: thin solid #A0A0A0;
-padding: 5px;
-vertical-align: top;
+table.stats-notes
+{
+    padding: 5px;
+
+    border-collapse: collapse;
+
+    border: thin solid #a0a0a0;
+    background-color: #ffc;
 }
 
-td.user-stats, td.feed, td.qotd{
-vertical-align: top;
-border: thin solid #A0A0A0;
-padding: 10px;
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
+table.stats-notes td,
+table.stats-notes th
+{
+    padding: 5px;
 
+    vertical-align: top;
+
+    border: thin solid #a0a0a0;
+}
+
+td.user-stats,
+td.feed,
+td.qotd
+{
+    padding: 10px;
+
+    vertical-align: top;
+
+    border: thin solid #a0a0a0;
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
 }

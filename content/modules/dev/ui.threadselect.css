@@ -1,41 +1,52 @@
-.threadselect {
-    padding: 0;
+.threadselect
+{
     margin: 3px;
+    padding: 0;
 }
 
-.threadselect> div {
+.threadselect > div
+{
     clear: both;
+
     padding: 6px;
-    background-color: #F4F4F4;
-    border: 1px #DDD solid;
+
+    border: 1px #ddd solid;
     border-top-width: 0;
     border-bottom-width: 0;
+    background-color: #f4f4f4;
 }
 
-.threadselect>div:nth-child(odd)
+.threadselect > div:nth-child(odd)
 {
-    background-color: #FAFAFA;
+    background-color: #fafafa;
 }
 
-.threadselect>div input[type=checkbox]
+.threadselect > div input[type=checkbox]
 {
     float: left;
 }
 
-.threadselect ins.locationflag.lf-numnotes {
-    float: left;
-    text-decoration: none;
+.threadselect ins.locationflag.lf-numnotes
+{
+    font-size: 10px;
+
     display: inline-block;
+    float: left;
+
     margin: 2px 4px;
     padding: 2px 4px;
-    border-radius: 4px;
-    background-color: #CCC;
-    font-size: 10px;
+
+    text-decoration: none;
+
     color: #888;
+    border-radius: 4px;
+    background-color: #ccc;
 }
 
-.threadselect div.location-shortbody-text {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.threadselect div.location-shortbody-text
+{
     overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
