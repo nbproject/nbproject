@@ -73,7 +73,7 @@
                     self._note        = null;
                     model.add("draft", drafts);
                     self._render(id_item, evt.value.suppressFocus);
-                    break
+                    break;
                 case "reply_thread":
                     if (me.guest) {
                         $.I("<span>You need to <a href='javascript:"+$str+".concierge.get_component(\"register_user_menu\")()'>register</a>  or  <a href='javascript:"+$str+".concierge.get_component(\"login_user_menu\")()'>login</a> in order to write annotations...</span>", true, 10000);
@@ -229,7 +229,7 @@
                 self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
                 var fetch_pause = self._note ? model.get("location", {ID: self._note.ID_location}).first().pause: self._defaultPause;
             		var pause_checked = " ";
-            		if(fetch_pause) pause_checked = "checked";
+            		if(fetch_pause) {pause_checked = "checked";}
             		var pause_option = is_video&&self._admin? "<span><input type='checkbox' id='checkbox_pause' value='pause' "+pause_checked+"/><label for='checkbox_pause'>Pause on comment?</label></span><br/> ": " "; //TODO: add classwide option whether to show this or not
                 console.log(self.options);
 		var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : "";
