@@ -418,7 +418,7 @@ text-align: center;
 
 div.notepaneView-header{
 background-color: #EFEBE7;
-height: 24px;
+min-height: 24px;
 padding: 3px 5px;
 }
 
