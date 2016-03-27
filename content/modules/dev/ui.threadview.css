@@ -195,7 +195,7 @@ margin: 0 5px;
 
 div.threadview-header{
 background-color: #EFEBE7;
-height: 24px;
+min-height: 24px;
 border-bottom: thin solid #DDD;
 padding: 3px 5px 8px 3px;
 box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2);

@@ -101,6 +101,18 @@ box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
     height: 18px;
 }
 
+.clickable{
+    cursor: pointer;
+}
+.link-style{
+    text-decoration: underline;
+}
+.link-style:hover{
+    cursor: pointer;
+    text-decoration: none;
+    color: #a3211f;
+}
+
 .foldericon{
     background-position: -40px 0;
 }

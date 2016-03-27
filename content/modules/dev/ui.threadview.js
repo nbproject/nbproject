@@ -87,7 +87,7 @@
                 build: builder
             });
             $.contextMenu({
-                selector: 'a.optionmenu',
+                selector: '.optionmenu',
 		trigger: 'left',
                 build: builder
             });
@@ -179,8 +179,8 @@
             author_name = " <span class='author'>"+o.fullname+"</span> ";
         }
         var creation_info = " <span class='created'> &#8211; " + (new Date(o.created * 1000)).toPrettyString() + "</span> "; //xml doctype rejects &ndash;
-        var replymenu        = "<a class='replymenu' href='javascript:void(0)'><div class='nbicon replyicon' title='Reply' /></a>";
-        var optionmenu        = " <a class='optionmenu' href='javascript:void(0)'><div title='Actions'>&#183;&#183;&#183;</div></a> "; //xml doctype rejects &middot;
+        var replymenu        = "<span class='replymenu clickable'><span class='nbicon replyicon' title='Reply' /></span>";
+        var optionmenu       = " <span class='optionmenu clickable'><span title='Actions'>&#183;&#183;&#183;</span></span> "; //xml doctype rejects &middot;
         var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
         var body        = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>").replace(url_regex, "<a href=\"$1\">$1</a>");
         var commentlabels = self._commentLabelsFactory(o,1 );
@@ -268,9 +268,9 @@
 
             
             if (m.get("threadmark", {comment_id: c.ID, user_id: self._me.id, active: true, type:self._STAR }).is_empty()) {
-                delete items["li.context.nostar"];
+                delete items["nostar"];
             } else {
-                delete items["li.context.star"];
+                delete items["star"];
             }
 
             // can't thank a comment for which I'm the author or where I haven't
@@ -393,7 +393,7 @@
                     });
             }
         };
-        $("a.replymenu", $pane).click(f_reply);
+        $(".replymenu", $pane).click(f_reply);
         $("div.commentlabel_container", $pane).click(f_comment_label);
         },
         set_model: function(model){

@@ -119,7 +119,7 @@
         _filelens: function(f){
         var ckey = $.concierge.get_component("get_userinfo")().ckey;
         var analytics_link = (this._admin && f.filetype === 1) ?  "<br/><a href='/f/"+f.ID+"/analyze' target='_blank'>Analytics</a>" : "";
-        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a>"+analytics_link+"</td>" : "" ;
+        var opts = this._admin ? "<td><a class='optionmenu link-style'>Actions</a>"+analytics_link+"</td>" : "" ;
         var d = new Date(f.date_published);
         var date_added = d.getMonth()+1 + "/" + d.getDate() + "/" + d.getFullYear().toString().substring(2);
         var assignment_info = f.assignment ? ("Yes - due "+f.due.substring(4,0)+"-"+f.due.substring(7,5)+"-"+f.due.substring(10,8)+" at "+f.due.substring(13,11)+":"+f.due.substring(16,14)) :"<span>No</span>";
@@ -153,7 +153,7 @@
 
         },
         _folderlens: function(f){
-        var opts = this._admin ? "<td><a href='javascript:void(0)' class='optionmenu'>Actions</a></td>" : "" ;
+        var opts = this._admin ? "<td><a class='optionmenu link-style'>Actions</a></td>" : "" ;
         return $("<tr class='filesview_row' item_type='folder' id_item='"+f.ID+"'><td class='filesview_ftitle'><div class='nbicon foldericon'/><a class='aftericon'  href='javascript:"+$str+".concierge.trigger({type:\"folder\", value:"+f.ID+"})'>"+$.E(f.name)+"</a></td><td/><td/><td/>"+opts+"</tr>");
         },
         _draw_pending: function(){

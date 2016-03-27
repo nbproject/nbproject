@@ -157,14 +157,14 @@
             }            
             var author_name =  " <span class='author'>"+o.fullname+"</span> ";
             var creation_info = " <span class='created'> &ndash; " + (new Date(o.created * 1000)).toPrettyString() + "</span> ";
-            replymenu = " <a class = 'replymenu' href='javascript:void(0)'>Reply</a> ";
+            replymenu = " <span class = 'replymenu clickable'>Reply</a> ";
             //            var optionmenu = " <a class='optionmenu' href='javascript:void(0)'>Actions</a> ";
             var optionmenu ="";
             body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, "<br/>");
             return ["<div class='note-lens' id_item='",o.ID,"'><div class='lensmenu'>", replymenu, optionmenu,"</div><span class='note-body ",bold_cl,"'>",body,"</span><div class='authorship-info'>", author_name,admin_info,me_info, type_info, creation_info,"</div></div>"].join("");
         }
         else{
-            replymenu =  " <a class = 'replymenu-mini' href='javascript:void(0)'>Reply</a> ";
+            replymenu =  " <span class = 'replymenu-mini clickable'>Reply</span> ";
             body = o.body.replace(/\s/g, "") === "" ? "<span class='empty_comment'>Empty Comment</span>" :$.E($.ellipsis(o.body, 50));
             return "<div class='note-abridgedlens'  id_item='"+o.ID+"' title=\""+$.E( o.body + " ["+o.fullname+"]").replace(/"/g, "''")+"\"><div class='lensmenu'>"+ replymenu+"</div><span class='abridged'>"+body+"</span></div>"; //"
                                                         }
