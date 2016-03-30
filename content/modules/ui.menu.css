@@ -1,54 +1,72 @@
 
 /*** ESSENTIAL STYLES ***/
-.dropdown-menu, .dropdown-menu * {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+.nb-dropdown-menu,
+.nb-dropdown-menu *
+{
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
 }
-.dropdown-menu ul {
-	display: none;
+.nb-dropdown-menu ul
+{
+    display: none;
 }
-.dropdown-menu ul li {
-	width: 100%;
+.nb-dropdown-menu ul li
+{
+    width: 100%;
 }
-.dropdown-menu li {
-	float: left;
-	position: relative;
+.nb-dropdown-menu li
+{
+    position: relative;
+
+    float: left;
 }
-.dropdown-menu a {
-	display: block;
-	padding: 4px 15px;
-	text-decoration:none;
+.nb-dropdown-menu a
+{
+    display: block;
+
+    padding: 4px 15px;
+
+    text-decoration: none;
 }
-.dropdown-menu li:hover ul {
-	display: block;
-	position: absolute;
+.nb-dropdown-menu li:hover ul
+{
+    position: absolute;
+
+    display: block;
 }
 
-.dropdown-menu > li > a {
-	background-image: url("/content/data/icons/png/arrows.png");
-	background-position: -10px -94px;
-	background-repeat: no-repeat;
+.nb-dropdown-menu > li > a
+{
+    background-image: url('/content/data/icons/png/arrows.png');
+    background-repeat: no-repeat;
+    background-position: -10px -94px;
 }
 
-.dropdown-menu > li:hover > a {
-	background-image: none;
+.nb-dropdown-menu > li:hover > a
+{
+    background-image: none;
 }
 
-.dropdown-menu>li>a {
-	color: #034;
+.nb-dropdown-menu > li > a
+{
+    color: #034;
 }
 
-.dropdown-menu li li,
-.dropdown-menu li li>a {
-	background-color: #034;
-	color: #EECD2B
+.nb-dropdown-menu li li,
+.nb-dropdown-menu li li > a
+{
+    color: #eecd2b;
+    background-color: #034;
 }
 
-.dropdown-menu li:hover,
-.dropdown-menu li:hover>a {
-	outline: 0;
-	background-color: #16495A;
-	color: #FFEA80;
-	visibility: inherit;
+.nb-dropdown-menu li:hover,
+.nb-dropdown-menu li:hover > a
+{
+    visibility: inherit;
+
+    color: #ffea80;
+    outline: 0;
+    background-color: #16495a;
 }

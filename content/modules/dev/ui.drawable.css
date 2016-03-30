@@ -3,19 +3,24 @@ Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-div.ui-drawable > div.ui-drawable-helper{
-position: absolute;
-background-color: #FFFF00;
-opacity: 0.5;
-border: thin solid #FFA060;
-z-index: 2;
+div.ui-drawable > div.ui-drawable-helper
+{
+    position: absolute;
+    z-index: 2;
+
+    opacity: .5;
+    border: thin solid #ffa060;
+    background-color: #ff0;
 }
 
-div.ui-drawable > div.ui-drawable-selection{
-position: absolute;
-background-color: #FFFF00;
-opacity: 0.3;
-border: thin solid #FFA060;
-cursor: move;
-z-index: 2;
+div.ui-drawable > div.ui-drawable-selection
+{
+    position: absolute;
+    z-index: 2;
+
+    cursor: move;
+
+    opacity: .3;
+    border: thin solid #ffa060;
+    background-color: #ff0;
 }

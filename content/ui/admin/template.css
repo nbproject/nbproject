@@ -4,258 +4,356 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-.nb_fullscreen, .nb_fullscreen>body, div.viewport, .nb-viewport, .outerview {
-padding:0;
-margin: 0;
-overflow: hidden;
+.nb_fullscreen,
+.nb_fullscreen > body,
+div.viewport,
+.nb-viewport,
+.outerview
+{
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
 }
 
-.nb_fullscreen, .nb_fullscreen>body, div.nb-viewport, div.viewport{
-width: 100%;
-height: 100%;
-font-family: Tahoma, Helvetica,arial, sans-serif;
-font-size: small;
+.nb_fullscreen,
+.nb_fullscreen > body,
+div.nb-viewport,
+div.viewport
+{
+    font-family: Tahoma, Helvetica,arial, sans-serif;
+    font-size: small;
+
+    width: 100%;
+    height: 100%;
 }
 
 
-.perspective{
-position: absolute;
-top: 24px;
-width: 100%;
-bottom: 0;
+.perspective
+{
+    position: absolute;
+    top: 24px;
+    bottom: 0;
+
+    width: 100%;
 }
 
-.nb-widget-header {
+.nb-widget-header
+{
     height: 24px;
-    background-color: #EFEBE7;
-    box-shadow: inset 0 -6px 6px -6px rgba(0,0,0,0.5);
+
+    background-color: #efebe7;
+    box-shadow: inset 0 -6px 6px -6px rgba(0,0,0,.5);
 }
 
-.ui-tabs-panel{
-padding: 0 !important;
+.ui-tabs-panel
+{
+    padding: 0 !important;
 }
 
-.ui-tabs .ui-tabs-hide {
+.ui-tabs .ui-tabs-hide
+{
     position: absolute;
     left: 10000px;
+
     display: block !important;
 }
 
-.util_windows{
-display: none;
+.util_windows
+{
+    display: none;
 }
 
-#login-window{
-position: absolute;
-top: 1px;
-right: 20px;
-color: #404040;
-font-weight: bold;
-z-index: 3;
+#login-window
+{
+    font-weight: bold;
+
+    position: absolute;
+    z-index: 3;
+    top: 1px;
+    right: 20px;
+
+    color: #404040;
 }
 
-#login-window a{
-margin-left: 10px;
-margin-right: 10px;
+#login-window a
+{
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
-#login-name{
-margin-right: 10px;
+#login-name
+{
+    margin-right: 10px;
 }
 
-.ui-tabs-nav li a {
-    padding-top: 3px !important; 
-    padding-bottom: 3px !important;
+.ui-tabs-nav li a
+{
     font-family: Verdana;
+
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
 }
 
 
-.ui-view-popup{
-user-select:none;
-border-radius: 6px;
-padding: 8px;
-font-weight: bold;
-text-align: center;
-background-color:#FAEC9B;
-color: #666;
-top:30px;
-left: 50%;
-margin-left: -160px;
-width:320px;
-position:fixed;
-z-index:100;
-box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+.ui-view-popup
+{
+    font-weight: bold;
+
+    position: fixed;
+    z-index: 100;
+    top: 30px;
+    left: 50%;
+
+    width: 320px;
+    margin-left: -160px;
+    padding: 8px;
+
+    user-select: none;
+    text-align: center;
+
+    color: #666;
+    border-radius: 6px;
+    background-color: #faec9b;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .25);
 }
 
 
 /*Beginning of standard icon theme */
 
-.nbicon{
-    background-image: url("/content/data/icons/png/theme_dark.png");
-    background-repeat: no-repeat;
+.nbicon
+{
     display: inline-block;
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
+
     width: 18px;
     height: 18px;
+    margin: 0;
+    padding: 0;
+
+    text-decoration: none;
+
+    background-image: url('/content/data/icons/png/theme_dark.png');
+    background-repeat: no-repeat;
 }
 
-.foldericon{
+.clickable
+{
+    cursor: pointer;
+}
+.link-style
+{
+    text-decoration: underline;
+}
+.link-style:hover
+{
+    cursor: pointer;
+    text-decoration: none;
+
+    color: #a3211f;
+}
+
+.foldericon
+{
     background-position: -40px 0;
 }
 
-.pdficon{
+.pdficon
+{
     background-position: -60px 0;
 }
 
-.html5icon{
+.html5icon
+{
     background-position: -480px 0;
 }
 
-.youtubeicon{
+.youtubeicon
+{
     background-position: -500px 0;
 }
 
-.adminicon{
+.adminicon
+{
     background-position: -80px 0;
 }
 
-.privateicon{
+.privateicon
+{
     background-position: -100px 0;
 }
 
-.meicon{
+.meicon
+{
     background-position: -120px 0;
 }
 
-.stafficon{
+.stafficon
+{
     background-position: -140px 0;
 }
 
 .staricon,
-.staricon-hicontrast{
+.staricon-hicontrast
+{
     background-position: -160px 0;
 }
 
 .questionicon,
-.questionicon-hicontrast{
+.questionicon-hicontrast
+{
     background-position: -180px 0;
 }
 
-.nbicon.noteicon {
-    background-position: -201px 0px;
+.nbicon.noteicon
+{
+    background-position: -201px 0;
 }
-.nbicon.addnoteicon {
+.nbicon.addnoteicon
+{
     background-position: -221px 0;
 }
 
-.no-staricon{
+.no-staricon
+{
     background-position: -240px 0;
 }
 
-.no-questionicon{
+.no-questionicon
+{
     background-position: -260px 0;
 }
 
-.thanksicon{
+.thanksicon
+{
     background-position: -280px 0;
 }
 
-.replyicon{
+.replyicon
+{
     background-position: -300px 0;
 }
 
-.editicon{
+.editicon
+{
     background-position: -320px 0;
 }
 
-.deleteicon{
+.deleteicon
+{
     background-position: -340px 0;
 }
-.checkicon{
+.checkicon
+{
     background-position: -360px 0;
 }
-.thankscheckicon{
+.thankscheckicon
+{
     background-position: -380px 0;
 }
 
-.refuseicon{
+.refuseicon
+{
     background-position: -400px 0;
 }
 
 
-.blueadminicon{
+.blueadminicon
+{
     background-position: -440px 0;
 }
 
 
 
-.aftericon {
+.aftericon
+{
     margin-left: 5px;
 }
 
-.ui-effects-transfer { 
+.ui-effects-transfer
+{
     border: 2px solid black;
 }
 
-.form_errors{
-font-weight: bold; 
-color: #a01111;
+.form_errors
+{
+    font-weight: bold;
+
+    color: #a01111;
 }
 
 
 /* mini-splashscreen (developed using draft framework) */
 
-.minisplashscreen{
-padding: 15px;
-margin: 15px;
-font-family: Tahoma, sans-serif;
-color: #808080;
-font-size: medium;
-background-color: #E0F0FF;
-border: thin solid #c0c0c0;
+.minisplashscreen
+{
+    font-family: Tahoma, sans-serif;
+    font-size: medium;
+
+    margin: 15px;
+    padding: 15px;
+
+    color: #808080;
+    border: thin solid #c0c0c0;
+    background-color: #e0f0ff;
 }
 
-#splash-list-instructions{
-padding-left: 10px;
+#splash-list-instructions
+{
+    padding-left: 10px;
 }
 
-#splash-list-instructions li{
-list-style: none;
-margin-bottom: 10px;
+#splash-list-instructions li
+{
+    margin-bottom: 10px;
+
+    list-style: none;
 }
 
-#splash-welcome, #reg_welcome{
-font-size: xx-large; 
-color: #a0a0a0;
-text-align: center;
+#splash-welcome,
+#reg_welcome
+{
+    font-size: xx-large;
+
+    text-align: center;
+
+    color: #a0a0a0;
 }
 
-#nb-def{
-text-align: right;
-font-style: italic;
-color: #b0b0b0;
+#nb-def
+{
+    font-style: italic;
+
+    text-align: right;
+
+    color: #b0b0b0;
 }
 
-#reg_benefits{
-color: #a0a0a0;
-font-style: italic;
-margin: 10px;
+#reg_benefits
+{
+    font-style: italic;
+
+    margin: 10px;
+
+    color: #a0a0a0;
 }
 
-span.ui-icon{
-display: inline-block;
-vertical-align: top;
+span.ui-icon
+{
+    display: inline-block;
+
+    vertical-align: top;
 }
 
 
-.loadingpane{
-margin-top: 50px;
+.loadingpane
+{
+    margin-top: 50px;
 }
 
 
-.loadingpane-msg{
-font-size: x-large;
-color: #c0c0c0;
+.loadingpane-msg
+{
+    font-size: x-large;
+
+    color: #c0c0c0;
 }

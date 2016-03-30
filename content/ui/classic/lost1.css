@@ -5,16 +5,21 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 */
 
 
-.email{
-font-size: large;
+.email
+{
+    font-size: large;
 }
 
-.error-msg{
-display: none;
-color: #FF0000;
-font-weight: bold;
+.error-msg
+{
+    font-weight: bold;
+
+    display: none;
+
+    color: #f00;
 }
 
-#success{
-display: none;
+#success
+{
+    display: none;
 }

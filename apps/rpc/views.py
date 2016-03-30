@@ -215,7 +215,7 @@ def login_user(P,req):
     if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:  
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
-    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
+    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid, "id": user.id}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
 
 def on_delete_session(payload, s): 
     req = s["request"]

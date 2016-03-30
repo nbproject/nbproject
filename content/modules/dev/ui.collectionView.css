@@ -3,31 +3,36 @@ Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-div.collectionView{
-	-moz-user-select: none;
-	-webkit-user-select: none;
-
+div.collectionView
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
 }
 
 
 
-div.collectionView li.collection{
-width: 140px;
-height: 181px;
-background: transparent url(/data/icons/png/proto/collection.png) no-repeat center left;
-border: thin  solid #D0D0D0;
-cursor: pointer;
+div.collectionView li.collection
+{
+    width: 140px;
+    height: 181px;
 
+    cursor: pointer;
+
+    border: thin  solid #d0d0d0;
+    background: transparent url(/data/icons/png/proto/collection.png) no-repeat center left;
 }
 
-div.collectionView li.collection:hover{
-background-color: #f5f5E6;
+div.collectionView li.collection:hover
+{
+    background-color: #f5f5e6;
 }
 
 
-div.collectionView div.selected{
-font-weight: bold;
-border: thin  solid #5050F0;
-cursor: default;
-}
+div.collectionView div.selected
+{
+    font-weight: bold;
 
+    cursor: default;
+
+    border: thin  solid #5050f0;
+}

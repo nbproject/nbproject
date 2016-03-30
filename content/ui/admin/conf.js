@@ -1,10 +1,10 @@
 /**
  * conf.js
- * Configuration Parameters for NB api 
+ * Configuration Parameters for NB api
  * This module defines the namespace NB.conf
  *
- Author 
- cf AUTHORS.txt 
+ Author
+ cf AUTHORS.txt
 
  License
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -12,17 +12,17 @@
 */
 /*global  NB:true*/
 
-(function(GLOB){
-    GLOB.conf = {};
-    GLOB.conf.servers = {
-    rpc: "",
-    img: "",
-    upload: ""
+(function (GLOB) {
+  GLOB.conf = {};
+  GLOB.conf.servers = {
+    rpc: '',
+    img: '',
+    upload: '',
 
-    };
+  };
 
-    /*************************************************************************************
-     * Replace "" (right below) with your invite key if you'd live to be automatically authenticated
-     ************************************************************************************/
-    GLOB.conf.identity = "";
+  /*************************************************************************************
+   * Replace "" (right below) with your invite key if you'd live to be automatically authenticated
+   ************************************************************************************/
+  GLOB.conf.identity = '';
 })(NB);

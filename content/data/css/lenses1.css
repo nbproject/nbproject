@@ -4,163 +4,215 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-div.collapsed-facet{
-background:#DDDDEE none repeat scroll 0 0;
-border:medium none;
-cursor:pointer;
-margin-bottom:0.5em;
-padding:1px 2px;
+div.collapsed-facet
+{
+    margin-bottom: .5em;
+    padding: 1px 2px;
+
+    cursor: pointer;
+
+    border: medium none;
+    background: #dde none repeat scroll 0 0;
 }
 
-#searchbar{
-float: right;
+#searchbar
+{
+    float: right;
 }
 
-#startup{
-margin: 10px;
-padding: 10px;
-border: thin solid #FFAAA0;
-background-color: #EEEEEE;
-color: #115522;
-font-size: xx-large;
-font-family: tahoma, arial;
-position: absolute; 
-top: 20%;
-left: 25%;
-}
+#startup
+{
+    font-family: tahoma, arial;
+    font-size: xx-large;
 
+    position: absolute;
+    top: 20%;
+    left: 25%;
 
-div.exhibit-facet-header {
-background:#DDDDEE none repeat scroll 0 0;
-border:medium none;
-cursor:pointer;
-padding:1px 2px;
-}
+    margin: 10px;
+    padding: 10px;
 
-
-span.exhibit-facet-header-title {
-font-weight:bold;
-}
-
-div.annotation-body{
-position: relative;
-}
-
-div.annotation-lens{
-	border: 7px solid #DDDDEE;
-	margin: 15px !important;
-	overflow: hidden;
-}
-
-      div.annotation-title{
-      background:#DDDDEE none repeat scroll 0%;
-      color:#333366;
-      font-weight:bold;
-      padding:0.25em;
-      }
-
-      span.notecontext{
-      color: #555555;
-      font-size: small;
-      }
-      
-
-      span.notebody{
-	font-style: italic;
-      }
-      
-      
-      span.notecomment{
-      color: #339955;
-      position: relative;
-      }
-      
-      span.notecomment:hover{
-       border-style:solid;      
-       border-width: 1px;       
-       border-color: #AAAAAA;
-       }
-      
-      textarea.editarea{
-      min-width: 350px;
-      }
-
-      span.CreationTime{
-      font-size: small;
-	padding-left: 20px;
-      float: right;
-      color: #A0A0A0;
-      }
-
-
-      span.Author{
-      font-size: small;
-      float: right;
-      }
-
-
-      span.Title{
-      font-size: small;
-      }
-
-
-      .exhibit-tileView-body {
-      list-style-type: none;
-      margin: 0; 
-      padding: 0;
-      }
-
-td.exhibit-tile {
-padding: 0px 0px 0px 0px;
+    color: #152;
+    border: thin solid #ffaaa0;
+    background-color: #eee;
 }
 
 
-div.star{
-float:right;
-margin-left:1em;
-padding-right: 32px !important;
-margin-right: 32px !important;
+div.exhibit-facet-header
+{
+    padding: 1px 2px;
 
-border: thin solid #999999; 
-font-size: small;
+    cursor: pointer;
+
+    border: medium none;
+    background: #dde none repeat scroll 0 0;
 }
 
-img.star-icon{
-cursor:pointer;
-position: absolute;
+
+span.exhibit-facet-header-title
+{
+    font-weight: bold;
 }
 
-img.img-doc{
-height: 192px; //make sure this in agreement with EXHIBIT_SCALE in server params
+div.annotation-body
+{
+    position: relative;
 }
 
-div.exhibit-sel{
-position: absolute;
-opacity: 0.4;
-background-color:#FFFF77;
-border:thin solid #333333;
+div.annotation-lens
+{
+    overflow: hidden;
 
+    margin: 15px !important;
+
+    border: 7px solid #dde;
 }
 
-#credits{
-width: 80%;
-font-size: x-small;
-text-align: center;
-margin: 20px;
-border-top: thin solid #EEEEEE;
-color: #A0A0A0;
+div.annotation-title
+{
+    font-weight: bold;
+
+    padding: .25em;
+
+    color: #336;
+    background: #dde none repeat scroll 0;
 }
 
-span.speaker{
-color: #A0A0A0;
+span.notecontext
+{
+    font-size: small;
+
+    color: #555;
 }
 
-div.usercomments{
-font-size: small;
-font-family: serif;
-color: #707070;
+
+span.notebody
+{
+    font-style: italic;
 }
 
-div.inline-editor{
-position: relative;
+
+span.notecomment
+{
+    position: relative;
+
+    color: #395;
+}
+
+span.notecomment:hover
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: #aaa;
+}
+
+textarea.editarea
+{
+    min-width: 350px;
+}
+
+span.CreationTime
+{
+    font-size: small;
+
+    float: right;
+
+    padding-left: 20px;
+
+    color: #a0a0a0;
+}
+
+
+span.Author
+{
+    font-size: small;
+
+    float: right;
+}
+
+
+span.Title
+{
+    font-size: small;
+}
+
+
+.exhibit-tileView-body
+{
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+}
+
+td.exhibit-tile
+{
+    padding: 0 0 0 0;
+}
+
+
+div.star
+{
+    font-size: small;
+
+    float: right;
+
+    margin-right: 32px !important;
+    margin-left: 1em;
+    padding-right: 32px !important;
+
+    border: thin solid #999;
+}
+
+img.star-icon
+{
+    position: absolute;
+
+    cursor: pointer;
+}
+
+img.img-doc
+{
+    /*make sure this in agreement with EXHIBIT_SCALE in server params*/
+    height: 192px;
+}
+
+div.exhibit-sel
+{
+    position: absolute;
+
+    opacity: .4;
+    border: thin solid #333;
+    background-color: #ff7;
+}
+
+#credits
+{
+    font-size: x-small;
+
+    width: 80%;
+    margin: 20px;
+
+    text-align: center;
+
+    color: #a0a0a0;
+    border-top: thin solid #eee;
+}
+
+span.speaker
+{
+    color: #a0a0a0;
+}
+
+div.usercomments
+{
+    font-family: serif;
+    font-size: small;
+
+    color: #707070;
+}
+
+div.inline-editor
+{
+    position: relative;
 }

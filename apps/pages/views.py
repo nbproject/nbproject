@@ -482,7 +482,7 @@ def properties_ensemble_sections(req, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     sections = M.Section.objects.filter(ensemble=ensemble)
-    all_students = M.Membership.objects.filter(ensemble=ensemble)
+    all_students = M.Membership.objects.filter(ensemble=ensemble).filter(guest=False)
     students = {}
     for s in sections:
         students[s] = all_students.filter(section=s)

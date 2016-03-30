@@ -5,267 +5,349 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 */
 
 
-div.threadview{
-overflow-y: auto;
+div.threadview
+{
+    overflow-y: auto;
 }
 
-div.threadview-branch{
-padding-top: 5px;
-padding-left: 10px;
+div.threadview-branch
+{
+    padding-top: 5px;
+    padding-left: 10px;
 }
 
-div.threadview-branch>div.threadview-branch{
-    border-left: 1px solid #DDD;
+div.threadview-branch > div.threadview-branch
+{
+    border-left: 1px solid #ddd;
 }
 
-div.threadview div.lens-odd {
-    background-color: #F0F0F0;
+div.threadview div.lens-odd
+{
+    background-color: #f0f0f0;
 }
 
-div.threadview-pane{
+div.threadview-pane
+{
     padding-right: 8px;
     padding-bottom: 20px;
+
     border-width: 0 1px 0 1px;
     border-style: solid;
-    border-color: #DDD;
+    border-color: #ddd;
 }
 
 
 
-div.threadview div.note-lens{
-padding-top: 5px;
-padding-bottom: 5px;
-border: thin solid transparent;
-border-right-width: 5px;
+div.threadview div.note-lens
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    border: thin solid transparent;
+    border-right-width: 5px;
 }
 
 
-div.threadview div.note-lens.replyrequested{
-border-right: 5px solid #ffa070;
+div.threadview div.note-lens.replyrequested
+{
+    border-right: 5px solid #ffa070;
 }
 
-div.threadview div.note-lens:hover{
-background-color:  #ffffec;
+div.threadview div.note-lens:hover
+{
+    background-color: #ffffec;
 }
 
-div.threadview span.note-bold{
-font-weight: bold; 
-color: #000000;
+div.threadview span.note-bold
+{
+    font-weight: bold;
+
+    color: #000;
 }
 
-.authorship-info .nbicon {
+.authorship-info .nbicon
+{
     vertical-align: sub;
 }
 
-div.threadview span.author{
-    color: #a0a0a0;
+div.threadview span.author
+{
     font-style: italic;
+
     margin-left: 10px;
+
+    color: #a0a0a0;
 }
 
-.author-revealed {
+.author-revealed
+{
     text-decoration: line-through;
 }
 
-div.threadview span.created{
-color: #a0a0a0;
+div.threadview span.created
+{
+    color: #a0a0a0;
 }
 
-div.threadview div.commentlabel_container{
+div.threadview div.commentlabel_container
+{
     position: absolute;
-    right: 42px;    
-    margin-top: 0px;
-    opacity: 0.2;
     z-index: 0;
+    right: 42px;
+
+    margin-top: 0;
     padding: 5px;
-    border: thin solid transparent;    
-}
 
-div.threadview div.commentlabel_container:hover{
-    background-color: #fbfbfb;
-    color: #303030;
-    opacity: 1.0;
-    border-color: #a0a0a0;
-    z-index: 3;
-}
-
-
-div.threadview  span.cat_elt{
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 3px;
-    cursor: pointer;
+    opacity: .2;
     border: thin solid transparent;
-    -moz-border-radius: 5px;
+}
+
+div.threadview div.commentlabel_container:hover
+{
+    z-index: 3;
+
+    opacity: 1.0;
+    color: #303030;
+    border-color: #a0a0a0;
+    background-color: #fbfbfb;
+}
+
+
+div.threadview  span.cat_elt
+{
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 3px;
+
+    cursor: pointer;
+
+    border: thin solid transparent;
     -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
 }
 
-div.threadview  span.cat_elt.selected{
-    color: #ffffff;
-    border-color: #777777;
-    background-color: #70A0F0;
+div.threadview  span.cat_elt.selected
+{
+    color: #fff;
+    border-color: #777;
+    background-color: #70a0f0;
 }
 
-div.threadview  span.cat_elt:hover{
-    background-color: #FFFFD0;
+div.threadview  span.cat_elt:hover
+{
+    background-color: #ffffd0;
 }
 
 
-div.threadview div.cat_name{
+div.threadview div.cat_name
+{
     display: inline-block;
+
     width: 60px;
 }
 
 
-div.threadview div.stat-count{
-    background-color: #EEE;
-    color: #707070;
+div.threadview div.stat-count
+{
+    font-weight: bold;
+
     display: inline-block;
+
     padding: 1px 8px 1px 0;
-    font-weight: bold;
+
     vertical-align: bottom;
+
+    color: #707070;
+    background-color: #eee;
 }
 
-div.threadview div.stat-count .nbicon {
+div.threadview div.stat-count .nbicon
+{
     margin-top: -2px;
+
     vertical-align: bottom;
 }
 
-div.threadview div.stat-count.active{
-    background-color: #70A0F0;
-    color: #F0F0F0;
+div.threadview div.stat-count.active
+{
+    color: #f0f0f0;
+    background-color: #70a0f0;
 }
 
-div.threadview div.stat-count.active .nbicon {
-background-image: url("/content/data/icons/png/theme_light.png");
+div.threadview div.stat-count.active .nbicon
+{
+    background-image: url('/content/data/icons/png/theme_light.png');
 }
 
-div.threadview div.lensmenu{
-float: right;
-padding: 5px;
-opacity: 0.3;
+div.threadview div.lensmenu
+{
+    float: right;
+
+    padding: 5px;
+
+    opacity: .3;
 }
 
-div.threadview div.note-lens:hover div.lensmenu{
-opacity: 1.0;
+div.threadview div.note-lens:hover div.lensmenu
+{
+    opacity: 1.0;
 }
 
-div.threadview div.lensmenu a {
-    text-decoration: none;
-    color: #444;
+div.threadview div.lensmenu a
+{
+    font-weight: bold;
+
     display: inline-block;
-    vertical-align: middle;
-    font-weight: bold;
-    margin-left: 2px;
+
     margin-right: 2px;
+    margin-left: 2px;
+
+    vertical-align: middle;
+    text-decoration: none;
+
+    color: #444;
 }
 
-div.note-lens-unabridged{
-color: #a0a0a0;
+div.note-lens-unabridged
+{
+    color: #a0a0a0;
 }
 
-div.threadview span.empty_comment{
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    background-color: #F0F0F0;
-    border: thin solid #A0A0A0;
-    color: #A0A0A0;
-    font-variant: small-caps;
+div.threadview span.empty_comment
+{
     font-weight: bold;
+    font-variant: small-caps;
+
     padding: 3px;
+
+    color: #a0a0a0;
+    border: thin solid #a0a0a0;
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
+    background-color: #f0f0f0;
 }
 
-span.n_star ,span.n_question{
-color: #707070;
-padding: 0px 3px;
-font-size: large;
+span.n_star,
+span.n_question
+{
+    font-size: large;
+
+    padding: 0 3px;
+
+    color: #707070;
 }
 
-#thread_request_reply{
-color: #707070;
+#thread_request_reply
+{
+    color: #707070;
 }
 
-button.mark-toggle{
-/*margin-right: 10px;*/
-font-size: large; 
-padding: 0px 5px;
-width: 30px;
-margin: 0 5px;
+button.mark-toggle
+{
+    /*margin-right: 10px;*/
+    font-size: large;
+
+    width: 30px;
+    margin: 0 5px;
+    padding: 0 5px;
 }
 
-div.threadview-header{
-background-color: #EFEBE7;
-height: 24px;
-border-bottom: thin solid #DDD;
-padding: 3px 5px 8px 3px;
-box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2);
+div.threadview-header
+{
+    min-height: 24px;
+    padding: 3px 5px 8px 3px;
+
+    border-bottom: thin solid #ddd;
+    background-color: #efebe7;
+    box-shadow: 0 -1px 8px rgba(0, 0, 0, .2);
 }
 
-div.threadview-filter-controls .nbicon {
-margin-bottom: -4px;
+div.threadview-filter-controls .nbicon
+{
+    margin-bottom: -4px;
 }
 
-button.mark-toggle.active{
-border-bottom: 5px solid #ffff00;
+button.mark-toggle.active
+{
+    border-bottom: 5px solid #ff0;
 }
 
-.context-menu-item.icon {
+.context-menu-item.icon
+{
     position: relative;
 }
 
-.context-menu-item.icon:before {
-background-image: url("/content/data/icons/png/theme_dark.png");
-background-repeat: no-repeat;
-content: '';
-position: absolute;
-z-index: 0;
-width: 18px;
-height: 18px;
-left: 1px;
-top: 0;
+.context-menu-item.icon:before
+{
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 1px;
+
+    width: 18px;
+    height: 18px;
+
+    content: '';
+
+    background-image: url('/content/data/icons/png/theme_dark.png');
+    background-repeat: no-repeat;
 }
 
-.context-menu-item.icon.hover:before{
-background-image: url("/content/data/icons/png/theme_light.png");
+.context-menu-item.icon.hover:before
+{
+    background-image: url('/content/data/icons/png/theme_light.png');
 }
 
-.context-menu-item.icon.icon-reply:before{
-    background-position: -300px 0px;
+.context-menu-item.icon.icon-reply:before
+{
+    background-position: -300px 0;
 }
 
-.context-menu-item.icon.icon-thanks:before{
-    background-position: -280px 0px;
+.context-menu-item.icon.icon-thanks:before
+{
+    background-position: -280px 0;
 }
 
-.context-menu-item.icon.icon-edit:before{
-    background-position: -320px 0px;
+.context-menu-item.icon.icon-edit:before
+{
+    background-position: -320px 0;
 }
 
-.context-menu-item.icon.icon-question:before{
-    background-position: -180px 0px;
+.context-menu-item.icon.icon-question:before
+{
+    background-position: -180px 0;
 }
 
-.context-menu-item.icon.icon-noquestion:before{
-    background-position: -260px 0px;
+.context-menu-item.icon.icon-noquestion:before
+{
+    background-position: -260px 0;
 }
 
-.context-menu-item.icon.icon-star:before{
-    background-position: -160px 0px;
+.context-menu-item.icon.icon-star:before
+{
+    background-position: -160px 0;
 }
 
-.context-menu-item.icon.icon-nostar:before{
-    background-position: -240px 0px;
+.context-menu-item.icon.icon-nostar:before
+{
+    background-position: -240px 0;
 }
 
-.context-menu-item.icon.icon-delete:before{
+.context-menu-item.icon.icon-delete:before
+{
     background-position: -339px 1px;
 }
 
-.threadview-header-sectioninfo{
-    color: #707070;
+.threadview-header-sectioninfo
+{
     font-size: large;
-    max-width: 100px;
-    overflow: hidden;
+
     position: absolute;
     right: 20px;
+
+    overflow: hidden;
+
+    max-width: 100px;
+
+    color: #707070;
 }
