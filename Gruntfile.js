@@ -82,7 +82,7 @@ module.exports = function (grunt) {
   };
   MODS.DOCVIEW_YOUTUBE = {
     src_js: addPrefix(MODULE_DIR, ['dev/ui.drawable4.js', 'dev/ui.docView.video.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css', 'dev/ui.docView.youtube.css']),
+    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css']),
   };
 
   MODS.NOTEPANEVIEW_DOC = {
@@ -181,7 +181,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/docviewHtml5.js', 'dev/buildEmbed.js'])),
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css', 'dev/buildEmbed.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css', 'dev/buildEmbed.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
@@ -203,7 +203,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/files.js']),
       addPrefix(UI_DIR, ['init.desktop.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -239,7 +239,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.pdfviewer.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW.src_css,
       MODS.NOTEPANEVIEW_DOC.src_css,
@@ -259,7 +259,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.analytics.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
     dest_js: DEST_DIR + 'docanalytics_NB.js',
@@ -279,7 +279,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.youtubeviewer.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_YOUTUBE.src_css,
       MODS.NOTEPANEVIEW_YOUTUBE.src_css,
@@ -302,7 +302,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.collage.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_COLLAGE.src_css,
       MODS.NOTEPANEVIEW_COLLAGE.src_css,
@@ -347,7 +347,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.spreadsheet.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.SPREADSHEETVIEW.src_css,
       MODS.NOTEPANEVIEW_SPREADSHEET.src_css,
@@ -392,7 +392,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['dev/pers.js']),
       addPrefix(UI_DIR, ['init.analytics.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
     dest_js: DEST_DIR + 'docanalytics_NB.js',
@@ -405,6 +405,7 @@ module.exports = function (grunt) {
     src = unique(TARGETS[i].src_js);
     if (src.length) {
       JS_TARGETS[i] = { src: src, dest: TARGETS[i].dest_js };
+      JS_TARGETS[i].nonull = true;
     }
   }
 
@@ -413,6 +414,7 @@ module.exports = function (grunt) {
     src = unique(TARGETS[i].src_css);
     if (src.length) {
       CSS_TARGETS[i] = { src: src, dest: TARGETS[i].dest_css };
+      CSS_TARGETS[i].nonull = true;
     }
 
     if (TARGETS[i].servername) {
