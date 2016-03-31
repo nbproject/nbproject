@@ -149,6 +149,11 @@ module.exports = function (grunt) {
     src_css: addPrefix(MODULE_DIR, ['dev/ui.docAnalyticsView.css']),
   };
 
+  MODS.BREADCRUMB = {
+    src_js: addPrefix(MODULE_DIR,["dev/ui.breadcrumb.js" ]),
+    src_css:  addPrefix(MODULE_DIR, ["dev/ui.breadcrumb.css"])
+  };
+
   /* TARGETS are modules that are built (but they can also serve as building blocks) */
   var TARGETS = {};
   TARGETS.API =  {
@@ -191,14 +196,18 @@ module.exports = function (grunt) {
       MODS.FILESVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
       addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/files.js']),
-      addPrefix(UI_DIR, ['init.desktop.js', 'launch.js'])),
+      addPrefix(UI_DIR, ['init.desktop.js', 'launch.js']),
+      MODS.BREADCRUMB.src_js
+    ),
     src_css: [].concat(
       addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.DUPLICATEWIZARD.src_css,
       MODS.TREEVIEW.src_css,
-      MODS.FILESVIEW.src_css),
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
     dest_js: DEST_DIR + 'desktop_NB.js',
     dest_css: DEST_DIR + 'desktop.css',
   };

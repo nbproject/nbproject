@@ -34,6 +34,13 @@
     $.concierge.addFactory('admin_init', 'admin_viewer', function (id) {
       var pers_id        = 'pers_' + id;
       var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+
+      // Add breadcrumb
+      $(".nb-widget-header").breadcrumb({
+        trail: [{name: "Home", rel: "ensemble", id_item: 0}],
+        admin: GLOB.pers.admin});
+      $(".nb-widget-header").breadcrumb("set_model", GLOB.pers.store);
+
       var $pers        = $("<div id='" + pers_id + "'/>").appendTo($vp);
       var treeview    =  {
         priority: 1,
@@ -87,7 +94,48 @@
               GLOB.pers.store.add('file_stats', P2['file_stats']);
               $.L('stats loaded !');
             });
+            var ensemble_data = GLOB.pers.store.o.ensemble;
+            // Update breadcrumb
+            $(".nb-widget-header").breadcrumb({trail: [
+              {name: "Home", rel: "ensemble", id_item: 0},
+              {name: ensemble_data[evt.value].name, rel: "ensemble", id_item: evt.value}
+            ]});
           },
+
+          folder: function(evt) {
+            // Folder data from the server
+            var folder_data = GLOB.pers.store.o.folder;
+            var ensemble_data = GLOB.pers.store.o.ensemble;
+
+            // Create trail starting with Home and the ensemble
+            var id_ensemble = folder_data[evt.value].id_ensemble;
+
+            var trail = [
+              {name: "Home", rel: "ensemble", id_item: 0},
+              {name: ensemble_data[id_ensemble].name, rel: "ensemble", id_item: id_ensemble}
+            ];
+
+            // Loop through fdata to generate list of parent folders
+            var cur_folder = evt.value;
+            var parent_folders = [cur_folder];
+            while(folder_data[cur_folder].id_parent != null) {
+              cur_folder = folder_data[cur_folder].id_parent;
+              parent_folders.push(cur_folder);
+            }
+
+            // Add parents to trail
+            while(parent_folders.length>0) {
+              var cur_id = parent_folders.pop();
+              trail.push({
+                name: folder_data[cur_id].name,
+                rel: "folder",
+                id_item: cur_id
+              });
+            }
+
+            // Update breadcrumb
+            $(".nb-widget-header").breadcrumb({trail: trail});
+          }
         },
         views: {
     v1:{ data: treeview },
@@ -216,4 +264,3 @@
   };
 
 })(NB);
-

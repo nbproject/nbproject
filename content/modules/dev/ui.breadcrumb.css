@@ -1,0 +1,22 @@
+.nb-widget-header ul {
+  margin: 0;
+  padding: 4px 15px;
+}
+
+.nb-widget-header li {
+  display: inline;
+}
+
+
+.nb-widget-header li span{
+  cursor: pointer;
+}
+
+.nb-widget-header li.active span{
+  font-weight:bold;
+}
+
+.nb-widget-header li:not(:first-child):before{
+  content:'\00bb';
+  margin: 0 10px;
+}
