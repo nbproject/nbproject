@@ -156,16 +156,6 @@ module.exports = function (grunt) {
     dest_js: DEST_DIR + 'apidev_NB.js',
   };
 
-  TARGETS.TRAIL = {
-    src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js',  'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dateformat/date.format.js']),
-      TARGETS.API.src_js,
-      addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/buildTrail.js'])),
-    dest_js: DEST_DIR + 'buildTrail_NB.js',
-  };
-
   TARGETS.EMBED = {
     src_js: [].concat(
       addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
