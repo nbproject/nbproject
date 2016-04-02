@@ -271,9 +271,7 @@
           //which confuses the interface
           //see issue #280
           //for now, a hack: if login fails, reset guest status
-          GLOB.auth.set_cookie('userinfo',
-          escape(JSON.stringify(
-          { guest: true })));
+          GLOB.auth.set_cookie('userinfo', JSON.stringify({ guest: true }));
           $('#login_to_nb').remove(); //in case one was already present
           $("<button id='login_to_nb'>Login to NB</button>")
           .appendTo('.nb-widget-header')
@@ -319,7 +317,7 @@
     $.concierge.addListeners(GLOB.pers, {
       successful_login: function (evt) {
         GLOB.auth.set_cookie('ckey', evt.value.ckey);
-        GLOB.auth.set_cookie('userinfo', escape(JSON.stringify(evt.value)));
+        GLOB.auth.set_cookie('userinfo', JSON.stringify(evt.value));
         GLOB.conf.userinfo = evt.value;
         $.L('Welcome TO NB !');
         $('#splash-welcome').parent().remove();
