@@ -1006,7 +1006,7 @@
           }
         }
       }      else if (action === 'remove' && items_fieldname === 'location') { //just re-render the pages where locations were just removed.
-        D        = payload.diff;
+        D = payload.diff;
         pages_done    = {};
 
         for (i in D) {
@@ -1019,13 +1019,14 @@
         }
       }      else if (action === 'add' && items_fieldname === 'threadmark' && self._rendered) {
         D = payload.diff;
-
         pages_done    = {};
+
         for (i in D) {
           loc = m.get('location', { ID: D[i].location_id }).first();
           if (loc != null) {
             page = loc.page;
             if (!(page in pages_done)) {
+              pages_done[page] = null;
               delete self._pages[page];
               self._render_one(page);
             }
