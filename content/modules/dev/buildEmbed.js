@@ -261,8 +261,8 @@
 		       //see issue #280
 		       //for now, a hack: if login fails, reset guest status
 		       GLOB.auth.set_cookie("userinfo",
-					    escape(JSON.stringify(
-						{guest: true})));
+					    JSON.stringify(
+						{guest: true}));
                        $("#login_to_nb").remove(); //in case one was already present
                        $("<button id='login_to_nb'>Login to NB</button>")
 			   .appendTo(".nb-widget-header")
