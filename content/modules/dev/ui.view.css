@@ -3,41 +3,52 @@ Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-div.view > .panel{
-min-height: 32px;
-border: thin solid #D0D0D0;
-margin: 5px;
-border-radius: 5px;
-background-color: #E6E6E6;
+div.view > .panel
+{
+    min-height: 32px;
+    margin: 5px;
+
+    border: thin solid #d0d0d0;
+    border-radius: 5px;
+    background-color: #e6e6e6;
 }
 
-div.outerview{
-position: relative;
+div.outerview
+{
+    position: relative;
 }
 
-div.view{
-width: 100%;
-height: 100%;
-border: thin solid #ffffff;
+div.view
+{
+    width: 100%;
+    height: 100%;
+
+    border: thin solid #fff;
 }
 
-div.active-view{
-border: thin solid #ffc0a0 !important;
+div.active-view
+{
+    border: thin solid #ffc0a0 !important;
 }
 
-div.ui-view-popup{
-user-select:none;
-border-radius: 6px;
-padding: 8px;
-font-weight: bold;
-text-align: center;
-background-color:#FAEC9B;
-color: #666;
-top:30px;
-left: 50%;
-margin-left: -160px;
-width:320px;
-position:fixed;
-z-index:100;
-box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+div.ui-view-popup
+{
+    font-weight: bold;
+
+    position: fixed;
+    z-index: 100;
+    top: 30px;
+    left: 50%;
+
+    width: 320px;
+    margin-left: -160px;
+    padding: 8px;
+
+    user-select: none;
+    text-align: center;
+
+    color: #666;
+    border-radius: 6px;
+    background-color: #faec9b;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .25);
 }

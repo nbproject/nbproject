@@ -3,64 +3,80 @@ Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-.viewport{
-height: 100%;
+.viewport
+{
+    height: 100%;
 }
 
-.ui-maximized{
-position: absolute !important;
-width: 100% !important;
-height: 100% !important;
-z-index: 1000 !important;
-top: 0 !important;
-left: 0 !important;
-margin: 0 !important;
-border: 0 !important;
-padding: 0 !important;
+.ui-maximized
+{
+    position: absolute !important;
+    z-index: 1000 !important;
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
 }
 
-.ui-view-tab-close { 
-position: absolute; 
-right: 0; 
-top: 0; 
-width: 16px; 
-margin: 0;
-padding: 1px !important; 
-height: 16px; }
+.ui-view-tab-close
+{
+    position: absolute;
+    top: 0;
+    right: 0;
 
-.ui-view-semiopaque{
-opacity: 0.5;
+    width: 16px;
+    height: 16px; 
+    margin: 0;
+    padding: 1px !important;
 }
 
-.ui-view-menu{
-margin:8px 17px 10px 10px;
-position:absolute;
-right:0;
-padding: 5px;
-z-index:2;
+.ui-view-semiopaque
+{
+    opacity: .5;
 }
 
-.vp-menu{
-margin:8px 17px 10px 10px;
-position:absolute;
-right:30px;
-padding: 5px;
-z-index:2;
-background-color: #f7f5f3;
-border: thin solid #a89a8d;
+.ui-view-menu
+{
+    position: absolute;
+    z-index: 2;
+    right: 0;
+
+    margin: 8px 17px 10px 10px;
+    padding: 5px;
 }
 
-.vp-menu li, .ui-sortable-helper {
-list-style-type: none;
+.vp-menu
+{
+    position: absolute;
+    z-index: 2;
+    right: 30px;
+
+    margin: 8px 17px 10px 10px;
+    padding: 5px;
+
+    border: thin solid #a89a8d;
+    background-color: #f7f5f3;
+}
+
+.vp-menu li,
+.ui-sortable-helper
+{
+    list-style-type: none;
 }
 
 
-.vp-menu li:hover{
-background-color: #fec16c;
-border: thin solid #be873c;
+.vp-menu li:hover
+{
+    border: thin solid #be873c;
+    background-color: #fec16c;
 }
 
-.hidden{
-display: none !important;
+.hidden
+{
+    display: none !important;
 }
-

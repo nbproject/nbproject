@@ -5,61 +5,78 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 */
 
 
-div.editor{
-overflow-y: auto;
-background-color: #FFF;
+div.editor
+{
+    overflow-y: auto;
+
+    background-color: #fff;
 }
 
-div.notebox {
+div.notebox
+{
     padding: 8px 5px 0 5px;
-    border-left: 1px #ddd solid;
+
     border-right: 1px #ddd solid;
+    border-left: 1px #ddd solid;
 }
 
-div.editor textarea {
-    width: 100%;
+div.editor textarea
+{
     box-sizing: border-box;
-}
-
-div.editor-header{
-    color: #606060;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 3px 5px 8px 3px;
-    box-shadow: 0 -1px 8px rgba(0,0,0,0.2);
-    background-color: #EFEBE7;
-    border-bottom: thin solid #DDD;
-}
-
-div.editor table.editorcontrols{
-width: 100%;
-margin: 5px 0px 5px 0px;
-}
-
-#tagBoxes{
-width: 100%;
-}
-
-div.editor button[action=save]{
-width: 100%;
-min-height: 40px;
-margin: 0;
-}
-
-div.editor button[action=discard]{
-margin: 0;
-margin-top: 4px;
-min-height: 28px;
-}
-
-.group {
-    background-color: #EFEBE7;
-    padding: 8px;
-}
-
-td.save-cancel {
     width: 100%;
-    vertical-align: top;
+}
+
+div.editor-header
+{
+    overflow: hidden;
+
+    padding: 3px 5px 8px 3px;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #606060;
+    border-bottom: thin solid #ddd;
+    background-color: #efebe7;
+    box-shadow: 0 -1px 8px rgba(0,0,0,.2);
+}
+
+div.editor table.editorcontrols
+{
+    width: 100%;
+    margin: 5px 0 5px 0;
+}
+
+#tagBoxes
+{
+    width: 100%;
+}
+
+div.editor button[action=save]
+{
+    width: 100%;
+    min-height: 40px;
+    margin: 0;
+}
+
+div.editor button[action=discard]
+{
+    min-height: 28px;
+    margin: 0;
+    margin-top: 4px;
+}
+
+.group
+{
+    padding: 8px;
+
+    background-color: #efebe7;
+}
+
+td.save-cancel
+{
+    width: 100%;
     padding-left: 8px;
+
+    vertical-align: top;
 }

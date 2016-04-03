@@ -1,8 +1,8 @@
 /*
  * logout
  *
- Author 
- cf AUTHORS.txt 
+ Author
+ cf AUTHORS.txt
 
  License
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -11,17 +11,18 @@
 */
 /*global NB:true  NB$:true $:true*/
 
-(function(GLOB){
-    GLOB.pers.init = function(){
-        var nextpage = GLOB.pers.params.next;
-        if (nextpage){
-            document.location ="http://"+document.location.host+nextpage;
-        }
-    };
-    var myJquery = NB$ || $;
-    myJquery(function(){
-            GLOB.pers.params = GLOB.dom.getParams();  
-            GLOB.pers.admin=false; 
-            GLOB.pers.preinit(false);
-        });    
+(function (GLOB) {
+  GLOB.pers.init = function () {
+    var nextpage = GLOB.pers.params.next;
+    if (nextpage) {
+      document.location = 'http://' + document.location.host + nextpage;
+    }
+  };
+
+  var myJquery = NB$ || $;
+  myJquery(function () {
+    GLOB.pers.params = GLOB.dom.getParams();
+    GLOB.pers.admin = false;
+    GLOB.pers.preinit(false);
+  });
 })(NB);

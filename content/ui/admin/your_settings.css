@@ -1,30 +1,38 @@
-#settings_panel li{
-list-style: none;
-margin-top: 30px;
+#settings_panel li
+{
+    margin-top: 30px;
+
+    list-style: none;
 }
 
-#settings_panel td{
-padding-right: 30px;
+#settings_panel td
+{
+    padding-right: 30px;
 }
 
-#settings_panel button{
-margin-right: 40px;
-}
-
-
-
-div.settings-section-title{
-font-size: large;
-color: #4090c0;
-font-weight: bold;
+#settings_panel button
+{
+    margin-right: 40px;
 }
 
 
-div.settings-section-body{
-margin-left: 20px;
+
+div.settings-section-title
+{
+    font-size: large;
+    font-weight: bold;
+
+    color: #4090c0;
 }
 
-div.buttons{
-margin-left: 40px;
-margin-top: 30px;
+
+div.settings-section-body
+{
+    margin-left: 20px;
+}
+
+div.buttons
+{
+    margin-top: 30px;
+    margin-left: 40px;
 }

@@ -1,102 +1,131 @@
-body.nb-active{
-margin-right: 505px;
+body.nb-active
+{
+    margin-right: 505px;
 }
 
-.nb_sidebar{
-right: 0px;
-top: 0px;
-position: fixed;
-z-index: 2;
+.nb_sidebar
+{
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
 }
 
-.nb_sidebar #login-window {
+.nb_sidebar #login-window
+{
     display: none;
 }
 
-.nb_sidebar > div.nb-viewport {
+.nb_sidebar > div.nb-viewport
+{
     margin-left: 4px;
 }
 
-body.nb-active .nb_sidebar #login-window {
+body.nb-active .nb_sidebar #login-window
+{
     display: block;
 }
 
-body.nb-active .nb_sidebar {
-bottom: 0px;
-background-color: #ffffff;
-width: 500px;
+body.nb-active .nb_sidebar
+{
+    bottom: 0;
+
+    width: 500px;
+
+    background-color: #fff;
 }
 
-.nb-error {
-  cursor: pointer;
-  padding: 8px;
-  box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+.nb-error
+{
+    padding: 8px;
+
+    cursor: pointer;
+
+    box-shadow: inset 0 0 8px rgba(0,0,0,.5);
 }
 
-div.nb_controls_inactive{
-position: absolute;
+div.nb_controls_inactive
+{
+    position: absolute;
 }
 
 
 /* HTML5 comments */
-.nb-comment-highlight {
+.nb-comment-highlight
+{
+    padding: 2px 0 2px 0;
+
     background-color: rgba(255, 204, 1, .2);
-	padding: 2px 0 2px 0;
 }
 
-.nb-comment-highlight.hovered {
-	background-color: rgba(1, 99, 255, 0.2);
+.nb-comment-highlight.hovered
+{
+    background-color: rgba(1, 99, 255, .2);
 }
 
-.nb-comment-highlight.selected {
-	background-color: rgba(1, 99, 255, 0.3);
+.nb-comment-highlight.selected
+{
+    background-color: rgba(1, 99, 255, .3);
 }
 
-.nb_iframe{
-    width: 70%; 
-    height: 500px; 
-    position: fixed; 
-    top: 10%; 
-    left: 10%; 
+.nb_iframe
+{
+    position: fixed;
     z-index: 2;
+    top: 10%;
+    left: 10%;
+
+    width: 70%;
+    height: 500px;
 }
 
-.nb_iframe.nb_hidden{
+.nb_iframe.nb_hidden
+{
     display: none;
 }
 
-#addnote-widget {
+#addnote-widget
+{
     position: absolute;
     top: 300px;
     left: 200px;
+
     display: block;
+
     width: 24px;
     height: 24px;
     padding: 0;
 }
 
-#addnote-widget>button {
-    margin: 0;
-    display:  block;
-    height: 24px;
+#addnote-widget > button
+{
+    display: block;
+
     width: 24px;
+    height: 24px;
+    margin: 0;
     padding: 0;
+
     text-align: center;
     vertical-align: middle;
 }
 
 /** make printing work properly */
-@media print { 
-    .nb_sidebar {
+@media print
+{
+    .nb_sidebar
+    {
         display: none;
     }
-    
-    .nb-comment-highlight {
+
+    .nb-comment-highlight
+    {
         background-color: transparent;
     }
-    
+
     body,
-    body.nb-active {
+    body.nb-active
+    {
         margin: auto;
     }
 }

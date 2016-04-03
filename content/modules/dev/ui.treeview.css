@@ -1,64 +1,80 @@
-span.numfiles{
+span.numfiles
+{
+    font-style: italic;
+
     position: absolute;
     right: 20px;
+
     color: #a0a0a0;
-    font-style: italic;
 }
 
-div.tree{
-background-color: #ffffff !important;
+div.tree
+{
+    background-color: #fff !important;
 }
 
-div.treeView-header {
-background-color: #f5f5f5;
-border-bottom: thin solid #f0f0f0;
-padding: 5px;
-margin-bottom: 5px;
+div.treeView-header
+{
+    margin-bottom: 5px;
+    padding: 5px;
+
+    border-bottom: thin solid #f0f0f0;
+    background-color: #f5f5f5;
 }
 
-div.treeView-header > a {
-margin-left: 15px;
-padding: 3px 5px 3px 5px;
-border: thin solid #c0c0c0;
-background-color: #d7d7d7;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
+div.treeView-header > a
+{
+    margin-left: 15px;
+    padding: 3px 5px 3px 5px;
+
+    border: thin solid #c0c0c0;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+    background-color: #d7d7d7;
 }
 
 
-ins.jstree_icon{
-background-image: url("/content/data/icons/png/theme_dark.png") !important;
- background-repeat: no-repeat !important;
+ins.jstree_icon
+{
+    background-image: url('/content/data/icons/png/theme_dark.png') !important;
+    background-repeat: no-repeat !important;
 }
 
-ins.jstree_icon.home{
-background-position: -420px 0px !important;
+ins.jstree_icon.home
+{
+    background-position: -420px 0 !important;
 }
 
-ins.jstree_icon.admin{
-background-position: -440px 0px !important;
+ins.jstree_icon.admin
+{
+    background-position: -440px 0 !important;
 }
 
-ins.jstree_icon.reg{
-background-position: -40px 0px !important;
+ins.jstree_icon.reg
+{
+    background-position: -40px 0 !important;
 }
 
 /** PDF Files */
-ins.jstree_icon.file1{
-background-position: -60px -2px !important;
+ins.jstree_icon.file1
+{
+    background-position: -60px -2px !important;
 }
 
 /** YOUTUBE Files */
-ins.jstree_icon.file2{
-background-position: -500px -3px !important;
+ins.jstree_icon.file2
+{
+    background-position: -500px -3px !important;
 }
 
 /** HTML5VIDEO Files */
-ins.jstree_icon.file3{
-background-position: -500px -3px !important;
+ins.jstree_icon.file3
+{
+    background-position: -500px -3px !important;
 }
 
 /** HTML5 Files */
-ins.jstree_icon.file4{
-background-position: -480px -2px !important;
+ins.jstree_icon.file4
+{
+    background-position: -480px -2px !important;
 }
