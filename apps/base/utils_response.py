@@ -54,7 +54,10 @@ def getUserId(req):
 
 
 def getUserInfo(req, allow_guest=False, extra_confkey_getter=None): 
-    u_in        = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote("{}")))) or {}
+    try:
+        u_in        = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote("{}")))) or {}
+    except:
+        u_in        = {}
     ckey        = req.GET.get("ckey") or req.COOKIES.get("ckey", None) or (u_in["ckey"] if "ckey" in u_in else None) or (extra_confkey_getter(req) if extra_confkey_getter is not None else None)
     if ckey is None and allow_guest:         
         ckey = auth.getGuestCkey()
