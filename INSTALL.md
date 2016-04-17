@@ -67,11 +67,12 @@ These can be installed as ubuntu packages
     createdb -U <YOUR_POSTGRES_USER> -h localhost <YOUR_NB_DATABASE_NAME>
 
    * Exit from the database
+
     cd apps
     ./manage.py makemigrations # to create the database migrations files
     ./manage.py migrate # To create the database tables from the migrations files
     ./manage.py sqlcustom base | ./manage.py dbshell # to create custom views. If this throws an error, you could simply log in to your postgres database and run the query contained in https://github.com/nbproject/nbproject/blob/dev/apps/base/sql/ensemble.sql 
-   
+
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/[YOUR_VERSION]/main/pg_hba.conf 
           o host    your_db_name       your_db_user       127.0.0.1/0     password
