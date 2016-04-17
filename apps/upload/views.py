@@ -90,7 +90,7 @@ def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
         crop_params = " -crop %sx%s+%s+%s " % (s.w*density/d_ref, s.h*density/d_ref,s.x0*density/d_ref,s.y0*density/d_ref)            
     #now try w/ mu.pdf: 
     src = "%s/%s" % (pdf_dir, id)
-    cmd_rasterize = "mudraw -o %s/%s -r %s -b 8 %s %s" % (output_dir, output_file, density, src, (page+1))            
+    cmd_rasterize = "mudraw -o %s/%s -r %s %s %s" % (output_dir, output_file, density, src, (page+1))
     cmd_crop =  "echo" if crop_params=="" else "nice convert -quality 100  %s  -density %s %s/%s %s/%s" % (crop_params, density,output_dir, output_file, output_dir, output_file)
     cmd = "(%s) && (%s)" % (cmd_rasterize, cmd_crop)
     print cmd
