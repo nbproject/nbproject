@@ -57,7 +57,12 @@ These can be installed as ubuntu packages
     #[If you're deploying a production environmant, use the cmds given in output in order to configure apache]
     #[then configure the cron jobs (cf 5)]
     grunt  # Compiles js and css.  
-    #[optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to whether or not you're using localhost as your  databse server, but if you do use several server, make sure they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
+    #[optional]: If you want to use different slave servers for different parts of the app (i.e. one for serving 
+    # images, one for handling the rpc calls, and one for handling file uploads for instance), edit params in 
+    # content/ui/admin/conf.js: Tell which server(s) the client should use to fetch various pieces data. If you're 
+    # going to use just one server for the whole app, you can safely ignore this. Note that this is unrelated to 
+    # whether or not you're using localhost as your  databse server, but if you do use several server, make sure 
+    # they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
 
 ## 3 - Database Initialization
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')
@@ -68,10 +73,12 @@ These can be installed as ubuntu packages
 
    * Exit from the database
 
+```
     cd apps
     ./manage.py makemigrations # to create the database migrations files
     ./manage.py migrate # To create the database tables from the migrations files
     ./manage.py sqlcustom base | ./manage.py dbshell # to create custom views. If this throws an error, you could simply log in to your postgres database and run the query contained in https://github.com/nbproject/nbproject/blob/dev/apps/base/sql/ensemble.sql 
+```
 
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/[YOUR_VERSION]/main/pg_hba.conf 
@@ -79,11 +86,14 @@ These can be installed as ubuntu packages
      * sudo nano /etc/postgresql/[YOUR_VERSION]/main/postgresql.conf
           listen_addresses = '*' 
    * if you make a mistake:
-          o dropdb  -U nbadmin -h localhost notabene
-          o createdb -U nbadmin -h localhost notabene
+ 
+ ```
+    dropdb  -U nbadmin -h localhost notabene
+    createdb -U nbadmin -h localhost notabene
+```
     At this point you can try your installation using the Django debug server (but never use this in production...): 
-        - From the apps directory:  ./manage.py runserver
-        - In your browser visit http//localhost:8000
+* From the apps directory: ```./manage.py runserver```
+* In your browser visit ```http://localhost:8000```
 
 ## 4 - Extra stuff
   To be able to genereate annotated pdfs: Configure tex so that it allows mpost commands: make sure that 'mpost' is in shell_escape_commands (cf /tex/texmf/texmg.cnf) 
@@ -118,8 +128,8 @@ What is a bit delicate is that database structure may change: You need to add th
 
 **Note:** If you encounter a problem, and would like to restore things as they were before you updated the code and the database:  
 
-    restore your database (cf 7) 
-    revert to the version of the code you were at: git reset --hard HEAD@{1}
+    # restore your database (cf 7) 
+    git reset --hard HEAD@{1} # revert to the version of the code you were at
     apachectl restart
     grunt      
 
