@@ -161,35 +161,45 @@
     _populate_tag_list: function () {
       var self = this;
       var m = self._model;
-      var members = m.get('members', {});
+      var members = m.get('members', {}).items || {};
       var tag_table = $('#tagBoxes');
       var i = 0;
       var row;
-
+      var strcmp = function(s,t) {
+          s=s.toUpperCase();
+          t=t.toUpperCase();
+          if (s<t) {
+              return -1;
+          } else if (s>t) {
+              return 1;
+          } else {
+              return 0;
+          }
+      };
+      var order = Object.keys(members).sort(function(id1,id2) {
+          var m1=members[id1], m2=members[id2];
+          return strcmp((m1.firstname || "")+(m1.lastname || ""),
+                        (m2.firstname || "")+(m2.lastname || ""));
+      });
       // Helper for generating checkbox HTML
       var get_checkbox_html = function (member) {
         return "<input type='checkbox' class='tag_checkbox' name='tags' value='" + member.id + "' id='tag_checkbox_" + member.id + "'/>";
       };
 
-      members = members.items || {};
-      for (var id in members) {
-        if (members.hasOwnProperty(id)) {
+      order.forEach(function(id) {
           var member = members[id];
           if (member.firstname !== null ||
-
           //hack to skip "guest" accounts
-          member.lastname !== null) {
-            var member_html = '<td>' + get_checkbox_html(member) + ' ' + member.firstname + ' ' + member.lastname + '</td>';
-            if (i % 3 === 0) {
-              row = $('<tr>').addClass('data')
-              .appendTo(tag_table);
-            }
-
-            row.append(member_html);
-            i++;
+              member.lastname !== null) {
+              var member_html = '<td>' + get_checkbox_html(member) + ' ' + member.firstname + ' ' + member.lastname + '</td>';
+              if (i % 3 === 0) {
+                  row = $('<tr>').addClass('data')
+                      .appendTo(tag_table);
+              }
+              row.append(member_html);
+              i++;
           }
-        }
-      }
+      });
     },
 
     _render: function (id_item, suppress_focus) {
