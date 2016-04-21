@@ -11,8 +11,8 @@
 
 */
 /*global jQuery:true*/
-(function ($) {
-  /*
+define(['jquery', 'concierge', 'jquery_ui'], function($) {
+ /*
  * The view object
  * options.headless set to false if the view is not meant to be displayed
  */
@@ -214,4 +214,4 @@
     listens: null,
     transitions: null,
   });
-})(jQuery);
+});

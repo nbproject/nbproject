@@ -1,10 +1,9 @@
 /**
  * models.js: Useful models for documents, annotations etc...
- * This module defines the namespace NB.models
+ * This module defines the namespace Models
  * It requires the following modules:
- *        Module
  *        NB
- *        NB.mvc
+ *        MVC
  Author
  cf AUTHORS.txt
 
@@ -13,14 +12,15 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global console:true NB:true */
-(function (GLOB) {
-  //require: mvc;
-  GLOB.models = {};
+define(function(require) {
+  var MVC = require('mvc');
+
+  var Models = {};
 
   /*
    * Collections of Tables relevant to document management
    */
-  GLOB.models.Store = function () {
+  Models.Store = function () {
     this.superclass();
     this.o = {}; //objects
     this.indexes = {}; //existing indexes
@@ -28,10 +28,10 @@
     this.schema = null;
   };
 
-  GLOB.models.Store.prototype = new GLOB.mvc.model();
-  GLOB.models.Store.prototype.constructor = GLOB.models.Store;
-  GLOB.models.Store.prototype.superclass = GLOB.mvc.model;
-  GLOB.models.Store.prototype.create = function (payload, schema) {
+  Models.Store.prototype = new MVC.model();
+  Models.Store.prototype.constructor = Models.Store;
+  Models.Store.prototype.superclass = MVC.model;
+  Models.Store.prototype.create = function (payload, schema) {
     /*
      * schema: null (default behavior) or dictionary {String type_name: Object tabledef}
      * where:
@@ -96,7 +96,7 @@
     }
   };
 
-  GLOB.models.Store.prototype.__get_indexes = function (type_name) {
+  Models.Store.prototype.__get_indexes = function (type_name) {
     //PRE: Schema already defined.
     var self = this,
     indexes = {},
@@ -131,7 +131,7 @@
     return [indexes, rangeindexes];
   };
 
-  GLOB.models.Store.prototype.set = function (type_name, objs) {
+  Models.Store.prototype.set = function (type_name, objs) {
     //PRE: Schema already defined.
     var self = this;
     if (type_name in self.schema) {
@@ -144,7 +144,7 @@
 
   };
 
-  GLOB.models.Store.prototype.add = function (type_name, objs) {
+  Models.Store.prototype.add = function (type_name, objs) {
     //PRE: Schema already defined.
     var self = this;
     var is_update;
@@ -238,7 +238,7 @@
     }
   };
 
-  GLOB.models.Store.prototype.remove = function (type_name, pkeys) {
+  Models.Store.prototype.remove = function (type_name, pkeys) {
     /*
        pkeys can either be
        - in integer (i.e. the primary key of a single object to remove)
@@ -296,7 +296,7 @@
     }
   };
 
-  GLOB.models.Store.prototype.__dropIndexes = function (type_name) {
+  Models.Store.prototype.__dropIndexes = function (type_name) {
     var self = this;
     var tabledef = self.schema[type_name];
     var ref, i, j, refs;
@@ -332,7 +332,7 @@
    *
    * note: to perform a range search, use a rangeIndex constructed with _addRangeIndex
    */
-  GLOB.models.Store.prototype.__addIndex = function (table, o, fieldname) {
+  Models.Store.prototype.__addIndex = function (table, o, fieldname) {
     var self = this;
 
     // '__..." is a reserved family of tablenames so we can add indexes on fields that aren't references.
@@ -376,7 +376,7 @@
    * Same as add index except that this one is used to perform lookups with a range of keys
    *
    */
-  GLOB.models.Store.prototype.__addRangeIndex = function (table, o, fieldname, width) {
+  Models.Store.prototype.__addRangeIndex = function (table, o, fieldname, width) {
     var self = this;
 
     if (!('__ref' in self.schema[o])) {
@@ -412,14 +412,14 @@
     self.rangeindex_info[table] = { fieldname: fieldname, width: width };
   };
 
-  GLOB.models.QuerySet = function (model, type) {
+  Models.QuerySet = function (model, type) {
     this.model = model;
     this.type = type;
     this.__length = null;
     this.items = {};
   };
 
-  GLOB.models.QuerySet.prototype.is_empty = function () {
+  Models.QuerySet.prototype.is_empty = function () {
     var items = this.items;
     for (var i in items) {
       return false;
@@ -428,7 +428,7 @@
     return true;
   };
 
-  GLOB.models.QuerySet.prototype.length = function () {
+  Models.QuerySet.prototype.length = function () {
     if (this.__length !== null) { //speedup if gets called multiple times
       return this.__length;
     }
@@ -443,7 +443,7 @@
     return l;
   };
 
-  GLOB.models.QuerySet.prototype.sort = function (sortfct) {
+  Models.QuerySet.prototype.sort = function (sortfct) {
     //returns an array of sorted objects.
     var output = [];
     var items = this.items;
@@ -455,7 +455,7 @@
     return output;
   };
 
-  GLOB.models.QuerySet.prototype.min = function (attr) {
+  Models.QuerySet.prototype.min = function (attr) {
     // returns pk of record which has the min value for attr
     var x = Number.POSITIVE_INFINITY;
     var items = this.items;
@@ -470,7 +470,7 @@
     return output;
   };
 
-  GLOB.models.QuerySet.prototype.max = function (attr) {
+  Models.QuerySet.prototype.max = function (attr) {
     // returns pk of record which has the max value for attr
     var x = Number.NEGATIVE_INFINITY;
     var output = null;
@@ -485,7 +485,7 @@
     return output;
   };
 
-  GLOB.models.QuerySet.prototype.first = function () {
+  Models.QuerySet.prototype.first = function () {
     /*caution: this doesn't imply any order: it just picks the 1st record it finds*/
     var output = null;
     var items = this.items;
@@ -496,7 +496,7 @@
     return null;
   };
 
-  GLOB.models.QuerySet.prototype.values = function (fieldname) {
+  Models.QuerySet.prototype.values = function (fieldname) {
     var output = {};
     var items = this.items;
     for (var i in items) {
@@ -506,12 +506,12 @@
     return output;
   };
 
-  GLOB.models.QuerySet.prototype.intersect = function (ids, field) {
+  Models.QuerySet.prototype.intersect = function (ids, field) {
     /**
      *  ids: a dictionary (only keys matter, not values), or just a single value
-     */    
+     */
     var model = this.model,
-    output = new GLOB.models.QuerySet(this.model, this.type),
+    output = new Models.QuerySet(this.model, this.type),
     items = this.items,
     new_items = output.items,
     i;
@@ -539,7 +539,7 @@
     return output;
   };
 
-  GLOB.models.QuerySet.prototype.exclude = function (where) {
+  Models.QuerySet.prototype.exclude = function (where) {
     /** Exclude records from a QuerySet
      * - This method alters the QuerySet
      * - The where clauses are ANDed. For instance o.exclude({page:20, author_id:1} will
@@ -564,7 +564,7 @@
       }
 
       o = model.indexes[ref][from][where[i]] || {};
-      o = GLOB.models.__intersect(o_old, o);
+      o = Models.__intersect(o_old, o);
       o_old = o;
     }
 
@@ -587,7 +587,7 @@
     return this;
   };
 
-  GLOB.models.__intersect = function (o1, o2) {
+  Models.__intersect = function (o1, o2) {
     if (o1 == null) { return o2 || {};}
 
     if (o2 == null) {   return o1 || {};}
@@ -600,11 +600,11 @@
     return o;
   };
 
-  GLOB.models.Store.prototype.get = function (from, where) {
+  Models.Store.prototype.get = function (from, where) {
     var self = this;
     var o_old = null;
     var o = {};
-    var output = new GLOB.models.QuerySet(self, from);
+    var output = new Models.QuerySet(self, from);
     var f = this;
     var ref;
     var references = {};
@@ -648,7 +648,7 @@
         o =  self.indexes[ref][from][v] || {};
       }
 
-      o = GLOB.models.__intersect(o_old, o);
+      o = Models.__intersect(o_old, o);
       o_old = o;
     }
 
@@ -664,4 +664,6 @@
 
     return output;
   };
-})(NB);
+
+  return Models;
+});

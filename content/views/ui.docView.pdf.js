@@ -12,7 +12,12 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true*/
-(function ($) {
+define(function(require) {
+  var concierge       = require('concierge'),
+      view            = require('view'),
+      $               = require('jquery'),
+      drawable        = require('drawable');
+
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {
       $.ui.view.prototype._create.call(this);
@@ -44,7 +49,7 @@
       }
       /*
        * From now on, we assume the event is directed to this view !
-       */       
+       */
       switch (evt.type){
       case 'page_peek':
         this._page =  parseInt(evt.value, 10);
@@ -620,4 +625,4 @@
       select_thread: null,
     },
   };
-})(jQuery);
+});

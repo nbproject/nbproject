@@ -5,7 +5,11 @@
  *
 */
 /*global jQuery:true NB$:true */
-(function ($) {
+define(function(require) {
+  var concierge       = require('concierge'),
+      view            = require('view'),
+      $               = require('jquery');
+
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {
@@ -143,4 +147,4 @@
       onCancel: null,
     },
   };
-})(jQuery);
+});
