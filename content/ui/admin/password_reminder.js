@@ -11,15 +11,18 @@ License
  */
 /*global NB$:true  NB:true*/
 
-(function (GLOB) {
-  //require auth
+define(function(require) {
+  var Pers            = require('pers'),
+      Dom             = require('dom'),
+      concierge       = require('concierge');
+
   if ('NB$' in window) {
     var $ = NB$;
   }
 
-  GLOB.lost = {};
+  var Lost = {};
 
-  GLOB.lost.onLostButton = function () {
+  Lost.onLostButton = function () {
     var cb = function (p) {
       var payload = p.payload;
       $('.email').text(payload.email);
@@ -34,4 +37,5 @@ License
 
     $.post('/pdf4/rpc', { f: 'passwordLost', cid:0, a: JSON.stringify({ email: $('#email')[0].value }) }, cb, 'json');
   };
-})(NB);
+  return Lost;
+});

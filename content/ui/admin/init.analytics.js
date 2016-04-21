@@ -1,46 +1,6 @@
 /*global NB$:true NB:true Page:true Document:true PageView:true Backbone:true _:true jQuery:true */
 
-(function (GLOB) {
-  if ('NB$' in window) {
-    var $ = NB$;
-  }
-
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
-
-  GLOB.pers.createStore = function () {
-    GLOB.pers.store = new GLOB.models.Store();
-  };
-})(NB);
-
-var Page = Backbone.Model.extend({
-  defaults: {
-    num_annotations: 0,
-    num_questions: 0,
-  },
-});
-
-var Highlight = Backbone.Model.extend();
-
-var PageCollection = Backbone.Collection.extend({
-  model: Page,
-
-  sort_key: 'page_num',
-
-  comparator: function (page) {
-    if (this.sort_key === 'num_annotations' || this.sort_key === 'num_questions' || this.sort_key === 'num_threads' || this.sort_key === 'num_participants') {
-      // decreasing order
-      return -page.get(this.sort_key);
-    } else {
-      return page.get(this.sort_key);
-    }
-  },
-
-  sortByField: function (fieldName) {
-    this.sort_key = fieldName;
-    this.sort();
-  },
-
-});
+var $, $str, Page, Highlight, PageCollection;
 
 /// COLOR HELPERS
 // from http://css-tricks.com/snippets/javascript/lighten-darken-color/
@@ -96,3 +56,53 @@ function rgb2hex(rgb) {
   rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
   return '#' + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 }
+
+define(function(require) {
+  var $               = require('jquery'),
+      concierge       = require('concierge'),
+      Backbone        = require('backbone'),
+      Models          = require('models'),
+      Pers            = require('pers');
+
+  if ('NB$' in window) {
+    $ = NB$;
+  }
+
+  $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+
+  Pers.createStore = function () {
+    Pers.store = new Models.Store();
+  };
+
+  Page = Backbone.Model.extend({
+    defaults: {
+      num_annotations: 0,
+      num_questions: 0,
+    },
+  });
+
+  Highlight = Backbone.Model.extend();
+
+  PageCollection = Backbone.Collection.extend({
+    model: Page,
+
+    sort_key: 'page_num',
+
+    comparator: function (page) {
+      if (this.sort_key === 'num_annotations' || this.sort_key === 'num_questions' || this.sort_key === 'num_threads' || this.sort_key === 'num_participants') {
+        // decreasing order
+        return -page.get(this.sort_key);
+      } else {
+        return page.get(this.sort_key);
+      }
+    },
+
+    sortByField: function (fieldName) {
+      this.sort_key = fieldName;
+      this.sort();
+    },
+
+  });
+
+
+});
