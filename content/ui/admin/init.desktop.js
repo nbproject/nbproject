@@ -37,7 +37,7 @@
 
       // Add breadcrumb
       $(".nb-widget-header").breadcrumb({
-        trail: [{name: "Home", rel: "ensemble", id_item: 0}],
+        trail: [{name: "Home", rel: "ensemble", id_item: null}],
         admin: GLOB.pers.admin});
       $(".nb-widget-header").breadcrumb("set_model", GLOB.pers.store);
 
@@ -96,10 +96,17 @@
             });
             var ensemble_data = GLOB.pers.store.o.ensemble;
             // Update breadcrumb
-            $(".nb-widget-header").breadcrumb({trail: [
-              {name: "Home", rel: "ensemble", id_item: 0},
-              {name: ensemble_data[evt.value].name, rel: "ensemble", id_item: evt.value}
-            ]});
+            if(evt.value === null || evt.value === undefined ) { // home
+              $(".nb-widget-header").breadcrumb({trail: [
+                {name: "Home", rel: "ensemble", id_item: null},
+              ]});
+            } else {
+              $(".nb-widget-header").breadcrumb({trail: [
+                {name: "Home", rel: "ensemble", id_item: null},
+                {name: ensemble_data[evt.value].name, rel: "ensemble", id_item: evt.value}
+              ]});
+            }
+
           },
 
           folder: function(evt) {
@@ -111,7 +118,7 @@
             var id_ensemble = folder_data[evt.value].id_ensemble;
 
             var trail = [
-              {name: "Home", rel: "ensemble", id_item: 0},
+              {name: "Home", rel: "ensemble", id_item: null},
               {name: ensemble_data[id_ensemble].name, rel: "ensemble", id_item: id_ensemble}
             ];
 
@@ -135,7 +142,7 @@
 
             // Update breadcrumb
             $(".nb-widget-header").breadcrumb({trail: trail});
-          }
+          },
         },
         views: {
     v1:{ data: treeview },
