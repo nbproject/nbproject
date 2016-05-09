@@ -466,7 +466,7 @@
             msg.y0 = 0;
             msg.page = self._sel ? drawingarea.attr('page') : 0;
             msg.duration = self._sel ? Math.floor(parseFloat(durationBox.value) * self._SEC_MULT_FACTOR) : 0;
-            msg.pause = self._sel ? $('#checkbox_pause')[0].checked : 0;
+            msg.pause = self._sel && self._admin ? $('#checkbox_pause')[0].checked : 0;
           break;
           }
           component_name =  'note_creator';
