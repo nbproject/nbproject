@@ -1,0 +1,18 @@
+div.filterWizardEmoticon .filter-number {
+    width: 3em;
+}
+
+div.filterWizardEmoticon .input-error {
+    border: 2px solid #F00;
+}
+
+div.filterWizardEmoticon .error-message {
+    font-weight: bold;
+    color: #C11;
+}
+
+div.filterWizardEmoticon .filterClicked, .filterUnclicked {
+    height:47px;
+    width:47px;
+    margin:10px;
+}
