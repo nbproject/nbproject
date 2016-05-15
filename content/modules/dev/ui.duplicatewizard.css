@@ -1,17 +1,13 @@
-.wizard-step
-{
+.wizard-step {
     display: none;
 }
 
-.wizard-step.current
-{
+.wizard-step.current {
     display: block;
 }
 
-.wizard-step .treeview
-{
-    overflow-y: scroll !important;
-
-    width: 450px;
+.wizard-step .treeview {
     height: 100px;
+    overflow-y: scroll !important;
+    width: 450px;
 }

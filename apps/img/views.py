@@ -76,14 +76,14 @@ def serve_doc(req, id_source, annotated=False):
         except UnicodeEncodeError: 
             filename = id_source
         filename = "%s%s%s" % (filename, qual, ".pdf")        
-        response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename, )
+        response['Content-Disposition'] = "attachment; filename=%s" % (filename, )
         signals.file_downloaded.send("file", req=req, uid=uid, id_source=id_source, annotated=annotated)
         return response
     except Http404: 
         logging.info("missing "+id_source)
         return HttpResponse("Error - No such file: #%s %s" % (id_source, qual) )
 
-def add_allcomments_sheet(source_id, workbook): 
+def add_allcomments_sheet(source_id, workbook):
     import datetime
     epoch = datetime.datetime.utcfromtimestamp(0)
     comments = M.Comment.objects.select_related("location").filter(deleted=False, moderated=False, type__gt=1, location__source__id=source_id).order_by("location__page", "location__id", "id")
