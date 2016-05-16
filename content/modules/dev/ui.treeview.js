@@ -132,7 +132,7 @@
           icon:'jstree_icon home',
         },
         children: [],
-        attr: { title: 'Home',  rel: 'ensemble', id_item: 0 },
+        attr: { title: 'Home',  rel: 'ensemble', id_item: null },
       });
 
       data.sort(self._f_sort_tree);
