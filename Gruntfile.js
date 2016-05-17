@@ -37,7 +37,9 @@ module.exports = function (grunt) {
     return output;
   };
 
+  var LIB_DIR = 'content/lib/';
   var MODULE_DIR = 'content/modules/';
+  var VIEWS_DIR = 'content/views/';
   var UI_DIR = 'content/ui/admin/';
   var UITEST_DIR = 'content/ui/test/';
   var DEST_DIR = 'content/compiled/';
@@ -45,138 +47,159 @@ module.exports = function (grunt) {
   /* MODS are modules that serve as building blocks, without being built themselves */
   var MODS = {};
   MODS.CONTEXTMENU = {
-    src_js: addPrefix(MODULE_DIR, ['contextmenu/jquery.ui.position.js', 'contextmenu/jquery.contextMenu.js']),
-    src_css: addPrefix(MODULE_DIR, ['contextmenu/jquery.contextMenu.css']),
+    src_js: addPrefix(LIB_DIR, ['contextmenu/jquery.ui.position.js', 'contextmenu/jquery.contextMenu.js']),
+    src_css: addPrefix(LIB_DIR, ['contextmenu/jquery.contextMenu.css']),
   };
   MODS.FILTERWIZARD = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.filterwizard.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.filterwizard.css']),
+    src_js: addPrefix(VIEWS_DIR, ['ui.filterwizard.js']),
+    src_css: addPrefix(VIEWS_DIR, ['ui.filterwizard.css']),
   };
   MODS.DUPLICATEWIZARD = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.duplicatewizard.js', 'dev/ui.threadselect.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.duplicatewizard.css', 'dev/ui.threadselect.css']),
+    src_js: addPrefix(VIEWS_DIR, ['ui.duplicatewizard.js', 'ui.threadselect.js']),
+    src_css: addPrefix(VIEWS_DIR, ['ui.duplicatewizard.css', 'ui.threadselect.css']),
   };
   MODS.TREEVIEW = {
-    src_js: addPrefix(MODULE_DIR, ['jstree/jquery.jstree.js', 'dev/ui.treeview.js']),
-    src_css: addPrefix(MODULE_DIR, ['jstree/themes/default/style.css', 'dev/ui.treeview.css']),
+    src_js: [].concat(addPrefix(LIB_DIR, ['jstree/jquery.jstree.js']),
+                      addPrefix(VIEWS_DIR, ['ui.treeview.js'])),
+    src_css: [].concat(addPrefix(LIB_DIR, ['jstree/themes/default/style.css']),
+                       addPrefix(VIEWS_DIR, ['ui.treeview.css'])),
   };
   MODS.FILESVIEW = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
-      addPrefix(MODULE_DIR, ['tablesorter/jquery.tablesorter.min.js', 'calendrical/jquery.calendrical.js', 'dev/ui.filesview.js'])),
+      addPrefix(LIB_DIR, ['tablesorter/jquery.tablesorter.min.js', 'calendrical/jquery.calendrical.js']),
+      addPrefix(VIEWS_DIR, ['ui.filesview.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
-      addPrefix(MODULE_DIR, ['tablesorter/style.css', 'calendrical/calendrical.css', 'dev/ui.filesview.css'])),
+      addPrefix(LIB_DIR, ['tablesorter/style.css', 'calendrical/calendrical.css']),
+      addPrefix(VIEWS_DIR, ['ui.filesview.css'])),
   };
   MODS.DOCVIEW = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.drawable4.js', 'dev/ui.docView.pdf.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css']),
+    src_js: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable4.js']),
+      addPrefix(VIEWS_DIR, ['ui.docView.pdf.js'])),
+    src_css: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable.css']),
+      addPrefix(VIEWS_DIR, ['ui.docView.css'])),
   };
   MODS.DOCVIEW_COLLAGE = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.drawable4.js', 'dev/ui.docView.collage.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css']),
+    src_js: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable4.js']),
+      addPrefix(VIEWS_DIR, ['ui.docView.collage.js'])),
+     src_css: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable.css']),
+      addPrefix(VIEWS_DIR, ['ui.docView.css'])),
   };
   MODS.DOCVIEW_SPREADSHEET = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.drawable4.js', 'dev/ui.docView.spreadsheet.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css']),
+    src_js: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable4.js']),
+    addPrefix(VIEWS_DIR, ['ui.docView.spreadsheet.js'])),
+    src_css: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable.css']),
+    addPrefix(VIEWS_DIR, ['ui.docView.css'])),
   };
   MODS.DOCVIEW_YOUTUBE = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.drawable4.js', 'dev/ui.docView.video.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.drawable.css', 'dev/ui.docView.css']),
+    src_js: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable4.js']),
+      addPrefix(VIEWS_DIR, ['ui.docView.video.js'])),
+    src_css: [].concat(
+      addPrefix(MODULE_DIR, ['ui.drawable.css']),
+      addPrefix(VIEWS_DIR, ['ui.docView.css'])),
   };
 
   MODS.NOTEPANEVIEW_DOC = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
       MODS.FILTERWIZARD.src_js,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.doc.js'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.doc.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
       MODS.FILTERWIZARD.src_css,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.css'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.css'])),
   };
   MODS.NOTEPANEVIEW_COLLAGE = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.collage.js'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.collage.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.css'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.css'])),
   };
   MODS.NOTEPANEVIEW_SPREADSHEET = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
-      addPrefix(MODULE_DIR, ['dateformat/date.format.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.spreadsheet.js'])),
+      addPrefix(LIB_DIR, ['dateformat/date.format.js']),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.spreadsheet.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.css'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.css'])),
   };
   MODS.NOTEPANEVIEW_YOUTUBE = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.video.js'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.video.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
-      addPrefix(MODULE_DIR, ['dev/ui.notepaneView.css'])),
+      addPrefix(VIEWS_DIR, ['ui.notepaneView.css'])),
   };
 
   MODS.THREADVIEW = {
     src_js: [].concat(
       MODS.CONTEXTMENU.src_js,
-      addPrefix(MODULE_DIR, ['dateformat/date.format.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.threadview.js'])),
+      addPrefix(LIB_DIR, ['dateformat/date.format.js']),
+      addPrefix(VIEWS_DIR, ['ui.threadview.js'])),
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
-      addPrefix(MODULE_DIR, ['dev/ui.threadview.css'])),
+      addPrefix(VIEWS_DIR, ['ui.threadview.css'])),
   };
 
   MODS.EDITORVIEW = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.editorview.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.editorview.css']),
+    src_js: addPrefix(VIEWS_DIR, ['ui.editorview.js']),
+    src_css: addPrefix(VIEWS_DIR, ['ui.editorview.css']),
   };
 
   MODS.RANGY = {
-    src_js: addPrefix(MODULE_DIR + 'rangy/', ['rangy-core.js', 'rangy-classapplier.js', 'rangy-textrange.js', 'termfix.js']),
+    src_js: addPrefix(LIB_DIR + 'rangy/', ['rangy-core.js', 'rangy-classapplier.js', 'rangy-textrange.js', 'termfix.js']),
     src_css: [],
   };
   MODS.SPREADSHEETVIEW = {
-    src_js: addPrefix(MODULE_DIR, ['dev/ui.spreadsheetView1.js']),
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.spreadsheetView1.css']),
+    src_js: addPrefix(VIEWS_DIR, ['ui.spreadsheetView1.js']),
+    src_css: addPrefix(VIEWS_DIR, ['ui.spreadsheetView1.css']),
   };
 
   MODS.DOCANALYTICSVIEW = {
-    src_css: addPrefix(MODULE_DIR, ['dev/ui.docAnalyticsView.css']),
+    src_css: addPrefix(VIEWS_DIR, ['ui.docAnalyticsView.css']),
   };
 
   MODS.BREADCRUMB = {
-    src_js: addPrefix(MODULE_DIR,["dev/ui.breadcrumb.js" ]),
-    src_css:  addPrefix(MODULE_DIR, ["dev/ui.breadcrumb.css"])
+    src_js: addPrefix(MODULE_DIR,['ui.breadcrumb.js']),
+    src_css: addPrefix(MODULE_DIR, ['ui.breadcrumb.css'])
   };
 
   /* TARGETS are modules that are built (but they can also serve as building blocks) */
   var TARGETS = {};
   TARGETS.API =  {
-    src_js: addPrefix(MODULE_DIR, ['NB.js', 'auth.js',  'dom.js', 'mvc.js', 'dev/models.js']),
+    src_js: addPrefix(MODULE_DIR, ['NB.js', 'auth.js',  'dom.js', 'mvc.js', 'models.js']),
     dest_js: DEST_DIR + 'apidev_NB.js',
   };
 
   TARGETS.EMBED = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       MODS.NOTEPANEVIEW_DOC.src_js,
       MODS.THREADVIEW.src_js,
       MODS.EDITORVIEW.src_js,
       TARGETS.API.src_js,
       MODS.RANGY.src_js,
-      addPrefix(MODULE_DIR, ['wgxpath/wgxpath.install.js']),
-      addPrefix(MODULE_DIR + 'wgxpath/', ['termfix.js']),
+      addPrefix(LIB_DIR, ['wgxpath/wgxpath.install.js', 'wgxpath/termfix.js']),
       addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/docviewHtml5.js', 'dev/buildEmbed.js'])),
+      addPrefix(MODULE_DIR, ['pers.js', 'docviewHtml5.js', 'buildEmbed.js'])),
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css', 'dev/buildEmbed.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
+      addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
@@ -187,20 +210,22 @@ module.exports = function (grunt) {
 
   TARGETS.DESKTOP = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
+      addPrefix(MODULE_DIR, ['ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       MODS.FILTERWIZARD.src_js,
       MODS.DUPLICATEWIZARD.src_js,
       MODS.TREEVIEW.src_js,
       MODS.FILESVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js', 'dev/files.js']),
+      addPrefix(MODULE_DIR, ['pers.js', 'files.js']),
       addPrefix(UI_DIR, ['init.desktop.js', 'launch.js']),
       MODS.BREADCRUMB.src_js
     ),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -214,10 +239,11 @@ module.exports = function (grunt) {
 
   TARGETS.LOGIN = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'dev/ui.concierge.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['login.js'])),
     src_css: [].concat(
       addPrefix(UI_DIR, ['template.css'])),
@@ -227,18 +253,19 @@ module.exports = function (grunt) {
 
   TARGETS.PDFVIEWER = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       MODS.DOCVIEW.src_js,
       MODS.NOTEPANEVIEW_DOC.src_js,
       MODS.THREADVIEW.src_js,
       MODS.EDITORVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.pdfviewer.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW.src_css,
       MODS.NOTEPANEVIEW_DOC.src_css,
@@ -250,15 +277,16 @@ module.exports = function (grunt) {
 
   TARGETS.DOCANALYTICS = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['backbone/underscore.js', 'backbone/backbone.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'ui.concierge.js']),
+      addPrefix(LIB_DIR, ['underscore/underscore.js', 'backbone/backbone.js']),
+      addPrefix(MODULE_DIR, ['ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.analytics.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
     dest_js: DEST_DIR + 'docanalytics_NB.js',
@@ -267,18 +295,19 @@ module.exports = function (grunt) {
 
   TARGETS.YOUTUBEVIEWER = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       MODS.DOCVIEW_YOUTUBE.src_js,
       MODS.NOTEPANEVIEW_YOUTUBE.src_js,
       MODS.THREADVIEW.src_js,
       MODS.EDITORVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.youtubeviewer.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_YOUTUBE.src_css,
       MODS.NOTEPANEVIEW_YOUTUBE.src_css,
@@ -290,18 +319,19 @@ module.exports = function (grunt) {
 
   TARGETS.COLLAGE = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       MODS.DOCVIEW_COLLAGE.src_js,
       MODS.NOTEPANEVIEW_COLLAGE.src_js,
       MODS.THREADVIEW.src_js,
       MODS.EDITORVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.collage.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_COLLAGE.src_css,
       MODS.NOTEPANEVIEW_COLLAGE.src_css,
@@ -313,10 +343,11 @@ module.exports = function (grunt) {
 
   TARGETS.LOGOUT = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'dev/ui.concierge.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['logout.js'])),
     src_css: [],
     dest_js: DEST_DIR + 'logout_NB.js',
@@ -324,10 +355,11 @@ module.exports = function (grunt) {
 
   TARGETS.PASSWORD = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'dev/ui.concierge.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['password_reminder.js'])),
     src_css: [],
     dest_js: DEST_DIR + 'password_reminder_NB.js',
@@ -335,18 +367,19 @@ module.exports = function (grunt) {
 
   TARGETS.SPREADSHEET = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       MODS.SPREADSHEETVIEW.src_js,
       MODS.NOTEPANEVIEW_SPREADSHEET.src_js,
       MODS.DOCVIEW_SPREADSHEET.src_js,
       MODS.EDITORVIEW.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.spreadsheet.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.SPREADSHEETVIEW.src_css,
       MODS.NOTEPANEVIEW_SPREADSHEET.src_css,
@@ -358,24 +391,26 @@ module.exports = function (grunt) {
 
   TARGETS.EMBEDOPENID = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'dev/ui.concierge.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['embedopenid.js'])),
     dest_js: DEST_DIR + 'embedopenid_NB.js',
   };
 
   TARGETS.SETTINGS = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js', 'ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['your_settings.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
     dest_js: DEST_DIR + 'settings_NB.js',
     dest_css: DEST_DIR + 'settings.css',
@@ -383,15 +418,17 @@ module.exports = function (grunt) {
 
   TARGETS.DOCANALYTICS = {
     src_js: [].concat(
-      addPrefix(MODULE_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js', 'dev/ui.concierge.js']),
-      addPrefix(MODULE_DIR, ['backbone/underscore.js', 'backbone/backbone.js']),
-      addPrefix(MODULE_DIR, ['dev/ui.view.js', 'dev/ui.perspective.js']),
+      addPrefix(LIB_DIR, ['jquery/1.8.3/jquery.min.js', 'jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js']),
+      addPrefix(MODULE_DIR, ['ui.concierge.js']),
+      addPrefix(LIB_DIR, ['underscore/underscore.js', 'backbone/backbone.js']),
+      addPrefix(MODULE_DIR, ['ui.view.js', 'ui.perspective.js']),
       TARGETS.API.src_js,
       addPrefix(UI_DIR, ['conf.js', 'conf_local.js']),
-      addPrefix(MODULE_DIR, ['dev/pers.js']),
+      addPrefix(MODULE_DIR, ['pers.js']),
       addPrefix(UI_DIR, ['init.analytics.js', 'launch.js'])),
     src_css: [].concat(
-      addPrefix(MODULE_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css', 'ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'dev/ui.view.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
     dest_js: DEST_DIR + 'docanalytics_NB.js',
@@ -442,7 +479,7 @@ module.exports = function (grunt) {
           ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */',
     },
     jshint: {
-      src: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js', 'content/modules/dev/*.js'],
+      src: ['Gruntfile.js', 'grunt.js', 'content/ui/admin/*.js'],
       options: {
         globals: {
           jQuery: false,

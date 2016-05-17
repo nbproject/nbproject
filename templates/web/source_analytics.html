@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
 <!--
-   Author: cf AUTHORS.txt 
+   Author: cf AUTHORS.txt
    License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
    MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
   -->
@@ -30,7 +30,7 @@
       <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
       </div>
     </script>
-    <script type="text/javascript" src="/content/modules/dev/ui.docAnalyticsBackboneViews.js"></script>
+    <script type="text/javascript" src="/content/modules/ui.docAnalyticsBackboneViews.js"></script>
     <script>
       // For logging
       window.onload = function() {
@@ -76,7 +76,7 @@
             var pages = {{ pages|safe }};
             var highlights = {{ highlights|safe }};
             var doc = new PageCollection();
-            
+
             var orientation;
             if ({{ source.h }} > {{ source.w }}) {
               orientation = "portrait";
@@ -87,7 +87,7 @@
             var page;
 
             for (p in pages) {
-              page = new Page(pages[p]);  
+              page = new Page(pages[p]);
 
               // TODO: better way to get the source ID/ckey?
               var img_server = "http://nb.mit.edu";
@@ -122,7 +122,7 @@
                 $(el).css("opacity", o);
                 if (val < 10) {
                   newC = LightenDarkenColor(c, 10);
-                } 
+                }
                 else if (val < 20) {
                   // newC = LightenDarkenColor(c, -20);
                 } else if (val < 30) {
@@ -133,7 +133,7 @@
                 $(el).css("color", newC);
               }
             });
-            
+
             /////////////// event handlers
 
             $("#sort-by").on('change', function() {
@@ -162,7 +162,7 @@
               },
               mouseleave: function() {
                 $('.pg-preview').hide();
-              }              
+              }
             });
 
             $(".page-preview").on({
@@ -176,7 +176,7 @@
               }
             });
 
-            // to avoid flicker when preview overlaps page number 
+            // to avoid flicker when preview overlaps page number
             $(".pg-preview").on({
               mouseenter: function() {
                 $('.pg-preview').show();
@@ -191,7 +191,7 @@
         var chart_stats = {{ chart_stats|safe }};
         google.load("visualization", "1", {packages:["corechart"]});
         google.setOnLoadCallback(drawChart);
-        
+
         function drawChart() {
           var data = new google.visualization.DataTable();
           data.addColumn('string','Page');
@@ -206,7 +206,7 @@
           var view = new google.visualization.DataView(data);
           var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
 
-          // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/ 
+          // Togglable series based on Andrew Gallant's code: http://jsfiddle.net/asgallant/6gz2Q/60/
           var columns = [];
           // display these data series by default
           var defaultSeries = [1, 2, 3, 4];
@@ -245,7 +245,7 @@
                   }
               }
           }
-          
+
           var options = {
               series: series,
               height: 300,
@@ -255,7 +255,7 @@
                       1: {logScale: false,
                           title: "min"}},
           }
-          
+
           function showHideSeries () {
               var sel = chart.getSelection();
               // if selection length is 0, we deselected an element
@@ -265,7 +265,7 @@
                       var col = sel[0].column;
                       if (typeof(columns[col]) == 'number') {
                           var src = columns[col];
-                          
+
                           // hide the data series
                           columns[col] = {
                               label: data.getColumnLabel(src),
@@ -275,13 +275,13 @@
                                   return null;
                               }
                           };
-                          
+
                           // grey out the legend entry
                           series[src - 1].color = '#CCCCCC';
                       }
                       else {
                           var src = columns[col].sourceColumn;
-                          
+
                           // show the data series
                           columns[col] = src;
                           series[src - 1].color = null;
@@ -293,9 +293,9 @@
                   }
               }
           }
-          
+
           google.visualization.events.addListener(chart, 'select', showHideSeries);
-          
+
           // create a view with the default columns
           var view = new google.visualization.DataView(data);
           view.setColumns(columns);
@@ -318,7 +318,7 @@
             },
             mouseleave: function() {
               $('.pg-preview').hide();
-            }              
+            }
           });
         }
     })(jQuery);
@@ -330,13 +330,13 @@
     <div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>
     <div class="main-wrapper">
       <div class="links">
-        <a class="guide" target="_blank" href="https://github.com/nbproject/nbproject/wiki/Analytics-Tools-for-Instructors">Guide</a> | 
+        <a class="guide" target="_blank" href="https://github.com/nbproject/nbproject/wiki/Analytics-Tools-for-Instructors">Guide</a> |
         <a class="feedback" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Feedback</a>
-      </div>    
+      </div>
       <h1><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h1>
       <div class="panel chart">
         <div class="control-bar">
-          <label>Page Stats</label> 
+          <label>Page Stats</label>
           <span class="tip">
             Click metric names to toggle bars on and off. Hover over page numbers for page previews.
           </span>
@@ -355,7 +355,7 @@
               <option value="annotations">Pages with comments</option>
               <option value="questions">Pages with replies requested</option>
             </select>
-          
+
             <label>Sort by: </label>
             <select id="sort-by">
               <option value="page_num">Page number</option>
