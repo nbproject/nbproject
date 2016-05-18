@@ -2,12 +2,9 @@
  * login.js
  * This module defines the namespace NB.lost
  * It requires the following modules:
- *        Module
  *        NB
- *        NB.auth
- *        NB.rpc
+ *        Auth
  *        jquery
- *
  *
  Author
  cf AUTHORS.txt
@@ -18,13 +15,18 @@
 
 */
 /*global $:true NB$:true NB:true $:true */
-(function (GLOB) {
+define(function(require) {
+  var Dom             = require('dom'),
+      Pers            = require('pers'),
+      Auth            = require('auth'),
+      concierge       = require('concierge');
+
   //require auth
   if ('NB$' in window) {
     var $ = NB$;
   }
 
-  GLOB.pers.init = function () {
+  Pers.init = function () {
     $('#auth_fragment').append($.concierge.get_component('get_login_dialog_markup')());
     $('#loginbutton_classic').append($('#auth_submit').css('min-width', '80px'));
     $('#auth_submit').click(function () {
@@ -38,8 +40,8 @@
       };
       $.concierge.get_component('login_user')(payload, function (p) {
         if (p.ckey !== null) {
-          GLOB.auth.set_cookie('ckey', p.ckey);
-          var nextpage = GLOB.pers.params.next || '/';
+          Auth.set_cookie('ckey', p.ckey);
+          var nextpage = Pers.params.next || '/';
           document.location = 'http://' + document.location.host + nextpage;
           $.I('Welcome !');
         }        else {
@@ -58,10 +60,10 @@
   (function () {
     var myJquery = NB$ || $;
     myJquery(function () {
-      GLOB.pers.params = GLOB.dom.getParams();
-      GLOB.pers.admin = false;
-      GLOB.pers.preinit(false);
+      Pers.params = Dom.getParams();
+      Pers.admin = false;
+      Pers.preinit(false);
     });
   })();
 
-})(NB);
+});

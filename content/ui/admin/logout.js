@@ -11,9 +11,13 @@
 */
 /*global NB:true  NB$:true $:true*/
 
-(function (GLOB) {
-  GLOB.pers.init = function () {
-    var nextpage = GLOB.pers.params.next;
+define(function(require) {
+  var Pers            = require('pers'),
+      Dom             = require('dom'),
+      concierge       = require('concierge');
+
+  Pers.init = function () {
+    var nextpage = Pers.params.next;
     if (nextpage) {
       document.location = 'http://' + document.location.host + nextpage;
     }
@@ -21,8 +25,8 @@
 
   var myJquery = NB$ || $;
   myJquery(function () {
-    GLOB.pers.params = GLOB.dom.getParams();
-    GLOB.pers.admin = false;
-    GLOB.pers.preinit(false);
+    Pers.params = Dom.getParams();
+    Pers.admin = false;
+    Pers.preinit(false);
   });
-})(NB);
+});
