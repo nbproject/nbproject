@@ -339,10 +339,10 @@ span.reply-rated-as
 
 .sort-option.asc > .arrow
 {
-    background-image: url('/content/modules/tablesorter/asc.gif');
+    background-image: url('/content/lib/tablesorter/asc.gif');
 }
 
 .sort-option.desc > .arrow
 {
-    background-image: url('/content/modules/tablesorter/desc.gif');
+    background-image: url('/content/lib/tablesorter/desc.gif');
 }
