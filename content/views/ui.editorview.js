@@ -264,20 +264,20 @@ define(function(require) {
       var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
       var section_tag_option = ''; //hack to hide tags
 
-      var emoticon1 = "<input title='curious' onclick='but_toogle(this,"+'"curious"'+");' type='image' id='curiousId' src='/content/views/emoticons/curious.png' class='unclicked' />";
-      var emoticon2 = "<input title='confused' onclick='but_toogle(this,"+'"confused"'+");' type='image' id='confusedId' src='/content/views/emoticons/confused.png' class='unclicked' />";
-      var emoticon3 = "<input title='useful' onclick='but_toogle(this,"+'"useful"'+");' type='image' id='usefulId' src='/content/views/emoticons/useful.png' class='unclicked' />";
-      var emoticon4 = "<input title='interested' onclick='but_toogle(this,"+'"interested"'+");' type='image' id='interestedId' src='/content/views/emoticons/interested.png' class='unclicked' />";
-      var emoticon5 = "<input title='frustrated' onclick='but_toogle(this,"+'"frustrated"'+");' type='image' id='frustratedId' src='/content/views/emoticons/frustrated.png' class='unclicked' />";
-      var emoticon6 = "<input title='help' onclick='but_toogle(this,"+'"help"'+");' type='image' id='helpId' src='/content/views/emoticons/help.png' class='unclicked' />";
-      var emoticon7 = "<input title='question' onclick='but_toogle(this,"+'"question"'+");' type='image' id='questionId' src='/content/views/emoticons/questionMark.png' class='unclicked' />";
-      var emoticon8 = "<input title='idea' onclick='but_toogle(this,"+'"idea"'+");' type='image' id='ideaId' src='/content/views/emoticons/idea.png' class='unclicked' />";
+      var emoticon1 = "<img title='curious' onclick='but_toogle(this,"+'"curious"'+");' id='curiousId'  class='emoticon curiousUnclicked' />";
+      var emoticon2 = "<img title='confused' onclick='but_toogle(this,"+'"confused"'+");' id='confusedId'  class='emoticon confusedUnclicked' />";
+      var emoticon3 = "<img title='useful' onclick='but_toogle(this,"+'"useful"'+");' id='usefulId'  class='emoticon usefulUnclicked' />";
+      var emoticon4 = "<img title='interested' onclick='but_toogle(this,"+'"interested"'+");' id='interestedId'  class='emoticon interestedUnclicked' />";
+      var emoticon5 = "<img title='frustrated' onclick='but_toogle(this,"+'"frustrated"'+");' type='image' id='frustratedId'  class='emoticon frustratedUnclicked' />";
+      var emoticon6 = "<img title='help' onclick='but_toogle(this,"+'"help"'+");' id='helpId'  class='emoticon helpUnclicked' />";
+      var emoticon7 = "<img title='question' onclick='but_toogle(this,"+'"question"'+");' id='questionId'  class='emoticon questionUnclicked' />";
+      var emoticon8 = "<img title='idea' onclick='but_toogle(this,"+'"idea"'+");' id='ideaId'  class='emoticon ideaUnclicked' />";
 
       var addTag = "var txt=document.getElementById('commentTB').value;txt='#' + type + ' ' + txt ;document.getElementById('commentTB').value=txt;";
       var removeTag = "var txt=document.getElementById('commentTB').value; var test=txt.replace('#' + type + ' ','');" +
                       "if(document.getElementById('commentTB').value === test){document.getElementById('commentTB').value = txt.replace('#' + type,'');} else {document.getElementById('commentTB').value = test;}";
-      var toog = "if(el.className=='unclicked') {srcLen = el.src.length; tmpsrc = el.src.substring(0,srcLen-4); el.src = tmpsrc+'_on.png'; el.className='clicked'; add_tag(type);}" +
-                "else if(el.className=='clicked') {srcLen = el.src.length; tmpsrc = el.src.substring(0,srcLen-7); el.src = tmpsrc+'.png'; el.className='unclicked'; remove_tag(type);} return;";
+      var toog = "if(el.className.indexOf('Unclicked')>-1) {el.className=el.className.replace('Unclicked','Clicked'); add_tag(type);}" +
+                "else if(el.className.indexOf('Clicked')>-1) {el.className=el.className.replace('Clicked','Unclicked'); remove_tag(type);} return;";
       var fun = "<script> function add_tag(type) {"+addTag+"} function remove_tag(type) {"+removeTag+"} function but_toogle(el,type) {"+toog+"} </script>";
       var emoticonsList = fun + emoticon1 + emoticon2 + emoticon3 + emoticon4 + emoticon5 + emoticon6 + emoticon7 + emoticon8;
 
@@ -285,6 +285,67 @@ define(function(require) {
                         "<div class='editor-header'>", header, "</div><div class='notebox'><div class='notebox-body'><div><a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a></div><table id='textBoxs'><tr><b>Comment:<font size='1'>(feel free to write your own tags)</font></b><textarea id='commentTB'/></tr></table>"+emoticonsList+"<br/></div><div class='editor-footer'><table class='editorcontrols'><tr><td class='group'>",duration_option,pause_option,"<label for='share_to'>Shared&nbsp;with:&nbsp;</label><select id='share_to' name='vis_", id_item, "'><option value='3'>The entire class</option>", staffoption,
                         "<option value='1'>Myself only</option>"+tagPrivateOption+"</select><br/>"+checkbox_options+"</td><td class='save-cancel'>"+set_time_buttons+"<button action='save' >Submit</button><button action='discard' >Cancel</button>"+section_tag_option+"</td></tr></table><br><table id='tagBoxes'><tr><td><b>Select Users to Tag:</b></td><td><button id='select_all_button' action='select_all'>Select All</button></td><td><button id='deselect_all_button' action='deselect_all'>Deselect All</button></td></tr></table></div></div>"].join(""));
       self.element.append(contents);
+
+      // Compare the textbox's current and last value.  Report a change to the console.
+      function watchTextbox() {
+          var knownTags = ["#curious","#confused","#useful","#interested","#frustrated","#help","#question","#idea"];
+        var txtInput = $('#commentTB');
+        var lastValue = txtInput.data('lastValue');
+        var currentValue = txtInput.val();
+        if (lastValue !== currentValue) {
+
+            var i,checkTags, tagId, bt, srcLen, tmpsrc;
+            var deleteEvent = false;
+
+            checkTags = lastValue.split(" ");
+            for(i=0; i<checkTags.length; i++)
+            {
+                if(checkTags[i].charAt(0) === "#" && knownTags.indexOf(checkTags[i]) > -1)
+                {
+                    if(currentValue.indexOf(checkTags[i]) <= -1)
+                    {
+                        deleteEvent = true;
+                        tagId = checkTags[i].substr(1) + "Id";
+                        bt =document.getElementById(tagId);
+                        if(bt.className.indexOf("Clicked")>-1 && bt.className.indexOf("Unclicked")<0) {
+                            bt.className = bt.className.replace("Clicked","Unclicked");
+                        }
+                    }
+                }
+            }
+
+            checkTags = currentValue.split(" ");
+            for(i=0; i<checkTags.length && !deleteEvent; i++)
+            {
+                if(checkTags[i].charAt(0) === "#" && knownTags.indexOf(checkTags[i]) > -1)
+                {
+                    if(lastValue.indexOf(checkTags[i]) <= -1)
+                    {
+                        tagId = checkTags[i].substr(1) + "Id";
+                        bt =document.getElementById(tagId);
+                        if(bt.className.indexOf("Unclicked")>-1) {
+                          bt.className = bt.className.replace("Unclicked","Clicked");
+                        }
+                    }
+                }
+            }
+
+          txtInput.data('lastValue', currentValue);
+        }
+      }
+
+      // Record the initial value of the textbox.
+      $('#commentTB').data('lastValue', $('#commentTB').val());
+
+      // Bind to the keypress and user-defined set event.
+      $('#commentTB').bind('keypress set', null, watchTextbox);
+
+      // Example of JS code triggering the user event
+      $('#btnSetText').click(function (ev) {
+        $('#commentTB').val('abc def').trigger('set');
+      });
+
+      setInterval(watchTextbox, 100);
 
       var sections = model.get('section', {});
       for (var sec_id in sections.items) {

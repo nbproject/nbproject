@@ -81,6 +81,23 @@ td.save-cancel
     vertical-align: top;
 }
 
-.clicked, .unclicked {height:24px;
-                      width:24px;
-                      margin:5px;}
+.emoticon {height:24px;
+          width:24px;
+          margin:5px;}
+
+.emoticon.curiousClicked{content:url('/content/views/emoticons/curious_on.png');}
+.emoticon.curiousUnclicked{content:url('/content/views/emoticons/curious.png');}
+.emoticon.confusedClicked{content:url('/content/views/emoticons/confused_on.png');}
+.emoticon.confusedUnclicked{content:url('/content/views/emoticons/confused.png');}
+.emoticon.usefulClicked{content:url('/content/views/emoticons/useful_on.png');}
+.emoticon.usefulUnclicked{content:url('/content/views/emoticons/useful.png');}
+.emoticon.interestedClicked{content:url('/content/views/emoticons/interested_on.png');}
+.emoticon.interestedUnclicked{content:url('/content/views/emoticons/interested.png');}
+.emoticon.frustratedClicked{content:url('/content/views/emoticons/frustrated_on.png');}
+.emoticon.frustratedUnclicked{content:url('/content/views/emoticons/frustrated.png');}
+.emoticon.helpClicked{content:url('/content/views/emoticons/help_on.png');}
+.emoticon.helpUnclicked{content:url('/content/views/emoticons/help.png');}
+.emoticon.questionClicked{content:url('/content/views/emoticons/questionMark_on.png');}
+.emoticon.questionUnclicked{content:url('/content/views/emoticons/questionMark.png');}
+.emoticon.ideaClicked{content:url('/content/views/emoticons/idea_on.png');}
+.emoticon.ideaUnclicked{content:url('/content/views/emoticons/idea.png');}

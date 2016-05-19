@@ -11,8 +11,23 @@ div.filterWizardEmoticon .error-message {
     color: #C11;
 }
 
-div.filterWizardEmoticon .filterClicked, .filterUnclicked {
-    height:47px;
+div.filterWizardEmoticon .emoticon {height:47px;
     width:47px;
-    margin:10px;
-}
+    margin:10px;}
+
+div.filterWizardEmoticon .emoticon.curiousClicked{content:url('/content/views/emoticons/curious_on.png');}
+div.filterWizardEmoticon .emoticon.curiousUnclicked{content:url('/content/views/emoticons/curious.png');}
+div.filterWizardEmoticon .emoticon.confusedClicked{content:url('/content/views/emoticons/confused_on.png');}
+div.filterWizardEmoticon .emoticon.confusedUnclicked{content:url('/content/views/emoticons/confused.png');}
+div.filterWizardEmoticon .emoticon.usefulClicked{content:url('/content/views/emoticons/useful_on.png');}
+div.filterWizardEmoticon .emoticon.usefulUnclicked{content:url('/content/views/emoticons/useful.png');}
+div.filterWizardEmoticon .emoticon.interestedClicked{content:url('/content/views/emoticons/interested_on.png');}
+div.filterWizardEmoticon .emoticon.interestedUnclicked{content:url('/content/views/emoticons/interested.png');}
+div.filterWizardEmoticon .emoticon.frustratedClicked{content:url('/content/views/emoticons/frustrated_on.png');}
+div.filterWizardEmoticon .emoticon.frustratedUnclicked{content:url('/content/views/emoticons/frustrated.png');}
+div.filterWizardEmoticon .emoticon.helpClicked{content:url('/content/views/emoticons/help_on.png');}
+div.filterWizardEmoticon .emoticon.helpUnclicked{content:url('/content/views/emoticons/help.png');}
+div.filterWizardEmoticon .emoticon.questionClicked{content:url('/content/views/emoticons/questionMark_on.png');}
+div.filterWizardEmoticon .emoticon.questionUnclicked{content:url('/content/views/emoticons/questionMark.png');}
+div.filterWizardEmoticon .emoticon.ideaClicked{content:url('/content/views/emoticons/idea_on.png');}
+div.filterWizardEmoticon .emoticon.ideaUnclicked{content:url('/content/views/emoticons/idea.png');}

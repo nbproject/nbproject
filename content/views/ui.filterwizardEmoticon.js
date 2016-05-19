@@ -41,17 +41,17 @@ define(function(require) {
       //  - $filterType : type of filter ["random", "reply", "students", "longest"]
 
       var $emot = [];
-      $emot.push($("<input>").attr("type","image").attr("title","curious").attr("id","curious").attr("src","/content/views/emoticons/curious.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","confused").attr("id","confused").attr("src","/content/views/emoticons/confused.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","useful").attr("id","useful").attr("src","/content/views/emoticons/useful.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","interested").attr("id","interested").attr("src","/content/views/emoticons/interested.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","frustrated").attr("id","frustrated").attr("src","/content/views/emoticons/frustrated.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","help").attr("id","help").attr("src","/content/views/emoticons/help.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","question").attr("id","question").attr("src","/content/views/emoticons/questionMark.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
-      $emot.push($("<input>").attr("type","image").attr("title","idea").attr("id","idea").attr("src","/content/views/emoticons/idea.png").attr("onClick","but_toggle(this);").addClass("filterUnclicked"));
+      $emot.push($("<img>").attr("title","curious").attr("id","curious").attr("onClick","but_toggle(this);").addClass("emoticon curiousUnclicked"));
+      $emot.push($("<img>").attr("title","confused").attr("id","confused").attr("onClick","but_toggle(this);").addClass("emoticon confusedUnclicked"));
+      $emot.push($("<img>").attr("title","useful").attr("id","useful").attr("onClick","but_toggle(this);").addClass("emoticon usefulUnclicked"));
+      $emot.push($("<img>").attr("title","interested").attr("id","interested").attr("onClick","but_toggle(this);").addClass("emoticon interestedUnclicked"));
+      $emot.push($("<img>").attr("title","frustrated").attr("id","frustrated").attr("onClick","but_toggle(this);").addClass("emoticon frustratedUnclicked"));
+      $emot.push($("<img>").attr("title","help").attr("id","help").attr("onClick","but_toggle(this);").addClass("emoticon helpUnclicked"));
+      $emot.push($("<img>").attr("title","question").attr("id","question").attr("onClick","but_toggle(this);").addClass("emoticon questionUnclicked"));
+      $emot.push($("<img>").attr("title","idea").attr("id","idea").attr("onClick","but_toggle(this);").addClass("emoticon ideaUnclicked"));
 
-      var togg = "if(el.className=='filterUnclicked') {srcLen = el.src.length; tmpsrc = el.src.substring(0,srcLen-4); el.src = tmpsrc+'_on.png'; el.className='filterClicked';}" +
-		"else if(el.className=='filterClicked') {srcLen = el.src.length; tmpsrc = el.src.substring(0,srcLen-7); el.src = tmpsrc+'.png'; el.className='filterUnclicked';} return;";
+      var togg = "if(el.className.indexOf('Unclicked')>-1) {el.className=el.className.replace('Unclicked','Clicked');}" +
+                "else if(el.className.indexOf('Clicked')>-1) {el.className=el.className.replace('Clicked','Unclicked');} return;";
       var fun = "<script> function but_toggle(el) {"+togg+"} </script>";
 
       var $go = $("<input>").attr("type", "button").attr("value", "Go");
@@ -79,13 +79,14 @@ define(function(require) {
 
                 for(var i=0; i< $emot.length; i++)
                 {
-                    if($emot[i].hasClass("filterClicked"))
+                    if($emot[i].attr('class').indexOf("Clicked")>-1 && $emot[i].attr('class').indexOf("Unclicked")<0)
                     {
                         chosenEmot.push($emot[i].attr("id"));
-                        $emot[i].toggleClass("filterClicked filterUnclicked");
-                        var srcLen = $emot[i].attr("src").length;
-                        var tmpsrc = $emot[i].attr("src").substring(0,srcLen-7);
-                        $emot[i].attr("src",tmpsrc+'.png');
+                        $emot[i].attr('class',$emot[i].attr('class').replace("Clicked","Unclicked"));
+                        //$emot[i].toggleClass("filterClicked filterUnclicked");
+                        //var srcLen = $emot[i].attr("src").length;
+                        //var tmpsrc = $emot[i].attr("src").substring(0,srcLen-7);
+                        //$emot[i].attr("src",tmpsrc+'.png');
                     }
                 }
 
