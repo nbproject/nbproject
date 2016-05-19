@@ -19,7 +19,8 @@ define(function(require) {
       Dom           = require('dom'),
       Conf          = require('conf'),
       Models        = require('models'),
-      concierge     = require('concierge');
+      concierge     = require('concierge'),
+      jquery_ui     = require('jquery_ui');
 
   var $ = 'NB$' in window ? NB$ : $;
 

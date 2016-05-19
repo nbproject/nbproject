@@ -25,8 +25,8 @@
 */
 /*global alert:true jQuery:true console:false*/
 define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
+  var $               = require('jquery');
+  var    concierge       = require('concierge'),
       jquery_ui       = require('jquery_ui');
   var P_OBJ = {
     SEP_TOTAL_SIZE: 4,
