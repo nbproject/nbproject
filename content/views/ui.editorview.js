@@ -264,14 +264,14 @@ define(function(require) {
       var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
       var section_tag_option = ''; //hack to hide tags
 
-      var emoticon1 = "<input title='curious' onclick='but_toogle(this,"+'"curious"'+");' type='image' id='curiousId' src='/content/modules/dev/emoticons/curious.png' class='unclicked' />";
-      var emoticon2 = "<input title='confused' onclick='but_toogle(this,"+'"confused"'+");' type='image' id='confusedId' src='/content/modules/dev/emoticons/confused.png' class='unclicked' />";
-      var emoticon3 = "<input title='useful' onclick='but_toogle(this,"+'"useful"'+");' type='image' id='usefulId' src='/content/modules/dev/emoticons/useful.png' class='unclicked' />";
-      var emoticon4 = "<input title='interested' onclick='but_toogle(this,"+'"interested"'+");' type='image' id='interestedId' src='/content/modules/dev/emoticons/interested.png' class='unclicked' />";
-      var emoticon5 = "<input title='frustrated' onclick='but_toogle(this,"+'"frustrated"'+");' type='image' id='frustratedId' src='/content/modules/dev/emoticons/frustrated.png' class='unclicked' />";
-      var emoticon6 = "<input title='help' onclick='but_toogle(this,"+'"help"'+");' type='image' id='helpId' src='/content/modules/dev/emoticons/help.png' class='unclicked' />";
-      var emoticon7 = "<input title='question' onclick='but_toogle(this,"+'"question"'+");' type='image' id='questionId' src='/content/modules/dev/emoticons/questionMark.png' class='unclicked' />";
-      var emoticon8 = "<input title='idea' onclick='but_toogle(this,"+'"idea"'+");' type='image' id='ideaId' src='/content/modules/dev/emoticons/idea.png' class='unclicked' />";
+      var emoticon1 = "<input title='curious' onclick='but_toogle(this,"+'"curious"'+");' type='image' id='curiousId' src='/content/views/emoticons/curious.png' class='unclicked' />";
+      var emoticon2 = "<input title='confused' onclick='but_toogle(this,"+'"confused"'+");' type='image' id='confusedId' src='/content/views/emoticons/confused.png' class='unclicked' />";
+      var emoticon3 = "<input title='useful' onclick='but_toogle(this,"+'"useful"'+");' type='image' id='usefulId' src='/content/views/emoticons/useful.png' class='unclicked' />";
+      var emoticon4 = "<input title='interested' onclick='but_toogle(this,"+'"interested"'+");' type='image' id='interestedId' src='/content/views/emoticons/interested.png' class='unclicked' />";
+      var emoticon5 = "<input title='frustrated' onclick='but_toogle(this,"+'"frustrated"'+");' type='image' id='frustratedId' src='/content/views/emoticons/frustrated.png' class='unclicked' />";
+      var emoticon6 = "<input title='help' onclick='but_toogle(this,"+'"help"'+");' type='image' id='helpId' src='/content/views/emoticons/help.png' class='unclicked' />";
+      var emoticon7 = "<input title='question' onclick='but_toogle(this,"+'"question"'+");' type='image' id='questionId' src='/content/views/emoticons/questionMark.png' class='unclicked' />";
+      var emoticon8 = "<input title='idea' onclick='but_toogle(this,"+'"idea"'+");' type='image' id='ideaId' src='/content/views/emoticons/idea.png' class='unclicked' />";
 
       var addTag = "var txt=document.getElementById('commentTB').value;txt='#' + type + ' ' + txt ;document.getElementById('commentTB').value=txt;";
       var removeTag = "var txt=document.getElementById('commentTB').value; var test=txt.replace('#' + type + ' ','');" +

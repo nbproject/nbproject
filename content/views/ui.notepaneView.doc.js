@@ -18,6 +18,7 @@ define(function(require) {
       $               = require('jquery'),
       contextmenu     = require('contextmenu'),
       filterwizard    = require('filterwizard');
+      filterwizardEmoticon    = require('filterwizardEmoticon');
 
   var $str = 'NB$' in window ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
