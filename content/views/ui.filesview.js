@@ -313,7 +313,7 @@ define(function(require) {
 
     _draw_frame: function () {
       var self = this;
-      if(self._id_ensemble ===undefined) {
+      if(self._id_ensemble === undefined || self._id_ensemble === "0") {
         self._id_ensemble = null;
       }
       self._admin = self._id_ensemble === null? false : self._model.o.ensemble[self._id_ensemble].admin;

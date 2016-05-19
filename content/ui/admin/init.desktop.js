@@ -108,7 +108,7 @@ define(function(require) {
             });
             var ensemble_data = Pers.store.o.ensemble;
             // Update breadcrumb
-            if(evt.value === null || evt.value === undefined ) { // home
+            if(evt.value === null || evt.value === undefined || evt.value === "0" ) { // home
               $(".nb-widget-header").breadcrumb({trail: [
                 {name: "Home", rel: "ensemble", id_item: null},
               ]});
