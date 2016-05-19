@@ -11,7 +11,10 @@
 
 */
 /*global jQuery:true*/
-define(['jquery', 'concierge', 'jquery_ui'], function($) {
+define(function(require) {
+  var $               = require('jquery');
+  var    concierge       = require('concierge'),
+      jquery_ui       = require('jquery_ui');
  /*
  * The view object
  * options.headless set to false if the view is not meant to be displayed

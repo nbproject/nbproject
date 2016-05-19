@@ -11,7 +11,7 @@ requirejs.config({
     'contextmenu_position': 'lib/contextmenu/jquery.ui.position',
     'dateformat': 'lib/dateformat/date.format',
     'jquery': 'lib/jquery/1.8.3/jquery.min',
-    'jquery_ui': 'lib/jquery_ui/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min',
+    'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
     'rangy-core': 'lib/rangy/rangy-core',
@@ -86,12 +86,6 @@ requirejs.config({
 
   },
   shim: {
-    'jquery': {
-        exports: '$'
-    },
-    'jquery_ui': {
-        deps: ['jquery'],
-    },
     'concierge': {
         deps: ['jquery'],
         exports: 'concierge'
