@@ -12,7 +12,13 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true NB$:true*/
-(function ($) {
+define(function(require) {
+  var concierge       = require('concierge'),
+      view            = require('view'),
+      $               = require('jquery'),
+      contextmenu     = require('contextmenu'),
+      filterwizard    = require('filterwizard');
+
   var $str = 'NB$' in window ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _f_location_seen: function (id_location) {
@@ -1054,4 +1060,4 @@
       export_threads: null,
     },
   };
-})(jQuery);
+});

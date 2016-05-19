@@ -24,7 +24,10 @@
  $("#pers1").perspective();
 */
 /*global alert:true jQuery:true console:false*/
-(function ($) {
+define(function(require) {
+  var $               = require('jquery'),
+      concierge       = require('concierge'),
+      jquery_ui       = require('jquery_ui');
   var P_OBJ = {
     SEP_TOTAL_SIZE: 4,
     SEP_INSIDE_SIZE:4,
@@ -87,7 +90,7 @@
       /*
        * embeds each viewpane, vp1 and vp2 in a protection "cage" div (i.e position=relative), itself embedded in a widget
        * This way, embedded views can use regular coordinates, width=100% etc... without intererferting with other views.
-       */       
+       */
       var self = this;
       if ($sep.length === 0) {
         return;
@@ -593,4 +596,4 @@
   $.extend($.ui.perspective, {
     version: '1.8',
   });
-})(jQuery);
+});

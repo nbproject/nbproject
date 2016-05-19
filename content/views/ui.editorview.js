@@ -14,7 +14,12 @@
 /*global jQuery:true NB$:true*/
 /*global console:false*/
 
-(function ($) {
+define(function(require) {
+  var concierge       = require('concierge'),
+      view            = require('view'),
+      $               = require('jquery'),
+      jquery_ui       = require('jquery_ui');
+
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
   var FILETYPES = { TYPE_PDF: 1, TYPE_YOUTUBE: 2, TYPE_HTML5VIDEO: 3, TYPE_HTML5: 4 };
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
@@ -571,4 +576,4 @@
     allowStaffOnly: false,
     defaultPause: false,
   };
-})(jQuery);
+});

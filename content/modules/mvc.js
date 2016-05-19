@@ -10,15 +10,15 @@
 
 */
 
-(function (GLOB) {
-  GLOB.mvc = {};
+define(function(require) {
+  var MVC = {};
 
-  GLOB.mvc.model = function () {
+  MVC.model = function () {
     this.observers = [];
     this.logger = null;
   };
 
-  GLOB.mvc.model.prototype.register = function (obs, propList) {
+  MVC.model.prototype.register = function (obs, propList) {
     this.observers.push({ o:obs, p:propList || {} });
 
     //by default, relay the logger if the model has one and the view doesn't
@@ -32,7 +32,7 @@
     }
   };
 
-  GLOB.mvc.model.prototype.unregister = function (obs) {
+  MVC.model.prototype.unregister = function (obs) {
     var i;
     for (i in this.observers) {
       if (this.observers[i] == obs) {
@@ -42,73 +42,73 @@
     }
   };
 
-  GLOB.mvc.model.prototype.setLogger = function (logger) {
+  MVC.model.prototype.setLogger = function (logger) {
     this.logger = logger;
   };
 
-  GLOB.mvc.model.prototype.info = function (msg) {
+  MVC.model.prototype.info = function (msg) {
     if (this.logger !== null) {
       this.logger.info(msg);
     }
   };
 
-  GLOB.mvc.model.prototype.warning = function (msg) {
+  MVC.model.prototype.warning = function (msg) {
     if (this.logger !== null) {
       this.logger.warning(msg);
     }
   };
 
-  GLOB.mvc.model.prototype.error = function (msg) {
+  MVC.model.prototype.error = function (msg) {
     if (this.logger !== null) {
       this.logger.error(msg);
     }
   };
 
-  //GLOB.mvc.model.prototype.modify = function(){alert("[GLOB.mvc.model.prototype.modify] I'm virtual");};
+  //MVC.model.prototype.modify = function(){alert("[MVC.model.prototype.modify] I'm virtual");};
 
-  GLOB.mvc.view = function () {
+  MVC.view = function () {
     this.id = (new Date()).getTime(); //this will generate a default id for the view
     this.logger = null;
   };
 
-  GLOB.mvc.view.prototype.setLogger = function (logger) {
+  MVC.view.prototype.setLogger = function (logger) {
     this.logger = logger;
   };
 
-  GLOB.mvc.view.prototype.info = function (msg) {
+  MVC.view.prototype.info = function (msg) {
     if (this.logger !== null) {
       this.logger.info(msg);
     }
   };
 
-  GLOB.mvc.view.prototype.warning = function (msg) {
+  MVC.view.prototype.warning = function (msg) {
     if (this.logger !== null) {
       this.logger.warning(msg);
     }
   };
 
-  GLOB.mvc.view.prototype.error = function (msg) {
+  MVC.view.prototype.error = function (msg) {
     if (this.logger !== null) {
       this.logger.error(msg);
     }
   };
 
-  //GLOB.mvc.view.prototype.update = function(){alert("[GLOB.mvc.view.prototype.update] I'm virtual");};
+  //MVC.view.prototype.update = function(){alert("[MVC.view.prototype.update] I'm virtual");};
 
   /**
    * COLLECTION: Collection of objects that have an unique "id" field
    * note: the current implemetation can return undefinied items if they have been deleted
    */
-  GLOB.mvc.collection = function (type) {
+  MVC.collection = function (type) {
     this.superclass();
     this.items = {};//indexed by item.id
     this.type = type; //sometimes useful to specify a collection of what...
   };
 
-  GLOB.mvc.collection.prototype = new GLOB.mvc.model();
-  GLOB.mvc.collection.prototype.constructor = GLOB.mvc.collection;
-  GLOB.mvc.collection.prototype.superclass = GLOB.mvc.model;
-  GLOB.mvc.collection.prototype.modify = function (action, payload, items_fieldname) {
+  MVC.collection.prototype = new MVC.model();
+  MVC.collection.prototype.constructor = MVC.collection;
+  MVC.collection.prototype.superclass = MVC.model;
+  MVC.collection.prototype.modify = function (action, payload, items_fieldname) {
     var i;
     var items = payload[items_fieldname];
     if (action == 'create') {
@@ -124,7 +124,7 @@
         delete this.items[items[i].id];
       }
     }    else {
-      alert('[GLOB.mvc.collection.modify] unknown action: ' + action);
+      alert('[MVC.collection.modify] unknown action: ' + action);
       return;
     }
 
@@ -133,13 +133,13 @@
     }
   };
 
-  GLOB.mvc.collection.prototype.getItems = function () {
+  MVC.collection.prototype.getItems = function () {
     return this.items;
   };
 
-  GLOB.mvc.collection.prototype.get = function (id) {
+  MVC.collection.prototype.get = function (id) {
     return this.items[id];
   };
 
-})(NB);
-
+  return MVC;
+});
