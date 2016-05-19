@@ -37,14 +37,15 @@
         var key = {{ source.id }}+"|"+(new Date()).getTime();
         var payload = {};
         payload[key]=(new Date()).getTime();
-        NB.pers.call("log_history", {"analytics": payload}, function(callback) {});
+        Pers.preinit();
+        Pers.call("log_history", {"analytics": payload}, function(callback) {});
       };
 
       var recordAction = function(control, value) {
         var key = {{ source.id }}+"|"+control+"|"+value;
         var payload = {};
         payload[key]=(new Date()).getTime();
-        NB.pers.call("log_history", {"analyticsClick": payload}, function(callback) {});
+        Pers.call("log_history", {"analyticsClick": payload}, function(callback) {});
       }
     </script>
 
@@ -57,7 +58,7 @@
 
           // get the larger image for the preview
           var img_server = "http://nb.mit.edu";
-          var ckey = NB.conf.userinfo.ckey;
+          var ckey = Conf.userinfo.ckey;
           var img_url = img_server + "/pdf/cache2/72/100/"+{{ source.id }}+"?ckey="+ckey+";page=" + num;
           $(".pg-preview").find(".page-img").attr("src", img_url);
 
@@ -92,7 +93,10 @@
               // TODO: better way to get the source ID/ckey?
               var img_server = "http://nb.mit.edu";
               // var img_server = "";
-              var ckey = NB.conf.userinfo.ckey;
+              if (Conf.userinfo === undefined) {
+                Pers.preinit();
+              }
+              var ckey = Conf.userinfo.ckey;
               var img_url = img_server + "/pdf/cache2/72/20/"+{{ source.id }}+"?ckey="+ckey+";page=" + p;
               page.set('img_url', img_url); // TODO: put img url in PageView?
 

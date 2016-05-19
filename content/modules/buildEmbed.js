@@ -10,8 +10,19 @@
 */
 /*global jQuery:true $:true NB$:true NB:true alert:true escape:false console:false*/
 
-(function (GLOB) {
-
+define(function(require) {
+  var $               = require('jquery'),
+      concierge       = require('concierge'),
+      Auth            = require('auth'),
+      Conf            = require('conf'),
+      Dom             = require('dom'),
+      Html            = require('docviewHtml'),
+      Models          = require('models'),
+      Pers            = require('pers'),
+      Perspective     = require('perspective'),
+      Notepane        = require('notepane_doc'),
+      threadview      = require('threadview'),
+      editorview      = require('editorview');
   if ('NB$' in window) {
     var $ = NB$;
   }
@@ -20,11 +31,11 @@
 
   var $vp;
   var id_ensemble = null;
-  GLOB.pers.iframe_id = 'nb_iframe';
+  Pers.iframe_id = 'nb_iframe';
   var f_prepare_sidebar = function () {
     //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
     //for now, just update user name and email on hover. :
-    var uinfo = GLOB.conf.userinfo;
+    var uinfo = Conf.userinfo;
     if (!uinfo.guest) {
       var screenname = uinfo.firstname === null ? $.E(uinfo.email) : $.E(uinfo.firstname) + ' ' + $.E(uinfo.lastname);
       $('#login-name').text(screenname).attr('title', $.E(uinfo.email));
@@ -36,14 +47,14 @@
     //TODO: get id_ensemble from cookie or localStorage if available.
     $.concierge.addConstants({ res: 288, scale: 25, QUESTION: 1, STAR: 2 });
     $.concierge.addComponents({
-      notes_loader:    function (P, cb) {GLOB.pers.call('getNotes', P, cb);},
+      notes_loader:    function (P, cb) {Pers.call('getNotes', P, cb);},
 
-      note_creator:    function (P, cb) {GLOB.pers.call('saveNote', P, cb);},
+      note_creator:    function (P, cb) {Pers.call('saveNote', P, cb);},
 
-      note_editor:    function (P, cb) {GLOB.pers.call('editNote', P, cb);},
+      note_editor:    function (P, cb) {Pers.call('editNote', P, cb);},
 
       bulk_import_annotations: function (P, cb) {
-        GLOB.pers.call('bulk_import_annotations', {
+        Pers.call('bulk_import_annotations', {
           locs_array: P.locs_array,
           from_source_id: P.from_source_id,
           to_source_id: P.to_source_id,
@@ -52,30 +63,30 @@
       },
 
       set_location_section: function (P, cb) {
-        GLOB.pers.call('set_location_section', {
+        Pers.call('set_location_section', {
           id_location: P.id_location,
           id_section: P.id_section,
         }, cb);
       },
 
       promote_location_by_copy: function (P, cb) {
-        GLOB.pers.call('promote_location_by_copy', {
+        Pers.call('promote_location_by_copy', {
           id_location: P.id_location,
         }, cb);
       },
 
       delete_thread: function (P, cb) {
-        GLOB.pers.call('deleteThread', {
+        Pers.call('deleteThread', {
           id_location: P.id_location,
         }, cb);
       },
     });
-    GLOB.pers.store = new GLOB.models.Store();
-    GLOB.pers.call(
+    Pers.store = new Models.Store();
+    Pers.call(
         'getHTML5Info', { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '') },
         function (payload) {
           //TODO: refactor (same as in step16.js:createStore)
-          GLOB.pers.store.create(payload, {
+          Pers.store.create(payload, {
             ensemble:    { pFieldName: 'ensembles' },
             section:    { pFieldName: 'sections', references: { id_ensemble: 'ensemble' } },
             file:    { pFieldName: 'files', references: { id_ensemble: 'ensemble', id_folder: 'folder' } },
@@ -92,23 +103,23 @@
             tags: { references: { user_id: 'members', comment_id: 'comment' } },
           });
 
-          var ensemble = NB.pers.store.get('ensemble', {}).first();
+          var ensemble = Pers.store.get('ensemble', {}).first();
 
           //get the section info as well as info whether user is admin:
-          GLOB.pers.call('getSectionsInfo', { id_ensemble: ensemble.ID }, function (P3) {
-            var m = GLOB.pers.store;
+          Pers.call('getSectionsInfo', { id_ensemble: ensemble.ID }, function (P3) {
+            var m = Pers.store;
             m.add('section', P3['sections']);
             ensemble.admin = true; //we only get a callback if we're an admin for this ensemble
           });
 
-          GLOB.pers.call('getMembers', { id_ensemble: ensemble.ID }, function (P5) {
+          Pers.call('getMembers', { id_ensemble: ensemble.ID }, function (P5) {
             console.log('getMembers callback');
 
-            GLOB.pers.store.add('members', P5);
+            Pers.store.add('members', P5);
           });
 
           //TODO: Take something else than first id_source
-          var source = GLOB.pers.id_source = NB.pers.store.get('file').first();
+          var source = Pers.id_source = Pers.store.get('file').first();
           if (source === null) {
             $("<div class=\"nb-error\"><p>The URL for this page isn't registered on NB. Click this message to close the NB sidebar.</p></div>")
                 .appendTo('.nb_sidebar>.nb-viewport').click(function () {
@@ -118,13 +129,13 @@
             return;
           }
 
-          var id_source = GLOB.pers.id_source = NB.pers.store.get('file').first().ID;
+          var id_source = Pers.id_source = Pers.store.get('file').first().ID;
           $.concierge.setHistoryHelper(function (_payload, cb) {
-            _payload['__return'] = { type:'newNotesOnFile', a:{ id_source: GLOB.pers.id_source } };
-            GLOB.pers.call('log_history', _payload, cb);
+            _payload['__return'] = { type:'newNotesOnFile', a:{ id_source: Pers.id_source } };
+            Pers.call('log_history', _payload, cb);
           }, 120000,  function (P2) {
             //here we override the callback so that we can get new notes.
-            var m = GLOB.pers.store;
+            var m = Pers.store;
             m.add('comment', P2['comments']);
             m.add('location', P2['locations']);
             m.add('html5location', P2['html5locations']);
@@ -156,7 +167,7 @@
             desired_height: 50,
             content: function ($div) {
               $div.notepaneView();
-              $div.notepaneView('set_model', GLOB.pers.store);
+              $div.notepaneView('set_model', Pers.store);
             },
           };
           var threadview = {
@@ -167,7 +178,7 @@
             desired_height: 50,
             content: function ($div) {
               $div.threadview();
-              $div.threadview('set_model', GLOB.pers.store);
+              $div.threadview('set_model', Pers.store);
             },
           };
           var editorview = {
@@ -178,10 +189,10 @@
             desired_height: 50,
             transcient: true,
             content: function ($div) {
-              var m = GLOB.pers.store;
+              var m = Pers.store;
               var ensemble = m.o.ensemble[m.o.file[id_source].id_ensemble];
               $div.editorview({ allowStaffOnly: ensemble.allow_staffonly, allowAnonymous: ensemble.allow_anonymous });
-              $div.editorview('set_model', GLOB.pers.store);
+              $div.editorview('set_model', Pers.store);
             },
           };
 
@@ -227,9 +238,9 @@
 
             //end of perspective creation code
 
-            var f = GLOB.pers.store.o.file[id_source];
+            var f = Pers.store.o.file[id_source];
             $.concierge.get_component('notes_loader')({ file:id_source }, function (P) {
-              var m = GLOB.pers.store;
+              var m = Pers.store;
               m.add('seen', P['seen']);
               m.add('comment', P['comments']);
               m.add('location', P['locations']);
@@ -238,19 +249,19 @@
               m.add('threadmark', P['threadmarks']);
 
               //now check if need to move to a given annotation:
-              if ('c' in GLOB.pers.params) {
+              if ('c' in Pers.params) {
                 window.setTimeout(function () {
-                  var id =  GLOB.pers.params.c;
+                  var id =  Pers.params.c;
                   var c = m.get('comment', { ID: id }).items[id];
-                  if ('reply' in GLOB.pers.params) {
+                  if ('reply' in Pers.params) {
                     $.concierge.trigger({ type: 'reply_thread', value: c.ID });
                   }
 
                   $.concierge.trigger({ type: 'select_thread', value: c.ID_location });
                 }, 300);
-              } else if ('p' in GLOB.pers.params) {
+              } else if ('p' in Pers.params) {
                 window.setTimeout(function () {
-                  var page = GLOB.pers.params.p;
+                  var page = Pers.params.p;
                   $.concierge.trigger({ type: 'page', value: page });
                 }, 300);
               } else {
@@ -262,7 +273,7 @@
           }, 1000);
 
           $('body').addClass('nb-active');
-          $(function () {GLOB.html.init();});
+          $(function () {Html.init();});
         },
 
         function (P) {
@@ -271,54 +282,54 @@
           //which confuses the interface
           //see issue #280
           //for now, a hack: if login fails, reset guest status
-          GLOB.auth.set_cookie('userinfo', JSON.stringify({ guest: true }));
+          Auth.set_cookie('userinfo', JSON.stringify({ guest: true }));
           $('#login_to_nb').remove(); //in case one was already present
           $("<button id='login_to_nb'>Login to NB</button>")
           .appendTo('.nb-widget-header')
           .click(function (evt) {
             //sacha: disable this for now.
             //console.log("opening iframe");
-            //$("#"+GLOB.pers.iframe_id).removeClass("nb_hidden");
+            //$("#"+Pers.iframe_id).removeClass("nb_hidden");
             $.concierge.get_component('login_user_menu')();
           });
         });
 
   };
 
-  GLOB.pers.ckey_from_iframe = null;
-  GLOB.pers.f_poll_iframe = function () {
+  Pers.ckey_from_iframe = null;
+  Pers.f_poll_iframe = function () {
     console.log('polling iframe');
-    $('#' + GLOB.pers.iframe_id)[0].contentWindow.postMessage('confkey', 'http://localhost:8001');
-    if (GLOB.pers.ckey_from_iframe === null) {
-      setTimeout(GLOB.pers.f_poll_iframe, 500);
+    $('#' + Pers.iframe_id)[0].contentWindow.postMessage('confkey', 'http://localhost:8001');
+    if (Pers.ckey_from_iframe === null) {
+      setTimeout(Pers.f_poll_iframe, 500);
     }    else {
-      console.log('got ckey - no more polling', GLOB.pers.ckey_from_iframe);
+      console.log('got ckey - no more polling', Pers.ckey_from_iframe);
     }
   };
 
-  GLOB.pers.init = function () {
-    GLOB.pers.connection_id = 0;
-    GLOB.pers.embedded = true;
+  Pers.init = function () {
+    Pers.connection_id = 0;
+    Pers.embedded = true;
 
     //add our CSS
-    var cur =  GLOB.pers.currentScript;
+    var cur =  Pers.currentScript;
     var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
     var server_url = server_info[1] + '://' + server_info[2];
-    GLOB.pers.add_css(server_url + '/content/compiled/embed_NB.css');
+    Pers.add_css(server_url + '/content/compiled/embed_NB.css');
 
-    //GLOB.pers.openid_url=server_url+"/openid/login?next=/embedopenid";
+    //Pers.openid_url=server_url+"/openid/login?next=/embedopenid";
     //sacha: disabled this as well for now.
-    GLOB.pers.openid_url = '';
+    Pers.openid_url = '';
 
     // Make sure concierge won't steal our keys!
     $.concierge.keydown_block = false;
 
     //register for some events:
-    $.concierge.addListeners(GLOB.pers, {
+    $.concierge.addListeners(Pers, {
       successful_login: function (evt) {
-        GLOB.auth.set_cookie('ckey', evt.value.ckey);
-        GLOB.auth.set_cookie('userinfo', JSON.stringify(evt.value));
-        GLOB.conf.userinfo = evt.value;
+        Auth.set_cookie('ckey', evt.value.ckey);
+        Auth.set_cookie('userinfo', JSON.stringify(evt.value));
+        Conf.userinfo = evt.value;
         $.L('Welcome TO NB !');
         $('#splash-welcome').parent().remove();
 
@@ -328,16 +339,16 @@
     }, 'globalPersObject');
 
     //tell who to make rpc requests to
-    GLOB.conf.servers.rpc = GLOB.pers.server_url;
+    Conf.servers.rpc = Pers.server_url;
 
-    $('body').append("<div class='nb_sidebar nb_inactive'></div><iframe src='" + GLOB.pers.openid_url + "' class='nb_iframe nb_hidden' id='" + GLOB.pers.iframe_id + "'></iframe>");
+    $('body').append("<div class='nb_sidebar nb_inactive'></div><iframe src='" + Pers.openid_url + "' class='nb_iframe nb_hidden' id='" + Pers.iframe_id + "'></iframe>");
 
     $('#login_to_nb').click(function () {
       $.concierge.get_component('login_user_menu')();
     });
 
     //if user identified already, let's proceed:
-    if (GLOB.conf.userinfo) {
+    if (Conf.userinfo) {
       //optimization to get this visibile faster
       //if ckey is invalid, sidebar will be erased
       //and replaced by a login button
@@ -353,8 +364,8 @@
   };
 
   jQuery(function () {
-    GLOB.pers.params = GLOB.dom.getParams();
-    GLOB.pers.preinit();
+    Pers.params = Dom.getParams();
+    Pers.preinit();
   });
 
-})(NB);
+});

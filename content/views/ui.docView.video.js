@@ -222,7 +222,13 @@ var ytMetadataCallbacks = jQuery.Deferred();
   ytApiCallbacks.resolve();
 	}
 
-(function ($) {
+define(function(require) {
+  var concierge       = require('concierge'),
+      view            = require('view'),
+      $               = require('jquery'),
+      jquery_ui       = require('jquery_ui'),
+      drawable        = require('drawable');
+
   var PLAYER_HTML_TEMPLATE =
   ['<div class = "videoView">',
               '<div class = "titleContainer">',
@@ -1245,4 +1251,4 @@ var ytMetadataCallbacks = jQuery.Deferred();
       remove_tick: null,
     },
   };
-})(jQuery);
+});

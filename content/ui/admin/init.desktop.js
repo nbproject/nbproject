@@ -3,7 +3,7 @@
  * Requires the following modules:
  *        Module
  *        NB
- *        NB.auth
+ *        Auth
  *        jquery
  *
  *
@@ -16,18 +16,30 @@
 */
 /*global NB$:true NB:true*/
 
-(function (GLOB) {
+define(function(require) {
+  var $               = require('jquery'),
+      concierge       = require('concierge'),
+      Pers            = require('pers'),
+      Conf            = require('conf'),
+      Models          = require('models'),
+      perspective     = require('perspective'),
+      treeview        = require('treeview'),
+      filesview       = require('filesview'),
+      Auth            = require('auth'),
+      breadcrumb      = require('breadcrumb'),
+      files           = require('files');
+
   if ('NB$' in window) {
     var $ = NB$;
   }
 
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
 
-  GLOB.pers.init = function () {
-    //GLOB.pers.admin=true;
+  Pers.init = function () {
+    //pers.admin=true;
     //Extra menus:
-    if (!(GLOB.conf.userinfo.guest)) {
-      $('#menu_settings').after("<li><a href='javascript:" + $str + ".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+    if (!(Conf.userinfo.guest)) {
+      $('#menu_settings').after("<li><a href='javascript:" + $str + ".$.concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
     }
 
     //Factories: methods called if an event calls for a function that's not yet present
@@ -38,8 +50,8 @@
       // Add breadcrumb
       $(".nb-widget-header").breadcrumb({
         trail: [{name: "Home", rel: "ensemble", id_item: null}],
-        admin: GLOB.pers.admin});
-      $(".nb-widget-header").breadcrumb("set_model", GLOB.pers.store);
+        admin: Pers.admin});
+      $(".nb-widget-header").breadcrumb("set_model", Pers.store);
 
       var $pers        = $("<div id='" + pers_id + "'/>").appendTo($vp);
       var treeview    =  {
@@ -47,8 +59,8 @@
         min_width: 200,
         desired_width: 25,
         content: function ($div) {
-          $div.treeView({ admin: GLOB.pers.admin });
-          $div.treeView('set_model', GLOB.pers.store);
+          $div.treeView({ admin: Pers.admin });
+          $div.treeView('set_model', Pers.store);
 
           //default behavior: select the "home" screen.
           $.concierge.trigger({ type:'ensemble', value: 0 });
@@ -59,8 +71,8 @@
         min_width: 1000,
         desired_width: 85,
         content: function ($div) {
-          $div.filesView({ img_server: GLOB.conf.servers.img,  admin: GLOB.pers.admin });
-          $div.filesView('set_model', GLOB.pers.store);
+          $div.filesView({ img_server: Conf.servers.img,  admin: Pers.admin });
+          $div.filesView('set_model', Pers.store);
         },
       };
       $pers.perspective({
@@ -69,13 +81,13 @@
         listens: {
           rate_reply: function (evt) {
             $.concierge.get_component('rate_reply')(evt.value, function (P) {
-              GLOB.pers.store.add('replyrating', P['replyrating']);
+              Pers.store.add('replyrating', P['replyrating']);
               $.I('Thanks for your feedback !');
             });
           },
 
           successful_login: function (evt) {
-            GLOB.auth.set_cookie('ckey', evt.value.ckey);
+            Auth.set_cookie('ckey', evt.value.ckey);
             document.location = 'http://' + document.location.host + document.location.pathname;
             $.I('Welcome !');
           },
@@ -91,10 +103,10 @@
           ensemble: function (evt) {
             $.L('loading stats for ensemble' + evt.value);
             $.concierge.get_component('get_file_stats')({ id_ensemble: evt.value }, function (P2) {
-              GLOB.pers.store.add('file_stats', P2['file_stats']);
+              Pers.store.add('file_stats', P2['file_stats']);
               $.L('stats loaded !');
             });
-            var ensemble_data = GLOB.pers.store.o.ensemble;
+            var ensemble_data = Pers.store.o.ensemble;
             // Update breadcrumb
             if(evt.value === null || evt.value === undefined ) { // home
               $(".nb-widget-header").breadcrumb({trail: [
@@ -111,8 +123,8 @@
 
           folder: function(evt) {
             // Folder data from the server
-            var folder_data = GLOB.pers.store.o.folder;
-            var ensemble_data = GLOB.pers.store.o.ensemble;
+            var folder_data = Pers.store.o.folder;
+            var ensemble_data = Pers.store.o.ensemble;
 
             // Create trail starting with Home and the ensemble
             var id_ensemble = folder_data[evt.value].id_ensemble;
@@ -152,54 +164,54 @@
 
     //get data:
     var payload_objects = { types: ['ensembles', 'folders', 'files', 'sections'] };
-    if ('id_ensemble' in GLOB.pers.params) {
-      payload_objects['payload'] = { id_ensemble: GLOB.pers.params.id_ensemble };
+    if ('id_ensemble' in Pers.params) {
+      payload_objects['payload'] = { id_ensemble: Pers.params.id_ensemble };
     }
 
-    GLOB.pers.call('getObjects', payload_objects, GLOB.pers.createStore);
+    Pers.call('getObjects', payload_objects, Pers.createStore);
     $.concierge.addComponents({
-      add_file_menu: function (P, cb) {GLOB.files.addFile(P.id_ensemble, P.id_folder);},
+      add_file_menu: function (P, cb) {files.addFile(P.id_ensemble, P.id_folder);},
 
-      source_id_getter: function (P, cb) {GLOB.pers.call('request_source_id', P, cb);},
+      source_id_getter: function (P, cb) {Pers.call('request_source_id', P, cb);},
 
-      add_folder_menu: function (P, cb) {GLOB.files.addFolder(P.id_ensemble, P.id_folder);},
+      add_folder_menu: function (P, cb) {files.addFolder(P.id_ensemble, P.id_folder);},
 
-      add_folder: function (P, cb) {GLOB.pers.call('add_folder', P, cb);},
+      add_folder: function (P, cb) {Pers.call('add_folder', P, cb);},
 
-      rename_file_menu: function (P, cb) {GLOB.files.rename_file(P.id, P.item_type);},
+      rename_file_menu: function (P, cb) {files.rename_file(P.id, P.item_type);},
 
-      rename_file: function (P, cb) {GLOB.pers.call('rename_file', P, cb);},
+      rename_file: function (P, cb) {Pers.call('rename_file', P, cb);},
 
-      delete_file_menu: function (P, cb) {GLOB.files.delete_file(P.id, P.item_type);},
+      delete_file_menu: function (P, cb) {files.delete_file(P.id, P.item_type);},
 
-      delete_file: function (P, cb) {GLOB.pers.call('delete_file', P, cb);},
+      delete_file: function (P, cb) {Pers.call('delete_file', P, cb);},
 
-      move_file_menu: function (P, cb) {GLOB.files.move_file(P.id, P.item_type);},
+      move_file_menu: function (P, cb) {files.move_file(P.id, P.item_type);},
 
-      move_file: function (P, cb) {GLOB.pers.call('move_file', P, cb);},
+      move_file: function (P, cb) {Pers.call('move_file', P, cb);},
 
-      duplicate_file_menu: function (P, cb) {GLOB.files.duplicate_file(P.id, P.item_type);},
+      duplicate_file_menu: function (P, cb) {files.duplicate_file(P.id, P.item_type);},
 
-      update_file_menu: function (P, cb) {GLOB.files.update_file(P.id);},
+      update_file_menu: function (P, cb) {files.update_file(P.id);},
 
-      add_ensemble_menu: function (P, cb) {GLOB.files.addEnsemble();},
+      add_ensemble_menu: function (P, cb) {files.addEnsemble();},
 
-      add_ensemble: function (P, cb) {GLOB.pers.call('add_ensemble', P, cb);},
+      add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},
 
-      invite_users_menu: function (P, cb) {GLOB.files.inviteUsers(P.id_ensemble);},
+      invite_users_menu: function (P, cb) {files.inviteUsers(P.id_ensemble);},
 
-      invite_users: function (P, cb) {GLOB.pers.call('sendInvites', P, cb);},
+      invite_users: function (P, cb) {Pers.call('sendInvites', P, cb);},
 
-      assignment_file_menu: function (P, cb) {GLOB.files.edit_assignment(P.id);},
+      assignment_file_menu: function (P, cb) {files.edit_assignment(P.id);},
 
-      edit_assignment: function (P, cb) {GLOB.pers.call('edit_assignment', P, cb);},
+      edit_assignment: function (P, cb) {Pers.call('edit_assignment', P, cb);},
 
       get_top_comments_from_locations: function (P, cb) {
-        GLOB.pers.call('get_top_comments_from_locations', P, cb);
+        Pers.call('get_top_comments_from_locations', P, cb);
       },
 
       copy_file: function (P, cb) {
-        GLOB.pers.call('copy_file', {
+        Pers.call('copy_file', {
           source_id: P.source_id,
           target_name: P.target_name,
           target_id: P.target_id,
@@ -208,7 +220,7 @@
       },
 
       bulk_import_annotations: function (P, cb) {
-        GLOB.pers.call('bulk_import_annotations', {
+        Pers.call('bulk_import_annotations', {
           locs_array: P.locs_array,
           from_source_id: P.from_source_id,
           to_source_id: P.to_source_id,
@@ -218,17 +230,17 @@
     });
 
     $.concierge.addComponents({
-      notes_loader:    function (P, cb) {GLOB.pers.call('getNotes', P, cb);},
+      notes_loader:    function (P, cb) {Pers.call('getNotes', P, cb);},
 
-      note_creator:    function (P, cb) {GLOB.pers.call('saveNote', P, cb);},
+      note_creator:    function (P, cb) {Pers.call('saveNote', P, cb);},
 
-      note_editor:    function (P, cb) {GLOB.pers.call('editNote', P, cb);},
+      note_editor:    function (P, cb) {Pers.call('editNote', P, cb);},
     });
   };
 
-  GLOB.pers.createStore = function (payload) {
-    GLOB.pers.store = new GLOB.models.Store();
-    GLOB.pers.store.create(payload, {
+  Pers.createStore = function (payload) {
+    Pers.store = new Models.Store();
+    Pers.store.create(payload, {
       ensemble:    { pFieldName: 'ensembles' },
       section:    { pFieldName: 'sections', references: { id_ensemble: 'ensemble' } },
       file:    { pFieldName: 'files', references: { id_ensemble: 'ensemble', id_folder: 'folder' } },
@@ -245,7 +257,7 @@
       replyrating:{ references: { comment_id: 'comment' } },
     });
     var cb2 = function (P2) {
-      var m = GLOB.pers.store;
+      var m = Pers.store;
       m.set('location', P2['locations']);
       m.set('comment', P2['comments']);
       m.set('basecomment', P2['basecomments']);
@@ -254,20 +266,19 @@
 
     $.concierge.setHistoryHelper(function (_payload, cb) {
       _payload['__return'] = { type:'newPending', a:{} };
-      GLOB.pers.call('log_history', _payload, cb);
+      Pers.call('log_history', _payload, cb);
     }, 120000, cb2, 600000);
 
-    GLOB.files.set_model(GLOB.pers.store);
+    files.set_model(Pers.store);
     $.concierge.trigger({ type:'admin_init', value: 0 });
 
     //get more stats (pending stuff)
-    GLOB.pers.call('getPending', {}, function (P) {
-      GLOB.pers.store.add('location', P['locations']);
-      GLOB.pers.store.add('comment', P['comments']);
-      GLOB.pers.store.add('basecomment', P['basecomments']);
-      GLOB.pers.store.add('question', P['questions']);
+    Pers.call('getPending', {}, function (P) {
+      Pers.store.add('location', P['locations']);
+      Pers.store.add('comment', P['comments']);
+      Pers.store.add('basecomment', P['basecomments']);
+      Pers.store.add('question', P['questions']);
     });
 
   };
-
-})(NB);
+});

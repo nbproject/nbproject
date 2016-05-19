@@ -1,12 +1,10 @@
 /*
  * pers.js: common fct for perspective-based views
- * This module defines the namespace NB.pers
+ * This module defines the namespace Pers
  * It requires the following modules:
- *        Module
  *        NB
- *        NB.auth
+ *        Auth
  *        jquery
- *
  *
  Author
  cf AUTHORS.txt
@@ -16,8 +14,13 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global unescape:true NB:true NB$:true jQuery:true alert:false*/
-(function (GLOB) {
-  //require auth
+define(function(require) {
+  var Auth          = require('auth'),
+      Dom           = require('dom'),
+      Conf          = require('conf'),
+      Models        = require('models'),
+      concierge     = require('concierge');
+
   var $ = 'NB$' in window ? NB$ : $;
 
   // it would be great to use document.currentScript, but it only seems to be supported
@@ -33,7 +36,7 @@
     alert('Warning: Found more than one  NB script, i.e ending in : ' + scriptname + 'using the last one: ' + nb_script[nb_script.length - 1]);
   }
 
-  GLOB.pers = {
+  Pers = {
     currentScript: nb_script[nb_script.length - 1],
     embedded: false,
   };
@@ -53,25 +56,25 @@
     }, true);
   }
 
-  GLOB.pers.connection_id = 0;
-  GLOB.pers.first_connection = true;
-  GLOB.pers.connection_T = 1000;  // in msec
-  var server_info =  GLOB.pers.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);
-  GLOB.pers.server_url = server_info[1] + '://' + server_info[2];
-  GLOB.pers.call = function (fctname, dict, callback, errback) {
-    if ((!GLOB.pers.first_connection) && GLOB.pers.connection_id === 0) {
+  Pers.connection_id = 0;
+  Pers.first_connection = true;
+  Pers.connection_T = 1000;  // in msec
+  var server_info =  Pers.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);
+  Pers.server_url = server_info[1] + '://' + server_info[2];
+  Pers.call = function (fctname, dict, callback, errback) {
+    if ((!Pers.first_connection) && Pers.connection_id === 0) {
       // we haven't received a reply yet so put this function to wait for a while
       $.L('waiting until we get a connection id...');
       window.setTimeout(function () {
-        GLOB.pers.call(fctname, dict, callback, errback);
-      }, GLOB.pers.connection_T);
+        Pers.call(fctname, dict, callback, errback);
+      }, Pers.connection_T);
       return;
     }
 
-    GLOB.pers.first_connection = false;
+    Pers.first_connection = false;
     var cb = function (x) {
       if ('CID' in x.status) {
-        GLOB.pers.connection_id = x.status.CID;
+        Pers.connection_id = x.status.CID;
       }
 
       if (x.status.errno) {
@@ -88,13 +91,13 @@
       callback(x.payload);
     };
 
-    var auth_str = GLOB.conf.userinfo.guest ? 'guest=1' : 'ckey=' + GLOB.conf.userinfo.ckey;
-    $.post(GLOB.conf.servers.rpc + '/pdf4/rpc?' + auth_str, { cid: GLOB.pers.connection_id, f: fctname, a: JSON.stringify(dict) }, cb, 'json');
+    var auth_str = Conf.userinfo.guest ? 'guest=1' : 'ckey=' + Conf.userinfo.ckey;
+    $.post(Conf.servers.rpc + '/pdf4/rpc?' + auth_str, { cid: Pers.connection_id, f: fctname, a: JSON.stringify(dict) }, cb, 'json');
   };
 
-  GLOB.pers.__configure_user_menu = function (init_ui) {
-    var uinfo = GLOB.conf.userinfo = JSON.parse(unescape(GLOB.auth.get_cookie('userinfo'))) || { guest: true };
-    var nbhostname = GLOB.pers.server_url;
+  Pers.__configure_user_menu = function (init_ui) {
+    var uinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+    var nbhostname = Pers.server_url;
     var $login_contents;
     if (uinfo.guest) {
       $login_contents = $("<ul class='nb-dropdown-menu'><li><span id='login-name'>Guest</span><ul><li><a class='link-style nb-login'>Log in</a</li><li><span class='link-style nb-register'>Register</span></li><li><a class='link-style nb-logout'>Log out</a></li></ul></li></ul>");
@@ -114,10 +117,10 @@
       $('body').append($login_window);
     }
 
-    GLOB.pers.params = GLOB.dom.getParams();
+    Pers.params = Dom.getParams();
   };
 
-  GLOB.pers.add_css = function (url) {
+  Pers.add_css = function (url) {
     var o = document.createElement('link');
     o.type = 'text/css';
     o.href = url;
@@ -125,24 +128,24 @@
     document.getElementsByTagName('head')[0].appendChild(o);
   };
 
-  GLOB.pers.preinit = function (init_ui) {
+  Pers.preinit = function (init_ui) {
     if (init_ui === undefined) {
       init_ui = true;
     }
 
-    $.concierge.addComponents(GLOB.pers.__components);
-    GLOB.pers.__configure_user_menu(init_ui);
-    if ('init' in GLOB.pers) {
-      GLOB.pers.init();
+    $.concierge.addComponents(Pers.__components);
+    Pers.__configure_user_menu(init_ui);
+    if ('init' in Pers) {
+      Pers.init();
     }
   };
 
   /* stuff that can be used in various views */
-  GLOB.pers.__components = {
+  Pers.__components = {
     logout: function (p, cb) {
-      GLOB.auth.delete_cookie('userinfo');
-      GLOB.auth.delete_cookie('ckey');
-      if (GLOB.pers.embedded) {
+      Auth.delete_cookie('userinfo');
+      Auth.delete_cookie('ckey');
+      if (Pers.embedded) {
         document.location.reload();
       }      else {
         document.location.pathname = '/logout';
@@ -270,7 +273,7 @@
                     email: $('#register_user_email')[0].value,
                     pseudonym: $('#register_user_pseudonym')[0].value,
                 password: $('#register_user_password1')[0].value,
-                    ckey: GLOB.conf.userinfo.ckey, };
+                    ckey: Conf.userinfo.ckey, };
             $.concierge.get_component('register_user')(payload, function (p) {
               $.I('Thanks for registering... You should receive a confirmation code by email in less than a minute...');
               $dlg.dialog('destroy');
@@ -284,7 +287,7 @@
     },
 
     login_user_menu: function (P, cb) {
-      var nbhostname = GLOB.pers.server_url;
+      var nbhostname = Pers.server_url;
       var $util_window = $.concierge.get_component('get_util_window')();
       $('#register_user_dialog, #login_user_dialog').remove();
 
@@ -342,25 +345,25 @@
     },
 
     register_user: function (P, cb, eb) {
-      GLOB.pers.call('register_user', P, cb, eb);
+      Pers.call('register_user', P, cb, eb);
     },
 
     advanced_filter: function (P, cb, eb) {
-      GLOB.pers.call('advanced_filter', P, cb, eb);
+      Pers.call('advanced_filter', P, cb, eb);
     },
 
     login_user: function (P, cb) {
-      GLOB.pers.call('login_user', P, cb);
+      Pers.call('login_user', P, cb);
     },
 
     get_userinfo: function (P, cb) {
-      return GLOB.conf.userinfo;
+      return Conf.userinfo;
     },
 
     mini_splashscreen: function (P, cb) {
       var widget;
-      var nbhostname  = GLOB.pers.server_url;
-      if (GLOB.conf.userinfo.guest) { //splashscreen for non-registered user
+      var nbhostname  = Pers.server_url;
+      if (Conf.userinfo.guest) { //splashscreen for non-registered user
         widget =  "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div><div id='nb-def'>...a forum on top of every PDF.</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>New user ? <a class='link-style nb-register'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a class='link-style nb-login'>Log in</a> now...</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
       }      else { //splashscreen for registered user
         widget = "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>Drag across any region on the pdf to create a new discussion</li> <li>Right-click on any comment to post a reply</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
@@ -371,11 +374,11 @@
       return widget;
     },
 
-    note_deleter: function (P, cb) {GLOB.pers.call('deleteNote', P, cb);},
+    note_deleter: function (P, cb) {Pers.call('deleteNote', P, cb);},
 
-    rate_reply: function (P, cb) {GLOB.pers.call('rate_reply', P, cb);},
+    rate_reply: function (P, cb) {Pers.call('rate_reply', P, cb);},
 
-    mark_thread: function (P, cb) {GLOB.pers.call('markThread', P, cb);},
+    mark_thread: function (P, cb) {Pers.call('markThread', P, cb);},
 
     get_login_window: function (P, cb) {
       return $('#login-window');
@@ -387,7 +390,7 @@
         payload_objects['payload'] = { id_ensemble: P.id_ensemble };
       }
 
-      GLOB.pers.call('getObjects', payload_objects, cb);
+      Pers.call('getObjects', payload_objects, cb);
     },
 
     in_progress: function (P, cb) {
@@ -416,7 +419,7 @@
     },
 
     get_login_dialog_markup: function (P, cb) {
-      var nbhostname = GLOB.pers.server_url;
+      var nbhostname = Pers.server_url;
 
       return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='" + nbhostname + "/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location='" + nbhostname + '/openid/login?next=' + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "'><img style='vertical-align: middle;' src='" + nbhostname + "/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button style='display: none' title='Login using your Facebook account' onclick='document.location='/facebook/login?next=" + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
     },
@@ -429,4 +432,6 @@
       return 0.2;
     },
   };
-})(NB);
+
+  return Pers;
+});

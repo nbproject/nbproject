@@ -9,13 +9,13 @@
 
 */
 
-(function (GLOB) {
+define(function(require) {
   if ('NB$' in window) {
     var $ = NB$;
   };
 
-  GLOB.dom = {};
-  GLOB.dom.elementItem = function (node, n) { //0-based
+  var Dom = {};
+  Dom.elementItem = function (node, n) { //0-based
     var i = 0;
     var child = node.firstChild;
     while (true) {
@@ -32,7 +32,7 @@
     }
   };
 
-  GLOB.dom.firstElement = function (node) {
+  Dom.firstElement = function (node) {
     var child = node.firstChild;
     while (child.nodeType != 1) {
       child = child.nextSibling;
@@ -41,7 +41,7 @@
     return child;
   };
 
-  GLOB.dom.previousElement = function (node) {
+  Dom.previousElement = function (node) {
     var n = node.previousSibling;
     while (n) {
       if (n.nodeType == 1) {
@@ -54,7 +54,7 @@
     return null;
   };
 
-  GLOB.dom.nextElement = function (node) {
+  Dom.nextElement = function (node) {
     var n = node.nextSibling;
     while (n) {
       if (n.nodeType == 1) {
@@ -67,23 +67,23 @@
     return null;
   };
 
-  GLOB.dom.elementPosition = function (node) {
+  Dom.elementPosition = function (node) {
     /**
         	 * returns the 0-based element-position of 'node',
         	 * i.e. the number of DOM **elements** that are before 'node'
         	 *
         	 **/
     var i = 0;
-    var n = GLOB.dom.previousElement(node);
+    var n = Dom.previousElement(node);
     while (n) {
       i++;
-      n = GLOB.dom.previousElement(n);
+      n = Dom.previousElement(n);
     }
 
     return i;
   };
 
-  GLOB.dom.getAncestorByHasAttribute = function (elt, name) {
+  Dom.getAncestorByHasAttribute = function (elt, name) {
     var parent = elt.parentNode;
     while (parent && (!(parent.hasAttribute(name)))) {
       parent = parent.parentNode;
@@ -92,7 +92,7 @@
     return parent;
   };
 
-  GLOB.dom.getParams = function () {
+  Dom.getParams = function () {
     var s = document.location.search;
     var params = {};
     if (s != '') {
@@ -110,24 +110,25 @@
     return params;
   };
 
-  GLOB.dom.__sections = {
+  Dom.__sections = {
     do_toc: false,
     toc_id: 'toc',
     do_b2t: false,
   }; //parameters.
-  GLOB.dom.addSection = function () {
+  Dom.addSection = function () {
     /*
     	 * inspired from sections.js in stats2
     	 * just need to initialize it with
-    	 *     $("div.section").each(GLOB.dom.addSection);
+    	 *     $("div.section").each(Dom.addSection);
     	 */
     var title = this.getAttribute('label');
-    if (GLOB.dom.__sections.do_toc) {
-      $('#' + GLOB.dom.__sections.toc_id).append("<a href='#" + this.id + "'>" + title + '</a>');
+    if (Dom.__sections.do_toc) {
+      $('#' + Dom.__sections.toc_id).append("<a href='#" + this.id + "'>" + title + '</a>');
     }
 
     $(this).children().wrapAll("<div class='section-body'></div>");
-    var b2t = (GLOB.dom.__sections.do_b2t) ? '<a class="navlink"  href="#' + GLOB.dom.__sections.toc_id + '">back to top </a>' : '';
+    var b2t = (Dom.__sections.do_b2t) ? '<a class="navlink"  href="#' + Dom.__sections.toc_id + '">back to top </a>' : '';
     $(this).prepend("<div class='section-header'>" + b2t + title + '</div>');
   };
-})(NB);
+  return Dom;
+});

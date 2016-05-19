@@ -11,30 +11,35 @@
 */
 /*global NB$:true NB:true $:true*/
 
-(function (GLOB) {
-  //require auth
+define(function(require) {
+  var Conf            = require('conf'),
+      Dom             = require('dom'),
+      Models          = require('models'),
+      Pers            = require('pers'),
+      concierge       = require('concierge');
+
   if ('NB$' in window) {
     var $ = NB$;
   }
 
-  NB.pers.init = function () {
+  Pers.init = function () {
     //get data:
     var payload_objects = { types: ['settings'] };
-    NB.pers.call('getObjects', payload_objects, NB.pers.createStore);
+    Pers.call('getObjects', payload_objects, Pers.createStore);
     $.concierge.addComponents({});
   };
 
-  NB.pers.createStore = function (payload) {
-    NB.pers.store = new NB.models.Store();
-    NB.pers.store.create(payload.settings, {
+  Pers.createStore = function (payload) {
+    Pers.store = new Models.Store();
+    Pers.store.create(payload.settings, {
       ds:     { pFieldName: 'ds' },
       us:     { pFieldName: 'us' },
       sl:     { pFieldName: 'sl' },
     });
-    NB.pers.settings_menu();
+    Pers.settings_menu();
   };
 
-  NB.pers.validateNewPassword = function (event) {
+  Pers.validateNewPassword = function (event) {
     var savebutton =  $('#save_button');
     var passwd1 = $('#new_password1')[0].value;
     var passwd2 = $('#new_password2')[0].value;
@@ -60,16 +65,16 @@
     }
   };
 
-  NB.pers.on_setting_change = function (event) {
+  Pers.on_setting_change = function (event) {
     var t = event.currentTarget;
     var id_item = t.getAttribute('id_item');
-    NB.pers.newSettings[id_item] = t.options[t.selectedIndex].value;
+    Pers.newSettings[id_item] = t.options[t.selectedIndex].value;
   };
 
-  NB.pers.settings_menu = function () {
-    NB.pers.newSettings = {};
+  Pers.settings_menu = function () {
+    Pers.newSettings = {};
     $('select.settings_selector').each(function () {
-      var m = NB.pers.store;
+      var m = Pers.store;
       var elt = $(this);
       elt.empty();
 
@@ -95,15 +100,15 @@
       if (do_save) {
         var passwd = $('#new_password1')[0].value;
         if (passwd !== '') {
-          NB.pers.newSettings['__PASSWD__'] = passwd;
+          Pers.newSettings['__PASSWD__'] = passwd;
           $('#newpassword_msg').hide();
           $('#new_password1')[0].value = '';
           $('#new_password2')[0].value = '';
         }
 
-        NB.pers.call('save_settings', NB.pers.newSettings, function (payload) {
+        Pers.call('save_settings', Pers.newSettings, function (payload) {
           //update new settings
-          NB.pers.store.add('us', payload.settings.us);
+          Pers.store.add('us', payload.settings.us);
         });
 
         $.I('Your changes have been saved...');
@@ -114,7 +119,7 @@
 
     $('#save_button').click(function () {f_cleanup(true);});
 
-    var u = NB.conf.userinfo;
+    var u = Conf.userinfo;
     $('#your_firstname').text(u.firstname);
     $('#your_lastname').text(u.lastname);
     $('#your_email').text(u.email);
@@ -124,11 +129,11 @@
   (function () {
     var myJquery = NB$ || $;
     myJquery(function () {
-      GLOB.pers.params = GLOB.dom.getParams();
-      GLOB.pers.admin = false;
-      GLOB.pers.preinit(false);
+      Pers.params = Dom.getParams();
+      Pers.admin = false;
+      Pers.preinit(false);
     });
 
   })();
 
-})(NB);
+});

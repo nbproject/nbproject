@@ -1,5 +1,14 @@
 /*global NB:true NB$:true $:true rangy:true alert:true wgxpath:true jQuery:true getElementCSSSelector:true console:true */
-(function (GLOB) {
+define(function(require) {
+  var $                   = require('jquery'),
+      concierge           = require('concierge'),
+      Pers                = require('pers'),
+      rangy               = require('rangy-core'),
+      rangy_classapplier  = require('rangy-classapplier'),
+      rangy_serializer    = require('rangy-serializer'),
+      rangy_textrange     = require('rangy-textrange'),
+      wgx                 = require('wgxpath');
+
   var _scrollTimerID = null;
   var _scrollCounter = 0;
   if ('NB$' in window) {
@@ -40,11 +49,11 @@
     callback();
   };
 
-  GLOB.html = {
+  Html = {
     id: 'docviewHtml5',
   };
 
-  GLOB.html.init = function () {
+  Html.init = function () {
 
     var countChildChars = function (_char, _this) {
       var char = _char;
@@ -65,7 +74,7 @@
 
     countChildChars(0, $('body')[0]);
 
-    $.concierge.addListeners(GLOB.html, {
+    $.concierge.addListeners(Html, {
       page: function (evt) {
         // _render();
       },
@@ -105,7 +114,7 @@
         }
       },
     },
-            GLOB.html.id);
+            Html.id);
 
     rangy.init();
 
@@ -219,7 +228,7 @@
 
     });
 
-    GLOB.pers.store.register({
+    Pers.store.register({
             update: function (action, payload, items_fieldname) {
               var key;
 
@@ -335,7 +344,7 @@
     }, 250);
   };
 
-  GLOB.html.clearAnnotations = function () {
+  Html.clearAnnotations = function () {
     $('.nb-comment-highlight').contents().unwrap();
   };
 
@@ -432,4 +441,6 @@
     return nodes;
   };
 
-})(NB);
+  return Html;
+
+});

@@ -3,7 +3,7 @@
  * Requires the following modules:
  *        Module
  *        NB
- *        NB.auth
+ *        Auth
  *        jquery
  *
  *
@@ -16,17 +16,30 @@
 */
 /*global NB:true NB$:true */
 
-(function (GLOB) {
+define(function(require) {
+  var $               = require('jquery'),
+      concierge       = require('concierge'),
+      Auth            = require('auth'),
+      Conf            = require('conf'),
+      Models          = require('models'),
+      Pers            = require('pers'),
+      perspective     = require('perspective'),
+      docview         = require('docview_spreadsheet'),
+      notepane        = require('notepane_spreadsheet'),
+      threadview      = require('threadview'),
+      editorview      = require('editorview'),
+      spreadsheetview = require('spreadsheetview');
+
   if ('NB$' in window) {
     var $ = NB$;
   }
 
-  GLOB.pers.init = function () {
-    GLOB.pers._selectTimerID =  null;
-    GLOB.pers.grade2litt = { 4: 'A', 3: 'B', 2: 'C', 1: 'D', 0: 'F' };
-    GLOB.pers.id_author_readahead = null;
-    GLOB.pers.collection = { items: [], index: {} };
-    GLOB.pers.call('getParams', { name: ['RESOLUTIONS', 'RESOLUTION_COORDINATES'] }, function (p) {
+  Pers.init = function () {
+    Pers._selectTimerID =  null;
+    Pers.grade2litt = { 4: 'A', 3: 'B', 2: 'C', 1: 'D', 0: 'F' };
+    Pers.id_author_readahead = null;
+    Pers.collection = { items: [], index: {} };
+    Pers.call('getParams', { name: ['RESOLUTIONS', 'RESOLUTION_COORDINATES'] }, function (p) {
       $.concierge.addConstants(p.value);
     });
 
@@ -41,7 +54,7 @@
         desired_width: 60,
         content: function ($div) {
           $div.spreadsheetview();
-          $div.spreadsheetview('set_model', GLOB.pers.store);
+          $div.spreadsheetview('set_model', Pers.store);
         },
       };
       var notesview =  {
@@ -52,7 +65,7 @@
         desired_height: 70,
         content: function ($div) {
           $div.notepaneView();
-          $div.notepaneView('set_model', GLOB.pers.store);
+          $div.notepaneView('set_model', Pers.store);
         },
       };
       var docview    = {
@@ -62,11 +75,11 @@
         min_height: 300,
         desired_height: 30,
         content: function ($div) {
-          $div.docView({ img_server: GLOB.conf.servers.img });
-          $div.docView('set_model', GLOB.pers.store);
+          $div.docView({ img_server: Conf.servers.img });
+          $div.docView('set_model', Pers.store);
           /*
           window.setTimeout(function(){
-                  $div.docView("set_model",GLOB.pers.store );
+                  $div.docView("set_model",Pers.store );
               }, 5000);
           */
         },
@@ -80,16 +93,16 @@
         transcient: true,
         content: function ($div) {
           $div.editorview({ allowStaffOnly: false, allowAnonymous: false });
-          $div.editorview('set_model', GLOB.pers.store);
+          $div.editorview('set_model', Pers.store);
         },
       };
-      var self = GLOB.pers;
+      var self = Pers;
       $pers.perspective({
         height: function () {return $vp.height() - $pers.offset().top;},
 
         listens: {
           successful_login: function (evt) {
-            GLOB.auth.set_cookie('ckey', evt.value.ckey);
+            Auth.set_cookie('ckey', evt.value.ckey);
             document.location = 'http://' + document.location.host + document.location.pathname;
             $.I('Welcome !');
           },
@@ -97,7 +110,7 @@
           selection: function (evt) {
             var v = evt.value;
             var sel = v.sel;
-            var m = GLOB.pers.store;
+            var m = Pers.store;
             var id_source = v.files[sel[1] - 1].id;
             var id_author = v.users[sel[0] - 1].id;
             var L =  m.meta.loadednotes;
@@ -149,15 +162,15 @@
 
             if (id_author in L[id_source]) {//use cached values
               f_trigger = function () {
-                GLOB.pers.collection.items = L[id_source][id_author].items;
-                GLOB.pers.collection.index = L[id_source][id_author].index;
-                GLOB.pers.collection.meta = { id_user: id_author, id_source: id_source };
+                Pers.collection.items = L[id_source][id_author].items;
+                Pers.collection.index = L[id_source][id_author].index;
+                Pers.collection.meta = { id_user: id_author, id_source: id_source };
                 $.concierge.trigger({ type:'collection', value: 1 });
-                if (id_next_author !== null && GLOB.id_author_readahead == null) {
-                  GLOB.id_author_readahead = id_next_author;
-                  GLOB.pers.call('getMyNotes', { query: 'auth_admin', id_source:id_source, id_author:id_next_author }, function (P3) {
+                if (id_next_author !== null && id_author_readahead == null) {
+                  id_author_readahead = id_next_author;
+                  Pers.call('getMyNotes', { query: 'auth_admin', id_source:id_source, id_author:id_next_author }, function (P3) {
                     //mark readahead available again and load data silently
-                    GLOB.id_author_readahead = null;
+                    id_author_readahead = null;
                     f_on_data(P3, id_next_author);
                   });
                 }
@@ -167,17 +180,17 @@
             }            else {
               f_trigger = function () {
                 var P2 =  { query: 'auth_admin', id_source:id_source, id_author:id_author };
-                GLOB.pers.call('getMyNotes', P2, function (P) {
-                  //var m = GLOB.pers.store;
+                Pers.call('getMyNotes', P2, function (P) {
+                  //var m = Pers.store;
                   f_on_data(P, id_author);
-                  GLOB.pers.collection.items =     L[id_source][id_author].items;
-                  GLOB.pers.collection.index =     L[id_source][id_author].index;
-                  GLOB.pers.collection.meta = { id_user: id_author, id_source: id_source };
+                  Pers.collection.items =     L[id_source][id_author].items;
+                  Pers.collection.index =     L[id_source][id_author].index;
+                  Pers.collection.meta = { id_user: id_author, id_source: id_source };
                   $.concierge.trigger({ type:'collection', value: 1 });
-                  if (id_next_author !== null && GLOB.id_author_readahead == null) {
-                    GLOB.pers.call('getMyNotes', { query: 'auth_admin', id_source:id_source, id_author:id_next_author }, function (P3) {
+                  if (id_next_author !== null && id_author_readahead == null) {
+                    Pers.call('getMyNotes', { query: 'auth_admin', id_source:id_source, id_author:id_next_author }, function (P3) {
                       //mark readahead available again and load data silently
-                      GLOB.id_author_readahead = null;
+                      id_author_readahead = null;
                       f_on_data(P3, id_next_author);
                     });
                   }
@@ -196,13 +209,13 @@
     });
 
     $.concierge.addComponents({
-      get_collection:        function (P, cb) {return GLOB.pers.collection;},
+      get_collection:        function (P, cb) {return Pers.collection;},
 
       set_grade_assignment: function (P, cb) {
-        GLOB.pers.call('set_grade_assignment', P, cb);
+        Pers.call('set_grade_assignment', P, cb);
       },
 
-      grade2litt: function (P, cb) {return GLOB.pers.grade2litt[P];},
+      grade2litt: function (P, cb) {return Pers.grade2litt[P];},
 
       splash_notepaneview: function (P, cb) {
         return "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> <div id='splash-welcome'>Welcome... </div><br/><i>Using the keyboard shortcuts below will likely speed up your grading task by a lot...</i><br/> <ul id='splash-list-instructions'> <li>Use the <b>arrow keys</b> to navigate between cells and display the comments for the selected assignment</li><li>Use the <b>&#60;</b> and <b>&#62;</b> keys to move between threads within the selected assignment</li><li>Use the <b>A,B,C,D,F</b> keys to let to assign the corresponding grade to the selected assignment </li></ul> </div>";
@@ -212,25 +225,25 @@
         return "<div xmlns='http://www.w3.org/1999/xhtml' class='minisplashscreen ui-corner-all'> Select an assignment to see a preview of the material here</div>";
       },
 
-      note_creator:    function (P, cb) {GLOB.pers.call('saveNote', P, cb);},
+      note_creator:    function (P, cb) {Pers.call('saveNote', P, cb);},
 
-      note_editor:    function (P, cb) {GLOB.pers.call('editNote', P, cb);},
+      note_editor:    function (P, cb) {Pers.call('editNote', P, cb);},
 
     });
 
     //get data:
     var P2 =  {};
-    if ('id_ensemble' in GLOB.pers.params) {
-      P2['id_ensemble'] = GLOB.pers.params.id_ensemble;
+    if ('id_ensemble' in Pers.params) {
+      P2['id_ensemble'] = Pers.params.id_ensemble;
     }
 
-    GLOB.pers.call('get_stats_ensemble', P2,  GLOB.pers.createStore);
+    Pers.call('get_stats_ensemble', P2,  Pers.createStore);
   };
 
-  GLOB.pers.createStore = function (payload) {
-    var m = new GLOB.models.Store();
+  Pers.createStore = function (payload) {
+    var m = new Models.Store();
     m.meta = { loadednotes:{} };
-    GLOB.pers.store = m;
+    Pers.store = m;
     $.concierge.addConstants({ res: 288, scale: 25 });
     m.create(payload, {
       ensemble:    { pFieldName: 'ensembles' },
@@ -246,15 +259,15 @@
       draft: {},
     });
 
-    //    GLOB.pers.sequence = payload.sequence;
-    $.concierge.setHistoryHelper(function (payload, cb) {GLOB.pers.call('log_history', payload, cb);}, 120000);
+    //    Pers.sequence = payload.sequence;
+    $.concierge.setHistoryHelper(function (payload, cb) {Pers.call('log_history', payload, cb);}, 120000);
 
     $.concierge.trigger({ type:'spreadsheet', value: 1 });
 
     document.title = $.E(m.get('ensemble', {}).first().name + ' spreadsheet');
   };
 
-  GLOB.pers.find_next_author = function (v) {
+  Pers.find_next_author = function (v) {
     var self        = this;
     var sel        = v.sel;
     var m        = self.store;
@@ -280,4 +293,4 @@
     return id_author_next;
   };
 
-})(NB);
+});

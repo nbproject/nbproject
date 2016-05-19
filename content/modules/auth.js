@@ -10,9 +10,9 @@
 
 */
 
-(function (GLOB) {
-  GLOB.auth = {};
-  GLOB.auth.set_cookie = function (name, value, expires_year, expires_month, expires_day, path, domain, secure) {
+define(function(require) {
+  var Auth = {};
+  Auth.set_cookie = function (name, value, expires_year, expires_month, expires_day, path, domain, secure) {
     var cookie_string = name + '=' + escape(value);
 
     if (expires_year)  {
@@ -37,14 +37,14 @@
     document.cookie = cookie_string;
   };
 
-  GLOB.auth.delete_cookie = function (cookie_name, path) {
+  Auth.delete_cookie = function (cookie_name, path) {
     document.cookie = cookie_name
       + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path='
       + (path ? escape(path) : '/')
       + ';';
   };
 
-  GLOB.auth.get_cookie = function (cookie_name) {
+  Auth.get_cookie = function (cookie_name) {
     var results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
     if (results) {
       return (unescape(results[2]));
@@ -52,4 +52,6 @@
       return null;
     }
   };
-})(NB);
+
+  return Auth;
+});
