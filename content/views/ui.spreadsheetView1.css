@@ -1,0 +1,56 @@
+div.spreadsheetView
+{
+    overflow-y: auto;
+
+    height: 100%;
+}
+
+table.spreadsheet
+{
+    border-collapse: collapse;
+
+    border: this solid #c0c0c0;
+}
+
+table.spreadsheet td
+{
+    border: thin solid #c0c0c0;
+}
+
+table.spreadsheet th
+{
+    height: 100px;
+
+    -webkit-transform: rotate(300deg);
+       -moz-transform: rotate(300deg);
+
+    border: thin solid #c0c0c0;
+
+    writing-mode: tb-rl;
+}
+
+table.spreadsheet td.selected
+{
+    border-color: #4070c0;
+    background-color: #a0c0ff;
+}
+
+
+table.spreadsheet span.grade
+{
+    font-weight: bold;
+
+    float: right;
+
+    margin-right: 5px;
+
+    color: #c04040;
+}
+
+
+table.spreadsheet span.stat
+{
+    margin-left: 5px;
+
+    color: #707070;
+}

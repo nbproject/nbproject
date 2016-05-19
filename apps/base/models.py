@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.fields import  CharField, IntegerField, BooleanField, TextField, DateTimeField, EmailField
 from django.db.models.fields.related import ForeignKey, OneToOneField
-#from django.utils.tzinfo import FixedOffset, LocalTimezone
+from django.utils.tzinfo import FixedOffset, LocalTimezone
 from datetime import datetime
 import time
 import pytz

@@ -3,12 +3,12 @@
 {% block css %}
     <link type="text/css" href="/content/compiled/settings.css" rel="stylesheet" />
 {% endblock %}
-{% block js %}   
+{% block js %}
 <script type="text/javascript" src="/content/compiled/settings_NB.js"></script>
 {% endblock %}
 {% block content %}
 
-    
+
       <h1>NB Settings for <span id="your_firstname"/> <span id="your_lastname"/> (<span id="your_email"/>)</h1>
       <div id="settings_panel">
 	<ul>
@@ -17,17 +17,17 @@
 	    <div class="settings-section-body">
 
 	      <table>
-		<tr><td>New Password</td><td><input type="password" id="new_password1" onkeyup="NB.pers.validateNewPassword(event)"></input></td></tr><tr><td> Please Retype</td><td> <input type="password" id="new_password2" onkeyup="NB.pers.validateNewPassword(event)" ></input></td></tr></table>
+		<tr><td>New Password</td><td><input type="password" id="new_password1" onkeyup="Pers.validateNewPassword(event)"></input></td></tr><tr><td> Please Retype</td><td> <input type="password" id="new_password2" onkeyup="Pers.validateNewPassword(event)" ></input></td></tr></table>
 <span id="newpassword_msg"/> </div>
 	  </li>
 	  <li>
-	    <div class="settings-section-title" >Email Notifications</div>	    
+	    <div class="settings-section-title" >Email Notifications</div>
 	    <div  class="settings-section-body">
 	      <table>
-		<tr><td>Comments that I wrote</td><td><select  class="settings_selector" id_item="email_confirmation_author" onchange="NB.pers.on_setting_change(event)"/></td></tr>
-		<tr><td>New reply in a discussion to which I participated</td><td><select class="settings_selector" id_item="email_confirmation_reply_author" onchange="NB.pers.on_setting_change(event)"/></td></tr>
-		<tr><td>New comments in classes for which I'm a staff member (if any)</td><td><select class="settings_selector" id_item="email_confirmation_all" onchange="NB.pers.on_setting_change(event)"/></td></tr>
-                <tr><td>New comments in which I am tagged</td><td><select class="settings_selector" id_item="email_confirmation_tags" onchange="NB.pers.on_setting_change(event)"/></td></tr>
+		<tr><td>Comments that I wrote</td><td><select  class="settings_selector" id_item="email_confirmation_author" onchange="Pers.on_setting_change(event)"/></td></tr>
+		<tr><td>New reply in a discussion to which I participated</td><td><select class="settings_selector" id_item="email_confirmation_reply_author" onchange="Pers.on_setting_change(event)"/></td></tr>
+		<tr><td>New comments in classes for which I'm a staff member (if any)</td><td><select class="settings_selector" id_item="email_confirmation_all" onchange="Pers.on_setting_change(event)"/></td></tr>
+                <tr><td>New comments in which I am tagged</td><td><select class="settings_selector" id_item="email_confirmation_tags" onchange="Pers.on_setting_change(event)"/></td></tr>
 
 	      </table>
 	    </div>

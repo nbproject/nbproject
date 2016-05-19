@@ -1,8 +1,8 @@
 /*
  * lost.js
  *
-Author 
-    cf AUTHORS.txt 
+Author
+    cf AUTHORS.txt
 
 License
     Copyright (c) 2010-2012 Massachusetts Institute of Technology.
@@ -11,26 +11,31 @@ License
  */
 /*global NB$:true  NB:true*/
 
-(function(GLOB){
-    //require auth
-    if ("NB$" in window){
+define(function(require) {
+  var Pers            = require('pers'),
+      Dom             = require('dom'),
+      concierge       = require('concierge');
+
+  if ('NB$' in window) {
     var $ = NB$;
-    }
-    GLOB.lost = {};
-    
-    GLOB.lost.onLostButton = function(){    
-        var cb = function(p){
-            var payload = p.payload;
-            $(".email").text(payload.email);
-            
-            if (p.status.errno){
-                $(".error-msg").show();
-            }
-            else{
-                $("#form1").hide();
-                $("#success").show();
-            }
-        };
-        $.post("/pdf4/rpc", {"f": "passwordLost", "cid":0, "a": JSON.stringify({email: $("#email")[0].value})}, cb, "json");
+  }
+
+  var Lost = {};
+
+  Lost.onLostButton = function () {
+    var cb = function (p) {
+      var payload = p.payload;
+      $('.email').text(payload.email);
+
+      if (p.status.errno) {
+        $('.error-msg').show();
+      }      else {
+        $('#form1').hide();
+        $('#success').show();
+      }
     };
-})(NB);
+
+    $.post('/pdf4/rpc', { f: 'passwordLost', cid:0, a: JSON.stringify({ email: $('#email')[0].value }) }, cb, 'json');
+  };
+  return Lost;
+});

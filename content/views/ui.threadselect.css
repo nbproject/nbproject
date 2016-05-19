@@ -1,0 +1,52 @@
+.threadselect
+{
+    margin: 3px;
+    padding: 0;
+}
+
+.threadselect > div
+{
+    clear: both;
+
+    padding: 6px;
+
+    border: 1px #ddd solid;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: #f4f4f4;
+}
+
+.threadselect > div:nth-child(odd)
+{
+    background-color: #fafafa;
+}
+
+.threadselect > div input[type=checkbox]
+{
+    float: left;
+}
+
+.threadselect ins.locationflag.lf-numnotes
+{
+    font-size: 10px;
+
+    display: inline-block;
+    float: left;
+
+    margin: 2px 4px;
+    padding: 2px 4px;
+
+    text-decoration: none;
+
+    color: #888;
+    border-radius: 4px;
+    background-color: #ccc;
+}
+
+.threadselect div.location-shortbody-text
+{
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

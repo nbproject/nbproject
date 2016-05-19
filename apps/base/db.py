@@ -120,7 +120,7 @@ class Db:
             selectclause += " %s,"%(n if names[n] is None else names[n],)
         selectclause=selectclause[:-1] #remove trailing comma
         qry = "select %s from %s where %s %s"%(selectclause, fromclause, whereclause, extraSQL)
-        if settings.DEBUG_QUERY:
+        if settings.DEBUG_QUERY: 
             debug_query = qry.replace("?", "%s")
             logging.info("[getIndexedObjects] "+ debug_query % args)
         connection = self.getNewConnection()

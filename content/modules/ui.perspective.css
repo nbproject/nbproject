@@ -5,36 +5,47 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 */
 
 .separator,
-.external-separator{
-    background-color:#EFEBE7;
-    z-index: 10;
+.external-separator
+{
     position: absolute !important;
+    z-index: 10;
+
+    background-color: #efebe7;
 }
 
 
-.external-separator:hover, 
-.separator:hover {
-    background-color: #CCC;
+.external-separator:hover,
+.separator:hover
+{
     z-index: 11;
+
+    background-color: #ccc;
 }
 
-.pers-container{
+.pers-container
+{
     overflow: hidden;
 }
 
-.pers-protection{
-    overflow: hidden;
+.pers-protection
+{
     position: relative;
+
+    overflow: hidden;
+
     width: 100%;
     height: 100%;
 }
 
-.pers-widget{
-    overflow: hidden;
+.pers-widget
+{
     position: absolute;
+
+    overflow: hidden;
 }
 
-.focusgrabber{
-position: absolute; 
-top: -1000px;
+.focusgrabber
+{
+    position: absolute;
+    top: -1000px;
 }

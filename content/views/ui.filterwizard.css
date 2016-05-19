@@ -1,0 +1,16 @@
+div.filterWizard .filter-number
+{
+    width: 3em;
+}
+
+div.filterWizard .input-error
+{
+    border: 2px solid #f00;
+}
+
+div.filterWizard .error-message
+{
+    font-weight: bold;
+
+    color: #c11;
+}

@@ -1,0 +1,756 @@
+/*
+Author: cf AUTHORS.txt 
+License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+          MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+*/
+div.docView
+{
+    overflow-y: auto;
+
+    background-color: #e6e6e6 !important;
+}
+
+div.docView > div.util
+{
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+
+    position: fixed;
+    z-index: 1;
+
+    padding: 1px 5px 1px 5px;
+
+    opacity: .5;
+    color: #e0f0ff;
+    background-color: #707070;
+}
+
+div.docView div.material.selected
+{
+    border: 2px  solid #5090f0;
+}
+
+div.docView div.material
+{
+    position: relative;
+
+    overflow: hidden;
+
+    margin: 0 0 20px 0;
+
+    border: 2px solid #d0dede;
+}
+
+
+div.docView div.innermaterial
+{
+    position: absolute;
+
+    cursor: move;
+}
+
+div.docView img.material
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+
+    -webkit-user-drag: none;
+            user-drag: none;
+}
+
+div.docView div.selection
+{
+    position: absolute;
+    z-index: 2;
+
+    overflow: hidden;
+
+    opacity: .3;
+    border: thin solid #777;
+    border-radius: 5px;
+}
+
+div.docView div.selection.hovered
+{
+    overflow: visible;
+
+    border-color: #337;
+    background-color: #b5b5e5;
+}
+
+div.docView div.selection.selected
+{
+    opacity: .4;
+    border-color: #337;
+    background-color: #a5b5e5;
+}
+
+div.docView div.editor-footer
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+}
+
+div.docView div.global-editors
+{
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 16px;
+}
+
+div.docView div.existing_link
+{
+    position: absolute;
+
+    cursor: pointer;
+}
+
+div.docView div.existing_link:hover
+{
+    border-bottom: thin solid #33f;
+}
+
+div.pagenumber
+{
+    position: absolute;
+    z-index: 1;
+    right: 50px;
+
+    padding: 3px;
+
+    opacity: .5;
+    border: thin solid #f0f0f0;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+div.pagenumber:hover
+{
+    opacity: 1;
+    border: thin solid #c0c0c0;
+}
+
+div.pagenumberbottom
+{
+    bottom: 0;
+}
+#docview_drawingarea
+{
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+}
+/* youtube viewer */
+
+#docview_controls > button
+{
+    width: 44px;
+    height: 44px;
+    margin-right: 10px;
+
+    background-image: url('/content/data/icons/png/theme_dark.png');
+    background-repeat: no-repeat;
+}
+
+#docview_controls > button::-moz-focus-inner
+{
+    border: 0;
+}
+
+
+#docview_button_play
+{
+    background-position: -40px -20px;
+}
+
+#docview_button_play.paused
+{
+    background-position: 0 -20px;
+}
+
+#docview_button_sb
+{
+    background-position: -160px -20px;
+}
+
+#docview_button_sf
+{
+    background-position: -120px -20px;
+}
+#docview_button_stop
+{
+    background-position: -80px -20px;
+}
+
+#docview_scrollbar
+{
+    position: relative;
+
+    height: 40px;
+    margin-bottom: 25px;
+}
+
+#docview_scrollbar_list
+{
+    position: absolute;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 20px;
+    margin-top: 10px;
+
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
+            border-radius: 10px;
+    background-color: #000;
+}
+
+#docview_scrollbar_tickholder
+{
+    position: relative;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
+}
+
+#docview_scrollbar_tick
+{
+    position: absolute;
+
+    width: 2px;
+    height: 20px;
+
+    opacity: .4;
+    background: red;
+}
+
+#docview_scrollbar_thumb
+{
+    position: absolute;
+
+    width: 10px;
+    height: 40px;
+
+    border: thin solid #707070;
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+            border-radius: 3px;
+    background-color: #a0a0a0;
+    /*left: 0px;*/
+}
+
+#docview_scrollbar_elapsed
+{
+    color: #909090;
+}
+
+#docview_scrollbar_total
+{
+    float: right;
+
+    color: #909090;
+}
+
+/* Annotation */
+.nav
+{
+    font-size: 12pt;
+}
+
+.titleContainer
+{
+    font-size: 20px;
+    font-weight: bold;
+
+    height: 25px;
+}
+
+.videoView,
+.commentsView,
+.videoInfo,
+.tickmarkView
+{
+    position: absolute;
+    top: 25px;
+
+    margin-left: 5px;
+}
+.videoView,
+.videoContainer,
+.videoInfo,
+.videoMenu
+{
+    width: 752px;
+}
+
+.tagListContainer
+{
+    visibility: hidden;
+}
+
+.videoContainer
+{
+    max-height: 423px;
+}
+
+#videoCover
+{
+    position: absolute;
+    top: 0;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 423px;
+}
+
+#drawnRect
+{
+    position: relative;
+    top: 0;
+
+    width: 0;
+    height: 0;
+
+    opacity: .3;
+    border-radius: 5px;
+    background: yellow;
+}
+
+#drawnRectClose #updatePosition
+{
+    width: 5px;
+    margin: 5px;
+
+    -webkit-user-select: none;
+}
+
+#drawnRectClose:hover
+{
+    cursor: pointer;
+    text-decoration: underline;
+}
+.videoMenu
+{
+    max-width: 742px;
+    height: 55px;
+    padding: 5px;
+
+    border-bottom-right-radius: 5px;
+    /*background: #E6E6E6;*/
+    border-bottom-left-radius: 5px;
+    background-color: #fafafa;
+    background-image: linear-gradient(to bottom, #f9f9f9, #d3d1d1);
+}
+
+.playORpause_holder,
+.playback,
+.progressbar_container,
+.muteORunmute_holder
+{
+    display: inline-block;
+}
+.playORpause_holder,
+.muteORunmute_holder,
+.playback
+{
+    width: 35px;
+}
+.playORpause:hover,
+.muteORunmute:hover,
+.playback:hover
+{
+    opacity: 1;
+}
+.playORpause,
+.muteORunmute,
+.playback
+{
+    opacity: .5;
+}
+
+.muteORunmute_holder
+{
+    margin-left: 4px;
+}
+
+.progressbar_container,
+#dragRangeContainer,
+.tickmark_holder
+{
+    width: 610px;
+}
+
+
+.progressbar_container
+{
+    position: relative;
+
+    height: 10px;
+    margin-bottom: 13px;
+
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#progressbar
+{
+    position: relative;
+
+    width: 100%;
+    height: 15px;
+
+    opacity: .7;
+    border: solid 1px #b5af9f;
+    border-bottom: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#progressbar_filler
+{
+    position: relative;
+
+    width: 0;
+    max-width: 100%;
+    height: 100%;
+
+    border-right: solid 1px #b5af9f;
+    background: #d1d1d1;
+}
+
+#dragRangeContainer
+{
+    position: absolute;
+    top: 0;
+
+    height: 16px;
+
+    border: solid 1px #b5af9f;
+    border-bottom: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background: white;
+}
+#rangeTick
+{
+    position: relative;
+
+    display: none;
+
+    width: 2px;
+    height: 100%;
+
+    background: red;
+}
+#zoomTick
+{
+    position: absolute;
+    z-index: 1;
+
+    display: none;
+
+    width: 2px;
+    height: 8px;
+
+    background-color: rgba(0, 0, 255, .3);
+}
+.tickmark_holder
+{
+    position: relative;
+
+    height: 8px;
+    margin-bottom: 6px;
+
+    border: solid 1px #b5af9f;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background: white;
+}
+
+.tickmark
+{
+    position: absolute;
+
+    height: 100%;
+
+    opacity: .4;
+    background: red;
+}
+
+#showTime
+{
+    display: inline-block;
+    float: right;
+
+    height: 100%;
+    margin-top: -5px;
+
+    text-align: right;
+}
+
+#durationEditor
+{
+    display: inline-block;
+}
+
+#durationInput
+{
+    size: 3;
+}
+
+#videoTimeDisplay,
+#videoTotalTimeDisplay
+{
+    display: inline-block;
+}
+
+.commentsView
+{
+    left: 760px;
+
+    overflow: hidden;
+
+    width: 300px;
+    height: 480px;
+    margin-top: 2px;
+
+    border-bottom: solid 1px #e6e6e6;
+    border-radius: 5px;
+}
+
+.commentsView_menu
+{
+    margin-bottom: 5px;
+    padding: 5px;
+
+    border-radius: 5px;
+    /*background: #E6E6E6;*/
+    background-image: linear-gradient(to bottom, #f9f9f9, #d3d1d1);
+}
+
+#submit_btn,
+#cancel_btn
+{
+    margin-bottom: 4px;
+}
+.commentsView_holder
+{
+    font-size: 8pt;
+
+    overflow: auto;
+
+    height: 444px;
+
+    border-radius: 5px;
+    background: #e6e6e6;
+}
+
+.commentsView_newComment
+{
+    overflow: auto;
+
+    height: 150px;
+    margin-bottom: 5px;
+    padding: 5px;
+
+    border-radius: 5px;
+    background: #e6e6e6;
+}
+
+#comment_time,
+#comment_timeEnd
+{
+    width: 32px;
+}
+.newCommentTextbox
+{
+    width: 94%;
+
+    resize: none;
+}
+
+#commentTimeShow
+{
+    font-size: 7pt;
+
+    color: grey;
+}
+
+#commentTimeShow:hover
+{
+    text-decoration: underline;
+}
+
+#accordion .ui-accordion-content
+{
+    overflow-y: auto;
+
+    max-height: 100px;
+}
+
+.videoInfo
+{
+    top: 470px;
+}
+
+.tickmark,
+#progressbar,
+#commentTimeShow
+{
+    cursor: pointer;
+}
+
+.popover
+{
+    /*max-width: 200px;
+	max-height: 105px; */
+    font-size: 10pt;
+}
+.popover-content
+{
+    overflow: hidden;
+
+    max-height: 50px;
+
+    text-overflow: ellipsis;
+}
+.popover-title
+{
+    font-size: 10pt;
+
+    overflow: hidden;
+
+    max-height: 25px;
+}
+.rightTooltipDiv
+{
+    float: right;
+    /*display: none;*/
+}
+.enlargedTickContainer
+{
+    display: none;
+
+    height: 40px;
+    margin-top: 5px;
+
+    opacity: 0;
+    border-radius: 5px;
+    background: #e6e6e6;
+}
+.enlargedTickBar
+{
+    position: absolute;
+
+    display: inline-block;
+
+    width: 635px;
+    height: 15px;
+    margin-top: 10px;
+
+    vertical-align: middle;
+
+    border: solid 1px #b5af9f;
+    border-radius: 5px;
+    background: white;
+}
+.enlargedTickStart
+{
+    display: inline-block;
+
+    width: 45px;
+    margin-top: 8px;
+
+    text-align: center;
+}
+.enlargedTickEnd
+{
+    display: inline-block;
+    float: right;
+
+    width: 45px;
+    margin-top: 8px;
+
+    text-align: center;
+    vertical-align: middle;
+}
+.enlargedTickmark
+{
+    position: absolute;
+
+    height: 100%;
+
+    cursor: pointer;
+
+    opacity: .4;
+    background: red;
+}
+.currentPlayerLocationTick
+{
+    /*z-index: 1;*/
+    display: none;
+
+    width: 3px;
+
+    opacity: 1;
+    background-color: green;
+}
+.mouseTooltipDiv
+{
+    position: absolute;
+    z-index: -1;
+
+    display: block;
+
+    width: 4px;
+    height: 100%;
+
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0);
+}
+.upvoteBtn
+{
+    cursor: pointer;
+}
+.ui-effects-transfer
+{
+    border: 1px solid black;
+    border-radius: 5px;
+}
+/*.tooltip{
+	z-index: 1;
+}*/
+.deleteComment
+{
+    margin-top: -3px;
+    padding: 0;
+    padding-right: 5px;
+    padding-left: 5px;
+
+    opacity: 0;
+    /*background-image: linear-gradient(to bottom, #FA3631, #BD0D04);*/
+}
+.commentAlert
+{
+    position: absolute;
+    z-index: 2;
+    /*background-color: rgba(252, 248, 227, 0.95);*/
+
+    margin-top: 372px;
+    margin-left: 5px;
+
+    opacity: 0;
+}
+
+.ui-resizable-handle
+{
+    z-index: 1000;
+}
