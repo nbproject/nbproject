@@ -51,6 +51,10 @@ module.exports = function (grunt) {
   MODS.FILTERWIZARD = {
     src_css: addPrefix(VIEWS_DIR, ['ui.filterwizard.css']),
   };
+  MODS.FILTERWIZARDEMOTICON = {
+    src_js: addPrefix(VIEWS_DIR, ["ui.filterwizardEmoticon.js" ]),
+    src_css: addPrefix(VIEWS_DIR, ["ui.filterwizardEmoticon.css" ])
+  };
   MODS.DUPLICATEWIZARD = {
     src_css: addPrefix(VIEWS_DIR, ['ui.duplicatewizard.css', 'ui.threadselect.css']),
   };
@@ -89,6 +93,7 @@ module.exports = function (grunt) {
     src_css: [].concat(
       MODS.CONTEXTMENU.src_css,
       MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
       addPrefix(VIEWS_DIR, ['ui.notepaneView.css'])),
   };
 
@@ -168,6 +173,7 @@ module.exports = function (grunt) {
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
       MODS.TREEVIEW.src_css,
       MODS.FILESVIEW.src_css,

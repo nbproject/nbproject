@@ -80,3 +80,7 @@ td.save-cancel
 
     vertical-align: top;
 }
+
+.clicked, .unclicked {height:24px;
+                      width:24px;
+                      margin:5px;}
