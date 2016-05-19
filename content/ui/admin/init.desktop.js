@@ -39,7 +39,7 @@ define(function(require) {
     //pers.admin=true;
     //Extra menus:
     if (!(Conf.userinfo.guest)) {
-      $('#menu_settings').after("<li><a href='javascript:" + $str + ".$.concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+      $('#menu_settings').after("<li><a href='javascript:" + $str + ".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
     }
 
     //Factories: methods called if an event calls for a function that's not yet present
