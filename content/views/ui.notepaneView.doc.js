@@ -50,7 +50,7 @@ define(function(require) {
       self._id_location = null; //location_id of selected thread
       self._is_first_stroke = true;
       self._rendered = false;
-      self._filters = { me: false, star: false, question: false, advanced: false };
+      self._filters = { me: false, star: false, question: false, advanced: false, emoticon: false };
       self.QUESTION = null;
       self.STAR = null;
       self._selected_locs = { all: [], top: [] };
@@ -111,7 +111,23 @@ define(function(require) {
                     value: 'question',
                   });
                 });
-
+      var $filter_emoticon = $("<a>")
+          .addClass("filter")
+          .attr("title", "toggle filter: threads with certain emoticon")
+          .attr("action", "emoticon")
+          .html("<div class='filter-count'>tags filter</div>")
+          .click(function() {
+              if ($(this).hasClass("active")) {
+                  $(this).removeClass("active");
+                  self._filters.emoticon = false;
+                  self._page = 1;
+                  self._pages = {};
+                  self._maxpage = 0;
+                  self._render(true);
+              } else {
+                  $wizard2.dialog("open");
+              }
+          });
       var $filter_advanced = $('<a>')
           .addClass('filter')
           .attr('title', 'toggle filter: toggle by advanced features')
@@ -298,7 +314,7 @@ define(function(require) {
       $selected_threads.find('.action-bar').append($export_button);
       $selected_threads.append($select_bar);
 
-      $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced);
+      $filters.append($filter_me).append($filter_star).append($filter_question).append($filter_advanced).append($filter_emoticon);
       $header.append($filters).append($filtered_message).append($unfiltered_message);
       self.element.append($header).append($selected_threads).append($notepaneView_pages);
 
@@ -334,6 +350,24 @@ define(function(require) {
         height: 200,
         modal: true,
         autoOpen: false,
+      });
+
+      $("body").append(
+          $("<div>").attr("id", "filterWizardDialog2")
+      );
+
+      var $wizard2= $("#filterWizardDialog2");
+      $wizard2.filterWizardEmoticon({
+          admin: true, // TODO: properly populate this value
+          callbacks: {
+              onOk: function() { $wizard2.dialog("close");},
+              onCancel: function() { $wizard2.dialog("close");}
+          }
+      }).dialog({
+          width: 800,
+          height: 200,
+          modal: true,
+          autoOpen: false
       });
 
       $('#contextmenu_notepaneView').bind('beforeShow', function (event, el) {
@@ -416,6 +450,35 @@ define(function(require) {
             self._maxpage = 0;
             self._render(true);
           });
+
+        break;
+        case "filter_emoticons":
+          var m = self._model;
+          var locs = m.get("location", {id_source:  self._id_source});
+  
+          var root =  m.get("comment", {});
+  
+          var emoticon_id_locs={};
+          if(root!==null)
+          {
+              for(var c in root.items) {
+                  var body = root.items[c].body;
+                  for(var i=0; i<evt.value.length; i++)
+                  {
+                      if (body.indexOf(evt.value[i]) > -1) {
+                          emoticon_id_locs[root.items[c].ID_location] = null;
+                          break;
+                       }
+                  }
+  
+              }
+          }
+  
+          self._filters.emoticon=emoticon_id_locs;
+          self._page = 1;
+          self._pages = {};
+          self._maxpage = 0;
+          self._render(true);
 
         break;
         case 'filter_toggle':
@@ -523,12 +586,13 @@ define(function(require) {
       var $filter_star = $filters.filter('[action=star]');
       var $filter_question = $filters.filter('[action=question]');
       var $filter_advanced = $filters.filter('[action=advanced]');
+      var $filter_emoticon = $filters.filter("[action=emoticon]");
 
       var locs_me = locs.intersect(m.get('comment', { id_author: me.id }).values('ID_location'));
       var locs_star = m.get('threadmark', { active: true, type: self._STAR });
       var locs_question = m.get('threadmark', { active: true, type: self._QUESTION });
 
-      var filters_on = (self._filters.me || self._filters.star || self._filters.question || self._filters.advanced);
+      var filters_on = (self._filters.me || self._filters.star || self._filters.question || self._filters.advanced || self._filters.emoticon);
 
       if (self._filters.me) {
         $filter_me.addClass('active');
@@ -544,6 +608,10 @@ define(function(require) {
 
       if (self._filters.advanced) {
         $filter_advanced.addClass('active');
+      }
+
+      if (self._filters.emoticon) {
+        $filter_emoticon.addClass("active");
       }
 
       var n_me =  locs_me.length();
@@ -692,6 +760,10 @@ define(function(require) {
 
       if (self._filters.advanced) {
         self.locs = self.locs.intersect(self._filters.advanced);
+      }
+
+      if (self._filters.emoticon){
+        self.locs = self.locs.intersect(self._filters.emoticon);
       }
 
       if (self._mode_select) {
@@ -1057,6 +1129,7 @@ define(function(require) {
       keydown: null,
       filter_toggle: null,
       filter_threads: null,
+      filter_emoticons: null,
       export_threads: null,
     },
   };
