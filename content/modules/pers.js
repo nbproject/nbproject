@@ -97,7 +97,7 @@ define(function(require) {
   };
 
   Pers.__configure_user_menu = function (init_ui) {
-    var uinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+    var uinfo = Conf.userinfo = JSON.parse(Auth.get_cookie('userinfo')) || { guest: true };
     var nbhostname = Pers.server_url;
     var $login_contents;
     if (uinfo.guest) {
