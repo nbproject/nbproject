@@ -60,6 +60,7 @@ requirejs.config({
     'duplicatewizard': 'views/ui.duplicatewizard',
     'editorview': 'views/ui.editorview',
     'filterwizard': 'views/ui.filterwizard',
+    'filterwizardEmoticon': 'views/ui.filterwizardEmoticon',
     'filesview': 'views/ui.filesview',
     'notepane_collage': 'views/ui.notepaneView.collage',
     'notepane_doc': 'views/ui.notepaneView.doc',
