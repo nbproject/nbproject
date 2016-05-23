@@ -153,7 +153,7 @@ module.exports = function (grunt) {
     src_js: [].concat(['build_embed']),
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
       addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
       addPrefix(UI_DIR, ['template.css']),
@@ -169,7 +169,7 @@ module.exports = function (grunt) {
     include: ['init_desktop', 'launch'],
     src_js: [].concat(['build_desktop']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
@@ -196,7 +196,7 @@ module.exports = function (grunt) {
     include: ['init_pdfviewer', 'launch'],
     src_js: [].concat(['build_pdfviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW.src_css,
@@ -211,7 +211,7 @@ module.exports = function (grunt) {
     include: ['init_analytics', 'launch'],
     src_js: [].concat(['build_analytics']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
@@ -223,7 +223,7 @@ module.exports = function (grunt) {
     include: ['init_youtubeviewer', 'launch'],
     src_js: [].concat(['build_youtubeviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_YOUTUBE.src_css,
@@ -238,7 +238,7 @@ module.exports = function (grunt) {
     include: ['init_collage', 'launch'],
     src_js: [].concat(['build_collage']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_COLLAGE.src_css,
@@ -267,7 +267,7 @@ module.exports = function (grunt) {
     include: ['init_spreadsheet', 'launch'],
     src_js: [].concat(['build_spreadsheet']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.SPREADSHEETVIEW.src_css,
@@ -288,7 +288,7 @@ module.exports = function (grunt) {
     include: ['your_settings'],
     src_js: [].concat(['build_yoursettings']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
     dest_js: DEST_DIR + 'settings_NB.js',
