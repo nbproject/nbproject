@@ -41,7 +41,8 @@ These can be installed as ubuntu packages
       npm install grunt-contrib-concat  --save-dev
       npm install grunt-contrib-cssmin  --save-dev
       npm install grunt-contrib-requirejs --save-dev
- 
+      npm install grunt-contrib-copy --save-dev
+
 ### [optional] To annotate YouTube Videos: The google python library
     sudo pip install --upgrade google-api-python-client
 

@@ -135,6 +135,7 @@ module.exports = function (grunt) {
     src_css: addPrefix(VIEWS_DIR, ['ui.breadcrumb.css'])
   };
 
+  var JQUERY_UI = addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css', 'jquery_ui/jquery-ui.structure.css', 'jquery_ui/jquery-ui.theme.css']);
   /* TARGETS are modules that are built (but they can also serve as building blocks) */
   var TARGETS = {};
   TARGETS.API =  {
@@ -148,7 +149,7 @@ module.exports = function (grunt) {
     src_js: [].concat(['build_embed']),
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
       addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
       addPrefix(UI_DIR, ['template.css']),
@@ -164,7 +165,7 @@ module.exports = function (grunt) {
     include: ['init_desktop', 'launch'],
     src_js: [].concat(['build_desktop']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
@@ -190,7 +191,7 @@ module.exports = function (grunt) {
     include: ['init_pdfviewer', 'launch'],
     src_js: [].concat(['build_pdfviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW.src_css,
@@ -205,7 +206,7 @@ module.exports = function (grunt) {
     include: ['init_analytics', 'launch'],
     src_js: [].concat(['build_analytics']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCANALYTICSVIEW.src_css),
@@ -217,7 +218,7 @@ module.exports = function (grunt) {
     include: ['init_youtubeviewer', 'launch'],
     src_js: [].concat(['build_youtubeviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_YOUTUBE.src_css,
@@ -232,7 +233,7 @@ module.exports = function (grunt) {
     include: ['init_collage', 'launch'],
     src_js: [].concat(['build_collage']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_COLLAGE.src_css,
@@ -261,7 +262,7 @@ module.exports = function (grunt) {
     include: ['init_spreadsheet', 'launch'],
     src_js: [].concat(['build_spreadsheet']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.SPREADSHEETVIEW.src_css,
@@ -282,7 +283,7 @@ module.exports = function (grunt) {
     include: ['your_settings'],
     src_js: [].concat(['build_yoursettings']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      JQUERY_UI,
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
     dest_js: DEST_DIR + 'settings_NB.js',
@@ -389,6 +390,12 @@ module.exports = function (grunt) {
     qunit: {
       files: ['templates/web/*.html'],
     },
+    // Copy necessary image assets (like jquery UI)
+    copy: {
+      main: {
+        files: [{expand: true, flatten: true, src: ['content/lib/jquery_ui/images/*'], dest: DEST_DIR + 'images/'}]
+      }
+    },
     cssmin: CSS_TARGETS,
     min: {
       dist: {
@@ -406,9 +413,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task.
   // grunt.registerTask('default', 'lint qunit concat min');
   // grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('default', ['requirejs', 'cssmin']);
+  grunt.registerTask('default', ['copy', 'requirejs', 'cssmin']);
 };

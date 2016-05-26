@@ -8,7 +8,8 @@
 define(function(require) {
   var concierge       = require('concierge'),
       view            = require('view'),
-      $               = require('jquery');
+      $               = require('jquery'),
+      jqueryui        = require('jquery_ui');
 
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
