@@ -171,6 +171,7 @@ module.exports = function (grunt) {
     src_css: [].concat(
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,

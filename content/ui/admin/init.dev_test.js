@@ -17,19 +17,18 @@
 /*global unescape:true NB:true NB$:true jQuery:true alert:false*/
 
 define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
-      Pers            = require('pers'),
-      Conf            = require('conf'),
-      Models          = require('models'),
-      perspective     = require('perspective'),
-      treeview        = require('treeview'),
-      filesview       = require('filesview'),
-      Auth            = require('auth'),
-      breadcrumb      = require('breadcrumb'),
-      Files           = require('files'),
-      Handlebars     = require('handlebars'),
-      temp1           = require('hbs!templates_dir/nav_template2');
+  var $               = require('jquery');
+  var concierge       = require('concierge');
+  var Pers            = require('pers');
+  var Conf            = require('conf');
+  var Models          = require('models');
+  var perspective     = require('perspective');
+  var treeview        = require('treeview');
+  var filesview       = require('filesview');
+  var Auth            = require('auth');
+  var breadcrumb      = require('breadcrumb');
+  var Files           = require('files');
+  var Handlebars     = require('handlebars');
 
   var escapeSpecialChar = function (s) {
     return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'None';
@@ -48,17 +47,7 @@ define(function(require) {
     }
 
     $("body").empty();
-    // console.log(">>>aaa");
-    // console.log(Handlebars);
-    // console.log(">>>aaa");
-    // console.log(temp1(
-    //   {
-    //   "screenname": screenname,
-    //   "nb-nav-class2": nbNavClass2,
-    //   "main-content-class2": mainContentClass2
-    // }));
-    // console.log(">>>aaa");
-    $("body").append(require('hbs!templates_dir/nav_template2')({
+    $("body").append(require('hbs!templates_dir/nav_template')({
       "screenname": screenname,
       "nb-nav-class2": nbNavClass2,
       "main-content-class2": mainContentClass2
@@ -112,7 +101,6 @@ define(function(require) {
 
     Pers.call('getObjects', payload_objects, Pers.createStore);
     $.concierge.addComponents({
-
       add_ensemble_menu: function (P, cb) {Files.addEnsemble();},
 
       add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},

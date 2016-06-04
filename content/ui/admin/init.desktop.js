@@ -17,17 +17,18 @@
 /*global NB$:true NB:true*/
 
 define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
-      Pers            = require('pers'),
-      Conf            = require('conf'),
-      Models          = require('models'),
-      perspective     = require('perspective'),
-      treeview        = require('treeview'),
-      filesview       = require('filesview'),
-      Auth            = require('auth'),
-      breadcrumb      = require('breadcrumb'),
-      files           = require('files');
+  var $               = require('jquery');
+  var concierge       = require('concierge');
+  var Pers            = require('pers');
+  var Conf            = require('conf');
+  var Models          = require('models');
+  var perspective     = require('perspective');
+  var treeview        = require('treeview');
+  var filesview       = require('filesview');
+  var Auth            = require('auth');
+  var breadcrumb      = require('breadcrumb');
+  var files           = require('files');
+  var Handlebars      = require('handlebars');
 
   if ('NB$' in window) {
     var $ = NB$;
@@ -36,16 +37,105 @@ define(function(require) {
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
-    //pers.admin=true;
-    //Extra menus:
-    if (!(Conf.userinfo.guest)) {
-      $('#menu_settings').after("<li><a href='javascript:" + $str + ".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+
+    var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+    var screenname = "Guest";
+    var nbNavClass2 = "nb-nav--guest";
+    var mainContentClass2 = "content_main--guest";
+
+    if (!Conf.userinfo.guest) {
+      screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
+      nbNavClass2 = "";
+      mainContentClass2 = "";
     }
+
+    $("body").empty();
+    $("body").append(require('hbs!templates_dir/nav_template')({
+      "screenname": screenname,
+      "nb-nav-class2": nbNavClass2,
+      "main-content-class2": mainContentClass2
+    }));
+    $(".util_windows").append(require('hbs!templates_dir/register_user_dialog')());
+    $(".util_windows").append(require('hbs!templates_dir/login_user_dialog')());
+
+    /* Start of Navbar event handlers: Attach even handlers after adding the elements to the dom */
+
+    // Close the nb-nav if the user clicks outside of it
+    $(window).click(function(event) {
+      if (!event.target.matches('.nb-nav__btn') && !$(event.target).parents('.nb-nav__ul').length) {
+        nb_nav__ul_close();
+      }
+    });
+
+    $(".nb-nav__menu-btn").click(function() {
+      if (is_nb_nav__ul_open()) {
+        nb_nav__ul_close();
+      } else {
+        nb_nav__ul_open();
+      }
+    });
+
+    // Toggle dropdown within the menu
+    $(".nb-nav__li--dropdown").click(function(e) {
+      $(".nb-nav__li--dropdown__icon").toggleClass("nb-nav__li--dropdown--open__icon");
+      $(this).children("ul").slideToggle(300); // 0.3 seconds
+    });
+    nb_nav__ul_close();
+
+    /* End of Navbar event handlers */
+
+    /*
+     Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js. 
+     I don't fully understand it. 
+     */
+    $.concierge.addListeners(Pers, { // Pers used arbitrarily because the copied code had it.
+      successful_login: function (evt) {
+        Auth.set_cookie('ckey', evt.value.ckey);
+        document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
+        $.I('Welcome !');
+      },
+    }, 'globalPersObject');
+
+    //get data:
+    var payload_objects = { types: ['ensembles', 'folders', 'files', 'sections'] };
+    if ('id_ensemble' in Pers.params) {
+      payload_objects['payload'] = { id_ensemble: Pers.params.id_ensemble };
+    }
+
+    Pers.call('getObjects', payload_objects, Pers.createStore);
+    $.concierge.addComponents({
+      add_ensemble_menu: function (P, cb) {Files.addEnsemble();},
+
+      add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},
+    });
+
+
+    function nb_nav__ul_close() {
+      $(".nb-nav__icon-bar").removeClass("nb-nav__icon-bar--open");
+      $(".nb-nav--guest__icon-bar").removeClass("nb-nav--guest__icon-bar--open");
+      $(".nb-nav__ul").removeClass('nb-nav__ul--open');
+      $(".nb-nav__li--dropdown__icon").removeClass("nb-nav__li--dropdown--open__icon");
+      // $(".nb-nav__ul2").slideUp();
+      $(".nb-nav__ul2").hide();
+    }
+
+    function nb_nav__ul_open() {
+      $(".nb-nav__icon-bar").addClass("nb-nav__icon-bar--open");
+      $(".nb-nav--guest__icon-bar").addClass("nb-nav--guest__icon-bar--open");
+      $(".nb-nav__ul").addClass('nb-nav__ul--open');
+    }
+
+    function is_nb_nav__ul_open(){
+      return $(".nb-nav__ul").hasClass('nb-nav__ul--open');
+    }
+
+    // **************************
+
 
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('admin_init', 'admin_viewer', function (id) {
       var pers_id        = 'pers_' + id;
-      var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+      var $vp = $(".nb-viewport");
 
       // Add breadcrumb
       $(".nb-widget-header").breadcrumb({

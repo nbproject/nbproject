@@ -1,8 +1,9 @@
-<nav class="nb-nav">
+<nav class="nb-nav {{nb-nav-class2}}">
   <a class="nb-nav__logo" href="/">nb</a>
   <div class="nb-nav__btn-panel">
-    <button type="button" class="nb-nav__btn nb-nav__login-btn">Login</button>
-    <button type="button" class="nb-nav__btn nb-nav__signup-btn">Signup</button>
+    <span class="nb-nav__screenname">{{screenname}}</span>
+    <a class="nb-nav__btn nb-nav__login-btn" href="javascript:NB$.concierge.get_component('login_user_menu')()">Login</a>
+    <a class="nb-nav__btn nb-nav__signup-btn" href="javascript:NB$.concierge.get_component('register_user_menu')()">Signup</a>
     <button type="button" class="nb-nav__btn nb-nav__menu-btn">
       <i class="nb-nav__icon-bar"></i>
       <i class="nb-nav__icon-bar"></i>
@@ -14,8 +15,7 @@
       <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
     </li>
     <li class="nb-nav__li--section-end">
-      <!-- The href below gets configured in javascript -->
-      <a class="nb-nav__a nb-nav__new-class-btn" href="#">Create Class</a>
+      <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('add_ensemble_menu')()">Create Class</a>
     </li>
     <li>
       <a class="nb-nav__a" href="/about/">About nb</a>
@@ -44,12 +44,67 @@
       <a class="nb-nav__a" href="/contact/">Contact us</a>
     </li>
     <li>
-      <a class="nb-nav__a nb-nav__logout-btn" href="/logout?next=/">Logout</a>
+      <a class="nb-nav__a nb-nav__logout-btn" href="javascript:NB$.concierge.get_component('logout')()">Logout</a>
     </li>
   </ul>
 </nav>
+<div class="util_windows">
+  <!-- Serves as an anchor for various dialog popups such as login, register, invite users, create new class, etc -->
+</div>
+<div class="nb-viewport">
+  <div class="nb-widget-header" style="height:24px;">
+    {{!-- <ul>
+      <li class="active"><span class="link-style">Home</span></li>
+    </ul>
+  </div>
+  <div id="pers_0" class="perspective">
+    <div class="pers-widget" style="height: 439px; width: 210px;">
+      <div class="pers-protection">
+        <div id="pers_0_1" style="width: 210px; height: 439px; overflow-y: auto;" class="view active-view">
+          <div class="tree jstree jstree-0 jstree-focused jstree-default">
+            <ul>
+              <li title="Home" rel="ensemble" class="jstree-leaf"><ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon jstree_icon home">&nbsp;</ins><strong>Home</strong></a></li>
+              <li title="No description available" rel="ensemble" id_item="1" class="jstree-closed">
+                <ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon jstree_icon admin">&nbsp;</ins>Class 1</a>
+                <ul>
+                  <li rel="folder" id_item="1" class="jstree-last jstree-leaf"><ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon">&nbsp;</ins>folder1</a></li>
+                </ul>
+              </li>
+              <li title="None" rel="ensemble" id_item="4" class="jstree-leaf"><ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon jstree_icon admin">&nbsp;</ins>None</a></li>
+              <li title="None" rel="ensemble" id_item="2" class="jstree-leaf"><ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon jstree_icon admin">&nbsp;</ins>None</a></li>
+              <li title="This is classx" rel="ensemble" id_item="3" class="jstree-last jstree-leaf"><ins class="jstree-icon">&nbsp;</ins><a href="#"><ins class="jstree-icon jstree_icon admin">&nbsp;</ins>classx</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="separator ui-draggable ui-draggable-handle" orientation="vertical" style="left: 210px; height: 439px; width: 4px; cursor: col-resize;"></div>
+    <div class="pers-widget" style="margin-left: 214px; height: 439px; width: 1004px;">
+      <div class="pers-protection">
+        <div id="pers_0_2" style="width: 1004px; height: 439px;" class="view filesView">
+          <div id="filesView-accordion" class="ui-accordion ui-widget ui-helper-reset" role="tablist">
+            <!--<div  id='filesView-panel-recentfiles' class='filesView-panel'>Recent Files...</div>-->
+            <h3 id="filesView-pending-header" class="ui-accordion-header ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="filesView-panel-pending" aria-selected="false" aria-expanded="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#">You have <span id="filesView-pending-header-total">0</span> feedback request<span id="filesView-pending-header-plural"></span>.</a></h3>
+            <div id="filesView-panel-pending" class="filesView-panel ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" aria-labelledby="filesView-pending-header" role="tabpanel" aria-hidden="true" style="display: none; height: 0px;">
+              <div id="filesView-pending-list"></div>
+            </div>
+            <h3 id="filesView-question-header" class="ui-accordion-header ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="filesView-panel-question" aria-selected="false" aria-expanded="false" tabindex="-1">
+              <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+              <a href="#">
+                Your classmates have <span id="filesView-question-header-total"> no </span> pending question<span id="filesView-question-header-plural">s</span>. <span id="filesView-question-header-help" style="display: none;">Can you help them ?</span> <!--<a id='filesView-allquestions-link'>View all</a>-->
+              </a>
+            </h3>
+            <div id="filesView-panel-question" class="filesView-panel ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; height: 0px;" aria-labelledby="filesView-question-header" role="tabpanel" aria-hidden="true">
+              <div id="filesView-question-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> --}}
+  </div>
+</div>
 
-{{!-- <div id="content_main">
+{{!-- <div id="content_main" class="{{main-content-class2}}"">
   {% block content %}{% endblock %}
 </div> --}}
 <!-- .util_windows will be returned by pers.js and used by files.js (and perhaps a bunch of other places) to append items to the page e.g. the modal for creating a new class. -->
@@ -64,31 +119,3 @@
     <a href="http://www.twitter.com/planet_nb">Follow us on Twitter</a>
   </p>
 </footer> --}}
-
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> 
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-
-{{!-- {% block js %}{% endblock %} --}}
-
-<!-- <script type="text/javascript" src="/content/modules/handlebars/handlebars.runtime-v4.0.5.js"></script>
-<script type="text/javascript" src="/content/compiled/hb_templates.js"></script> 
-
-<script type="text/javascript" src="/content/modules/dev/ui.concierge.js"></script> -->
-
-<!-- Todo: base.html should not contain any *_NB.js files because it gets added in your_settings.html and leads to error. A file shouldn't have more than 1 *_NB.js file -->
-<!-- <script type="text/javascript" src="/content/compiled/apidev_NB.js"></script>
-
-<script type="text/javascript" src="/content/ui/admin/conf.js"></script>
-<script type="text/javascript" src="/content/modules/dev/pers.js"></script> -->
-
-<!-- The following are required for the "create class" menu. -->
-<!-- <script type="text/javascript" src="/content/modules/dev/files.js"></script> -->
-
-
-<!-- <script type="text/javascript" src="/content/ui/admin/base.js"></script> -->
-<!-- Todo: Since base.html gets added as a html file, NAVBAR_NB.js should be added to pages in grunt or explicitly to the page that needs it-->
-<script type="text/javascript" src="/content/compiled/NAVBAR_NB.js"></script>
-<script>
-
-</script>
