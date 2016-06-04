@@ -1,0 +1,36 @@
+<div id='register_user_dialog'>
+	<div id='reg_welcome'>Welcome to NB!</div>
+	<div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div> 
+	<table>
+		<tr>
+			<td>Firstname</td>
+			<td><input type='text' id='register_user_firstname' /></td>
+		</tr>
+		<tr>
+			<td>Lastname</td>
+			<td><input type='text' id='register_user_lastname' /></td>
+		</tr>
+		<tr style='display: none;'>
+			<td>Pseudonym</td>
+			<td><input type='text' id='register_user_pseudonym' /></td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td><input type='text' id='register_user_email' /></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type='password' id='register_user_password1' /></td>
+		</tr>
+		<tr>
+			<td>Confirm Password</td>
+			<td><input type='password' id='register_user_password2' /></td>
+		</tr>
+	</table>
+	<div>
+		<input type='checkbox' id='termsandconditions' />
+		<label for='termsandconditions'>I agree with <a target='_blank' href='" + nbhostname + "/terms_public_site'>NB Terms and Conditions</a>
+		</label>
+	</div>
+	<div class='form_errors'></div> 
+</div>

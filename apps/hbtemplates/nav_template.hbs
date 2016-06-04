@@ -1,0 +1,94 @@
+<nav class="nb-nav">
+  <a class="nb-nav__logo" href="/">nb</a>
+  <div class="nb-nav__btn-panel">
+    <button type="button" class="nb-nav__btn nb-nav__login-btn">Login</button>
+    <button type="button" class="nb-nav__btn nb-nav__signup-btn">Signup</button>
+    <button type="button" class="nb-nav__btn nb-nav__menu-btn">
+      <i class="nb-nav__icon-bar"></i>
+      <i class="nb-nav__icon-bar"></i>
+      <i class="nb-nav__icon-bar"></i>
+    </button>
+  </div>
+  <ul class="nb-nav__ul">
+    <li>
+      <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
+    </li>
+    <li class="nb-nav__li--section-end">
+      <!-- The href below gets configured in javascript -->
+      <a class="nb-nav__a nb-nav__new-class-btn" href="#">Create Class</a>
+    </li>
+    <li>
+      <a class="nb-nav__a" href="/about/">About nb</a>
+    </li>
+    <li class="nb-nav__li--dropdown">
+      <a class="nb-nav__a" href="#"><i class="fa fa-caret-right nb-nav__li--dropdown__icon"></i>FAQ</a>
+      <ul class="nb-nav__ul2">
+        <li>
+          <a class="nb-nav__a2" href="/faq_student/">Students</a>
+        </li>
+        <li>
+          <a class="nb-nav__a2" href="/faq_instructor/">Instructors</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a class="nb-nav__a" href="/tutorial/">Tutorial</a>
+    </li>
+    <li>
+      <a class="nb-nav__a" href="http://nbproject.vanillaforums.com/">Project Forums</a>
+    </li>
+    <li>
+      <a class="nb-nav__a" href="/disclaimer/">Disclaimer</a>
+    </li>
+    <li class="nb-nav__li--section-end">
+      <a class="nb-nav__a" href="/contact/">Contact us</a>
+    </li>
+    <li>
+      <a class="nb-nav__a nb-nav__logout-btn" href="/logout?next=/">Logout</a>
+    </li>
+  </ul>
+</nav>
+
+{{!-- <div id="content_main">
+  {% block content %}{% endblock %}
+</div> --}}
+<!-- .util_windows will be returned by pers.js and used by files.js (and perhaps a bunch of other places) to append items to the page e.g. the modal for creating a new class. -->
+{{!-- <div class="util_windows">
+</div> --}}
+
+{{!-- <footer class="footer">
+  <p class="footer__p">
+    <a class="footer__logo" href="/">nb</a> is a project of the  <a href="http://groups.csail.mit.edu/haystack">Haystack</a> Group at <a href="http://web.mit.edu">MIT</a> and currently works with <a href="http://www.mozilla.com/en-US/firefox/personal.html">Firefox</a>, <a href="http://www.apple.com/safari/">Safari</a> , <a href="http://www.google.com/chrome">Chrome</a> and   <a href="http://windows.microsoft.com/en-US/internet-explorer/downloads/ie">IE9</a>
+  </p>
+  <p class="footer__p">
+    <a href="http://www.twitter.com/planet_nb">Follow us on Twitter</a>
+  </p>
+</footer> --}}
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+{{!-- {% block js %}{% endblock %} --}}
+
+<!-- <script type="text/javascript" src="/content/modules/handlebars/handlebars.runtime-v4.0.5.js"></script>
+<script type="text/javascript" src="/content/compiled/hb_templates.js"></script> 
+
+<script type="text/javascript" src="/content/modules/dev/ui.concierge.js"></script> -->
+
+<!-- Todo: base.html should not contain any *_NB.js files because it gets added in your_settings.html and leads to error. A file shouldn't have more than 1 *_NB.js file -->
+<!-- <script type="text/javascript" src="/content/compiled/apidev_NB.js"></script>
+
+<script type="text/javascript" src="/content/ui/admin/conf.js"></script>
+<script type="text/javascript" src="/content/modules/dev/pers.js"></script> -->
+
+<!-- The following are required for the "create class" menu. -->
+<!-- <script type="text/javascript" src="/content/modules/dev/files.js"></script> -->
+
+
+<!-- <script type="text/javascript" src="/content/ui/admin/base.js"></script> -->
+<!-- Todo: Since base.html gets added as a html file, NAVBAR_NB.js should be added to pages in grunt or explicitly to the page that needs it-->
+<script type="text/javascript" src="/content/compiled/NAVBAR_NB.js"></script>
+<script>
+
+</script>

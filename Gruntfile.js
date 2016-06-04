@@ -183,6 +183,26 @@ module.exports = function (grunt) {
     dest_css: DEST_DIR + 'desktop.css',
   };
 
+  TARGETS.DEVTEST = {
+      // MODS.BREADCRUMB.src_js
+    include: ['init_dev_test', 'launch'],
+    src_js: [].concat(['build_devtest']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'dev_test_NB.js',
+    dest_css: DEST_DIR + 'dev_test.css',
+  };
+
   TARGETS.LOGIN = {
     include: ['login'],
     src_js: [].concat(['build_login']),

@@ -10,6 +10,7 @@ requirejs.config({
     'contextmenu': 'lib/contextmenu/jquery.contextMenu',
     'contextmenu_position': 'lib/contextmenu/jquery.ui.position',
     'dateformat': 'lib/dateformat/date.format',
+    'handlebars': 'lib/handlebars/handlebars.runtime-v4.0.5',
     'jquery': 'lib/jquery/1.8.3/jquery.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
@@ -20,6 +21,8 @@ requirejs.config({
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
     'underscore': 'lib/underscore/underscore',
     'wgxpath': 'lib/wgxpath/wgxpath.install',
+    'hbs': 'lib/require-handlebars-plugin/hbs',
+    'templates_dir': '../apps/hbtemplates/', // handlebars templates directory
 
     // modules
     'auth': 'modules/auth',
@@ -41,6 +44,7 @@ requirejs.config({
     'embedopenid': 'ui/admin/embedopenid',
     'init_analytics': 'ui/admin/init.analytics',
     'init_desktop': 'ui/admin/init.desktop',
+    'init_dev_test': 'ui/admin/init.dev_test',
     'init_collage': 'ui/admin/init.collage',
     'init_pdfviewer': 'ui/admin/init.pdfviewer',
     'init_spreadsheet': 'ui/admin/init.spreadsheet',
@@ -75,6 +79,7 @@ requirejs.config({
     'build_analytics': 'build-scripts/build-analytics',
     'build_collage': 'build-scripts/build-collage',
     'build_desktop': 'build-scripts/build-desktop',
+    'build_devtest': 'build-scripts/build-devtest',
     'build_embed': 'build-scripts/build-embed',
     'build_embedopenid': 'build-scripts/build-embedopenid',
     'build_login': 'build-scripts/build-login',
@@ -113,5 +118,8 @@ requirejs.config({
     'underscore': {
         exports: 'underscore'
     },
+    'handlebars': {
+        exports: 'Handlebars'
+    }
   }
 });

@@ -1,0 +1,103 @@
+<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>
+
+
+<div id='add_file_dialog' >
+  <table width='275'>
+    <tr>
+      <td><input type='radio' id='file_select' name='upload_type' value='file_select' checked></td>
+      <td><input type='radio' id='html_select' name='upload_type' value='html_select'></td>
+      <td><input type='radio' id='youtube_select' name='upload_type' value='youtube_select'></td>
+    </tr>
+    <tr>
+      <td>PDF</td>
+      <td>HTML</td>
+      <td>YouTube</td>
+    </tr>
+  </table>
+  <div id='add_file_div'>
+    <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'>
+      <table>
+        <tr>
+          <td>Group</td>
+          <td> <select id='add_file_ensemble'/></td>
+        </tr>
+        <tr>
+          <td>Folder</td>
+          <td><select id='add_file_folder'/></td>
+        </tr>
+        <tr>
+          <td>File</td>
+          <td><input type='file' name='file' id='add_file_upload' ></input></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <div style='display:none;' id='add_html_div'>
+    <form id='html_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''>
+      <table>
+        <tr>
+          <td>Title</td>
+          <td><input type='text' name='title' id='html_input_title'></input></td>
+        </tr>
+        <tr>
+          <td>URL</td>
+          <td><input type='text' name='url' id='html_input_url'></input></td>
+        </tr>
+      </table>
+    </form>
+    <br>
+    <p>Don't forget to add the NB annotation tag!  Follow the link below for more detailed instructions.</p>
+    <div><a id='add_file_html' href='#'>Detailed HTML Upload Instructions</a></div>
+  </div>
+  <div style='display:none' id='add_youtube_div'>
+    <form id='youtube_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''>
+      <table>
+        <tr>
+          <td>URL</td>
+          <td><input type='text' name='url' maxlength='1024' id='youtube_input_url'></input></td>
+        </tr>
+      </table>
+    </form>
+    </table>
+  </div>
+</div>
+
+
+<div id='add_folder_dialog' >
+  <table>
+    <tr>
+      <td>Group</td>
+      <td> <select id='add_folder_ensemble'/></td>
+    </tr>
+    <tr>
+      <td>Parent Folder </td>
+      <td><select id='add_folder_folder'/></td>
+    </tr>
+    <tr>
+      <td>Name</td>
+      <td><input type='text'  id='add_folder_name' ></input></td>
+    </tr>
+  </table>
+</div>
+
+
+<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>
+
+
+<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>
+
+
+<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>
+
+
+<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>
+
+
+<div id='update_file_dialog'>
+  Select a file...
+  <form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form>
+  <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.
+</div>
+
+
+<div id='duplicate_file_dialog'></div>
