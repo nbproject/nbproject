@@ -292,6 +292,14 @@ define(function(require) {
       $('#register_user_dialog').dialog({
         title: 'Register for a new account...',
         width: 400,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) { 
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
         buttons: {
           Cancel: function () {
             $(this).find('div.form_errors').empty();
@@ -364,6 +372,14 @@ define(function(require) {
       $('#login_user_dialog').dialog({
         title: 'Log in...',
         width: 390,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) { 
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
         buttons: {
           Cancel: function () {
             $(this).find('div.form_errors').empty();
@@ -510,6 +526,14 @@ define(function(require) {
       $('#add_ensemble_dialog').dialog({
         title: 'Create a new class...',
         width: 540,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) { 
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
         buttons: {
           Cancel: function () {
             $(this).dialog('close');
