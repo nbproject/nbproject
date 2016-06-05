@@ -425,6 +425,11 @@ div.big-button > a:hover
 
 .ui-dialog {
   box-shadow: 0px 0px 10px 0 rgba(0,0,0,.5);
+  /*
+    This z-index is to ensure the dialog appears on top of all other page elements, 
+    especially the separators of the perspective windows in the pdfviewer
+  */
+  z-index: 100;
 }
 
 .nb-nav {

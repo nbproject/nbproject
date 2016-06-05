@@ -1,7 +1,7 @@
 <nav class="nb-nav {{nb-nav-class2}}">
   <a class="nb-nav__logo" href="/">nb</a>
   <div class="nb-nav__btn-panel">
-    <span class="nb-nav__screenname">{{screenname}}</span>
+    <span id="login-name" class="nb-nav__screenname">{{screenname}}</span>
     <a class="nb-nav__btn nb-nav__login-btn" href="javascript:NB$.concierge.get_component('login_user_menu')()">Login</a>
     <a class="nb-nav__btn nb-nav__signup-btn" href="javascript:NB$.concierge.get_component('register_user_menu')()">Signup</a>
     <button type="button" class="nb-nav__btn nb-nav__menu-btn">
@@ -15,7 +15,7 @@
       <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
     </li>
     <li class="nb-nav__li--section-end">
-      <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('add_ensemble_menu')()">Create Class</a>
+      <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('addEnsemble')()">Create Class</a>
     </li>
     <li>
       <a class="nb-nav__a" href="/about/">About nb</a>

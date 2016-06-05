@@ -15,16 +15,17 @@
 /*global NB$:true alert:true NB:true*/
 
 define(function(require) {
-  var concierge       = require('concierge'),
-      Pers            = require('pers'),
-      Auth            = require('auth'),
-      Conf            = require('conf'),
-      Models          = require('models'),
-      Perspective     = require('perspective'),
-      Docview         = require('docview_pdf'),
-      Notepane        = require('notepane_doc'),
-      threadview      = require('threadview'),
-      editorview      = require('editorview');
+  var concierge       = require('concierge');
+  var Pers            = require('pers');
+  var Auth            = require('auth');
+  var Conf            = require('conf');
+  var Models          = require('models');
+  var Perspective     = require('perspective');
+  var Docview         = require('docview_pdf');
+  var Notepane        = require('notepane_doc');
+  var threadview      = require('threadview');
+  var editorview      = require('editorview');
+  var Handlebars      = require('handlebars');
 
   if ('NB$' in window) {
     var $ = NB$;
@@ -33,6 +34,14 @@ define(function(require) {
   var $str = 'NB$' in window ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
+    if (!Conf.userinfo.guest) {
+      var userinfo = Conf.userinfo;
+      var screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
+      $(".nb-nav__screenname").text(screenname);
+      $(".nb-nav--guest").removeClass("nb-nav--guest");
+      $(".content_main--guest").removeClass("content_main--guest");
+    }
+    
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches == null || matches.length !== 2) {
       alert("Can't open file b/c URL pathname doesn't have an integer: " + document.location.pathname);
@@ -54,7 +63,7 @@ define(function(require) {
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('file', 'doc_viewer', function (id) {
       var pers_id = 'pers_' + id;
-      var $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+      var $vp = $(".nb-viewport");
       var $pers = $("<div id='" + pers_id + "'/>").appendTo($vp);
       var docview = {
         priority: 1,

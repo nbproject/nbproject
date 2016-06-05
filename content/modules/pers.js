@@ -15,12 +15,12 @@
 */
 /*global unescape:true NB:true NB$:true jQuery:true alert:false*/
 define(function(require) {
-  var Auth          = require('auth'),
-      Dom           = require('dom'),
-      Conf          = require('conf'),
-      Models        = require('models'),
-      concierge     = require('concierge'),
-      jquery_ui     = require('jquery_ui');
+  var Auth          = require('auth');
+  var Dom           = require('dom');
+  var Conf          = require('conf');
+  var Models        = require('models');
+  var concierge     = require('concierge');
+  var jquery_ui     = require('jquery_ui');
 
   var $ = 'NB$' in window ? NB$ : $;
 
@@ -97,25 +97,86 @@ define(function(require) {
   };
 
   Pers.__configure_user_menu = function (init_ui) {
-    var uinfo = Conf.userinfo = JSON.parse(Auth.get_cookie('userinfo')) || { guest: true };
-    var nbhostname = Pers.server_url;
-    var $login_contents;
-    if (uinfo.guest) {
-      $login_contents = $("<ul class='nb-dropdown-menu'><li><span id='login-name'>Guest</span><ul><li><a class='link-style nb-login'>Log in</a</li><li><span class='link-style nb-register'>Register</span></li><li><a class='link-style nb-logout'>Log out</a></li></ul></li></ul>");
-    } else {
-      var screenname = uinfo.firstname === null ? $.E(uinfo.email) : $.E(uinfo.firstname) + ' ' + $.E(uinfo.lastname);
-      $login_contents = $("<ul class='nb-dropdown-menu'><li><a class='link-style' id='login-name' title='" + $.E(uinfo.email) + "'>" + screenname + "</a><ul><li id='menu_settings'><a target='_blank' href='" + nbhostname + "/settings'>Settings</a></li><li id='menu_logout'><a class='link-style nb-logout'>Log out</a></li></ul></li></ul>");
-    }
+    if (init_ui) { // Remove the nav-bar (if previously present) and re-add it.
+      $('.nb-nav').remove();
+      var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+      var screenname = "Guest";
+      var nbNavClass2 = "nb-nav--guest";
+      var mainContentClass2 = "content_main--guest";
 
-    $('.nb-logout', $login_contents).click($.concierge.get_component('logout'));
-    $('.nb-login', $login_contents).click($.concierge.get_component('login_user_menu'));
-    $('.nb-register', $login_contents).click($.concierge.get_component('register_user_menu'));
-    if (init_ui) {
-      $('#login-window').remove();
-      var $login_window = $("<div id='login-window'/>");
-      $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='" + nbhostname + "/tutorial'>Tutorial</a></li><li><a href='" + nbhostname + "/faq'>FAQ</a></li><li><a href='" + nbhostname + "/contact'>Contact Us</a></li><li><a href='" + nbhostname + "/disclaimer'>Disclaimer</a></li></ul></li>"));
-      $login_window.append($login_contents);
-      $('body').append($login_window);
+      if (!Conf.userinfo.guest) {
+        screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
+        nbNavClass2 = "";
+        mainContentClass2 = "";
+      }
+
+      $("body").append(require('hbs!templates_dir/nav_template')({ // Re-add the navbar
+        "screenname": screenname,
+        "nb-nav-class2": nbNavClass2,
+        "main-content-class2": mainContentClass2
+      }));
+
+      // Add the dialogs for logging in and registering a new user (they'll be invisble until the right button gets clicked).
+      var $util_window = $.concierge.get_component('get_util_window')();
+      $util_window.append(require('hbs!templates_dir/register_user_dialog')());
+      $util_window.append(require('hbs!templates_dir/login_user_dialog')());
+
+      /* Start of Navbar event handlers: Attach even handlers after adding the elements to the dom */
+
+      // Close the nb-nav if the user clicks outside of it
+      $(window).click(function(event) {
+        if (!event.target.matches('.nb-nav__btn') && !$(event.target).parents('.nb-nav__ul').length) {
+          nb_nav__ul_close();
+        }
+      });
+
+      $(".nb-nav__menu-btn").click(function() {
+        if (is_nb_nav__ul_open()) {
+          nb_nav__ul_close();
+        } else {
+          nb_nav__ul_open();
+        }
+      });
+
+      // Toggle dropdown within the menu
+      $(".nb-nav__li--dropdown").click(function(e) {
+        $(".nb-nav__li--dropdown__icon").toggleClass("nb-nav__li--dropdown--open__icon");
+        $(this).children("ul").slideToggle(300); // 0.3 seconds
+      });
+      nb_nav__ul_close();
+
+      /* End of Navbar event handlers */
+
+      /*
+       Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js. 
+       I don't fully understand it. 
+       */
+      $.concierge.addListeners(Pers, { // Pers used arbitrarily because the copied code had it.
+        successful_login: function (evt) {
+          Auth.set_cookie('ckey', evt.value.ckey);
+          document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
+          $.I('Welcome !');
+        },
+      }, 'globalPersObject');
+
+      function nb_nav__ul_close() {
+        $(".nb-nav__icon-bar").removeClass("nb-nav__icon-bar--open");
+        $(".nb-nav--guest__icon-bar").removeClass("nb-nav--guest__icon-bar--open");
+        $(".nb-nav__ul").removeClass('nb-nav__ul--open');
+        $(".nb-nav__li--dropdown__icon").removeClass("nb-nav__li--dropdown--open__icon");
+        // $(".nb-nav__ul2").slideUp();
+        $(".nb-nav__ul2").hide();
+      }
+
+      function nb_nav__ul_open() {
+        $(".nb-nav__icon-bar").addClass("nb-nav__icon-bar--open");
+        $(".nb-nav--guest__icon-bar").addClass("nb-nav--guest__icon-bar--open");
+        $(".nb-nav__ul").addClass('nb-nav__ul--open');
+      }
+
+      function is_nb_nav__ul_open(){
+        return $(".nb-nav__ul").hasClass('nb-nav__ul--open');
+      }
     }
 
     Pers.params = Dom.getParams();
@@ -432,6 +493,39 @@ define(function(require) {
     get_metronome_period_s: function () {
       return 0.2;
     },
+
+    addEnsemble: function () {
+      if(!$("#add_ensemble_dialog").length) {
+        var $util_window = $.concierge.get_component('get_util_window')();
+        $util_window.append(require('hbs!templates_dir/new_class_dialog'));
+      }
+      //defaults:
+      $('input[name=allow_staffonly][value=1]')[0].checked = 'true';
+      $('input[name=allow_anonymous][value=1]')[0].checked = 'true';
+      $('input[name=allow_guest][value=0]')[0].checked = 'true';
+      $('input[name=allow_download][value=1]')[0].checked = 'true';
+      $('input[name=allow_ondemand][value=0]')[0].checked = 'true';
+      $('input[name=use_invitekey][value=1]')[0].checked = 'true';
+      $('input[name=default_pause][value=0]')[0].checked = 'true';
+      $('#add_ensemble_dialog').dialog({
+        title: 'Create a new class...',
+        width: 540,
+        buttons: {
+          Cancel: function () {
+            $(this).dialog('close');
+          },
+
+          Ok: function () {
+            $.concierge.get_component('add_ensemble')({ name: $('#add_ensemble_name')[0].value, description: $('#add_ensemble_description')[0].value, allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1', allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1', allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',  default_pause: $('input[name=default_pause]:checked')[0].value === '1', allow_download: $('input[name=allow_download]:checked')[0].value === '1', allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1', use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' }, function (p) {
+              Files.model.add('ensemble', p);$.I('Class created !');
+            });
+
+            $(this).dialog('destroy');
+          },
+        },
+      });
+      $('#add_ensemble_dialog').dialog('open');
+    }
   };
 
   return Pers;

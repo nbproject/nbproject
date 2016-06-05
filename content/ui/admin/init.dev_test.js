@@ -100,11 +100,6 @@ define(function(require) {
     }
 
     Pers.call('getObjects', payload_objects, Pers.createStore);
-    $.concierge.addComponents({
-      add_ensemble_menu: function (P, cb) {Files.addEnsemble();},
-
-      add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},
-    });
   };
 
   Pers.createStore = function (payload) {
