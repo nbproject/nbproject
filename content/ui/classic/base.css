@@ -418,6 +418,7 @@ div.big-button > a:hover
 
 
 /*** Start of navbar ***/
+
 .ui-widget-overlay {
   opacity: 0.8;
   background-color: #fff;
@@ -561,7 +562,7 @@ div.big-button > a:hover
 .nb-nav__icon-bar {
     width: 22px;
     height: 2px;
-    background-color: #aaa;
+    background-color: #707070;
     margin: 3px auto;
     display: block;
     pointer-events: none;

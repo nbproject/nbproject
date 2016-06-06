@@ -41,9 +41,9 @@ div.viewport
 .nb-widget-header
 {
     height: 24px;
-
     background-color: #efebe7;
     box-shadow: inset 0 -6px 6px -6px rgba(0,0,0,.5);
+    text-align: center;
 }
 
 .ui-tabs-panel

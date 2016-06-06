@@ -510,7 +510,7 @@ define(function(require) {
       return 0.2;
     },
 
-    addEnsemble: function () {
+    addEnsembleMenu: function () {
       if(!$("#add_ensemble_dialog").length) {
         var $util_window = $.concierge.get_component('get_util_window')();
         $util_window.append(require('hbs!templates_dir/new_class_dialog'));

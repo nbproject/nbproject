@@ -198,8 +198,6 @@ define(function(require) {
 
       update_file_menu: function (P, cb) {files.update_file(P.id);},
 
-      add_ensemble_menu: function (P, cb) {files.addEnsemble();},
-
       add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},
 
       invite_users_menu: function (P, cb) {files.inviteUsers(P.id_ensemble);},
