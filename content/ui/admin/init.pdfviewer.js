@@ -34,14 +34,7 @@ define(function(require) {
   var $str = 'NB$' in window ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
-    if (!Conf.userinfo.guest) {
-      var userinfo = Conf.userinfo;
-      var screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
-      $(".nb-nav__screenname").text(screenname);
-      $(".nb-nav--guest").removeClass("nb-nav--guest");
-      $(".content_main--guest").removeClass("content_main--guest");
-    }
-    
+
     var matches = document.location.pathname.match(/\/(\d*)$/);
     if (matches == null || matches.length !== 2) {
       alert("Can't open file b/c URL pathname doesn't have an integer: " + document.location.pathname);

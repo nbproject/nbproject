@@ -37,14 +37,6 @@ define(function(require) {
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
-    if (!Conf.userinfo.guest) {
-      var userinfo = Conf.userinfo;
-      var screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
-      $(".nb-nav__screenname").text(screenname);
-      $(".nb-nav--guest").removeClass("nb-nav--guest");
-      $(".content_main--guest").removeClass("content_main--guest");
-    }
-
 
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('admin_init', 'admin_viewer', function (id) {
