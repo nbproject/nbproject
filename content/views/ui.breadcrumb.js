@@ -54,7 +54,7 @@ define(function(require) {
   },
   refresh: function() {
     // Create breadcrumb list
-    var list = $("<ul/>");
+    var list = $("<ul class='nb-breadcrumb'/>");
     var self = this;
     self.options.trail.forEach(function(e,i) {
       $("<li><span class='link-style'>"+e.name+"</span></li>")
@@ -64,7 +64,8 @@ define(function(require) {
       });
     });
     // Add the list to the parent
-    $(self.bindings[0]).empty();  // Delete previous list
+    $(".nb-breadcrumb").remove();  // Delete previous list
+    console.log($(self.bindings[0]));
     $(self.bindings[0]).append(list);
 
     // Set active child

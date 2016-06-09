@@ -1,58 +1,58 @@
-<nav class="nb-nav {{nb-nav-class2}}">
-  <a class="nb-nav__logo" href="/">nb</a>
-  <div class="nb-nav__btn-panel">
-    <span id="login-name" class="nb-nav__screenname">{{screenname}}</span>
-    <a class="nb-nav__btn nb-nav__login-btn" href="javascript:NB$.concierge.get_component('login_user_menu')()">Login</a>
-    <a class="nb-nav__btn nb-nav__signup-btn" href="javascript:NB$.concierge.get_component('register_user_menu')()">Signup</a>
-    <button type="button" class="nb-nav__btn nb-nav__menu-btn">
-      <i class="nb-nav__icon-bar"></i>
-      <i class="nb-nav__icon-bar"></i>
-      <i class="nb-nav__icon-bar"></i>
-    </button>
-  </div>
-  <ul class="nb-nav__ul">
-    <li>
-      <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
-    </li>
-    <li class="nb-nav__li--section-end">
-      <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('addEnsembleMenu')()">Create Class</a>
-    </li>
-    <li>
-      <a class="nb-nav__a" href="/about/">About nb</a>
-    </li>
-    <li class="nb-nav__li--dropdown">
-      <a class="nb-nav__a" href="#"><i class="fa fa-caret-right nb-nav__li--dropdown__icon"></i>FAQ</a>
-      <ul class="nb-nav__ul2">
-        <li>
-          <a class="nb-nav__a2" href="/faq_student/">Students</a>
-        </li>
-        <li>
-          <a class="nb-nav__a2" href="/faq_instructor/">Instructors</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a class="nb-nav__a" href="/tutorial/">Tutorial</a>
-    </li>
-    <li>
-      <a class="nb-nav__a" href="http://nbproject.vanillaforums.com/">Project Forums</a>
-    </li>
-    <li>
-      <a class="nb-nav__a" href="/disclaimer/">Disclaimer</a>
-    </li>
-    <li class="nb-nav__li--section-end">
-      <a class="nb-nav__a" href="/contact/">Contact us</a>
-    </li>
-    <li>
-      <a class="nb-nav__a nb-nav__logout-btn" href="javascript:NB$.concierge.get_component('logout')()">Logout</a>
-    </li>
-  </ul>
-</nav>
 <div class="util_windows">
   <!-- Serves as an anchor for various dialog popups such as login, register, invite users, create new class, etc -->
 </div>
 <div class="nb-viewport">
   <div class="nb-widget-header" style="height:24px;">
+    <nav id="nb-main-nav" class="nb-nav {{nb-nav-class2}}">
+      <a class="nb-nav__logo" href="/">nb</a>
+      <div id="login-window" class="nb-nav__btn-panel">
+        <span id="login-name" class="nb-nav__screenname">{{screenname}}</span>
+        <a class="nb-nav__btn nb-nav__login-btn" href="javascript:NB$.concierge.get_component('login_user_menu')()">Login</a>
+        <a class="nb-nav__btn nb-nav__signup-btn" href="javascript:NB$.concierge.get_component('register_user_menu')()">Signup</a>
+        <button type="button" class="nb-nav__btn nb-nav__menu-btn">
+          <i class="nb-nav__icon-bar"></i>
+          <i class="nb-nav__icon-bar"></i>
+          <i class="nb-nav__icon-bar"></i>
+        </button>
+      </div>
+      <ul class="nb-nav__ul">
+        <li>
+          <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
+        </li>
+        <li class="nb-nav__li--section-end">
+          <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('addEnsembleMenu')()">Create Class</a>
+        </li>
+        <li>
+          <a class="nb-nav__a" href="/about/">About nb</a>
+        </li>
+        <li class="nb-nav__li--dropdown">
+          <a class="nb-nav__a" href="#"><i class="fa fa-caret-right nb-nav__li--dropdown__icon"></i>FAQ</a>
+          <ul class="nb-nav__ul2">
+            <li>
+              <a class="nb-nav__a2" href="/faq_student/">Students</a>
+            </li>
+            <li>
+              <a class="nb-nav__a2" href="/faq_instructor/">Instructors</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a class="nb-nav__a" href="/tutorial/">Tutorial</a>
+        </li>
+        <li>
+          <a class="nb-nav__a" href="http://nbproject.vanillaforums.com/">Project Forums</a>
+        </li>
+        <li>
+          <a class="nb-nav__a" href="/disclaimer/">Disclaimer</a>
+        </li>
+        <li class="nb-nav__li--section-end">
+          <a class="nb-nav__a" href="/contact/">Contact us</a>
+        </li>
+        <li>
+          <a class="nb-nav__a nb-nav__logout-btn" href="javascript:NB$.concierge.get_component('logout')()">Logout</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
 
