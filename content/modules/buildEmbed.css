@@ -167,3 +167,7 @@ div.nb_controls_inactive
 .nb_sidebar .nb-nav--guest .nb-nav__icon-bar--open:nth-child(3) {
   max-width: 16px;
 }
+
+.nb_sidebar .nb-nav--guest .nb-nav__icon-bar--open:nth-child(2) {
+  max-width: 0;
+}
