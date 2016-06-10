@@ -1,9 +1,9 @@
 <div class="util_windows">
   <!-- Serves as an anchor for various dialog popups such as login, register, invite users, create new class, etc -->
 </div>
-<div class="nb-viewport">
-  <div class="nb-widget-header" style="height:24px;">
-    <nav id="nb-main-nav" class="nb-nav nb-nav--guest">
+<div class="nb-viewport nb--guest">
+  <div class="nb-widget-header">
+    <nav id="nb-main-nav" class="nb-nav">
       <a class="nb-nav__logo" href="/">nb</a>
       <div id="login-window" class="nb-nav__btn-panel">
         <span id="login-name" class="nb-nav__screenname">Guest</span>
@@ -16,11 +16,11 @@
         </button>
       </div>
       <ul class="nb-nav__ul">
-        <li>
-          <a class="nb-nav__a nb-nav__account-btn" href="/settings">My Account</a>
+        <li class="nb-nav__account-btn">
+          <a class="nb-nav__a" href="/settings">My Account</a>
         </li>
-        <li class="nb-nav__li--section-end">
-          <a class="nb-nav__a nb-nav__new-class-btn" href="javascript:NB$.concierge.get_component('addEnsembleMenu')()">Create Class</a>
+        <li class="nb-nav__li--section-end nb-nav__new-class-btn">
+          <a class="nb-nav__a" href="javascript:NB$.concierge.get_component('addEnsembleMenu')()">Create Class</a>
         </li>
         <li>
           <a class="nb-nav__a" href="/about/">About nb</a>
@@ -45,11 +45,11 @@
         <li>
           <a class="nb-nav__a" href="/disclaimer/">Disclaimer</a>
         </li>
-        <li class="nb-nav__li--section-end">
+        <li>
           <a class="nb-nav__a" href="/contact/">Contact us</a>
         </li>
-        <li>
-          <a class="nb-nav__a nb-nav__logout-btn" href="javascript:NB$.concierge.get_component('logout')()">Logout</a>
+        <li class="nb-nav__logout-btn nb-nav__li--section-start">
+          <a class="nb-nav__a" href="javascript:NB$.concierge.get_component('logout')()">Logout</a>
         </li>
       </ul>
     </nav>

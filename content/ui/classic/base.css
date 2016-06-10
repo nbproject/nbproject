@@ -448,7 +448,7 @@ div.big-button > a:hover
   font-size: small;
 }
 
-.nb-nav--guest {
+.nb--guest .nb-nav {
   height: 48px;
   background-color: #34495e;
   box-shadow: none;
@@ -479,7 +479,7 @@ div.big-button > a:hover
     color: #777; /* Added here to ensure we override the default in base.css*/
 }
 
-.nb-nav--guest a.nb-nav__logo {
+.nb--guest a.nb-nav__logo {
     font-size: 40px;
     color: #fff;
 }
@@ -522,7 +522,7 @@ div.big-button > a:hover
   text-overflow: ellipsis;
 }
 
-.nb-nav--guest .nb-nav__screenname {
+.nb--guest .nb-nav__screenname {
     font-size: 12px;
     padding: 18px;
     color: #fff;
@@ -535,15 +535,15 @@ div.big-button > a:hover
     padding-top: 0;
 }
 
-.nb-nav--guest .nb-nav__btn {
+.nb--guest .nb-nav__btn {
     color: #90A4AE;
     border-left: 1px solid #90A4AE;
     font-size: 16px;
 }
 
-.nb-nav--guest .nb-nav__account-btn,
-.nb-nav--guest .nb-nav__logout-btn,
-.nb-nav--guest .nb-nav__new-class-btn {
+.nb--guest .nb-nav__account-btn,
+.nb--guest .nb-nav__logout-btn,
+.nb--guest .nb-nav__new-class-btn {
     display: none;
 }
 
@@ -552,16 +552,16 @@ div.big-button > a:hover
     display: none;
 }
 
-.nb-nav--guest .nb-nav__login-btn, 
-.nb-nav--guest .nb-nav__signup-btn {
+.nb--guest .nb-nav__login-btn, 
+.nb--guest .nb-nav__signup-btn {
     display: block;
 }
 
-.nb-nav--guest .nb-nav__btn:hover {
+.nb--guest .nb-nav__btn:hover {
     color: #fff;
 }
 
-.nb-nav--guest .nb-nav__btn:hover .nb-nav__icon-bar {
+.nb--guest .nb-nav__btn:hover .nb-nav__icon-bar {
     background-color: #fff;
 }
 
@@ -577,7 +577,7 @@ div.big-button > a:hover
     max-width: 22px;
 }
 
-.nb-nav--guest .nb-nav__icon-bar {
+.nb--guest .nb-nav__icon-bar {
     width: 30px;
     height: 2px;
     background-color: #90A4AE;
@@ -602,8 +602,8 @@ div.big-button > a:hover
   transform-origin: bottom right;
 }
 
-.nb-nav--guest .nb-nav__icon-bar--open:nth-child(1),
-.nb-nav--guest .nb-nav__icon-bar--open:nth-child(3) {
+.nb--guest .nb-nav__icon-bar--open:nth-child(1),
+.nb--guest .nb-nav__icon-bar--open:nth-child(3) {
   max-width: 22px;
 }
 
@@ -623,7 +623,7 @@ div.big-button > a:hover
   box-shadow: 0 2px 5px 0 rgba(0,0,0, 0.3);
 }
 
-#nb-main-nav.nb-nav--guest .nb-nav__ul {
+.nb--guest #nb-main-nav .nb-nav__ul {
     top: 48px;
 }
 
@@ -649,8 +649,12 @@ div.big-button > a:hover
   color: #555;
 }
 
-#nb-main-nav .nb-nav__li--section-end {
+.nb-nav .nb-nav__li--section-end {
   border-bottom: 1px solid #ccc;
+}
+
+.nb-nav .nb-nav__li--section-start {
+  border-top: 1px solid #ccc;
 }
 
 
@@ -664,8 +668,8 @@ div.big-button > a:hover
   transform: rotateZ(90deg);
 }
 
-#nb-main-nav .nb-nav__ul,
-#nb-main-nav .nb-nav__ul2 {
+.nb-nav .nb-nav__ul,
+.nb-nav .nb-nav__ul2 {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -673,11 +677,11 @@ div.big-button > a:hover
   text-align: left;
 }
 
-#nb-main-nav li:before {
+.nb-nav li:before {
   display: none;
 }
 
-#nb-main-nav li {
+.nb-nav li {
   display: block;
 }
 

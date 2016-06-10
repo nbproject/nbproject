@@ -176,22 +176,22 @@ define(function(require) {
   Pers.set_nav_user = function() {
     var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
     var screenname = "Guest";
-    var nbNavClass2 = "nb-nav--guest";
+    var viewportGuestClass = "nb--guest";
     var mainContentClass2 = "content_main--guest";
 
     if (!Conf.userinfo.guest) {
       screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
-      nbNavClass2 = "";
+      viewportGuestClass = "";
       mainContentClass2 = "";
     }
 
     // Remove the defaults
-    $(".nb-nav").removeClass("nb-nav--guest");
+    $(".nb-viewport").removeClass("nb--guest");
     $("#content_main").removeClass("main-content-class2");
 
     // Add the appropriate name and classes
     $("#login-name").text(screenname);
-    $(".nb-nav").addClass(nbNavClass2);
+    $(".nb-viewport").addClass(viewportGuestClass);
     $("#content_main").addClass(mainContentClass2);
   };
 

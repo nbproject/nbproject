@@ -28,15 +28,20 @@ div.viewport
     height: 100%;
 }
 
+.nb--guest .perspective {
+    top: 48px;
+}
 
-.perspective
+.perspective,
+.nb_sidebar .perspective
 {
     position: absolute;
     top: 24px;
     bottom: 0;
-
     width: 100%;
 }
+
+.nb-sideber 
 
 .nb-widget-header
 {
