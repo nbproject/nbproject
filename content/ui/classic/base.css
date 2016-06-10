@@ -690,3 +690,10 @@ div.big-button > a:hover
 }
 
 /*** End of navbar ***/
+
+.nb-widget-body {
+  height: 100%;
+  overflow: auto;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+}

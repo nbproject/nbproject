@@ -556,10 +556,20 @@ define(function(require) {
           },
 
           Ok: function () {
-            $.concierge.get_component('add_ensemble')({ name: $('#add_ensemble_name')[0].value, description: $('#add_ensemble_description')[0].value, allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1', allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1', allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',  default_pause: $('input[name=default_pause]:checked')[0].value === '1', allow_download: $('input[name=allow_download]:checked')[0].value === '1', allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1', use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' }, function (p) {
-              Files.model.add('ensemble', p);$.I('Class created !');
-            });
-
+            $.concierge.get_component('add_ensemble')({ 
+              name: $('#add_ensemble_name')[0].value, 
+              description: $('#add_ensemble_description')[0].value, 
+              allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1', 
+              allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1', 
+              allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',  
+              default_pause: $('input[name=default_pause]:checked')[0].value === '1', 
+              allow_download: $('input[name=allow_download]:checked')[0].value === '1', 
+              allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1', 
+              use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' }, 
+              function (p) {
+                Files.model.add('ensemble', p);
+                $.I('Class created !');
+              });
             $(this).dialog('destroy');
           },
         },

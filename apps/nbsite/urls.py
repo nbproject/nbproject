@@ -36,6 +36,7 @@ urlpatterns = patterns("",
                        (r'^collage/$' , 'pages.views.collage'),
                        (r'^dev/desktop/(\d+)$' , 'pages.views.dev_desktop'),
                        (r'^dev/test$' , 'pages.views.dev_test'), # Todo: k>>> Delete this line after dev testing.
+                       (r'^dev/test2$' , 'pages.views.dev_test2'), # Todo: k>>> Delete this line after dev testing.
                        (r'^file/(\d+)$' , 'pages.views.source'),
                        (r'^f/(\d+)$' , 'pages.views.source', {"allow_guest": True}),
                        (r'^f/(\d+)/analyze$' , 'pages.views.source_analytics'),
