@@ -98,23 +98,14 @@ define(function(require) {
 
   Pers.__configure_user_menu = function (init_ui) {
     if (init_ui) { // Remove the nav-bar (if previously present) and re-add it.
-      $('.nb-nav').remove();
-      var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
-      var screenname = "Guest";
-      var nbNavClass2 = "nb-nav--guest";
-      var mainContentClass2 = "content_main--guest";
+      $("body").prepend(require('hbs!templates_dir/nav_template')());
 
-      if (!Conf.userinfo.guest) {
-        screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
-        nbNavClass2 = "";
-        mainContentClass2 = "";
-      }
-
-      $("body").append(require('hbs!templates_dir/nav_template')({ // Re-add the navbar
-        "screenname": screenname,
-        "nb-nav-class2": nbNavClass2,
-        "main-content-class2": mainContentClass2
-      }));
+      // Set URL of nb homepage in the navbar logo. We cannot simply use "/" because that 
+      // won't work with embedded scripts and the bookmarklet.
+      var cur =  Pers.currentScript;
+      var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
+      var server_url = server_info[1] + '://' + server_info[2] + "/";
+      $(".nb-nav__logo").attr("href", server_url);
 
       // Add the dialogs for logging in and registering a new user (they'll be invisble until the right button gets clicked).
       var $util_window = $.concierge.get_component('get_util_window')();
@@ -178,8 +169,30 @@ define(function(require) {
         return $(".nb-nav__ul").hasClass('nb-nav__ul--open');
       }
     }
-
+    Pers.set_nav_user();
     Pers.params = Dom.getParams();
+  };
+
+  Pers.set_nav_user = function() {
+    var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+    var screenname = "Guest";
+    var nbNavClass2 = "nb-nav--guest";
+    var mainContentClass2 = "content_main--guest";
+
+    if (!Conf.userinfo.guest) {
+      screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
+      nbNavClass2 = "";
+      mainContentClass2 = "";
+    }
+
+    // Remove the defaults
+    $(".nb-nav").removeClass("nb-nav--guest");
+    $("#content_main").removeClass("main-content-class2");
+
+    // Add the appropriate name and classes
+    $("#login-name").text(screenname);
+    $(".nb-nav").addClass(nbNavClass2);
+    $("#content_main").addClass(mainContentClass2);
   };
 
   Pers.add_css = function (url) {
@@ -191,6 +204,9 @@ define(function(require) {
   };
 
   Pers.preinit = function (init_ui) {
+    // Set user as guest by default
+    Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+
     if (init_ui === undefined) {
       init_ui = true;
     }

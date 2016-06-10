@@ -1,26 +1,29 @@
-.nb-widget-header ul {
+.nb-breadcrumb {
   margin: 0;
   padding: 4px 15px;
   z-index: 100;
-  position: relative;
+  position: absolute;
+  top: 0;
   outline: none;
   display: inline-block;
+  /* To keep the center of the breadcrumb (instead of its left) aligned with the center of the navbar */
+  transform: translateX(-50%);
 }
 
-.nb-widget-header li {
+.nb-breadcrumb li {
   display: inline;
 }
 
 
-.nb-widget-header li span{
+.nb-breadcrumb li span{
   cursor: pointer;
 }
 
-.nb-widget-header li.active span{
+.nb-breadcrumb li.active span{
   font-weight:bold;
 }
 
-.nb-widget-header li:not(:first-child):before{
+.nb-breadcrumb li:not(:first-child):before{
   content:'\00bb';
   margin: 0 10px;
 }

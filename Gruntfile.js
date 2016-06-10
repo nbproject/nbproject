@@ -156,6 +156,7 @@ module.exports = function (grunt) {
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
       addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,

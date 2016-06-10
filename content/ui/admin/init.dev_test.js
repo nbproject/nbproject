@@ -35,64 +35,6 @@ define(function(require) {
   };
 
   Pers.init = function () {
-    var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
-    var screenname = "Guest";
-    var nbNavClass2 = "nb-nav--guest";
-    var mainContentClass2 = "content_main--guest";
-
-    if (!Conf.userinfo.guest) {
-      screenname = userinfo.firstname === null ? escapeSpecialChar(userinfo.email) : escapeSpecialChar(userinfo.firstname) + ' ' + escapeSpecialChar(userinfo.lastname);
-      nbNavClass2 = "";
-      mainContentClass2 = "";
-    }
-
-    $("body").empty();
-    $("body").append(require('hbs!templates_dir/nav_template')({
-      "screenname": screenname,
-      "nb-nav-class2": nbNavClass2,
-      "main-content-class2": mainContentClass2
-    }));
-    $(".util_windows").append(require('hbs!templates_dir/register_user_dialog')());
-    $(".util_windows").append(require('hbs!templates_dir/login_user_dialog')());
-
-    /* Start of Navbar event handlers: Attach even handlers after adding the elements to the dom */
-
-    // Close the nb-nav if the user clicks outside of it
-    $(window).click(function(event) {
-      if (!event.target.matches('.nb-nav__btn') && !$(event.target).parents('.nb-nav__ul').length) {
-        nb_nav__ul_close();
-      }
-    });
-
-    $(".nb-nav__menu-btn").click(function() {
-      if (is_nb_nav__ul_open()) {
-        nb_nav__ul_close();
-      } else {
-        nb_nav__ul_open();
-      }
-    });
-
-    // Toggle dropdown within the menu
-    $(".nb-nav__li--dropdown").click(function(e) {
-      $(".nb-nav__li--dropdown__icon").toggleClass("nb-nav__li--dropdown--open__icon");
-      $(this).children("ul").slideToggle(300); // 0.3 seconds
-    });
-    nb_nav__ul_close();
-
-    /* End of Navbar event handlers */
-
-    /*
-     Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js. 
-     I don't fully understand it. 
-     */
-    $.concierge.addListeners(Pers, { // Pers used arbitrarily because the copied code had it.
-      successful_login: function (evt) {
-        Auth.set_cookie('ckey', evt.value.ckey);
-        document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
-        $.I('Welcome !');
-      },
-    }, 'globalPersObject');
-
     //get data:
     var payload_objects = { types: ['ensembles', 'folders', 'files', 'sections'] };
     if ('id_ensemble' in Pers.params) {

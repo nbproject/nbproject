@@ -64,27 +64,6 @@ div.viewport
     display: none;
 }
 
-#login-window
-{
-    font-weight: bold;
-
-    position: absolute;
-    z-index: 3;
-    top: 1px;
-    color: #404040;
-}
-
-#login-window a
-{
-    margin-right: 10px;
-    margin-left: 10px;
-}
-
-#login-name
-{
-    margin-right: 10px;
-}
-
 .ui-tabs-nav li a
 {
     font-family: Verdana;

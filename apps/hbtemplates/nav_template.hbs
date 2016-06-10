@@ -3,10 +3,10 @@
 </div>
 <div class="nb-viewport">
   <div class="nb-widget-header" style="height:24px;">
-    <nav id="nb-main-nav" class="nb-nav {{nb-nav-class2}}">
+    <nav id="nb-main-nav" class="nb-nav nb-nav--guest">
       <a class="nb-nav__logo" href="/">nb</a>
       <div id="login-window" class="nb-nav__btn-panel">
-        <span id="login-name" class="nb-nav__screenname">{{screenname}}</span>
+        <span id="login-name" class="nb-nav__screenname">Guest</span>
         <a class="nb-nav__btn nb-nav__login-btn" href="javascript:NB$.concierge.get_component('login_user_menu')()">Login</a>
         <a class="nb-nav__btn nb-nav__signup-btn" href="javascript:NB$.concierge.get_component('register_user_menu')()">Signup</a>
         <button type="button" class="nb-nav__btn nb-nav__menu-btn">
@@ -56,7 +56,7 @@
   </div>
 </div>
 
-{{!-- <div id="content_main" class="{{main-content-class2}}"">
+{{!-- <div id="content_main" class="content_main--guest">
   {% block content %}{% endblock %}
 </div> --}}
 <!-- .util_windows will be returned by pers.js and used by files.js (and perhaps a bunch of other places) to append items to the page e.g. the modal for creating a new class. -->
