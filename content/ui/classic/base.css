@@ -147,23 +147,27 @@ nav.main a:hover
 }
 
 footer {
-    font-size: small;
-    font-style: normal;
-    color: #777;
-    bottom: 0;
-    position: relative;
-    background-color: transparent;
+    color: #90A4AE;
+    background-color: #34495e;
     text-align: center;
     width: 100%;
-    padding: 10px 20px;
+    min-height: 100px;
+    padding-top: 5px;
 }
 
-footer a:link, footer a:visited {
-    color: #2c3e50;
+footer a:link, 
+footer a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover,
+footer a:focus {
+  text-decoration: underline;
 }
 
 .footer__p {
-    margin: 10px 20px;
+    margin: 5px 10px;
     padding: 0;
 }
 
@@ -201,8 +205,6 @@ a:visited
 .column.left
 {
     float: left;
-
-    box-shadow: 32px 0 32px -32px #888;
 }
 .column.left > div
 {
@@ -484,7 +486,6 @@ div.big-button > a:hover
 }
 
 .nb-nav__btn {
-    background-color: transparent;
     color: #aaa;
     cursor: pointer;
     outline: none;
@@ -496,7 +497,6 @@ div.big-button > a:hover
     width: 70px;
     text-align: center;
     transition: 0.4s;
-    display: none;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -505,16 +505,13 @@ div.big-button > a:hover
 }
 
 .nb-nav__btn:hover {
-    color: #555;
-}
-
-.nb-nav__btn:hover .nb-nav__icon-bar {
     background-color: #555;
 }
 
 .nb-nav__screenname {
   font-size: 12px;
-  color: #aaa;
+  color: #777;
+  font-style: italic;
   padding: 4px 15px 4px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -522,9 +519,10 @@ div.big-button > a:hover
 }
 
 .nb--guest .nb-nav__screenname {
-    font-size: 12px;
+    font-size: 14px;
     padding: 18px;
-    color: #fff;
+    color: #90A4AE;
+    font-style: italic;
 }
 
 .nb-nav__menu-btn {
@@ -532,12 +530,14 @@ div.big-button > a:hover
     display: block; 
     border-left: 1px solid #aaa;
     padding-top: 0;
+    background-color: #777
 }
 
 .nb--guest .nb-nav__btn {
-    color: #90A4AE;
+    color: #fff;
     border-left: 1px solid #90A4AE;
     font-size: 16px;
+    background-color: transparent;
 }
 
 .nb--guest .nb-nav__account-btn,
@@ -557,7 +557,7 @@ div.big-button > a:hover
 }
 
 .nb--guest .nb-nav__btn:hover {
-    color: #fff;
+    background-color: #3f5973
 }
 
 .nb--guest .nb-nav__btn:hover .nb-nav__icon-bar {
@@ -567,7 +567,7 @@ div.big-button > a:hover
 .nb-nav__icon-bar {
     width: 22px;
     height: 2px;
-    background-color: #707070;
+    background-color: #fff;
     margin: 3px auto;
     display: block;
     pointer-events: none;
@@ -579,7 +579,7 @@ div.big-button > a:hover
 .nb--guest .nb-nav__icon-bar {
     width: 30px;
     height: 2px;
-    background-color: #90A4AE;
+    background-color: #fff;
     margin: 5px auto;
     max-width: 30px;
 }
@@ -644,7 +644,7 @@ div.big-button > a:hover
 
 .nb-nav__a:hover,
 .nb-nav__a2:hover {
-  background-color: #f1f1f1;
+  background-color: #ddd;
   color: #555;
 }
 
@@ -700,9 +700,9 @@ div.big-button > a:hover
 }
 
 .nb-widget-body {
-  height: 100%;
   padding-bottom: 50px;
   box-sizing: content-box;
   max-width: 950px;
   margin: auto;
+  min-height: 80vh; /* To ensure the footer appears at the bottom of the page even if there's little or no content on the page */
 }

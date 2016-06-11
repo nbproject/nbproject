@@ -1,36 +1,27 @@
-{% extends "web/base.html" %}
-{% block title %}NB Login required{% endblock %}
 <!--
    Author: cf AUTHORS.txt 
    License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
    MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
-  -->
-{% block css %}
-{% endblock %}
+-->
+<script>
+  $("title").html("NB Login required");
+</script>
+<style>
+	.email{
+		font-size: large;
+	}
 
-{% block style %}
+	.error-msg{
+		display: none;
+		color: #FF0000;
+		font-weight: bold;
+	}
 
-.email{
-font-size: large;
-}
+	#success{
+		display: none;
+	}
+</style>
 
-.error-msg{
-display: none;
-color: #FF0000;
-font-weight: bold;
-}
-
-#success{
-display: none;
-}
-{% endblock %}
-
-{% block js %}
-<script type="text/javascript" src="/content/compiled/login_NB.js"></script>
-{% endblock %}
-
-
-{% block content %}
 <div class="left column"><div>
 <h1>Log in to <span class="nb">nb</span> to continue...</h1>
 <div id="auth_fragment"></div>
@@ -46,4 +37,4 @@ display: none;
 
 <div style="clear:both;"></div>
 
-{% endblock %}
+<script type="text/javascript" src="/content/compiled/login_NB.js"></script>

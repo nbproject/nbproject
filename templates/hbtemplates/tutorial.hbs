@@ -1,14 +1,14 @@
-{% extends "web/base.html" %}
-{% block title %}NB Help and Tutorial{% endblock %}
-{% block css %}
-    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
-{% endblock %}
-{% block style %}
-span.ui-icon {
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
+
+<script>
+  $("title").html("NB Help and Tutorial");
+</script>
+<style>
+  span.ui-icon {
     display: inline-block;
-} 
-{% endblock %}
-{% block content %}
+  } 
+</style>
+
 <h1>NB Help and Tutorial (work in progress)</h1>
 
 <i>NB is a web-based forum that lets you collaborate on top of any PDF document.</i>
@@ -41,6 +41,3 @@ If you have questions about NB, please visit our <a href="https://github.com/nbp
 </div></div>
 
 <div style="clear:both;"></div>
-
-
-{% endblock %}

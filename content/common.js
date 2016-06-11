@@ -10,7 +10,6 @@ requirejs.config({
     'contextmenu': 'lib/contextmenu/jquery.contextMenu',
     'contextmenu_position': 'lib/contextmenu/jquery.ui.position',
     'dateformat': 'lib/dateformat/date.format',
-    'handlebars': 'lib/handlebars/handlebars.runtime-v4.0.5',
     'jquery': 'lib/jquery/1.8.3/jquery.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
@@ -21,8 +20,9 @@ requirejs.config({
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
     'underscore': 'lib/underscore/underscore',
     'wgxpath': 'lib/wgxpath/wgxpath.install',
-    'hbs': 'lib/require-handlebars-plugin/hbs',
+    'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
     'templates_dir': '../templates/hbtemplates/', // handlebars templates directory
+    'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
 
     // modules
     'auth': 'modules/auth',

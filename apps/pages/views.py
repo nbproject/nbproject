@@ -91,6 +91,9 @@ def dev_test2(req):
     # return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
     return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
+def static_page(req):
+    return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
+
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
     if url:
@@ -329,7 +332,7 @@ def invite(req):
 
 def logout(req):
     o = {}
-    r = render_to_response("web/logout.html", {"o": o})
+    r = __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
     user = UR.getUserInfo(req, False)
     if user is not None and user.guest:
         r.set_cookie("pgid", user.id, 1e9)

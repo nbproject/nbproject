@@ -1,14 +1,14 @@
-{% extends "web/base.html" %}
-{% block title %}Contact the NB Team{% endblock %}
-{% block css %}
-    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
-{% endblock %}
-{% block style %}
-span.ui-icon {
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
+
+<script>
+  $("title").html("Contact the NB Team");
+</script>
+<style>
+  span.ui-icon {
     display: inline-block;
-} 
-{% endblock %}
-{% block content %}
+  } 
+</style>
+
 <h1>Contact the NB Team</h1>
 
 <p>
@@ -23,6 +23,3 @@ However, it has a great community... So if you have questions about NB, please u
 As a last resort, you can contact the NB team at <a href="mailto:nb-team@csail.mit.edu">nb-team@csail.mit.edu</a>. However, please be aware that your questions will likely be answered much faster if you post them on our  <a href="http://nbproject.vanillaforums.com">forum</a>. </p>
 
 <div style="clear:both;"></div>
-
-
-{% endblock %}
