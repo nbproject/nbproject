@@ -1,17 +1,9 @@
-{% extends "web/base.html" %}
-{% block title %}NB FAQ{% endblock %}
-{% block css %}
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
-{% endblock %}
-{% block style %}
-span.ui-icon {
-display: inline-block;
-} 
-{% endblock %}
-{% block js %}
 <script src="/content/modules/faq.js"></script>
-{% endblock %}
-{% block content %}
+<script>document.getElementById("the_nb_bookmarklet").href='javascript:((function(){c=document.createElement("script");c.setAttribute("type", "text/javascript");c.setAttribute("src", "'+document.location.protocol+"//"+document.location.host+'/embed_NB.js");document.getElementsByTagName("head")[0].appendChild(c);})())'</script>
+
+<!-- ============================ -->
+
 <h1>Frequently Asked Questions For Students</h1>
 <b> <p id="login2" class="clickable"> Login </p> </b>
 <ul>
@@ -118,6 +110,3 @@ display: inline-block;
  <li> <b> <span id="nb_bookmarklet">Q: What's the NB bookmarklet? </span> </b> </li> 
   <i> A: This is the <a id="the_nb_bookmarklet" href="">NB bookmarklet</a>. It lets you open NB inside a webpage that may contain NB comments. In order to use it: <ul><li>add it to add it to your browser's bookmarks</li><li>everytime you're on a page that may contain NB comments and that you don't see the NB insterface come up automatically,  just click on the bookmarklet</li></ul>
 </ul>
-<script>document.getElementById("the_nb_bookmarklet").href='javascript:((function(){c=document.createElement("script");c.setAttribute("type", "text/javascript");c.setAttribute("src", "'+document.location.protocol+"//"+document.location.host+'/embed_NB.js");document.getElementsByTagName("head")[0].appendChild(c);})())'</script>
-
-{% endblock %}

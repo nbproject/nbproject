@@ -287,7 +287,6 @@ div.navbar
 
     margin-bottom: 5px;
     padding: 5px 0;
-
     text-align: center;
 }
 
@@ -695,9 +694,15 @@ div.big-button > a:hover
 
 /*** End of navbar ***/
 
+.nb-widget-body-container {
+  overflow-y: auto;
+  height: 100%;
+}
+
 .nb-widget-body {
   height: 100%;
-  overflow: auto;
   padding-bottom: 50px;
-  box-sizing: border-box;
+  box-sizing: content-box;
+  max-width: 950px;
+  margin: auto;
 }

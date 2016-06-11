@@ -1,17 +1,6 @@
-{% extends "web/base.html" %}
-{% block title %}NB FAQ{% endblock %}
-{% block css %}
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" rel="stylesheet" ></link>
-{% endblock %}
-{% block style %}
-span.ui-icon {
-display: inline-block;
-} 
-{% endblock %}
-{% block js %}
-<script src="/content/modules/faq.js"></script>
-{% endblock %}
-{% block content %}
+
+
 <h1>Frequently Asked Questions For Instructors</h1>
 <b> <p id="setup" class="clickable"> Setup </p> </b>
 	<ul>
@@ -171,4 +160,6 @@ display: inline-block;
 	<li> <b> <span id="researchq2A"> Q: Is it possible to download the annotated PDFs? </span> </b> </li>
 		<i> A: It's possible to download the annotated PDF if you have admin rights to the NB class that contains that PDF. </i>
 	</ul> 
-      {% endblock %}
+
+
+<script src="/content/modules/faq.js"></script>

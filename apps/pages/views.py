@@ -88,7 +88,8 @@ def dev_test(req):
 
 def dev_test2(req):
     # Todo: k>>> Delete this function after dev.
-    return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
+    # return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
+    return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)

@@ -22,7 +22,7 @@ requirejs.config({
     'underscore': 'lib/underscore/underscore',
     'wgxpath': 'lib/wgxpath/wgxpath.install',
     'hbs': 'lib/require-handlebars-plugin/hbs',
-    'templates_dir': '../apps/hbtemplates/', // handlebars templates directory
+    'templates_dir': '../templates/hbtemplates/', // handlebars templates directory
 
     // modules
     'auth': 'modules/auth',
@@ -46,6 +46,7 @@ requirejs.config({
     'init_desktop': 'ui/admin/init.desktop',
     'init_dev_test': 'ui/admin/init.dev_test',
     'init_dev_test2': 'ui/admin/init.dev_test2',
+    'init_static_page': 'ui/admin/init.static_page',
     'init_collage': 'ui/admin/init.collage',
     'init_pdfviewer': 'ui/admin/init.pdfviewer',
     'init_spreadsheet': 'ui/admin/init.spreadsheet',
@@ -82,6 +83,7 @@ requirejs.config({
     'build_desktop': 'build-scripts/build-desktop',
     'build_devtest': 'build-scripts/build-devtest',
     'build_devtest2': 'build-scripts/build-devtest2',
+    'build_static_page': 'build-scripts/build-static-page',
     'build_embed': 'build-scripts/build-embed',
     'build_embedopenid': 'build-scripts/build-embedopenid',
     'build_login': 'build-scripts/build-login',
