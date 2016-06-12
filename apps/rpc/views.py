@@ -42,6 +42,7 @@ __EXPORTS = [
     "getHTML5Info",
     "get_location_info", 
     "getMembers",
+    "get_all_members",
     "getMyNotes", 
     "getNotes",
     "getObjects", 
@@ -71,7 +72,7 @@ __EXPORTS = [
     "set_grade_assignment", 
     "set_location_section"
     ]
-__AVAILABLE_TYPES = set(["folders", "ensembles", "sections", "files", "assignments", "marks", "settings", "file_stats", "ensemble_stats", "polls", "choices", "responses", "polls_stats", "ensemble_stats2"])
+__AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "ensembles", "ensemble_stats", "ensemble_stats2", "files", "file_stats", "folders", "marks", "polls", "polls_stats", "responses", "sections", "settings"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
 __AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search", "collection" ]
 
@@ -479,6 +480,14 @@ def getMembers(payload, req):
     if "id_ensemble" in payload: 
         if auth.canGetMembers(uid, payload["id_ensemble"]):
             members = annotations.get_members(payload["id_ensemble"]) 
+            return UR.prepare_response(members)
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")
+
+def get_all_members(payload, req):
+    uid = UR.getUserId(req)
+    if "id_ensemble" in payload: 
+        if auth.canGetMembers(uid, payload["id_ensemble"]):
+            members = annotations.get_all_members(uid, payload) 
             return UR.prepare_response(members)
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
