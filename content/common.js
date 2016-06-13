@@ -21,7 +21,7 @@ requirejs.config({
     'underscore': 'lib/underscore/underscore',
     'wgxpath': 'lib/wgxpath/wgxpath.install',
     'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
-    'templates_dir': '../templates/hbtemplates/', // handlebars templates directory
+    'templates_dir': '../templates/handlebars/', // handlebars templates directory
     'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
 
     // modules
@@ -124,6 +124,16 @@ requirejs.config({
     },
     'handlebars': {
         exports: 'Handlebars'
+    }
+  },
+  hbs: {
+    // Reference: https://github.com/SlexAxton/require-handlebars-plugin/blob/master/README.md
+    helpers: true,            // default: true
+    templateExtension: 'hbs', // default: 'hbs'
+    partialsUrl: '',          // default: ''
+    helperPathCallback: function(name) { 
+        // Set the path for handlebars helpers. Default: templates/helpers/*
+        return 'templates_dir/helpers/' + name;
     }
   }
 });

@@ -1,0 +1,126 @@
+<script>
+  $("title").html("Properties for {{ensemble.name}}");
+</script>
+<style>
+  span.lowcontrast{
+    color: #a0a0a0;
+  }
+  div.section{
+    color: #404040;
+    margin-left: 30px;
+  }
+  table{
+    border-spacing: 15px 3px;
+  }
+  .tablesorter-default .header,
+  .tablesorter-default .tablesorter-header {
+    background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-unsorted.gif);
+    background-position: center right;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    white-space: normal;
+    padding: 4px 15px 4px 0px;
+  }
+  .tablesorter-default thead .headerSortUp,
+  .tablesorter-default thead .tablesorter-headerSortUp,
+  .tablesorter-default thead .tablesorter-headerAsc {
+    background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-asc.gif);
+  }
+  .tablesorter-default thead .headerSortDown,
+  .tablesorter-default thead .tablesorter-headerSortDown,
+  .tablesorter-default thead .tablesorter-headerDesc {
+    background-image: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/images/black-desc.gif);
+  }
+  .tablesorter-default thead .sorter-false {
+    background-image: none;
+    cursor: default;
+    padding: 4px;
+  }
+</style>
+
+<h1>Users of {{ensemble.name}}</h1>
+
+<h2>{{size memberships}} registered users</h2>
+<div class='section'>
+	<p>The following users have fully registered: Either by accepting an invite or by [using the class' subscribe link and confirming their email]</p>
+      <table id='reg'>
+      	<thead><tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Section</th><th>Actions</th></tr></thead>
+      	<tbody>
+	{{#each memberships}}
+		<tr>
+      {{#with user}}
+        {{#if firstname}}
+          <td>{{firstname}}</td>
+        {{else}}
+          <td><span class="lowcontrast">-</span></td>
+        {{/if}}
+        {{#if lastname}}
+          <td>{{lastname}}</td>
+        {{else}}
+          <td><span class="lowcontrast">-</span></td>
+        {{/if}}
+			  <td>{{email}}</td>
+      {{/with}}
+			<td>
+        {{#if admin}}
+          staff
+        {{else}}
+          <span class='lowcontrast'>student</span>
+        {{/if}}
+      </td>
+			<td>
+				{{!-- <form method="POST" action="?action=setsection&membership_id={{o.id}}">
+				<select name="section_id" data_membership_id="{{o.id}}">
+					<option value="None" {{#if section == None}} selected="selected" {{/if}}>No Section</option>
+					{{#each sections}}
+						<option value='{{id}}' {{#if this == memberships.section}} selected="selected" {{/if}} >{{name}}</option>
+					{{/each}}
+				</select><noscript><input type="submit" value="Change" /></noscript>
+				</form> --}}
+			</td>
+            <td><a style='margin-right: 10px' href='?action=delete&membership_id={{o.id}}'>Delete</a>
+              {{#each admin}}
+              <a href='?action=unadmin&membership_id={{id}}'>Remove staff status</a>
+              {{else}}
+              <a href='?action=admin&membership_id={{id}}'>Add staff status</a>
+              {{/each}}
+            </td>
+		</tr>
+    {{/each}}
+
+	</tbody>
+      </table>
+      </div>
+
+
+<script type="text/javascript">
+$("select[name=section_id]").change(function(){
+   var membership_id = $(this).attr("data_membership_id");
+   var section_id = $(this).val();
+   $.post(
+      "?action=setsection&membership_id=" + membership_id,
+      {section_id: section_id} );
+
+});
+
+$(document).ready(function(){
+	var config = {
+		headers:{
+			0: {sorter: "text"},
+			1: {sorter: "text"},
+			2:{sorter: "email"},
+			3:{sorter: false},
+			4:{sorter: false},
+			5:{sorter: false}
+		},
+		ignoreCase: true,
+		sortReset: true
+	}
+	$('#reg').tablesorter(config);
+	$('#pendingInvites').tablesorter({headers:{1:{sorter:false}, 2:{sorter:false}}});
+	$('#pendingConf').tablesorter(config);
+	$('#deleted').tablesorter(config);
+});
+</script>
+
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/js/jquery.tablesorter.min.js'></script>
