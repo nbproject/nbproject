@@ -88,8 +88,8 @@ def dev_test(req):
 
 def dev_test2(req):
     # Todo: k>>> Delete this function after dev.
-    # return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
-    return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
+    return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
+    # return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
 def static_page(req):
     return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
@@ -475,7 +475,7 @@ def properties_ensemble_users(req, id):
         elif req.GET["action"] == "setsection":
             m = real_memberships.filter(id=req.GET["membership_id"])
             if req.POST["section_id"] == "None":
-		s = None
+                s = None
             else:
                 s = sections.filter(id=req.POST["section_id"])[0]
             if len(m):
@@ -484,7 +484,7 @@ def properties_ensemble_users(req, id):
                 m.save()
                 return HttpResponseRedirect(req.path)
 
-    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations, "deleted_memberships": deleted_memberships, "sections": sections})
+    return render_to_response("web/properties_ensemble_users.html")
 
 def properties_ensemble_sections(req, id):
     user       = UR.getUserInfo(req)

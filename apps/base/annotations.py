@@ -317,34 +317,33 @@ def get_members(eid):
 
 def get_all_members(uid, payload):
     """
-    Get all members of an ensemble i.e. registered participants, pending invitations, pending email confirmation, 
-    and deleted members. Although uid is not required, it's been added to ensure that getObjects() in views.py 
+    Get all members of an ensemble i.e. registered participants, pending invitations, pending email confirmation,
+    and deleted members. Although uid is not required, it's been added to ensure that getObjects() in views.py
     can call this method.
     """
     eid = payload["id_ensemble"]
     ensemble = M.Ensemble.objects.get(pk=eid)
-    sections = M.Section.objects.filter(ensemble=ensemble)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
     pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
     deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
     pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
 
-    pendingconfirmations_dict = __memberships_to_users_dict(pendingconfirmations)
-    real_memberships_dict = __memberships_to_users_dict(real_memberships)
-    deleted_memberships_dict = __memberships_to_users_dict(deleted_memberships)
-    pendinginvites_dict = __memberships_to_users_dict(pendinginvites)
+    pendingconfirmations_list = __memberships_to_users_list(pendingconfirmations)
+    real_memberships_list = __memberships_to_users_list(real_memberships)
+    deleted_memberships_list = __memberships_to_users_list(deleted_memberships)
+    pendinginvites_list = __memberships_to_users_list(pendinginvites)
 
-    users = {}
-    users["registered"] = real_memberships_dict
-    users["pending_invitation"] = pendinginvites_dict
-    users["pending_email_confirmation"] = pendingconfirmations_dict
-    users["deleted"] = deleted_memberships_dict
-
+    users = {
+        "registered": real_memberships_list,
+        "pending_invitation": pendinginvites_list,
+        "pending_email_confirmation": pendingconfirmations_list,
+        "deleted": deleted_memberships_list
+    }
     return users
 
-def __memberships_to_users_dict(memberships):
-    users = {}
+def __memberships_to_users_list(memberships):
+    result = []
     for membership in memberships:
         user = M.User.objects.get(id=membership.user.id)
         user_entry = UR.model2dict(user)
@@ -359,9 +358,9 @@ def __memberships_to_users_dict(memberships):
 
         # Add section
         if membership.section == None:
-            user_entry["section_id"] = -1
+            user_entry["section"] = None
         else:
-            user_entry["section_id"] = membership.section.id
+            user_entry["section"] = membership.section.name
 
         # Add admin status
         if membership.admin:
@@ -369,9 +368,12 @@ def __memberships_to_users_dict(memberships):
         else:
             user_entry["admin"] = False
 
-        # Add user dictionary to users
-        users[user.id] = user_entry
-    return users
+        user_entry["user_id"] = user_entry.pop("id") # Rename id key as user_id
+        user_entry["id"] = membership.id # Set membership_id as id
+
+        # Add user dictionary to result
+        result.append(user_entry)
+    return result
 
 
 def get_stats_ensemble(payload):

@@ -46,6 +46,7 @@ requirejs.config({
     'init_desktop': 'ui/admin/init.desktop',
     'init_dev_test': 'ui/admin/init.dev_test',
     'init_dev_test2': 'ui/admin/init.dev_test2',
+    'init_properties_ensemble_users': 'ui/admin/init.properties_ensemble_users',
     'init_static_page': 'ui/admin/init.static_page',
     'init_collage': 'ui/admin/init.collage',
     'init_pdfviewer': 'ui/admin/init.pdfviewer',
@@ -83,6 +84,7 @@ requirejs.config({
     'build_desktop': 'build-scripts/build-desktop',
     'build_devtest': 'build-scripts/build-devtest',
     'build_devtest2': 'build-scripts/build-devtest2',
+    'build_properties_ensemble_users': 'build-scripts/build-properties-ensemble-users',
     'build_static_page': 'build-scripts/build-static-page',
     'build_embed': 'build-scripts/build-embed',
     'build_embedopenid': 'build-scripts/build-embedopenid',
@@ -131,7 +133,7 @@ requirejs.config({
     helpers: true,            // default: true
     templateExtension: 'hbs', // default: 'hbs'
     partialsUrl: '',          // default: ''
-    helperPathCallback: function(name) { 
+    helperPathCallback: function(name) {
         // Set the path for handlebars helpers. Default: templates/helpers/*
         return 'templates_dir/helpers/' + name;
     }

@@ -11,6 +11,6 @@ define('templates_dir/helpers/size', ['hbs/handlebars'], function ( Handlebars )
     }
     return size;
   }
-  Handlebars.registerHelper('size', size );
+  Handlebars.registerHelper('size', size);
   return size;
 });
