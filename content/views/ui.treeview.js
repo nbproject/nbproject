@@ -137,7 +137,7 @@ define(function(require) {
           icon:'jstree_icon home',
         },
         children: [],
-        attr: { title: 'Home',  rel: 'ensemble', id_item: null },
+        attr: { title: 'Home',  rel: 'ensemble', id_item: 0 },
       });
 
       data.sort(self._f_sort_tree);

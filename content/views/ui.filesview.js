@@ -313,7 +313,7 @@ define(function(require) {
 
     _draw_frame: function () {
       var self = this;
-      if(self._id_ensemble ===undefined) {
+      if(self._id_ensemble === undefined || self._id_ensemble === "0") {
         self._id_ensemble = null;
       }
       self._admin = self._id_ensemble === null? false : self._model.o.ensemble[self._id_ensemble].admin;
@@ -415,15 +415,15 @@ define(function(require) {
 
       self._draw_files();
       $('#filesView-accordion').accordion({
-        autoHeight: false,
+        heightStyle: 'content',
         collapsible: true,
-        change: function (event, ui) {
+        activate: function (event, ui) {
           //simulate scroll event to display img if not there already.
           self.element.scroll();
           self._defaultopen = '#' + ui.newHeader.attr('id');
         },
 
-        active: self._defaultopen,
+        active: $(self._defaultopen).index('#filesView-accordion h3')>0?$(self._defaultopen).index('#filesView-accordion h3'):0,
       });
 
       // there might be quite a few questions: don't get all images at once

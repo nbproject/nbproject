@@ -39,7 +39,7 @@ define(function(require) {
     //pers.admin=true;
     //Extra menus:
     if (!(Conf.userinfo.guest)) {
-      $('#menu_settings').after("<li><a href='javascript:" + $str + ".$.concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
+      $('#menu_settings').after("<li><a href='javascript:" + $str + ".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
     }
 
     //Factories: methods called if an event calls for a function that's not yet present
@@ -108,7 +108,7 @@ define(function(require) {
             });
             var ensemble_data = Pers.store.o.ensemble;
             // Update breadcrumb
-            if(evt.value === null || evt.value === undefined ) { // home
+            if(evt.value === null || evt.value === undefined || evt.value === "0" ) { // home
               $(".nb-widget-header").breadcrumb({trail: [
                 {name: "Home", rel: "ensemble", id_item: null},
               ]});
