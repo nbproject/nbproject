@@ -399,6 +399,12 @@ def get_section_participants(uid, payload):
     }
 
 
+def get_class_settings(uid, payload):
+    eid = payload["id_ensemble"]
+    ensemble = M.Ensemble.objects.get(pk=eid)
+    return UR.model2dict(ensemble)
+
+
 def get_stats_ensemble(payload):
     import db
     id_ensemble = payload["id_ensemble"]

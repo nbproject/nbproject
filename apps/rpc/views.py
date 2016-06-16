@@ -36,6 +36,7 @@ __EXPORTS = [
     "editNote",
     "editPoll",
     "get_all_members",
+    "get_class_settings",
     "get_comment_info",
     "getCommentLabels",
     "getGradees",
@@ -71,11 +72,12 @@ __EXPORTS = [
     "sendInvites",
     "set_comment_label",
     "set_grade_assignment",
-    "set_location_section"
+    "set_location_section",
+    "update_ensemble"
     ]
-__AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "ensembles", "ensemble_stats", "ensemble_stats2",
-                         "files", "file_stats", "folders", "marks", "polls", "polls_stats", "responses", "sections",
-                         "section_participants", "settings"])
+__AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "class_settings", "ensembles", "ensemble_stats",
+                         "ensemble_stats2", "files", "file_stats", "folders", "marks", "polls", "polls_stats",
+                         "responses", "sections", "section_participants", "settings"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
 __AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search", "collection" ]
 
@@ -505,6 +507,15 @@ def get_section_participants(payload, req):
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
 
+def get_class_settings(payload, req):
+    uid = UR.getUserId(req)
+    if "id_ensemble" in payload:
+        if auth.canGetMembers(uid, payload["id_ensemble"]):
+            class_settings = annotations.get_class_settings(uid, payload)
+            return UR.prepare_response(class_settings)
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")
+
+
 def markThread(payload, req):
     uid = UR.getUserId(req)
     id_location =  payload["id_location"]
@@ -620,6 +631,40 @@ def add_ensemble(payload, req):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     id = annotations.create_ensemble(uid,  payload)
     return UR.prepare_response(annotations.get_ensembles(uid, {"id": id}))
+
+
+def update_ensemble(P, req):
+    uid = UR.getUserId(req)
+    eid = P["id_ensemble"]
+    if uid is None or eid is None:
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    ensemble = M.Ensemble.objects.get(pk=eid)
+    if "name" in P:
+        ensemble.name = P["name"]
+    if "description" in P:
+        ensemble.description = P["description"]
+    if "allow_staffonly" in P:
+        ensemble.allow_staffonly = P["allow_staffonly"]
+    if "allow_anonymous" in P:
+        ensemble.allow_anonymous = P["allow_anonymous"]
+    if "allow_tag_private" in P:
+        ensemble.allow_tag_private = P["allow_tag_private"]
+    if "allow_guest" in P:
+        ensemble.allow_guest = P["allow_guest"]
+    if "use_invitekey" in P:
+        ensemble.use_invitekey = P["use_invitekey"]
+    if "allow_download" in P:
+        ensemble.allow_download = P["allow_download"]
+    if "allow_ondemand" in P:
+        ensemble.allow_ondemand = P["allow_ondemand"]
+    if "default_pause" in P:
+        ensemble.default_pause = P["default_pause"]
+    if "section_assignment" in P:
+        ensemble.section_assignment = P["section_assignment"]
+    if "metadata" in P:
+        ensemble.metadata = P["metadata"]
+    ensemble.save()
+    return UR.prepare_response(annotations.get_class_settings(uid, {"id_ensemble":P["id_ensemble"]}))
 
 
 def add_folder(payload, req):

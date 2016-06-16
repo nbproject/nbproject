@@ -22,7 +22,6 @@ define(function(require) {
   require('tablesorter');
 
   Pers.init = function () {
-    $(".nb-viewport").append("<div class='nb-widget-body'></div>");
     var url_parts = window.location.href.toString().split("/");
     var class_id = url_parts[url_parts.length - 1];
 

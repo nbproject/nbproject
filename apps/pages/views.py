@@ -1,22 +1,26 @@
 # Create your views here.
-from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.template import TemplateDoesNotExist
-import  urllib, json, base64, logging
+import json
+import logging
+import random
+import string
+import urllib
+from random import choice
+
 from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
-import string, random, forms
-from random import choice
+from django.contrib.auth.decorators import login_required
 from django.core.mail.message import EmailMessage
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils.html import escape
 
+from apps.base import forms
+
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+
 
 def on_serve_page(sender, **payload):
     req = payload["req"]
@@ -208,7 +212,6 @@ def newsite(req):
 
 
 def enter_your_name(req):
-    import base.models as M
     user       = UR.getUserInfo(req, False)
     if user is None:
         redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
@@ -426,8 +429,7 @@ def properties_ensemble(req, id):
             ensemble_form.save()
             return HttpResponseRedirect('/')
     else:
-        ensemble_form = forms.EnsembleForm(instance=ensemble)
-    return render_to_response("web/properties_ensemble.html", {"form": ensemble_form, "conf_url":  "%s://%s/subscribe?key=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, ensemble.invitekey)})
+        return render_to_response("web/properties_ensemble.html")
 
 
 def properties_ensemble_users(req, id):

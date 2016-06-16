@@ -1,0 +1,91 @@
+<script>
+  $("title").html("Properties for {{form.instance.name}}");
+</script>
+<style>
+  ul.errorlist{
+    color: #ff0000;
+    font-weight: bold;
+    list-style: none;
+  }
+</style>
+
+<h1>Properties for {{name}}</h1>
+
+<p> Subscribe link: <br/><a href="/subscribe?key={{invitekey}}"><b>{{host}}/subscribe?key={{invitekey}}</b></a> </p>
+
+<div>
+  <form action="/update_ensemble" method="post" id="class-settings-form">
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="id_name">Name:</label></td>
+          <td><input id="id_name" maxlength="255" name="name" type="text" value="{{name}}"></td>
+        </tr>
+        <tr>
+          <td><label for="id_description">Description:</label></td>
+          <td>
+            {{#if description}}
+            <input id="id_description" maxlength="255" name="description" type="text" value="{{description}}">
+            {{else}}
+            <input id="id_description" maxlength="255" name="description" type="text" value="No description available">
+            {{/if}}
+          </td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_staffonly">Allow users to write 'staff-only' comments:</label></td>
+          <td><input id="id_allow_staffonly" name="allow_staffonly" type="checkbox" {{#equal allow_staffonly true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_anonymous">Allow users to write anonymous comments:</label></td>
+          <td><input id="id_allow_anonymous" name="allow_anonymous" type="checkbox" {{#equal allow_anonymous true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_tag_private">Allow users to make comments private to tagged users only:</label></td>
+          <td><input id="id_allow_tag_private" name="allow_tag_private" type="checkbox" {{#equal allow_tag_private true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_guest">Allow guests (i.e. non-members) to access the site:</label></td>
+          <td><input id="id_allow_guest" name="allow_guest" type="checkbox" {{#equal allow_guest true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_use_invitekey">Allow users who have the 'subscribe link' to register by themselves:</label></td>
+          <td><input id="id_use_invitekey" name="use_invitekey" type="checkbox" {{#equal use_invitekey true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_download">Allow users to download the PDFs:</label></td>
+          <td><input id="id_allow_download" name="allow_download" type="checkbox" {{#equal allow_download true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_ondemand">Allow users to add any PDF accessible on the internet by pointing to its URL:</label></td>
+          <td><input id="id_allow_ondemand" name="allow_ondemand" type="checkbox" {{#equal allow_ondemand true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_default_pause">Pause on staff Video comments by default:</label></td>
+          <td><input id="id_default_pause" name="default_pause" type="checkbox" {{#equal default_pause true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_section_assignment">Section assignment:</label></td>
+          <td>
+            <select id="id_section_assignment" name="section_assignment">
+              {{#equal section_assignment 2}}
+              <option value="1">NULL</option>
+              <option value="2" selected="selected">RANDOM</option>
+              {{else}}
+              <option value="1" selected="selected">NULL</option>
+              <option value="2">RANDOM</option>
+              {{/equal}}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="id_metadata">Metadata:</label></td>
+          <td><textarea cols="40" id="id_metadata" name="metadata" rows="10">{{metadata}}</textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input style="margin-top: 10px" ,="" type="submit" value="Save Changes"></td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
