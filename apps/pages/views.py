@@ -65,9 +65,9 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, con
     if user is None:
         redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
         return HttpResponseRedirect(redirect_url)
-    if user.guest is False and (user.firstname is None or user.lastname is None): 
-        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
-    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
+    if user.guest is False and (user.firstname is None or user.lastname is None):
+        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
     r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
@@ -252,7 +252,7 @@ def add_html_doc(req, ensemble_id):
             # trailing slash is sometimes added by server redirects
             # but person specifying upload url may not realize this
             # so remove trailing slash as well as hash part of the URL
-            info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/") 
+            info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/")
             info.save();
             return HttpResponseRedirect("/")
     return render_to_response("web/add_html_doc.html", {"form": addform})
@@ -431,18 +431,14 @@ def properties_ensemble(req, id):
 
 
 def properties_ensemble_users(req, id):
-    user       = UR.getUserInfo(req)
+    user = UR.getUserInfo(req)
     if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
-    sections = M.Section.objects.filter(ensemble=ensemble)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
-    pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
-    deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
-    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
     if "action" in req.GET and "membership_id" in req.GET:
         if req.GET["action"] == "delete":
             m = real_memberships.filter(id=req.GET["membership_id"])
@@ -452,6 +448,7 @@ def properties_ensemble_users(req, id):
                 m.save()
                 return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "undelete":
+            deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
             m = deleted_memberships.filter(id=req.GET["membership_id"])
             if len(m):
                 m = m[0]
@@ -477,6 +474,7 @@ def properties_ensemble_users(req, id):
             if req.POST["section_id"] == "None":
                 s = None
             else:
+                sections = M.Section.objects.filter(ensemble=ensemble)
                 s = sections.filter(id=req.POST["section_id"])[0]
             if len(m):
                 m = m[0]
@@ -487,18 +485,14 @@ def properties_ensemble_users(req, id):
     return render_to_response("web/properties_ensemble_users.html")
 
 def properties_ensemble_sections(req, id):
-    user       = UR.getUserInfo(req)
+
+    user = UR.getUserInfo(req)
     if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     sections = M.Section.objects.filter(ensemble=ensemble)
-    all_students = M.Membership.objects.filter(ensemble=ensemble).filter(guest=False)
-    students = {}
-    for s in sections:
-        students[s] = all_students.filter(section=s)
-    no_section = all_students.filter(section=None)
     err = ""
     if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
@@ -507,6 +501,7 @@ def properties_ensemble_sections(req, id):
             else:
                 s = M.Section(name=req.POST["name"], ensemble=ensemble)
                 s.save()
+                return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "delete" and "section_id" in req.GET:
             s = sections.filter(id=req.GET["section_id"])
             if len(s):
@@ -536,9 +531,10 @@ def properties_ensemble_sections(req, id):
                 err = "Cannot find section"
         else:
            err = "Unrecognized Command"
-    if "json" in req.GET:
+    if err or "json" in req.GET:
         return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
-    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "no_section": no_section, "error_message": err })
+    else:
+        return render_to_response("web/properties_ensemble_sections.html")
 
 
 def spreadsheet(req):

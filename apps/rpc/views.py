@@ -1,7 +1,7 @@
 """
 views.py - xmlrpc request manager
 
-Author 
+Author
     Sacha Zyto <sacha@csail.mit.edu>
 
 License
@@ -23,61 +23,64 @@ logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(mess
 SLEEPTIME = 0.2
 #The functions that are allowed to be called from a http client
 __EXPORTS = [
-    "add_ensemble", 
-    "add_folder", 
+    "add_ensemble",
+    "add_folder",
     "advanced_filter",
-    "approveNote", 
+    "approveNote",
     "bulk_import_annotations",
     "copy_file",
-    "delete_file", 
+    "delete_file",
     "deleteNote",
     "deleteThread",
     "edit_assignment",
     "editNote",
-    "editPoll", 
-    "get_comment_info", 
-    "getCommentLabels", 
-    "getGradees", 
-    "getGuestFileInfo", 
-    "getHTML5Info",
-    "get_location_info", 
-    "getMembers",
+    "editPoll",
     "get_all_members",
-    "getMyNotes", 
+    "get_comment_info",
+    "getCommentLabels",
+    "getGradees",
+    "getGuestFileInfo",
+    "getHTML5Info",
+    "get_location_info",
+    "getMembers",
+    "getMyNotes",
     "getNotes",
-    "getObjects", 
-    "getParams", 
+    "getObjects",
+    "getParams",
     "getPending",
-    "getSectionsInfo", 
+    "get_section_participants",
+    "getSectionsInfo",
     "getStats",
     "get_stats_ensemble",
-    "get_top_comments_from_locations", 
+    "get_top_comments_from_locations",
     "log_history",
-    "login_user", 
-    "markNote", 
+    "login_user",
+    "markNote",
     "markThread",
     "move_file",
-    "passwordLost", 
+    "passwordLost",
     "presearch",
     "promote_location_by_copy",
     "rate_reply",
-    "register_user", 
+    "register_user",
     "remote_log",
-    "rename_file", 
+    "rename_file",
     "request_source_id",
-    "saveNote", 
-    "save_settings", 
-    "sendInvites", 
-    "set_comment_label", 
-    "set_grade_assignment", 
+    "saveNote",
+    "save_settings",
+    "sendInvites",
+    "set_comment_label",
+    "set_grade_assignment",
     "set_location_section"
     ]
-__AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "ensembles", "ensemble_stats", "ensemble_stats2", "files", "file_stats", "folders", "marks", "polls", "polls_stats", "responses", "sections", "settings"])
+__AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "ensembles", "ensemble_stats", "ensemble_stats2",
+                         "files", "file_stats", "folders", "marks", "polls", "polls_stats", "responses", "sections",
+                         "section_participants", "settings"])
 __AVAILABLE_PARAMS = ["RESOLUTIONS", "RESOLUTION_COORDINATES"]
 __AVAILABLE_STATS = ["auth", "newauth", "question", "newquestion", "unclear", "newunclear","auth_group", "newauth_group", "question_group", "newquestion_group", "unclear_group", "newunclear_group", "auth_grader", "newauth_grader", "auth_admin", "newauth_admin", "unanswered", "auth_everyone", "newauth_everyone", "favorite", "newfavorite", "search", "collection" ]
 
 
-def on_register_session(sender, **payload): 
+def on_register_session(sender, **payload):
     req = payload["req"]
     #print req.META
     uid =  UR.getUserInfo(req, True).id
@@ -88,25 +91,25 @@ def on_register_session(sender, **payload):
 signals.register_session.connect(on_register_session, weak=False)
 
 def __parseEntities_str(s, delimiter):
-    if delimiter in s: 
+    if delimiter in s:
         return [x.strip().lower() for x in s.split(delimiter)]
     return [s.strip().lower()]
 
-def __parseEntities_list(a, delimiter): 
+def __parseEntities_list(a, delimiter):
     o = []
-    for s in a: 
+    for s in a:
         o.extend(__parseEntities_str(s, delimiter))
     return o
 
-def parseEntities(x, d): 
+def parseEntities(x, d):
     o = x
-    if type(d)==list: 
-        for delimiter in d: 
+    if type(d)==list:
+        for delimiter in d:
             o = parseEntities(o, delimiter)
         return o
-    else: 
+    else:
         delimiter = d
-        if type(x)==list: 
+        if type(x)==list:
             return __parseEntities_list(x,delimiter)
         return __parseEntities_str(x,delimiter)
 
@@ -121,14 +124,14 @@ def rate_reply(P,req):
         rr.threadmark = tm
         rr.comment_id = P["comment_id"]
         rr.save()
-        if status: 
-            tm.active = status==M.ReplyRating.TYPE_UNRESOLVED and previous_accepted_ratings.count()==0 
+        if status:
+            tm.active = status==M.ReplyRating.TYPE_UNRESOLVED and previous_accepted_ratings.count()==0
             tm.save()
         return UR.prepare_response({"replyrating": {rr.id: UR.model2dict(rr)}})
-    return UR.prepare_response({}, 1,  "NOT ALLOWED")      
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
-    
-def sendInvites(payload, req): 
+
+def sendInvites(payload, req):
     from django.core import mail
     from django.core.mail import EmailMessage
     uid = UR.getUserId(req);
@@ -136,17 +139,17 @@ def sendInvites(payload, req):
     id_section = payload.get("id_section", None)
     admin = 0 if "admin" not in payload else payload["admin"]
     if not auth.canSendInvite(uid,id_ensemble):
-        return UR.prepare_response({}, 1,  "NOT ALLOWED")      
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
     #extract emails in a somewhat robust fashion (i.e. using several possible delimiters)
     emails = parseEntities(payload["to"], [",", "\n", " "])
-    #remove spurious stuff: strings that don't have an "@" and trailings "<" and ">" characters, 
-    #because some emails the following format: John Doe <john.doe@example.com>     
-    emails = [o.replace("<", "").replace(">", "") for o in emails if "@" in o]          
+    #remove spurious stuff: strings that don't have an "@" and trailings "<" and ">" characters,
+    #because some emails the following format: John Doe <john.doe@example.com>
+    emails = [o.replace("<", "").replace(">", "") for o in emails if "@" in o]
     logging.info("to: %s, extracted: %s" %  (payload["to"], emails))
     #add new users to DB w/ pending status
     connection = mail.get_connection()
     emailmessages = []
-    for email in emails:       
+    for email in emails:
         user = auth.user_from_email(email)
         password=""
         if user is None:
@@ -165,7 +168,7 @@ def sendInvites(payload, req):
             "contact": user.firstname if user.firstname != None else user.email
         }
 
-        if payload["msg"] != "": 
+        if payload["msg"] != "":
             p["msg_perso"] = payload["msg"]
 
         # TODO: We still include the password in the e-mail, should we stop doing that?
@@ -174,31 +177,31 @@ def sendInvites(payload, req):
             p["email"] = email
         msg = render_to_string("email/msg_invite",p)
         bcc = [] if settings.SMTP_CC_USER is None else (settings.SMTP_CC_USER,)
-        e = EmailMessage("You're invited on the %s channel !" % (p["name"],), 
-                         msg, 
+        e = EmailMessage("You're invited on the %s channel !" % (p["name"],),
+                         msg,
                          settings.EMAIL_FROM,
-                         (email, ), 
+                         (email, ),
                          bcc,connection=connection)
         emailmessages.append(e)
         #time.sleep(SLEEPTIME) #in order not to stress out the email server
     connection.send_messages(emailmessages)
     return UR.prepare_response({"msg": "Invite for %s sent to %s" % (ensemble.name, emails,)})
-       
+
 def register_user(P, req):
     users = M.User.objects.filter(email=P["email"].strip().lower())
-    if users.count() != 0:            
+    if users.count() != 0:
         return UR.prepare_response({}, 1,"A user with this email already exists - please choose another email.")
     user= auth.getGuest(P["ckey"])
-    P["ckey"] = annotations.register_user(user.id, P) #returns a new confkey.       
+    P["ckey"] = annotations.register_user(user.id, P) #returns a new confkey.
     p2 = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "%s?ckey=%s" %(req.META.get("HTTP_REFERER","http://%s" % settings.NB_SERVERNAME), P["ckey"])}
     from django.core.mail import EmailMessage
     p2.update(P)
     msg = render_to_string("email/confirm_guest_registration",p2)
     email = EmailMessage(
         "Welcome to NB, %s !" % (p2["firstname"], ),
-        msg, 
+        msg,
         settings.EMAIL_FROM,
-        (P["email"], ), 
+        (P["email"], ),
         (settings.EMAIL_BCC, ))
     email.send()
     #__send_email([P["email"], settings.SMTP_CC_USER], tpl.render(c))
@@ -207,18 +210,18 @@ def register_user(P, req):
 def login_user(P,req):
     email = P["email"] if "email" in P else None
     password = P["password"] if "password" in P else None
-    if email is None or password is None: 
-        return UR.prepare_response({"ckey": None})      
+    if email is None or password is None:
+        return UR.prepare_response({"ckey": None})
     user = auth.checkUser(email, password)
-    if user is None: 
-        return UR.prepare_response({"ckey": None})      
+    if user is None:
+        return UR.prepare_response({"ckey": None})
     u_in = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote('{"ckey": ""}'))))
-    if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:  
+    if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
-    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid, "id": user.id}) #this is what's needed for the client to set a cookie and be authenticated as the new user ! 
+    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid, "id": user.id}) #this is what's needed for the client to set a cookie and be authenticated as the new user !
 
-def on_delete_session(payload, s): 
+def on_delete_session(payload, s):
     req = s["request"]
     #print payload
     #print req.getConnectionId()
@@ -233,10 +236,10 @@ def on_delete_session(payload, s):
         #print "can't delete a session whose id is 0 ! "
 
 
-def on_reactivate(ids, connections): 
+def on_reactivate(ids, connections):
     #for id in ids:
     p=[]
-    for id in ids: 
+    for id in ids:
         p.append(connections[id]["lastActivity"])
         p.append(id)
     annotations.reactivateSession(p)
@@ -248,12 +251,12 @@ def getParams(payload, req):
         if p in __AVAILABLE_PARAMS:
             o[p] = constants.__dict__[p]
     if UR.CID != 0 and "clienttime" in payload:
-        try: 
+        try:
             s = M.Session.objects.get(ctime=UR.CID)
             s.clienttime = datetime.datetime.fromtimestamp((payload["clienttime"]+0.0)/1000)
             s.save()
         except M.Session.DoesNotExist:
-            pass    
+            pass
     return UR.prepare_response({"value": o})
 
 
@@ -266,12 +269,12 @@ def presearch(payload, req):
     return UR.prepare_response(output)
 
 def getGuestFileInfo(payload, req):
-    if "id_source" not in payload: 
+    if "id_source" not in payload:
         return UR.prepare_response({}, 1, "missing id_source  !")
     id_source = payload["id_source"]
     output =  annotations.get_guestfileinfo(id_source)
-    for i in output["ensembles"]: 
-        if  not (output["ensembles"][i]["allow_guest"] or  auth.isMember(UR.getUserId(req), i)): 
+    for i in output["ensembles"]:
+        if  not (output["ensembles"][i]["allow_guest"] or  auth.isMember(UR.getUserId(req), i)):
             return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
     return UR.prepare_response(output)
 
@@ -279,7 +282,7 @@ def getHTML5Info(payload, req):
     if "url" not in payload:
         return UR.prepare_response({}, 1, "missing url !")
     url = payload["url"].partition("#")[0].rstrip("/") # remove hash part of the URL by default, as well as trailing slash.
-    #TODO: use optional argument id_ensemble to disambiguate if provided. 
+    #TODO: use optional argument id_ensemble to disambiguate if provided.
     sources_info = M.HTML5Info.objects.filter(url=url)
     ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
     if not ownerships.exists():
@@ -311,31 +314,31 @@ def getObjects(payload, req):
         output[t] = getattr(annotations, "get_"+t)(uid, p2)
     return UR.prepare_response(output)
 
-def save_settings(payload, req): 
+def save_settings(payload, req):
     uid = UR.getUserId(req);
     if uid is None:
-        return UR.prepare_response({}, 1,  "NOT ALLOWED")      
-    else:         
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    else:
         return UR.prepare_response({"settings": annotations.save_settings(uid, payload)})
 
-    
-def getGradees(payload, req): 
+
+def getGradees(payload, req):
     uid = UR.getUserId(req)
     output={"gradees": annotations.getGradees(uid)}
     return UR.prepare_response(output)
-    
-def getSectionsInfo(payload, req): 
+
+def getSectionsInfo(payload, req):
     uid = UR.getUserId(req)
-    if "id_ensemble" not in payload: 
+    if "id_ensemble" not in payload:
         return UR.prepare_response({}, 1, "MISSING id_ensemble")
     id_ensemble = payload["id_ensemble"]
-    if auth.canGetSectionsInfo(uid, id_ensemble):  
+    if auth.canGetSectionsInfo(uid, id_ensemble):
         m = M.Membership.objects.filter(user__id=uid, ensemble__id=id_ensemble, deleted=False)
         output={"sections": UR.qs2dict(m[0].ensemble.section_set.all())};
         return UR.prepare_response(output)
     return UR.prepare_response({}, 1, "NOT ALLOWED")
 
-def editPoll(payload, req): 
+def editPoll(payload, req):
     uid = UR.getUserId(req)
     if uid is None or ("id_poll" not in payload) or not annotations.canEditPoll(uid, payload["id_poll"]):
         return UR.prepare_response({}, 1, "NOT ALLOWED")
@@ -354,51 +357,51 @@ def getNotes(payload, req):
             #output["notes"] = annotations.getNotesByFile(id_source, uid)
             output["file"] = id_source
             output["locations"], output["html5locations"], output["comments"], output["threadmarks"], output["tags"] = annotations.getCommentsByFile(id_source, uid, after)
-            #TODO: 
+            #TODO:
             #output["links"] = annotations.get_links(uid, {"id_source": id_source})
             output["seen"] = annotations.getSeenByFile(id_source, uid)
         else:
             return UR.prepare_response({}, 1, "NOT ALLOWED")
     return UR.prepare_response(output)
 
-def getCommentLabels(payload, req): 
+def getCommentLabels(payload, req):
     uid = UR.getUserId(req)
     if "file" in payload: #access by file
         id_source = payload["file"]
         o = M.Membership.objects.filter(ensemble__in=M.Ensemble.objects.filter(ownership__in=M.Ownership.objects.filter(source__id=id_source))).filter(user__id=uid, deleted=False)
-        if len(o)>0 and o[0].admin: #for now, simply restrict to admin level            
+        if len(o)>0 and o[0].admin: #for now, simply restrict to admin level
             output = {}
-            lc =  M.LabelCategory.objects.filter(ensemble = o[0].ensemble) 
+            lc =  M.LabelCategory.objects.filter(ensemble = o[0].ensemble)
             output["labelcategories"] =  UR.qs2dict(lc)
             comments = M.Comment.objects.filter(location__source__id=id_source, deleted=False, moderated=False)
             output["commentlabels"] = UR.qs2dict(M.CommentLabel.objects.filter(category__in=lc, comment__in=comments, grader__id=uid))
             output["labelcategorycaptions"] = UR.qs2dict(M.LabelCategoryCaption.objects.filter(category__in=lc))
-            return UR.prepare_response(output)     
+            return UR.prepare_response(output)
     return UR.prepare_response({}, 1, "NOT ALLOWED")
 
 
 
 
-def saveNote(payload, req): 
+def saveNote(payload, req):
     uid = UR.getUserId(req)
     if not auth.canAnnotate(uid,  payload["id_ensemble"]):
-        return UR.prepare_response({}, 1,  "NOT ALLOWED") 
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
     payload["id_author"] = uid
     retval = {}
     a = annotations.addNote(payload)
     if len(a) == 0:
-        return UR.prepare_response({}, 2,  "DUPLICATE") 
+        return UR.prepare_response({}, 2,  "DUPLICATE")
     tms = {}
     for mark in payload["marks"]:
         tm = M.ThreadMark()
         m_types = [c[0] for c in tm.TYPES if c[1]==mark]
-        if len(m_types): #old clients may return types we don't have in DB so ignore them 
+        if len(m_types): #old clients may return types we don't have in DB so ignore them
             tm.type = m_types[0]
-            tm.user_id = uid         
+            tm.user_id = uid
             tm.comment=a[0]
             tm.location_id=tm.comment.location_id
             tm.save()
-            tms[tm.id] = UR.model2dict(tm)  
+            tms[tm.id] = UR.model2dict(tm)
     retval["locations"], html5 = annotations.getLocation(a[0].location_id)
     if (html5 is not None):
         retval["html5locations"]=html5
@@ -411,7 +414,7 @@ def saveNote(payload, req):
     return UR.prepare_response(retval)
     #TODO responder.notify_observers("note_saved", payload,req)
 
-def editNote(payload, req): 
+def editNote(payload, req):
     uid = UR.getUserId(req)
     if not auth.canEdit(uid,  payload["id_comment"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
@@ -425,7 +428,7 @@ def editNote(payload, req):
         retval["edit_location"] = edited_loc
     return UR.prepare_response(retval)
 
-def deleteNote(payload, req): 
+def deleteNote(payload, req):
     uid = UR.getUserId(req)
     #print "trying  to delete %s" %( payload["id_comment"],)
     if not auth.canDelete(uid,  payload["id_comment"]):
@@ -446,49 +449,59 @@ def getPending(payload, req):
     uid = UR.getUserId(req)
     output = annotations.getPending(uid, payload)
     return UR.prepare_response(output)
-  
 
 
-def getMyNotes(payload, req): 
+
+def getMyNotes(payload, req):
     uid = UR.getUserId(req)
-    if uid is None or payload.get("query") not in __AVAILABLE_STATS: 
+    if uid is None or payload.get("query") not in __AVAILABLE_STATS:
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         output= getattr(annotations, "get_comments_"+payload.get("query"))(uid, payload)
         #referer = None if "referer" not in req.META else  req.META["referer"]
-        #TODO annotations.addCollageHistory(uid, referer, query)        
+        #TODO annotations.addCollageHistory(uid, referer, query)
         return UR.prepare_response(output)
 
-def getStats(payload, req): 
+def getStats(payload, req):
     uid = UR.getUserId(req)
-    if uid is None: 
+    if uid is None:
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         return UR.prepare_response(annotations.get_stats(uid))
 
 
-def getStats2(payload, req): 
+def getStats2(payload, req):
     uid = UR.getUserId(req)
-    if uid is None: 
+    if uid is None:
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     else:
         return UR.prepare_response(annotations.get_stats2(uid))
 
 
-def getMembers(payload, req): 
+def getMembers(payload, req):
     uid = UR.getUserId(req)
-    if "id_ensemble" in payload: 
+    if "id_ensemble" in payload:
         if auth.canGetMembers(uid, payload["id_ensemble"]):
-            members = annotations.get_members(payload["id_ensemble"]) 
+            members = annotations.get_members(payload["id_ensemble"])
             return UR.prepare_response(members)
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
+
 def get_all_members(payload, req):
     uid = UR.getUserId(req)
-    if "id_ensemble" in payload: 
+    if "id_ensemble" in payload:
         if auth.canGetMembers(uid, payload["id_ensemble"]):
-            members = annotations.get_all_members(uid, payload) 
+            members = annotations.get_all_members(uid, payload)
             return UR.prepare_response(members)
+    return UR.prepare_response({}, 1,  "NOT ALLOWED")
+
+
+def get_section_participants(payload, req):
+    uid = UR.getUserId(req)
+    if "id_ensemble" in payload:
+        if auth.canGetMembers(uid, payload["id_ensemble"]):
+            section_participants = annotations.get_section_participants(uid, payload)
+            return UR.prepare_response(section_participants)
     return UR.prepare_response({}, 1,  "NOT ALLOWED")
 
 
@@ -497,10 +510,10 @@ def markThread(payload, req):
     id_location =  payload["id_location"]
     if not auth.canMarkThread(uid,id_location ):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    else: 
+    else:
         mark = annotations.markThread(uid, payload);
         tms = {}
-        tms[mark["id"]] = mark                
+        tms[mark["id"]] = mark
         p = {"threadmarks": tms}
         return UR.prepare_response(p)
 
@@ -509,8 +522,8 @@ def markNote(payload, req):
     id_comment =  payload["id_comment"]
     if not auth.canMark(uid,id_comment ):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    else: 
-        annotations.markNote(uid, payload);        
+    else:
+        annotations.markNote(uid, payload);
         comments = annotations.getComment(id_comment,uid)
         locs, h5locs = annotations.getLocation(comments[int(id_comment)]["ID_location"])
         p = {"locations":locs, "html5locations": h5locs, "marks": annotations.getMark(uid, payload), "comments": comments}
@@ -521,8 +534,8 @@ def approveNote(payload, req):
     id_comment =  payload["id_comment"]
     if not auth.canApprove(uid,id_comment ):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    else: 
-        annotations.approveNote(uid, payload);        
+    else:
+        annotations.approveNote(uid, payload);
         p = {"comments":annotations.getComment(id_comment,uid) }
         return UR.prepare_response(p)
         annotations.addApproveHistory(uid, payload)
@@ -530,8 +543,8 @@ def approveNote(payload, req):
 def passwordLost(payload, req):
     email =  payload["email"].strip().lower()
     user = auth.user_from_email(email)
-    if user is not None:     
-        from django.core.mail import EmailMessage  
+    if user is not None:
+        from django.core.mail import EmailMessage
         p= {
             "firstname": user.firstname,
             "email": email,
@@ -540,15 +553,15 @@ def passwordLost(payload, req):
         msg = render_to_string("email/password_reminder",p)
         e = EmailMessage(
                 "Password reset for your NB account",
-                msg,  
-                "NB Password Reset Bot <nbnotifications@csail.mit.edu>", 
-                (email, ), 
+                msg,
+                "NB Password Reset Bot <nbnotifications@csail.mit.edu>",
+                (email, ),
                 (settings.SMTP_CC_LOSTPASSWORD, ))
-        e.send()     
+        e.send()
         return UR.prepare_response({"email": email})
     return UR.prepare_response({"email": email}, 1,  "USER NOT FOUND")
 
-def __send_email(recipients, msg): 
+def __send_email(recipients, msg):
     import smtplib
     session =  smtplib.SMTP(settings.SMTP_SERVER)
     smtpresult = session.sendmail(settings.SMTP_USER, recipients, msg)
@@ -560,23 +573,23 @@ def __send_email(recipients, msg):
             logging.error(errstr)
         raise smtplib.SMTPException, errstr
 
-def rename_file(P, req): 
-    #this method is used to rename both files and folders. 
+def rename_file(P, req):
+    #this method is used to rename both files and folders.
     uid = UR.getUserId(req)
     f_auth = auth.canRenameFile if P["item_type"]=="file" else auth.canRenameFolder
     if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({P["item_type"]+"s": annotations.rename_file(uid, P)})
 
-def delete_file(P, req): 
-    #this method is used to rename both files and folders. 
+def delete_file(P, req):
+    #this method is used to rename both files and folders.
     uid = UR.getUserId(req)
     f_auth = auth.canDeleteFile if P["item_type"]=="file" else auth.canDeleteFolder
     if not f_auth(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({"id": annotations.delete_file(uid, P)}) #special form since file isn't in there anymore
 
-def move_file(P,req): 
+def move_file(P,req):
     uid = UR.getUserId(req)
     f_auth = auth.canMoveFile if P["item_type"]=="file" else auth.canMoveFolder
     if not f_auth(uid, P["id"], P["dest"]):
@@ -601,15 +614,15 @@ def copy_file(P, req):
 
     return UR.prepare_response({ "id_source": new_source_id })
 
-def add_ensemble(payload, req): 
+def add_ensemble(payload, req):
     uid = UR.getUserId(req)
-    if uid is None: 
+    if uid is None:
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     id = annotations.create_ensemble(uid,  payload)
     return UR.prepare_response(annotations.get_ensembles(uid, {"id": id}))
 
 
-def add_folder(payload, req): 
+def add_folder(payload, req):
     uid = UR.getUserId(req)
     id_ensemble = payload["id_ensemble"]
     id_parent = payload["id_parent"]
@@ -619,8 +632,8 @@ def add_folder(payload, req):
     return UR.prepare_response(annotations.get_folders(uid, {"id": id_folder}))
 
 
-def edit_assignment(P, req): 
-    uid = UR.getUserId(req)    
+def edit_assignment(P, req):
+    uid = UR.getUserId(req)
     if not auth.canEditAssignment(uid, P["id"]):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     return UR.prepare_response({"files": annotations.edit_assignment(uid, P)})
@@ -629,53 +642,53 @@ def edit_assignment(P, req):
 
 def request_source_id(payload, req):
     uid = UR.getUserId(req);
-    if uid is None: 
+    if uid is None:
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     logging.info("[request_source_id]: %s" %(payload,) )
     return UR.prepare_response({"id_source":annotations.createSourceID()})
- 
-def remote_log(payload,req): 
+
+def remote_log(payload,req):
      #deprecated. Here only for compatibility
      return log_history(payload, req)
 
 def log_history(payload, req):
     uid =  UR.getUserInfo(req, True).id
-    if uid is None: 
+    if uid is None:
         #SACHA TODO: LOG this.
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     cid = UR.CID
-    if cid == 0:        
+    if cid == 0:
         return  UR.prepare_response({}, 1, "CID MOST BE NONZERO")
     session, previous_activity = annotations.markActivity(cid)
-    if session is None: 
+    if session is None:
         return  UR.prepare_response({}, 1, "SESSION NOT FOUND")
     id_session = session.id
     output={}
-    if "seen" in payload and cid != 0: 
+    if "seen" in payload and cid != 0:
         annotations.markCommentSeen(uid, id_session, payload["seen"])
-    if "page" in payload and cid != 0: 
+    if "page" in payload and cid != 0:
         annotations.markPageSeen(uid, id_session,  payload["page"])
-    if "idle" in payload and cid != 0: 
-        annotations.markIdle(uid,  id_session, payload["idle"]) 
-    if "scrolling" in payload and cid != 0:         
+    if "idle" in payload and cid != 0:
+        annotations.markIdle(uid,  id_session, payload["idle"])
+    if "scrolling" in payload and cid != 0:
         logger = logging.getLogger("scrolling")
         logger.info("%s|%s"%(id_session, payload["scrolling"]));
     if "__return" in payload and cid != 0:
         R = payload["__return"]
-        if R["type"] == "newNotesOnFile": 
+        if R["type"] == "newNotesOnFile":
             id_source = R["a"]["id_source"]
             if auth.canReadFile(uid, id_source):
                 output["locations"], output["html5locations"], output["comments"], output["threadmarks"], output["tags"] = annotations.getCommentsByFile(id_source, uid, previous_activity)
         elif R["type"] == "newPending":
-            #for now, we retrieve all the pending stuff. 
+            #for now, we retrieve all the pending stuff.
             output = annotations.getPending(uid, payload)
     if "analytics" in payload and cid != 0:
         doc_analytics.markAnalyticsVisit(uid, payload["analytics"])
     if "analyticsClick" in payload and cid != 0:
         doc_analytics.markAnalyticsClick(uid, payload["analyticsClick"])
     return UR.prepare_response(output)
-  
-def get_location_info(payload, req): 
+
+def get_location_info(payload, req):
     id = payload["id"]
     uid = UR.getUserId(req);
     #SACHA TODO: check I'm allowed to know this
@@ -686,7 +699,7 @@ def get_location_info(payload, req):
     return UR.prepare_response(retval)
 
 
-def get_comment_info(payload, req): 
+def get_comment_info(payload, req):
     id = int(payload["id"])
     uid = UR.getUserId(req);
     #SACHA TODO: check I'm allowed to know this
@@ -701,7 +714,7 @@ def get_comment_info(payload, req):
     return UR.prepare_response(retval)
 
 
-def get_stats_ensemble(payload, req): 
+def get_stats_ensemble(payload, req):
     uid = UR.getUserId(req)
     id_ensemble = payload["id_ensemble"]
     if not auth.canSeeGrades(uid, id_ensemble):
@@ -724,9 +737,9 @@ def set_comment_label(P, req):
     if not auth.canLabelComment(uid, cid):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     record = None
-    try: 
+    try:
         record = M.CommentLabel.objects.get(grader__id=uid, comment__id=cid, category_id=P["category_id"])
-        rh = M.CommentLabelHistory()        
+        rh = M.CommentLabelHistory()
         rh.grader = record.grader
         rh.ctime = record.ctime
         rh.grade = record.grade
@@ -734,7 +747,7 @@ def set_comment_label(P, req):
         rh.comment = record.comment
         rh.save()
         record.ctime = datetime.datetime.now()
-    except M.CommentLabel.DoesNotExist: 
+    except M.CommentLabel.DoesNotExist:
         record = M.CommentLabel()
         record.category_id = P["category_id"]
         record.comment_id = cid
@@ -742,7 +755,7 @@ def set_comment_label(P, req):
     record.grader_id = uid
     record.save()
     retval = {"commentlabels":{record.id: UR.model2dict(record)}}
-    return UR.prepare_response(retval)    
+    return UR.prepare_response(retval)
 
 def advanced_filter(P, req):
     retval = {}
@@ -796,20 +809,20 @@ def other(req):
     print "nb django doesn't have an URLconf for this yet: %s" % req.method
 
 @csrf_exempt
-def run(req):    
+def run(req):
     r = HttpResponse()
     r["Access-Control-Allow-Origin"]="*"
-    try: 
-        if req.method == "OPTIONS" or len(req.POST)==0: #FF3 trying to check if Cross Site Request allowed. 
+    try:
+        if req.method == "OPTIONS" or len(req.POST)==0: #FF3 trying to check if Cross Site Request allowed.
             return r
-        else: 
+        else:
         #rpc request:
             fctname = req.POST["f"]
             payload = json.loads(req.POST["a"])
             cid = req.POST["cid"]
-            if cid == "0" or cid == 0: 
+            if cid == "0" or cid == 0:
                 cid = datetime.datetime.now()
-                signals.register_session.send("rpc", cid=cid,req=req)            
+                signals.register_session.send("rpc", cid=cid,req=req)
             UR.CID = cid
             MODULE = sys.modules[__name__]
             if  fctname in __EXPORTS:
@@ -819,7 +832,7 @@ def run(req):
                 assert False, "[PDF] method '%s' not found in __EXPORTS" %  fctname
                 r.content = UR.prepare_response({}, 1,"[PDF] method '%s' not found in __EXPORTS" %  fctname)
                 return r
-    except IOError: 
+    except IOError:
         logging.error("[rpc.views.run] IOError")
         r.content = UR.prepare_response({}, 1,"I/O Error")
         return r

@@ -245,6 +245,26 @@ module.exports = function (grunt) {
     dest_css: DEST_DIR + 'properties_ensemble_users.css',
   };
 
+  TARGETS.PROPERTIES_ENSEMBLE_SECTIONS = {
+      // MODS.BREADCRUMB.src_js
+    include: ['init_properties_ensemble_sections', 'launch'],
+    src_js: [].concat(['build_properties_ensemble_sections']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'properties_ensemble_sections_NB.js',
+    dest_css: DEST_DIR + 'properties_ensemble_sections.css',
+  };
+
   TARGETS.STATIC_PAGE = {
       // MODS.BREADCRUMB.src_js
     include: ['init_static_page', 'launch'],

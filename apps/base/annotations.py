@@ -369,11 +369,34 @@ def __memberships_to_users_list(memberships):
             user_entry["admin"] = False
 
         user_entry["user_id"] = user_entry.pop("id") # Rename id key as user_id
-        user_entry["id"] = membership.id # Set membership_id as id
+        user_entry["membership_id"] = membership.id
 
         # Add user dictionary to result
         result.append(user_entry)
     return result
+
+
+def get_section_participants(uid, payload):
+    eid = payload["id_ensemble"]
+    ensemble = M.Ensemble.objects.get(pk=eid)
+    sections = M.Section.objects.filter(ensemble=ensemble)
+    all_students = M.Membership.objects.filter(ensemble=ensemble).filter(guest=False)
+    students2 = []
+    for s in sections:
+        session_dict = UR.model2dict(s)
+        session_dict["participants"] = __memberships_to_users_list(all_students.filter(section=s))
+        students2.append(session_dict)
+
+    no_section_dict = {
+        "name": "",
+        "id": -1,
+        "ensemble_id": eid,
+        "participants": __memberships_to_users_list(all_students.filter(section=None))}
+
+    return {
+        "class_sections": students2,
+        "no_section": no_section_dict
+    }
 
 
 def get_stats_ensemble(payload):

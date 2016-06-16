@@ -57,8 +57,8 @@
           <td>{{email}}</td>
           <td>{{#if admin}}staff{{else}}<span class='lowcontrast'>student</span>{{/if}}</td>
           <td>
-            <form method="POST" action="?action=setsection&membership_id={{id}}">
-            <select name="section_id" data_membership_id="{{id}}">
+            <form method="POST" action="?action=setsection&membership_id={{membership_id}}">
+            <select name="section_id" data_membership_id="{{membership_id}}">
               <option value="None" {{#unless section}} selected="selected" {{/unless}}>No Section</option>
               {{#each ../sections}}
                 <option value="{{ID}}" {{#equal ../section name}}selected="selected"{{/equal}}>{{name}}</option>
@@ -66,11 +66,11 @@
             </select><noscript><input type="submit" value="Change" /></noscript>
             </form>
           </td>
-            <td><a style='margin-right: 10px' href='?action=delete&membership_id={{id}}'>Delete</a>
+            <td><a style='margin-right: 10px' href='?action=delete&membership_id={{membership_id}}'>Delete</a>
               {{#equal admin true}}
-                <a href='?action=unadmin&membership_id={{id}}'>Remove staff status</a>
+                <a href='?action=unadmin&membership_id={{membership_id}}'>Remove staff status</a>
               {{else}}
-                <a href='?action=admin&membership_id={{id}}'>Add staff status</a>
+                <a href='?action=admin&membership_id={{membership_id}}'>Add staff status</a>
               {{/equal}}
             </td>
         </tr>
@@ -133,7 +133,7 @@
           <td>{{#if lastname}}{{lastname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
           <td>{{email}}</td>
           <td>{{#equal admin true}}staff{{else}}<span class='lowcontrast'>student</span>{{/equal}}</td>
-          <td><a href='?action=undelete&membership_id={{id}}'>Undelete</a></td>
+          <td><a href='?action=undelete&membership_id={{membership_id}}'>Undelete</a></td>
         </tr>
       {{/each}}
     </tbody>
