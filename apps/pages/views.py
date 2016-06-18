@@ -363,6 +363,9 @@ def confirm_invite(req):
     return r
 
 def subscribe(req):
+    return __serve_page(req, 'web/subscribe.html', content_type="text/html", allow_guest=True)
+
+def subscribe_old(req): # Todo: >>>k delete this function
     key     = req.GET.get("key", "")
     e       = M.Ensemble.objects.get(invitekey=key)
     if not e.use_invitekey:

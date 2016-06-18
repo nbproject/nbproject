@@ -283,6 +283,25 @@ module.exports = function (grunt) {
     dest_css: DEST_DIR + 'properties_ensemble_sections.css',
   };
 
+  TARGETS.SUBSCRIBE = {
+    include: ['init_subscribe', 'launch'],
+    src_js: [].concat(['build_subscribe']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'subscribe_NB.js',
+    dest_css: DEST_DIR + 'subscribe.css',
+  };
+
   TARGETS.STATIC_PAGE = {
     include: ['init_static_page', 'launch'],
     src_js: [].concat(['build_static_page']),

@@ -400,9 +400,13 @@ def get_section_participants(uid, payload):
 
 
 def get_class_settings(uid, payload):
-    eid = payload["id_ensemble"]
-    ensemble = M.Ensemble.objects.get(pk=eid)
-    return UR.model2dict(ensemble)
+    try:
+        if "id_ensemble" in payload:
+            return UR.model2dict(M.Ensemble.objects.get(pk=payload["id_ensemble"]))
+        elif "invitekey" in payload:
+            return UR.model2dict(M.Ensemble.objects.get(invitekey=payload["invitekey"]))
+    except M.Ensemble.DoesNotExist:
+        return None
 
 
 def get_stats_ensemble(payload):

@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.template.loader import render_to_string
 import logging, random, string
+from random import choice
 import urllib
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_rpc_%s.log' % ( id_log,), filemode='a')
@@ -73,6 +74,7 @@ __EXPORTS = [
     "set_comment_label",
     "set_grade_assignment",
     "set_location_section",
+    "subscribe_with_key",
     "update_ensemble"
     ]
 __AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "class_settings", "ensembles", "ensemble_stats",
@@ -882,3 +884,32 @@ def run(req):
         r.content = UR.prepare_response({}, 1,"I/O Error")
         return r
 
+def subscribe_with_key(P, req):
+    key = P["key"]
+    e = M.Ensemble.objects.get(invitekey=key)
+    if not e.use_invitekey:
+        return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    if req.method == 'POST':
+        auth_user = UR.getUserInfo(req)
+        if auth_user is None:
+            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            return UR.prepare_response({"new_user": True, "user": UR.model2dict(user), "class": UR.model2dict(e)})
+            # return render_to_response("web/subscribe_newuser.html", P)
+        else:
+            user = auth_user
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return UR.prepare_response({"new_user": False, "user": UR.model2dict(user), "class": UR.model2dict(e)})
+    else:
+        auth_user = UR.getUserInfo(req)
+        if auth_user is None:
+            return UR.prepare_response({"new_user": True, "class": UR.model2dict(e)})
+        else:
+            user = auth_user
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return UR.prepare_response({"new_user": False, "user": UR.model2dict(user), "class": UR.model2dict(e)})

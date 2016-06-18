@@ -1,0 +1,52 @@
+<script>
+  $("title").html("Welcome to NB");
+</script>
+<style>
+  ul.errorlist{
+    color: #ff0000;
+    font-weight: bold;
+    list-style: none;
+  }
+
+  p.important{
+    font-weight: large;
+    font-color: #770000;
+  }
+</style>
+
+<h1>Confirm subscription to <i>{{class_settings.name}}</i></h1>
+
+<p class="important">If you're already an NB user, please use <a href="/login?next=/subscribe?key={{class_settings.invitekey}}">this link instead</a></p>
+
+<div>
+  <form action="" method="post">
+    <h2>About yourself...</h2>
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="id_firstname">Firstname:</label></td>
+          <td><input id="id_firstname" maxlength="63" name="firstname" type="text"></td>
+        </tr>
+        <tr>
+          <td><label for="id_lastname">Lastname:</label></td>
+          <td><input id="id_lastname" maxlength="63" name="lastname" type="text"></td>
+        </tr>
+        <tr>
+          <td><label for="id_email">Email:</label></td>
+          <td><input id="id_email" maxlength="63" name="email" type="email"></td>
+        </tr>
+        <tr>
+          <td><label for="id_password">Password:</label></td>
+          <td><input id="id_password" maxlength="63" name="password" type="password"></td>
+        </tr>
+        <tr>
+          <td><label for="id_confirm_password">Confirm password:</label></td>
+          <td><input id="id_confirm_password" name="confirm_password" type="password"></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Click on the "Confirm" button to create your NB user and subscribe to the NB group <i>Class1</i>
+    </p>
+    <p><input style="margin-top: 10px;",action="" class="confirm-new-user" type="submit" value="Confirm"></p>
+  </form>
+</div>

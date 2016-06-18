@@ -69,6 +69,7 @@ define(function(require) {
         location.reload(); // Reload the page to show the new settings
       });
     });
+
   }
 
 });
