@@ -9,13 +9,16 @@ from random import choice
 from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.core.mail.message import EmailMessage
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils.html import escape
 
 from apps.base import forms
+from django_remote_forms.forms import RemoteForm
 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
@@ -96,7 +99,7 @@ def dev_test2(req):
     # return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
 def static_page(req):
-    return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
+    return render_to_response('web/static_page.html')
 
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
@@ -362,60 +365,9 @@ def confirm_invite(req):
     r = render_to_response("web/confirm_invite.html", {"o": m})
     return r
 
+@ensure_csrf_cookie
 def subscribe(req):
-    return __serve_page(req, 'web/subscribe.html', content_type="text/html", allow_guest=True)
-
-def subscribe_old(req): # Todo: >>>k delete this function
-    key     = req.GET.get("key", "")
-    e       = M.Ensemble.objects.get(invitekey=key)
-    if not e.use_invitekey:
-        return HttpResponseRedirect("/notallowed")
-    auth_user       = UR.getUserInfo(req)
-    user = None
-    P = {"ensemble": e, "key": key}
-    if req.method == 'POST':
-        if auth_user is None:
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
-            user_form = forms.UserForm(req.POST, instance=user)
-            if user_form.is_valid():
-                user_form.save()
-                m = M.Membership(user=user, ensemble=e)
-                m.save() #membership exists but user is still invalid until has confirmed their email
-                p = {
-                    "tutorial_url": settings.GUEST_TUTORIAL_URL,
-                    "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey),
-                    "firstname": user.firstname,
-                    "email": user.email
-                }
-                email = EmailMessage(
-                "Welcome to NB, %s" % (user.firstname,),
-                render_to_string("email/confirm_subscribe", p),
-                settings.EMAIL_FROM,
-                (user.email, ),
-                (settings.EMAIL_BCC, ))
-                email.send()
-                return HttpResponseRedirect('/subscribe_thanks')
-            else:
-                P["form"] = forms.UserForm(req.POST, instance=user)
-                return render_to_response("web/subscribe_newuser.html", P)
-        else:
-            user = auth_user
-            m = M.Membership.objects.filter(user=user, ensemble=e)
-            if m.count() ==0:
-                m = M.Membership(user=user, ensemble=e)
-                m.save()
-            return HttpResponseRedirect('/')
-        #user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
-    else:
-        if auth_user is not None:
-            P["user"] = auth_user
-            P["form"] = forms.UserForm(instance=user)
-            return render_to_response("web/subscribe_existinguser.html", P)
-        else:
-            P["form"] = forms.UserForm()
-            return render_to_response("web/subscribe_newuser.html", P)
-
-
+    return render_to_response("web/subscribe.html")
 
 
 def properties_ensemble(req, id):
@@ -595,3 +547,63 @@ def debug(request):
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')
+
+@csrf_protect
+def subscribe_with_key(req):
+    key = req.GET.get("key", "")
+    if not key:
+        return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
+    e = M.Ensemble.objects.get(invitekey=key)
+    if not e.use_invitekey:
+        return  HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
+    auth_user = UR.getUserInfo(req)
+    if req.method == 'GET':
+        if auth_user is None:  # Guest retrieving the subscribe page
+            remote_form = RemoteForm(forms.UserForm())
+            return HttpResponse(UR.prepare_response({"new_user": True, "class_settings": UR.model2dict(e),
+                                                     "form": remote_form.as_dict()}))
+        else:  # Logged in user retrieving the subscribe page
+            user = auth_user
+            remote_form = RemoteForm(forms.UserForm(instance=user))
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return HttpResponse(UR.prepare_response({"new_user": False, "user": UR.model2dict(user),
+                                                     "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
+    else:  # POST requests
+        if auth_user is None:  # Guest subscribing to a class
+            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+            user_form = forms.UserForm(req.POST, instance=user)
+            if user_form.is_valid():
+                user_form.save()
+                m = M.Membership(user=user, ensemble=e)
+                m.save() # membership exists but user is still invalid until has confirmed their email
+                p = {
+                    "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                    "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey),
+                    "firstname": user.firstname,
+                    "email": user.email
+                }
+                email = EmailMessage(
+                "Welcome to NB, %s" % (user.firstname,),
+                render_to_string("email/confirm_subscribe", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
+                (settings.EMAIL_BCC, ))
+                email.send()
+                return HttpResponse(UR.prepare_response({"new_user": True, "class_settings": UR.model2dict(e),
+                                                         "next": "/subscribe_thanks"}))
+            else:  # Invalid form - return form with error messages
+                remote_form = RemoteForm(user_form)
+                return HttpResponse(UR.prepare_response({"new_user": True, "user": UR.model2dict(user),
+                                                     "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
+        else:  # Logged in user subscribing to a class
+            user = auth_user
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return HttpResponse(UR.prepare_response({"new_user": False, "class_settings": UR.model2dict(e), "next": "/"}))
+

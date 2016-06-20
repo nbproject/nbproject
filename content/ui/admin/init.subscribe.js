@@ -13,48 +13,54 @@ define(function(require) {
   var Pers            = require('pers');
   var Handlebars     = require('handlebars');
   var invitekey = window.location.href.split(document.location.pathname + "?key=")[1];
+  if (typeof invitekey === 'undefined'){
+    invitekey = "";
+  }
+  var url = "/subscribe_with_key?key=" + invitekey;
+  var form = null;
 
   Pers.init = function () {
-    var payload = {
-    	payload: {"invitekey": invitekey},
-    	types: ["class_settings"]
-    };
+    $.get(url, cb, "json");
+  };
 
-    Pers.call('getObjects', payload, function(p){
-      if(!p.class_settings){
-        $(".nb-widget-body").append(require('hbs!templates_dir/404')());
-        return;
-      }
-      p["user"] = Conf.userinfo;
-      console.log(p);
-      if(Conf.userinfo.guest) {
-        $(".nb-widget-body").empty();
-        $(".nb-widget-body").append(require('hbs!templates_dir/subscribe_new_user')(p));
-      }
-      else{
-        $(".nb-widget-body").empty();
-        $(".nb-widget-body").append(require('hbs!templates_dir/subscribe_existing_user')(p));
-      }
-    });
-
+  function cb(data, status){
+    if(data.status.errno){
+      $(".nb-widget-body").append("<h1>Error: " + data.status.msg + "</h1>");
+      return;
+    }
+    var p = data.payload
+    if(p.next){
+      window.location.href = p.next;
+      return;
+    }
+    form = p.form; // Set the field required in various places in this file.
+    if(p.new_user) {
+      $(".nb-widget-body").empty();
+      $(".nb-widget-body").append(require('hbs!templates_dir/subscribe_new_user')(p));
+    }
+    else{
+      $(".nb-widget-body").empty();
+      $(".nb-widget-body").append(require('hbs!templates_dir/subscribe_existing_user')(p));
+    }
+    setPageHandlers();
   };
 
   function setPageHandlers() {
-
-    $("form.confirm-subscription").submit(function(e){
+    $("form.confirm-existing-user").submit(function(e){
       e.preventDefault();
-      var subscribekey = $(this).attr("data-subscribe-key");
-      Pers.call("subscribe_with_key", {key: subscribekey}, function(p){
-        if(p.new_user) {
-            console.log("Todo: >>>k redirect to page for entring new user details");
-//          window.location.href =
-        }
-        else{
-          window.location.href = "/";
-        }
-      });
+      $.post(url, {}, cb, "json");
     });
 
+    $("form.confirm-new-user").submit(function(e){
+      e.preventDefault();
+      data = {};
+      data.firstname = $("#id_firstname").val();
+      data.lastname = $("#id_lastname").val();
+      data.email = $("#id_email").val();
+      data.password = $("#id_password").val();
+      data.confirm_password = $("#id_confirm_password").val();
+      $.post(url, data, cb, "json");
+    });
   }
 
 });

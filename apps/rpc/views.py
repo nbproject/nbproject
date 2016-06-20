@@ -13,12 +13,14 @@ import  json, sys, datetime, time
 from base import  auth, signals, constants, models as M, utils_response as UR
 #TODO import responder
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.template.loader import render_to_string
 import logging, random, string
 from random import choice
 import urllib
+
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_rpc_%s.log' % ( id_log,), filemode='a')
 SLEEPTIME = 0.2
@@ -74,7 +76,6 @@ __EXPORTS = [
     "set_comment_label",
     "set_grade_assignment",
     "set_location_section",
-    "subscribe_with_key",
     "update_ensemble"
     ]
 __AVAILABLE_TYPES = set(["all_members", "assignments", "choices", "class_settings", "ensembles", "ensemble_stats",
@@ -223,7 +224,10 @@ def login_user(P,req):
     if "ckey" in u_in and u_in["ckey"] != "" and u_in["ckey"] != user.confkey:
         #log that there's been an identity change
         auth.log_guest_login(u_in["ckey"], user.id)
-    return UR.prepare_response({"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname, "guest": user.guest, "valid": user.valid, "id": user.id}) #this is what's needed for the client to set a cookie and be authenticated as the new user !
+    user_dict = {"ckey": user.confkey, "email": user.email, "firstname": user.firstname, "lastname":user.lastname,
+                 "guest": user.guest, "valid": user.valid, "id": user.id}
+    user_dict["userinfo"] = urllib.quote(json.dumps(user_dict))
+    return UR.prepare_response(user_dict) #this is what's needed for the client to set a cookie and be authenticated as the new user !
 
 def on_delete_session(payload, s):
     req = s["request"]
@@ -883,33 +887,3 @@ def run(req):
         logging.error("[rpc.views.run] IOError")
         r.content = UR.prepare_response({}, 1,"I/O Error")
         return r
-
-def subscribe_with_key(P, req):
-    key = P["key"]
-    e = M.Ensemble.objects.get(invitekey=key)
-    if not e.use_invitekey:
-        return UR.prepare_response({}, 1,  "NOT ALLOWED")
-    if req.method == 'POST':
-        auth_user = UR.getUserInfo(req)
-        if auth_user is None:
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
-            return UR.prepare_response({"new_user": True, "user": UR.model2dict(user), "class": UR.model2dict(e)})
-            # return render_to_response("web/subscribe_newuser.html", P)
-        else:
-            user = auth_user
-            m = M.Membership.objects.filter(user=user, ensemble=e)
-            if m.count() ==0:
-                m = M.Membership(user=user, ensemble=e)
-                m.save()
-            return UR.prepare_response({"new_user": False, "user": UR.model2dict(user), "class": UR.model2dict(e)})
-    else:
-        auth_user = UR.getUserInfo(req)
-        if auth_user is None:
-            return UR.prepare_response({"new_user": True, "class": UR.model2dict(e)})
-        else:
-            user = auth_user
-            m = M.Membership.objects.filter(user=user, ensemble=e)
-            if m.count() ==0:
-                m = M.Membership(user=user, ensemble=e)
-                m.save()
-            return UR.prepare_response({"new_user": False, "user": UR.model2dict(user), "class": UR.model2dict(e)})

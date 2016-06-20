@@ -1,11 +1,5 @@
 /*
  * pers.js: common fct for perspective-based views
- * This module defines the namespace Pers
- * It requires the following modules:
- *        NB
- *        Auth
- *        jquery
- *
  Author
  cf AUTHORS.txt
 
@@ -13,7 +7,6 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global unescape:true NB:true NB$:true jQuery:true alert:false*/
 define(function(require) {
   var Auth          = require('auth');
   var Dom           = require('dom');
@@ -100,7 +93,7 @@ define(function(require) {
     if (init_ui) { // Remove the nav-bar (if previously present) and re-add it.
       $("body").prepend(require('hbs!templates_dir/nav_template')());
 
-      // Set URL of nb homepage in the navbar logo. We cannot simply use "/" because that 
+      // Set URL of nb homepage in the navbar logo. We cannot simply use "/" because that
       // won't work with embedded scripts and the bookmarklet.
       var cur =  Pers.currentScript;
       var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
@@ -139,12 +132,13 @@ define(function(require) {
       /* End of Navbar event handlers */
 
       /*
-       Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js. 
-       I don't fully understand it. 
+       Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js.
+       I don't fully understand it.
        */
       $.concierge.addListeners(Pers, { // Pers used arbitrarily because the copied code had it.
         successful_login: function (evt) {
           Auth.set_cookie('ckey', evt.value.ckey);
+          Auth.set_cookie('userinfo', evt.value.userinfo);
           document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
           $.I('Welcome !');
         },
@@ -172,6 +166,49 @@ define(function(require) {
     Pers.set_nav_user();
     Pers.params = Dom.getParams();
   };
+
+  Pers.enable_csrf_protection = function() {
+    // This function ensures that the CSRF Token will get set in the header of appropriate Post requests. This
+    // would enable us to submit protected Django forms using Ajax.
+    // Sources:
+    // * Explanation and code: https://docs.djangoproject.com/en/1.9/ref/csrf/#ajax
+    // * Blog with further details and example code: https://realpython.com/blog/python/django-and-ajax-form-submissions/
+
+    // This function gets cookie with a given name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    /*
+    The functions below will create a header with csrftoken
+    */
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+  }
 
   Pers.set_nav_user = function() {
     var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
@@ -216,6 +253,17 @@ define(function(require) {
     if ('init' in Pers) {
       Pers.init();
     }
+    Pers.enable_csrf_protection();
+
+    // Set error handler for Ajax calls. Source: http://api.jquery.com/ajaxerror/
+    $(document).ajaxError(function(jqXHR, textStatus, errorThrown){
+      if(textStatus.status == 403) { // CSRF error
+        alert(textStatus.status + ": " + textStatus.statusText);
+      } else {
+        console.log(textStatus.status + ": " + textStatus.statusText);
+      }
+
+    });
   };
 
   /* stuff that can be used in various views */
@@ -310,7 +358,7 @@ define(function(require) {
         width: 400,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
-        open: function(event, ui) { 
+        open: function(event, ui) {
           // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
           $('.ui-widget-overlay').bind('click', function() {
             $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
@@ -390,7 +438,7 @@ define(function(require) {
         width: 390,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
-        open: function(event, ui) { 
+        open: function(event, ui) {
           // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
           $('.ui-widget-overlay').bind('click', function() {
             $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
@@ -544,7 +592,7 @@ define(function(require) {
         width: 540,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
-        open: function(event, ui) { 
+        open: function(event, ui) {
           // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
           $('.ui-widget-overlay').bind('click', function() {
             $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
@@ -556,16 +604,16 @@ define(function(require) {
           },
 
           Ok: function () {
-            $.concierge.get_component('add_ensemble')({ 
-              name: $('#add_ensemble_name')[0].value, 
-              description: $('#add_ensemble_description')[0].value, 
-              allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1', 
-              allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1', 
-              allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',  
-              default_pause: $('input[name=default_pause]:checked')[0].value === '1', 
-              allow_download: $('input[name=allow_download]:checked')[0].value === '1', 
-              allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1', 
-              use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' }, 
+            $.concierge.get_component('add_ensemble')({
+              name: $('#add_ensemble_name')[0].value,
+              description: $('#add_ensemble_description')[0].value,
+              allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1',
+              allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1',
+              allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',
+              default_pause: $('input[name=default_pause]:checked')[0].value === '1',
+              allow_download: $('input[name=allow_download]:checked')[0].value === '1',
+              allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1',
+              use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' },
               function (p) {
                 Files.model.add('ensemble', p);
                 $.I('Class created !');
