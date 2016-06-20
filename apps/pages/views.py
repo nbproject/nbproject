@@ -98,6 +98,7 @@ def dev_test2(req):
     return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
     # return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
+@ensure_csrf_cookie
 def static_page(req):
     return render_to_response('web/static_page.html')
 
