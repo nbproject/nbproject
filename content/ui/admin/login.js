@@ -41,6 +41,8 @@ define(function(require) {
       $.concierge.get_component('login_user')(payload, function (p) {
         if (p.ckey !== null) {
           Auth.set_cookie('ckey', p.ckey);
+          Auth.set_cookie('userinfo', p.userinfo);
+          Conf.userinfo = JSON.parse(unescape(p.userinfo));
           var nextpage = Pers.params.next || '/';
           document.location = 'http://' + document.location.host + nextpage;
           $.I('Welcome !');

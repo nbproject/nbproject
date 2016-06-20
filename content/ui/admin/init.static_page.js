@@ -22,9 +22,9 @@ define(function(require) {
   var Handlebars 	= require('handlebars');
   var static_footer = require("hbs!templates_dir/static_footer");
 
-  // ********************************** 
+  // **********************************
   // Start of Static templates config
-  // ********************************** 
+  // **********************************
   // If you add or remove a line from here, also edit the appropriate value in the map below.
   require("hbs!templates_dir/welcome");
   require("hbs!templates_dir/faq_student");
@@ -43,7 +43,7 @@ define(function(require) {
   require("hbs!templates_dir/logout");
 
 
-  // The keys in these maps mirror the urls in nbsite/urls.py. If you add or remove a value from this map, 
+  // The keys in these maps mirror the urls in nbsite/urls.py. If you add or remove a value from this map,
   // also add or remove the appropriate template from the require statements above.
   var templateMap = {
   	"welcome": "hbs!templates_dir/welcome",
@@ -63,12 +63,12 @@ define(function(require) {
   	"logout": "hbs!templates_dir/logout",
   };
 
-  // ********************************** 
+  // **********************************
   // End of Static templates config
-  // ********************************** 
+  // **********************************
 
   Pers.init = function () {
-  	var location = window.location.href.toString().split(window.location.host + "/")[1];
+  	var location = window.location.pathname.split("/")[1];
   	location = location.replace(/#+$/, "").replace(/\/+$/, ""); // Remove trailing # and / before checking the map.
   	var template = templateMap[location];
   	if(!template) {
@@ -79,5 +79,5 @@ define(function(require) {
     $(".nb-widget-body").append(require(template)());
     $(".nb-widget-body-container").append(static_footer);
   };
-    
+
 });
