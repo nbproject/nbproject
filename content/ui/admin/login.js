@@ -27,8 +27,6 @@ define(function(require) {
   }
 
   Pers.init = function () {
-    $('#auth_fragment').append($.concierge.get_component('get_login_dialog_markup')());
-    $('#loginbutton_classic').append($('#auth_submit').css('min-width', '80px'));
     $('#auth_submit').click(function () {
       var err = function (msg) {
         $('div.form_errors').hide().text(msg).show('fast');
@@ -44,16 +42,15 @@ define(function(require) {
           Auth.set_cookie('userinfo', p.userinfo);
           Conf.userinfo = JSON.parse(unescape(p.userinfo));
           var nextpage = Pers.params.next || '/';
-          document.location = 'http://' + document.location.host + nextpage;
+          document.location = document.location.protocol + '//' + document.location.host + nextpage;
           $.I('Welcome !');
-        }        else {
+        } else {
           err("email or password doesn't match. Please try again");
         }
       });
     });
 
     $('#login_user_password').keypress(function (e) {if (e.keyCode === 13 && this.value.length > 0) {
-      $.L('using shortcut');
       $('#auth_submit').click();
     }});
 
