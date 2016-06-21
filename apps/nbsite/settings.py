@@ -110,6 +110,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -146,6 +147,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     "django_openid_auth",
+    'corsheaders',
    # 'django_facebook',
 #    'facebook',
     "base",
@@ -316,6 +318,10 @@ OPENID_USE_AS_ADMIN_LOGIN       = False
 #AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
 AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'
 FACEBOOK_SCOPE = 'email'
+
+# Django Cors headers for cross-origin requests to ensure font-awesome can be accessed by the embedded JS file
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 #Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS).
 ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
