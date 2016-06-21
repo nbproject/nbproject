@@ -505,13 +505,10 @@ define(function(require) {
       var widget;
       var nbhostname  = Pers.server_url;
       if (Conf.userinfo.guest) { //splashscreen for non-registered user
-        widget =  "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div><div id='nb-def'>...a forum on top of every PDF.</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>New user ? <a class='link-style nb-register'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a class='link-style nb-login'>Log in</a> now...</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
+        widget =  require('hbs!templates_dir/mini_splash_screen_guest');
       }      else { //splashscreen for registered user
-        widget = "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>Drag across any region on the pdf to create a new discussion</li> <li>Right-click on any comment to post a reply</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
+        widget = require('hbs!templates_dir/mini_splash_screen_registered');
       }
-
-      $('.nb-register', widget).click($.concierge.get_component('register_user_menu'));
-      $('.nb-login', widget).click($.concierge.get_component('login_user_menu'));
       return widget;
     },
 
