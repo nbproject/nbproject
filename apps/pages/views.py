@@ -17,7 +17,7 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils.html import escape
 
-from apps.base import forms
+import base.forms as forms
 from django_remote_forms.forms import RemoteForm
 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
@@ -98,7 +98,6 @@ def dev_test2(req):
     return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
     # return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
-@ensure_csrf_cookie
 def static_page(req):
     return render_to_response('web/static_page.html')
 
