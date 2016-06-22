@@ -426,11 +426,12 @@ module.exports = function (grunt) {
   };
 
   TARGETS.SETTINGS = {
-    include: ['your_settings'],
+    include: ['your_settings', 'launch'],
     src_js: [].concat(['build_yoursettings']),
     src_css: [].concat(
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
     dest_js: DEST_DIR + 'settings_NB.js',
     dest_css: DEST_DIR + 'settings.css',

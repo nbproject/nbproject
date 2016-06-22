@@ -142,7 +142,7 @@ define(function(require) {
           document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
 
           // After logging in, remain on the same page so long as you are not on the login, logout or welcome page
-          var nextpage = document.location.pathname + document.location.search;
+          var nextpage = window.location.pathname + window.location.search;
           if(nextpage.lastIndexOf("/login", 0) === 0 || nextpage.lastIndexOf("/logout", 0) === 0 ||
             nextpage.lastIndexOf("/welcome", 0) === 0){
             nextpage = "/";
@@ -151,7 +151,7 @@ define(function(require) {
           if(Pers.params.next){
             nextpage = Pers.params.next;
           }
-          document.location = document.location.protocol + '//' + document.location.host + nextpage;
+          window.location.href = window.location.protocol + '//' + window.location.host + nextpage;
           $.I('Welcome !');
         },
       }, 'globalPersObject');
@@ -284,9 +284,9 @@ define(function(require) {
       Auth.delete_cookie('userinfo');
       Auth.delete_cookie('ckey');
       if (Pers.embedded) {
-        document.location.reload();
+        window.location.reload();
       }      else {
-        document.location.pathname = '/logout';
+        window.location.pathname = '/logout';
       }
 
     },

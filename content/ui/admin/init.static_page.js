@@ -75,7 +75,6 @@ define(function(require) {
   		alert("Unable to find html template for " + location);
   		return;
   	}
-    // $(".nb-viewport").append("<div class='nb-widget-body-container'><div class='nb-widget-body'></div></div>");
     $(".nb-widget-body").append(require(template)());
     $(".nb-widget-body-container").append(static_footer);
   };

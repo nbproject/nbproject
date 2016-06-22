@@ -1,7 +1,7 @@
-# Uncomment this if you're listening on a non standard port: 
+# Uncomment this if you're listening on a non standard port:
 # Listen NB_HTTP_PORT
 
-# Deprecated on apache 2.4. uncomment if using on older apache 
+# Deprecated on apache 2.4. uncomment if using on older apache
 # NameVirtualHost *:NB_HTTP_PORT
 
 <VirtualHost *:NB_HTTP_PORT>
@@ -33,3 +33,11 @@ Require all granted
 </Directory>
 
 </VirtualHost>
+# ----------------------------------------------------------------------
+# Webfont access
+# ----------------------------------------------------------------------
+# Allow access from all domains for webfonts. This ensures that
+# font-awesome icons show up in the embedded JS file
+<FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
+  Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
