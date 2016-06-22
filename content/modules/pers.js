@@ -433,8 +433,7 @@ define(function(require) {
     },
 
     login_user_menu: function (P, cb) {
-      $('#login_user_password').keypress(function (e) {if (e.keyCode === 13 && this.value.length > 0) {
-        $.L('using shortcut');
+      $('#login_user_password2').keypress(function (e) {if (e.keyCode === 13 && this.value.length > 0) {
         $('#login_user_dialog').parent().find("button:contains('Ok')").click();
       }});
 
