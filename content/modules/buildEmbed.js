@@ -33,20 +33,11 @@ define(function(require) {
   var id_ensemble = null;
   Pers.iframe_id = 'nb_iframe';
   var f_prepare_sidebar = function () {
-    //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
-    //for now, just update user name and email on hover. :
-    // var uinfo = Conf.userinfo;
-    // if (!uinfo.guest) {
-    //   var screenname = uinfo.firstname === null ? $.E(uinfo.email) : $.E(uinfo.firstname) + ' ' + $.E(uinfo.lastname);
-    //   $('#login-name').text(screenname).attr('title', $.E(uinfo.email));
-    // }
-
     //now move stuff here it's supposed to be:
     // $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('.nb_sidebar');
-    $vp = $(".nb-viewport");
+    $vp = $(".nb-viewport").detach();
     $vp.prependTo('.nb_sidebar');
     Pers.set_nav_user();
-    // $('#login-window').appendTo('.nb-widget-header'); // add this here so it's fixed as well
     //TODO: get id_ensemble from cookie or localStorage if available.
 
 
@@ -93,7 +84,7 @@ define(function(require) {
     });
     Pers.store = new Models.Store();
     Pers.call(
-        'getHTML5Info', 
+        'getHTML5Info',
         { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '') },
         function (payload) {
           //TODO: refactor (same as in step16.js:createStore)
@@ -340,13 +331,10 @@ define(function(require) {
     $.concierge.addListeners(Pers, {
       successful_login: function (evt) {
         Auth.set_cookie('ckey', evt.value.ckey);
-        Auth.set_cookie('userinfo', JSON.stringify(evt.value));
-        Conf.userinfo = evt.value;
-        $.L('Welcome TO NB !');
-        $('#splash-welcome').parent().remove();
-
-        f_prepare_sidebar();
-
+        Auth.set_cookie('userinfo', evt.value.userinfo);
+        Conf.userinfo = JSON.parse(unescape(evt.value.userinfo));
+        $.I('Welcome ' + Conf.userinfo.firstname + " " + Conf.userinfo.lastname);
+        Pers.set_nav_user();
       },
     }, 'globalPersObject');
 
