@@ -1,3 +1,0 @@
-[submodule "content/lib/require-handlebars-plugin"]
-	path = content/lib/require-handlebars-plugin
-	url = https://github.com/SlexAxton/require-handlebars-plugin
