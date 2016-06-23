@@ -42,6 +42,15 @@ These can be installed as ubuntu packages
       npm install grunt-contrib-cssmin  --save-dev
       npm install grunt-contrib-requirejs --save-dev
  
+ 
+### [optional] Enable mod_rewrite
+ If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
+ 
+       sudo a2enmod rewrite
+
+ If you're interested in the CORS config, you can find it in `conf/nb_apache.conf`
+ 
+ 
 ### [optional] Annotating YouTube Videos
 If you include a Youtube video URL as a class resource, nb will not be able to retrieve the video title (and you will see a HTTP 500 error in console and the log file) unless you set your [API key](https://support.google.com/cloud/answer/6158862) in place of `CHANGE_ME` in the following line in `apps/nbsite/settings_credentials.py`. You can create different types of Google API key. In this case, you need a *SERVER* API key.
 
