@@ -35,8 +35,6 @@ urlpatterns = patterns("",
                        (r'^$', 'pages.views.index'),
                        (r'^collage/$', 'pages.views.collage'),
                        (r'^dev/desktop/(\d+)$', 'pages.views.dev_desktop'),
-                       (r'^dev/test$', 'pages.views.dev_test'), # Todo: k>>> Delete this line after dev testing.
-                       (r'^dev/test2$', 'pages.views.dev_test2'), # Todo: k>>> Delete this line after dev testing.
                        (r'^welcome$', 'pages.views.static_page'),
                        (r'^faq_student/$', 'pages.views.static_page'),
                        (r'^faq_instructor/$', 'pages.views.static_page'),

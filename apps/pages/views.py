@@ -89,14 +89,6 @@ def collage(req):
 def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
-def dev_test(req):
-    # Todo: k>>> Delete this function after dev.
-    return __serve_page(req, 'web/dev_test.html', content_type="text/html", allow_guest=True)
-
-def dev_test2(req):
-    # Todo: k>>> Delete this function after dev.
-    return __serve_page(req, 'web/dev_test2.html', content_type="text/html", allow_guest=True)
-    # return __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
 
 @ensure_csrf_cookie
 def static_page(req):

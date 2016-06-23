@@ -131,11 +131,7 @@ define(function(require) {
 
       /* End of Navbar event handlers */
 
-      /*
-       Todo: k>>> The following 7 lines of code execute after a successful login. It was copied from init.pdfviewer.js.
-       I don't fully understand it.
-       */
-      $.concierge.addListeners(Pers, { // Pers used arbitrarily because the copied code had it.
+      $.concierge.addListeners(Pers, {
         successful_login: function (evt) {
           Auth.set_cookie('ckey', evt.value.ckey);
           Auth.set_cookie('userinfo', evt.value.userinfo);
@@ -161,7 +157,6 @@ define(function(require) {
         $(".nb-nav--guest__icon-bar").removeClass("nb-nav--guest__icon-bar--open");
         $(".nb-nav__ul").removeClass('nb-nav__ul--open');
         $(".nb-nav__li--dropdown__icon").removeClass("nb-nav__li--dropdown--open__icon");
-        // $(".nb-nav__ul2").slideUp();
         $(".nb-nav__ul2").hide();
       }
 

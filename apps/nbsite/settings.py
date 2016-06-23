@@ -221,7 +221,6 @@ SERVER_USERNAME         = "www-data"
 DESKTOP_TEMPLATE        = "web/desktop.html"
 COLLAGE_TEMPLATE        = "web/collage.html"
 DEV_DESKTOP_TEMPLATE    = 'web/desktop%s.xhtml'
-DEV_DESKTOP_TEMPLATE2    = 'web/dev_test2.html'
 SOURCE_TEMPLATE         = "web/source1.html"
 YOUTUBE_TEMPLATE        = "web/youtube1.html"
 GUEST_TUTORIAL_URL      = "http://%s/tutorial" % (NB_SERVERNAME,)
