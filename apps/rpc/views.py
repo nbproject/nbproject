@@ -198,7 +198,7 @@ def register_user(P, req):
         return UR.prepare_response({}, 1,"A user with this email already exists - please choose another email.")
     user= auth.getGuest(P["ckey"])
     P["ckey"] = annotations.register_user(user.id, P) #returns a new confkey.
-    p2 = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "%s?ckey=%s" %(req.META.get("HTTP_REFERER","http://%s" % settings.NB_SERVERNAME), P["ckey"])}
+    p2 = {"tutorial_url": settings.GUEST_TUTORIAL_URL, "conf_url": "%s?ckey=%s" %("http://%s" % settings.NB_SERVERNAME, P["ckey"])}
     from django.core.mail import EmailMessage
     p2.update(P)
     msg = render_to_string("email/confirm_guest_registration",p2)

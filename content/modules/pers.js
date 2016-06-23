@@ -413,13 +413,14 @@ define(function(require) {
               return;
             }
 
+            var ckey = Conf.userinfo.ckey ? Conf.userinfo.ckey : "";
             var payload = {
                 firstname: $('#register_user_firstname')[0].value,
                     lastname: $('#register_user_lastname')[0].value,
                     email: $('#register_user_email')[0].value,
                     pseudonym: $('#register_user_pseudonym')[0].value,
                 password: $('#register_user_password1')[0].value,
-                    ckey: Conf.userinfo.ckey, };
+                    ckey: ckey, };
             $.concierge.get_component('register_user')(payload, function (p) {
               $.I('Thanks for registering... You should receive a confirmation code by email in less than a minute...');
               $dlg.dialog('destroy');

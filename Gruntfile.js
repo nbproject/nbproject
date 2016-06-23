@@ -165,6 +165,25 @@ module.exports = function (grunt) {
     servername: servername,
   };
 
+  TARGETS.NEWSITE = {
+    include: ['init_newsite', 'launch'],
+    src_js: [].concat(['build_newsite']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
+      addPrefix(UI_DIR, ['template.css']),
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'newsite_NB.js',
+    dest_css: DEST_DIR + 'newsite.css',
+  };
+
   TARGETS.DESKTOP = {
       // MODS.BREADCRUMB.src_js
     include: ['init_desktop', 'launch'],

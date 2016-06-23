@@ -176,6 +176,7 @@ def your_settings(req):
 def embedopenid(req):
     return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
 
+@ensure_csrf_cookie
 def newsite(req):
     import base.models as M, random, string
     form                = None
@@ -443,7 +444,6 @@ def properties_ensemble_users(req, id):
     return render_to_response("web/properties_ensemble_users.html")
 
 def properties_ensemble_sections(req, id):
-
     user = UR.getUserInfo(req)
     if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
@@ -506,20 +506,6 @@ def fbchannel(req):
     r["Cache-Control"] = "max-age="+cache_expire
     r["Expires"]=(datetime.datetime.now()+datetime.timedelta(cache_expire)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     return r
-
-
-
-#
-# UR.getUserInfo(req)
-#    if user is None:
-#        return HttpResponseRedirect("/login?next=%s" % (req.get_full_path(),))
-#    if "id_ensemble" not in req.GET:
-#        from django.http import HttpResponse
-#        return HttpResponse("missing id_ensemble")
-#    id_ensemble = req.GET["id_ensemble"]
-#    if not auth.canEditEnsemble(user.id,id_ensemble):
-#        return HttpResponseRedirect("/notallowed")
-#
 
 def openid_index(request):
     s = ['<p>']
@@ -597,6 +583,7 @@ def subscribe_with_key(req):
                 return HttpResponse(UR.prepare_response({"new_user": True, "class_settings": UR.model2dict(e),
                                                          "next": "/subscribe_thanks"}))
             else:  # Invalid form - return form with error messages
+                __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
                 remote_form = RemoteForm(user_form)
                 return HttpResponse(UR.prepare_response({"new_user": True, "user": UR.model2dict(user),
                                                      "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
@@ -608,3 +595,59 @@ def subscribe_with_key(req):
                 m.save()
             return HttpResponse(UR.prepare_response({"new_user": False, "class_settings": UR.model2dict(e), "next": "/"}))
 
+
+@csrf_protect
+def newsite_form(req):
+    import base.models as M, random, string
+    auth_user = UR.getUserInfo(req)
+    if auth_user is not None:
+        return HttpResponse(UR.prepare_response({"redirect": "/"}))
+    if req.method == 'GET':
+        remote_user_form = RemoteForm(forms.UserForm())
+        remote_class_form = RemoteForm(forms.EnsembleForm())
+        return HttpResponse(UR.prepare_response({"user_form": remote_user_form.as_dict(), "class_form": remote_class_form.as_dict()}))
+    else:
+        user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+        ensemble = M.Ensemble()
+        req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+        user_form       = forms.UserForm(req.POST, instance=user)
+        ensemble_form   = forms.EnsembleForm(req.POST, instance=ensemble)
+        if user_form.is_valid() and ensemble_form.is_valid():
+            user_form.save()
+            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+            ensemble_form.save()
+            m = M.Membership(user=user, ensemble=ensemble, admin=True)
+            m.save()
+            p = {
+                "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey),
+                "firstname": user.firstname,
+                "email": user.email
+            }
+            email = EmailMessage(
+                "Welcome to NB, %s" % (user.firstname),
+                render_to_string("email/confirm_newsite", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
+                (settings.EMAIL_BCC, ))
+            email.send()
+            return HttpResponse(UR.prepare_response({"redirect": "/newsite_thanks"}))
+        else:  # Invalid form - return form with error messages
+            __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
+            __clean_form(ensemble_form)  # Ensure user-generated data gets cleaned before sending back the form
+            remote_user_form = RemoteForm(user_form)
+            remote_class_form = RemoteForm(ensemble_form)
+            return HttpResponse(UR.prepare_response({"user_form": remote_user_form.as_dict(),
+                                                     "class_form": remote_class_form.as_dict()}))
+
+
+def __clean_form(form):
+    """
+    This method should be called before sending a form to the client if the form was created from
+    user-generated json.
+    """
+    form.is_valid() # Calling this method will populate the cleaned_data field.
+    # Replace data with cleaned_data to ensure the values get sent back as the right type e.g.
+    # javascript boolean value of true gets sent as string "true". Cleaning converts it back to
+    # boolean
+    form.data = form.cleaned_data
