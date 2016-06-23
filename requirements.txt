@@ -7,7 +7,5 @@ python-openid>=2.2.5
 pytz>=2014.4
 xlwt>=0.7.5
 google-api-python-client>=1.5
-#-e git+https://github.com/WiserTogether/django-remote-forms@16ec5960317db3f665ff25b2fac669f342e75eb1#egg=django_remote_forms-master
--e git+https://github.com/kesiena115/django-remote-forms@d7fd070fe3ad4e14e2e2abc2d238271ef16ba49b#egg=django_remote_forms-master
 django-cors-headers>=1.1.0
 
