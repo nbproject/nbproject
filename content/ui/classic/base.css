@@ -258,18 +258,6 @@ div.video
     overflow: auto;
 }
 
-.desc
-{
-    font-size: .7em;
-    font-style: italic;
-
-    display: block; text-align: center;
-}
-
-.desc > span
-{
-    display: block;
-}
 
 .desc a:link,
 .desc a:visited
