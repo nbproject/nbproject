@@ -48,7 +48,7 @@ define(function(require) {
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('collection', 'collection_viewer', function (id) {
       var pers_id        = 'pers_' + id;
-      var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+      var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header'/></div>").prependTo('body');
       var $pers        = $("<div id='" + pers_id + "'/>").appendTo($vp);
       var docview        =  {
         priority: 1,
@@ -182,8 +182,6 @@ define(function(require) {
       move_file:        function (P, cb) {Pers.call('move_file', P, cb);},
 
       update_file_menu:    function (P, cb) {Files.update_file(P.id);},
-
-      add_ensemble_menu:    function (P, cb) {Files.addEnsemble();},
 
       add_ensemble:        function (P, cb) {Pers.call('add_ensemble', P, cb);},
 

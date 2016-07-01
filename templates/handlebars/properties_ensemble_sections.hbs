@@ -1,0 +1,121 @@
+<script>
+  $("title").html("Sections for {{ensemble.name}}");
+</script>
+<style>
+  span.lowcontrast{
+    color: #a0a0a0;
+  }
+  div.section{
+    color: #404040;
+    margin-left: 30px;
+  }
+
+  p.error-message:not(:empty) {
+    border: 1px solid #C22;
+    background-color: #FCC;
+    padding: 8px;
+  }
+
+  .section-assign {
+    border: 2px rgba(0,0,0,0) solid;
+    padding: 4px 0 4px 0;
+  }
+
+  .section-assign.active {
+    border: 2px rgba(32, 255, 32, 1) solid;
+  }
+
+  .student-record-helper {
+    display: inline-block;
+    padding: 6px;
+    line-height: 1em;
+    font-size: 0.7em;
+    color: #555;
+    background-color: #EEE;
+  }
+
+  .section-assign-space {
+    height: 1.5em;
+  }
+
+  thead {
+    text-align: left;
+  }
+
+</style>
+
+<h1>Sections for {{ensemble.name}}</h1>
+
+<div class='section'>
+  <p class="error-message">{{error_message}}</p>
+  <table>
+    <thead><tr><th>Section Name &nbsp; &nbsp;</th><th>Actions</th></tr></thead>
+    <tbody>
+      {{#each sections}}
+      <tr class="section-{{ID}}-info">
+        <td>{{#if name}}{{name}}{{else}}<span class="lowcontrast">untitled</span>{{/if}}</td>
+        <td>
+          <!-- The action of this link is configured via Javascript -->
+          <a style='margin-right: 10px' href='#' class="delete-link" data-section-id="{{ID}}">Delete</a>
+        </td>
+      </tr>
+      {{/each}}
+	  </tbody>
+  </table>
+</div>
+
+<div class='section'>
+  <h3>Create a new section</h3>
+  <form method="POST" action="?action=create" id="create-section-form">
+    <label for="name">Section Name</label> <input type="text" name="name" value="" /><input type="submit" value="Create Section" />
+  </form>
+</div>
+
+<h1 style="margin-top:30px;">Section Student Listing</h1>
+<p>You can assign students to sections by dragging student names between each section.</p>
+<div class='section'>
+  {{#each class_sections}}
+    <h2 class="section-{{id}}-info">{{#if name}}{{name}}{{else}}untitled{{/if}}</h2>
+    <div class="section-assign section-{{id}}-info" data-section="{{id}}">
+    {{#if participants}}
+    <table>
+      <thead><th>First Name &nbsp; &nbsp;</th><th>Last Name &nbsp; &nbsp;</th><th>E-mail Address</th></thead>
+      <tbody>
+        {{#each participants}}
+          <tr data-membership-id='{{membership_id}}' data-user-firstname='{{firstname}}' class='student-record'>
+            <td>{{#if firstname}}{{firstname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
+            <td>{{#if lastname}}{{lastname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
+            <td>{{email}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+      <div><em>There are no students in this section. Drag students here to assign them to this section.</em></div>
+    {{/if}}
+    </div>
+  {{/each}}
+
+  <h2>Unassigned</h2>
+  <div class="section-assign" data-section="None">
+    {{#if no_section.participants}}
+    <table>
+      <thead>
+        <th>First Name &nbsp; &nbsp;</th><th>Last Name &nbsp; &nbsp;</th><th>E-mail Address</th>
+      </thead>
+      <tbody>
+        {{#each no_section.participants}}
+          <tr data-membership-id='{{membership_id}}' data-user-firstname='{{firstname}}' class='student-record'>
+            <td>{{#if firstname}}{{firstname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
+              <td>{{#if lastname}}{{lastname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
+            <td>{{email}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div><em>No student is unassigned. Drag students here to remove their section assignment.</em></div>
+    {{/if}}
+  </div>
+
+</div>

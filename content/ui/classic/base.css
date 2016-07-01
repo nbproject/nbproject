@@ -2,11 +2,11 @@ html,
 body
 {
     font-family: 'Nobile', sans-serif;
-
     margin: 0;
     padding: 0;
-
-    background-color: #e6e6dc; /*#F4F4F4;*/
+/*    background-color: #e9eaed;*/
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #content_main,
@@ -19,19 +19,19 @@ footer > div
 
 #content_main
 {
-    margin-bottom: 20px;
-    padding: 100px 30px 10px 30px;
-
+    padding: 30px 30px 65px 30px;
     text-align: left;
-
-    border: 1px solid #bfbfbf;
-    -webkit-border-radius: 0 0 6px 6px;
-       -moz-border-radius: 0 0 6px 6px;
-            border-radius: 0 0 6px 6px;
     background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
 
-        -ms-border-radius: 0 0 6px 6px;
-         -o-border-radius: 0 0 6px 6px;
+#content_main.content_main--guest {
+    padding-top: 45px;
+}
+
+#content_main h1 {
+    margin-bottom: 10px;
 }
 
 header
@@ -146,17 +146,36 @@ nav.main a:hover
     top: .5em; right: .5em;
 }
 
-footer
-{
-    font-size: small;
-    font-style: italic;
-
-    color: #707070;
+footer {
+    color: #90A4AE;
+    background-color: #34495e;
+    text-align: center;
+    width: 100%;
+    min-height: 100px;
+    padding-top: 5px;
 }
 
-footer > div
-{
-    text-align: center;
+footer a:link,
+footer a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover,
+footer a:focus {
+  text-decoration: underline;
+}
+
+.footer__p {
+    margin: 5px 10px;
+    padding: 0;
+}
+
+.footer__logo {
+    font-weight: bold;
+    font-size: medium;
+    font-style: italic;
+    text-decoration: none;
 }
 
 a:link,
@@ -186,8 +205,6 @@ a:visited
 .column.left
 {
     float: left;
-
-    box-shadow: 32px 0 32px -32px #888;
 }
 .column.left > div
 {
@@ -215,7 +232,7 @@ h6 + p
 }
 
 /*
-Author: cf AUTHORS.txt 
+Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
@@ -238,20 +255,9 @@ section.expandable:hover > div.desc
 div.video
 {
     padding: 0 16px;
+    overflow: auto;
 }
 
-.desc
-{
-    font-size: .7em;
-    font-style: italic;
-
-    display: block; text-align: center;
-}
-
-.desc > span
-{
-    display: block;
-}
 
 .desc a:link,
 .desc a:visited
@@ -271,7 +277,6 @@ div.navbar
 
     margin-bottom: 5px;
     padding: 5px 0;
-
     text-align: center;
 }
 
@@ -398,4 +403,292 @@ div.big-button > a:hover
     color: #666;
     border-color: #ddd;
     background-color: #f4f4f4;
+}
+
+
+/*** Start of navbar ***/
+
+.ui-widget-overlay {
+  opacity: 0.8;
+  background-color: #fff;
+}
+
+.ui-dialog {
+  box-shadow: 0px 0px 10px 0 rgba(0,0,0,.5);
+  /*
+    This z-index is to ensure the dialog appears on top of all other page elements,
+    especially the separators of the perspective windows in the pdfviewer and the .nb_sidebar
+    when using the bookmarklet or embedded javascript (see buildEmbed.css for details)
+  */
+  z-index: 1010;
+}
+
+.nb-nav {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  top: 0;
+  padding: 0;
+  margin: 0;
+  background-color: #efebe7;
+  box-shadow: inset 0 -6px 6px -6px rgba(0,0,0,.5);
+  /* z-index chosen arbitrarily to ensure the navbar appears above all elements on the page. */
+  z-index: 100;
+  font-size: small;
+}
+
+.nb--guest .nb-nav {
+  height: 48px;
+  background-color: #34495e;
+  box-shadow: none;
+}
+
+.nb-nav__btn-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    text-align: right;
+    display: flex;
+}
+
+.nb-nav__logo {
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    color: #555;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-decoration: none;
+    padding: 0 4px;
+}
+
+.nb-nav a {
+    color: #777; /* Added here to ensure we override the default in base.css*/
+}
+
+.nb--guest a.nb-nav__logo {
+    font-size: 40px;
+    color: #fff;
+}
+
+.nb-nav__btn {
+    color: #aaa;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    margin: 0;
+    height: 100%;
+    border: none; /* Remove Chrome's default border around buttons */
+    font-size: 14px;
+    width: 70px;
+    text-align: center;
+    transition: 0.4s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding-top: 14px;
+    box-sizing: border-box;
+}
+
+.nb-nav__btn:hover {
+    background-color: #555;
+}
+
+.nb-nav__screenname {
+  font-size: 12px;
+  color: #777;
+  padding: 4px 15px 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nb--guest .nb-nav__screenname {
+    font-size: 14px;
+    padding: 18px;
+    color: #90A4AE;
+}
+
+.nb-nav__menu-btn {
+    /* To ensure the icon bars appear on top of each other instead of side by side */
+    display: block;
+    border-left: 1px solid #aaa;
+    padding-top: 0;
+    background-color: #777
+}
+
+.nb--guest .nb-nav__btn {
+    color: #fff;
+    border-left: 1px solid #90A4AE;
+    font-size: 16px;
+    background-color: transparent;
+}
+
+.nb--guest .nb-nav__account-btn,
+.nb--guest .nb-nav__logout-btn,
+.nb--guest .nb-nav__new-class-btn {
+    display: none;
+}
+
+.nb-nav__login-btn,
+.nb-nav__signup-btn {
+    display: none;
+}
+
+.nb--guest .nb-nav__login-btn,
+.nb--guest .nb-nav__signup-btn {
+    display: block;
+}
+
+.nb--guest .nb-nav__btn:hover {
+    background-color: #3f5973
+}
+
+.nb--guest .nb-nav__btn:hover .nb-nav__icon-bar {
+    background-color: #fff;
+}
+
+.nb-nav__icon-bar {
+    width: 22px;
+    height: 2px;
+    background-color: #fff;
+    margin: 3px auto;
+    display: block;
+    pointer-events: none;
+    transition: 0.4s;
+    position: relative;
+    max-width: 22px;
+}
+
+.nb--guest .nb-nav__icon-bar {
+    width: 30px;
+    height: 2px;
+    background-color: #fff;
+    margin: 5px auto;
+    max-width: 30px;
+}
+
+.nb-nav__icon-bar--open:nth-child(1) {
+  transform: translateX(-5px) rotateZ(-41deg);
+  max-width: 16px;
+  transform-origin: top right;
+}
+
+.nb-nav__icon-bar--open:nth-child(2) {
+  max-width: 0;
+  transform-origin: right;
+}
+
+.nb-nav__icon-bar--open:nth-child(3) {
+  transform: translateX(-5px) rotateZ(41deg);
+  max-width: 16px;
+  transform-origin: bottom right;
+}
+
+.nb--guest .nb-nav__icon-bar--open:nth-child(1),
+.nb--guest .nb-nav__icon-bar--open:nth-child(3) {
+  max-width: 22px;
+}
+
+#nb-main-nav .nb-nav__ul {
+  display: block;
+  transform: scale(0);
+  transform-origin: right top;
+  transition: 0.3s;
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background-color: #fff;
+  min-width: 160px;
+  overflow: auto;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0, 0.3);
+}
+
+.nb--guest #nb-main-nav .nb-nav__ul {
+    top: 48px;
+}
+
+#nb-main-nav .nb-nav__ul--open {
+  transform: scale(1);
+}
+
+.nb-nav__a,
+.nb-nav__a2 {
+  padding: 5px 15px;
+  text-decoration: none;
+  display: block;
+  transition: 0.4s;
+}
+
+.nb-nav__a2 {
+  padding-left: 30px;
+}
+
+.nb-nav__a:hover,
+.nb-nav__a2:hover {
+  background-color: #ddd;
+  color: #555;
+}
+
+.nb-nav .nb-nav__li--section-end {
+  border-bottom: 1px solid #ccc;
+}
+
+.nb-nav .nb-nav__li--section-start {
+  border-top: 1px solid #ccc;
+}
+
+
+.nb-nav__li--dropdown__icon {
+  transform: rotateZ(0deg);
+  margin-right: 5px;
+  transition: 0.4s;
+}
+
+.nb-nav__li--dropdown--open__icon {
+  transform: rotateZ(90deg);
+}
+
+.nb-nav .nb-nav__ul,
+.nb-nav .nb-nav__ul2 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  text-align: left;
+}
+
+.nb-nav li:before {
+  display: none;
+}
+
+.nb-nav li {
+  display: block;
+}
+
+
+/* Center the close button in popup dialog boxes */
+.ui-dialog .ui-dialog-titlebar-close span {
+  top: 0;
+  left: 0;
+  margin: 0;
+}
+
+/*** End of navbar ***/
+
+.nb-widget-body-container {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.nb-widget-body {
+  padding-bottom: 50px;
+  box-sizing: content-box;
+  max-width: 950px;
+  margin: auto;
+  min-height: 80vh; /* To ensure the footer appears at the bottom of the page even if there's little or no content on the page */
 }

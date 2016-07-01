@@ -216,7 +216,11 @@ __NAMES = {
 }
 
 def get_ensembles(uid, payload):
-    id = payload["id"] if "id" in payload else None
+    id = None
+    if "id_ensemble" in payload:
+        id = payload["id_ensemble"]
+    elif "id" in payload:
+        id = payload["id"]
     names = {
         "ID": "ensemble_id",
         "name": "ensemble.name",
@@ -248,7 +252,11 @@ def get_folders(uid, payload):
     return UR.qs2dict(my_folders, names, "ID")
 
 def get_sections(uid, payload):
-    id = payload["id"] if "id" in payload else None
+    id = None
+    if "section_id" in payload:
+        id = payload["section_id"]
+    elif "id" in payload:
+        id = payload["id"]
     names = {
         "ID": "id",
         "id_ensemble": "ensemble_id",
@@ -258,6 +266,8 @@ def get_sections(uid, payload):
     my_sections = M.Section.objects.filter(ensemble__in=my_ensembles)
     if id is not None:
         my_sections = my_sections.filter(id=id)
+    if "id_ensemble" in payload:
+        my_sections = my_sections.filter(ensemble__id=payload["id_ensemble"])
     return UR.qs2dict(my_sections, names, "ID")
 
 def get_file_stats(uid, payload):
@@ -295,7 +305,7 @@ def get_members(eid):
         del user_entry["password"]
 
         # Add section
-	if membership.section == None:
+        if membership.section == None:
             user_entry["section"] = None
         else:
             user_entry["section"] = membership.section.id
@@ -303,6 +313,101 @@ def get_members(eid):
         # Add user dictionary to users
         users[user.id] = user_entry
     return users
+
+
+def get_all_members(uid, payload):
+    """
+    Get all members of an ensemble i.e. registered participants, pending invitations, pending email confirmation,
+    and deleted members. Although uid is not required, it's been added to ensure that getObjects() in views.py
+    can call this method.
+    """
+    eid = payload["id_ensemble"]
+    ensemble = M.Ensemble.objects.get(pk=eid)
+    memberships = M.Membership.objects.filter(ensemble=ensemble)
+    pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
+    real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
+    deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
+    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
+
+    pendingconfirmations_list = __memberships_to_users_list(pendingconfirmations)
+    real_memberships_list = __memberships_to_users_list(real_memberships)
+    deleted_memberships_list = __memberships_to_users_list(deleted_memberships)
+    pendinginvites_list = __memberships_to_users_list(pendinginvites)
+
+    users = {
+        "registered": real_memberships_list,
+        "pending_invitation": pendinginvites_list,
+        "pending_email_confirmation": pendingconfirmations_list,
+        "deleted": deleted_memberships_list
+    }
+    return users
+
+def __memberships_to_users_list(memberships):
+    result = []
+    for membership in memberships:
+        user = M.User.objects.get(id=membership.user.id)
+        user_entry = UR.model2dict(user)
+
+        # Remove unnecessary fields
+        del user_entry["guest"]
+        del user_entry["confkey"]
+        del user_entry["valid"]
+        del user_entry["saltedhash"]
+        del user_entry["salt"]
+        del user_entry["password"]
+
+        # Add section
+        if membership.section == None:
+            user_entry["section"] = None
+        else:
+            user_entry["section"] = membership.section.name
+
+        # Add admin status
+        if membership.admin:
+            user_entry["admin"] = True
+        else:
+            user_entry["admin"] = False
+
+        user_entry["user_id"] = user_entry.pop("id") # Rename id key as user_id
+        user_entry["membership_id"] = membership.id
+
+        # Add user dictionary to result
+        result.append(user_entry)
+    return result
+
+
+def get_section_participants(uid, payload):
+    eid = payload["id_ensemble"]
+    ensemble = M.Ensemble.objects.get(pk=eid)
+    sections = M.Section.objects.filter(ensemble=ensemble)
+    all_students = M.Membership.objects.filter(ensemble=ensemble).filter(guest=False)
+    students2 = []
+    for s in sections:
+        session_dict = UR.model2dict(s)
+        session_dict["participants"] = __memberships_to_users_list(all_students.filter(section=s))
+        students2.append(session_dict)
+
+    no_section_dict = {
+        "name": "",
+        "id": -1,
+        "ensemble_id": eid,
+        "participants": __memberships_to_users_list(all_students.filter(section=None))}
+
+    return {
+        "class_sections": students2,
+        "no_section": no_section_dict
+    }
+
+
+def get_class_settings(uid, payload):
+    try:
+        if "id_ensemble" in payload:
+            return UR.model2dict(M.Ensemble.objects.get(pk=payload["id_ensemble"]))
+        elif "invitekey" in payload:
+            return UR.model2dict(M.Ensemble.objects.get(invitekey=payload["invitekey"]))
+    except M.Ensemble.DoesNotExist:
+        return None
+
 
 def get_stats_ensemble(payload):
     import db

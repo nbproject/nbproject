@@ -351,6 +351,14 @@ define(function(require) {
         height: 200,
         modal: true,
         autoOpen: false,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) { 
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
       });
 
       $("body").append(

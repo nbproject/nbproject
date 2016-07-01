@@ -37,29 +37,9 @@ define(function(require) {
   Files.set_model = function (model) {
     Files.model = model;
     var $util_window = $.concierge.get_component('get_util_window')();
-    $util_window.append("<iframe id='upload_target' name='upload_target' src='' style='display: none'></iframe>").append("<div id='add_file_dialog' > <table width='275'><tr><td><input type='radio' id='file_select' name='upload_type' value='file_select' checked></td><td><input type='radio' id='html_select' name='upload_type' value='html_select'></td><td><input type='radio' id='youtube_select' name='upload_type' value='youtube_select'></td></tr><tr><td>PDF</td><td>HTML</td><td>YouTube</td></tr></table><div id='add_file_div'> <form id='file_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <table> <tr><td>Group</td><td> <select id='add_file_ensemble'/></td></tr><tr><td>Folder</td><td><select id='add_file_folder'/></td></tr><tr><td>File</td><td><input type='file' name='file' id='add_file_upload' ></input></td></tr></table></form></div><div style='display:none;' id='add_html_div'><form id='html_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''> <table><tr><td>Title</td><td><input type='text' name='title' id='html_input_title'></input></td></tr><tr><td>URL</td><td><input type='text' name='url' id='html_input_url'></input></td></tr></table></form><br><p>Don't forget to add the NB annotation tag!  Follow the link below for more detailed instructions.</p><div><a id='add_file_html' href='#'>Detailed HTML Upload Instructions</a></div></div><div style='display:none' id='add_youtube_div'> <form id='youtube_upload_form' target='upload_target' method='post' enctype='multipart/form-data' action=''> <table><tr><td>URL</td><td><input type='text' name='url' maxlength='1024' id='youtube_input_url'></input></td></tr></table></form></table></div></div>").append("<div id='add_folder_dialog' > <table> <tr><td>Group</td><td> <select id='add_folder_ensemble'/></td></tr><tr><td>Parent Folder </td><td><select id='add_folder_folder'/></td></tr><tr><td>Name</td><td><input type='text'  id='add_folder_name' ></input></td></tr></table></div>").append("<div id='rename_file_dialog' ><input type='text'  id='rename_file_name' style='min-width: 24em;' ></input></div>").append("<div id='delete_folder_dialog' >Are you sure that you wish to delete the folder  <b id='delete_folder_name'/>?</div>").append("<div id='delete_file_dialog' >Are you sure that you wish to delete the file <b id='delete_file_name'/> ? <br/><i>Note: This will cause all annotations made on that file to be unusable</i></div>").append("<div id='move_file_dialog'>Move <b id='move_file_name'/> to...<br/><select id='move_file_select'/></div>").append("<div id='update_file_dialog'>Select a file...<form id='file_update_form' target='upload_target' method='post' enctype='multipart/form-data' action='SET_IN_JS_FILE'> <input type='file' name='file' id='add_file_update' ></input></form> <i>Warning</i> Proceeding will replace the current version of <b id='update_file_name'/>. As a consequence, exisiting annotations on that file may become <i>out of context</i>, especially if the file has changed a lot.</div>").append("<div id='add_ensemble_dialog' > <table> <tr><td>Name</td><td><input type='text'  id='add_ensemble_name' ></input></td></tr><tr><td>Brief Description</td><td><input type='text'  id='add_ensemble_description' ></input></td></tr>" +
-"<tr><td><br/>Allow comments to staff ? </td>  <td><br/>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_staffonly'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_staffonly'/> </td></tr> " +
-"<tr><td>Allow anonymous comments ? </td>   <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_anonymous'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_anonymous'/>        </td></tr> " +
-"<tr><td>Allow guest access ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_guest'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_guest'/>        </td></tr> " +
-"<tr><td>Allow users to download PDFs ? </td>         <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_download'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_download'/>        </td></tr> " +
-"<tr><td>Allow users to add any PDF available online by its URL ? </td>     <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='allow_ondemand'/> <span class='yesno'>No</span><input type='radio' value='0' name='allow_ondemand'/>        </td></tr> " +
-"<tr><td>Use subscribe URL ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='use_invitekey'/> <span class='yesno'>No</span><input type='radio' value='0' name='use_invitekey'/>        </td></tr>" +
-"<tr><td>Pause on staff comments by default (for videos) ?</td>       <td>  <span class='yesno'>Yes</span><input type='radio' value='1' name='default_pause'/> <span class='yesno'>No</span><input type='radio' value='0' name='default_pause'/>        </td></tr>" +
-"</table><br/><div><i>Once you've created a class, you can add files to it and invite users...</i></div></div>")
-    .append(
-        "<div id='invite_users_dialog' >" +
-        "<div>To access the following group  <select id='invite_users_ensemble'/></div>" +
-        "<div>For a particular section  <select id='invite_users_section'/> <em>(Optional)</em></div>" +
-        "<br/><span class='fixdialog' >Enter the email address(es, separated by commas) of the people to whom you wish to send this invite</span><br/>" +
-        "<textarea id='invite_users_emails'  rows='5' cols='50'/><br/>" +
-        "<input type='checkbox' id='invite_users_admin' style='padding-left: 20px'></input>" +
-        "<label for='invite_users_admin'>Grant administrative rights to these users</label><br/><br/>" +
-        "<span class='fixdialog' ><em>Optional</em> Add a personal message (will appear on the invitation)</span><br/>" +
-        "<textarea id='invite_users_msg'  rows='7' cols='50'/>" +
-        '</div>')
-    .append(
-        "<div id='duplicate_file_dialog'></div>")
-    .append("<div id='edit_assignment_dialog' ><span>Is this file an assignment ? </span><span class='yesno'>Yes</span><input type='radio' value='1' name='is_assignment'/> <span class='yesno'>No</span><input type='radio' value='0' name='is_assignment'>No</input><br/><br/><div id='assignment_due'><label for='due_date'>Due on</label> <input id='due_date'/> at <input id='due_time'/></div></div>");
+    $util_window.append(require('hbs!templates_dir/file_dialogs'));
+    $util_window.append(require('hbs!templates_dir/invite_users_dialog'));
+    $util_window.append(require('hbs!templates_dir/edit_assignment_dialog'));
   };
 
   // Returns 'file', 'html', or 'youtube' depending on the selected upload type ('' if there is an error)
@@ -108,6 +88,14 @@ define(function(require) {
     $('#add_file_dialog').dialog({
       title: 'Add a File...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -176,6 +164,14 @@ define(function(require) {
     $('#update_file_dialog').dialog({
       title: 'Update a PDF File...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -239,6 +235,14 @@ define(function(require) {
     $('#invite_users_dialog').dialog({
       title: 'Send an invitation...',
       width: 550,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -258,35 +262,6 @@ define(function(require) {
     $('#invite_users_dialog').dialog('open');
   };
 
-  Files.addEnsemble = function () {
-    //defaults:
-    $('input[name=allow_staffonly][value=1]')[0].checked = 'true';
-    $('input[name=allow_anonymous][value=1]')[0].checked = 'true';
-    $('input[name=allow_guest][value=0]')[0].checked = 'true';
-    $('input[name=allow_download][value=1]')[0].checked = 'true';
-    $('input[name=allow_ondemand][value=0]')[0].checked = 'true';
-    $('input[name=use_invitekey][value=1]')[0].checked = 'true';
-    $('input[name=default_pause][value=0]')[0].checked = 'true';
-    $('#add_ensemble_dialog').dialog({
-      title: 'Create a new class...',
-      width: 540,
-      buttons: {
-        Cancel: function () {
-          $(this).dialog('close');
-        },
-
-        Ok: function () {
-          $.concierge.get_component('add_ensemble')({ name: $('#add_ensemble_name')[0].value, description: $('#add_ensemble_description')[0].value, allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1', allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1', allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',  default_pause: $('input[name=default_pause]:checked')[0].value === '1', allow_download: $('input[name=allow_download]:checked')[0].value === '1', allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1', use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' }, function (p) {
-            Files.model.add('ensemble', p);$.I('Class created !');
-          });
-
-          $(this).dialog('destroy');
-        },
-      },
-    });
-    $('#add_ensemble_dialog').dialog('open');
-  };
-
   Files.addFolder = function (id_ensemble, id_folder) {
     Files.currentEnsemble = id_ensemble;
     Files.currentFolder = id_folder;
@@ -299,6 +274,14 @@ define(function(require) {
     $('#add_folder_dialog').dialog({
       title: 'Add a Folder...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -337,8 +320,15 @@ define(function(require) {
 
     $('#edit_assignment_dialog').dialog({
       title: 'Assignment Properties for ' + $.E(f.title),
-      width: 600,
-      height: 380,
+      width: 500,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -370,6 +360,14 @@ define(function(require) {
     $('#rename_file_dialog').dialog({
       title: 'Rename ' + item_type + '...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -426,6 +424,14 @@ define(function(require) {
       buttons: {},
       width: 700,
       height: 320,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
     });
     $dialog.dialog('open');
 
@@ -444,6 +450,14 @@ define(function(require) {
     $('#delete_' + item_type + '_dialog').dialog({
       title: 'Delete ' + item_type + '...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');
@@ -515,6 +529,14 @@ define(function(require) {
     $('#move_file_dialog').dialog({
       title: 'Move ' + item_type + '...',
       width: 390,
+      modal: true,
+      position: { my: "top", at: "top+80", of: window },
+      open: function(event, ui) { 
+        // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+        $('.ui-widget-overlay').bind('click', function() {
+          $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+        });
+      },
       buttons: {
         Cancel: function () {
           $(this).dialog('close');

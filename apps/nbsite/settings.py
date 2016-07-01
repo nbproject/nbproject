@@ -1,15 +1,15 @@
 # Django settings for apps project.
-from os.path import abspath, dirname, basename 
+from os.path import abspath, dirname, basename
 
 FN_CREDENTIALS =  "settings_credentials.py"
-def msg_credentials(): 
+def msg_credentials():
     msg = "*** Please edit the %s file with the required settings for authentication. ***" %(FN_CREDENTIALS, )
     stars = "*" * len(msg)
     return "\n\n%s\n%s\n%s\n\n" %(stars, msg, stars)
 
-try: 
+try:
     import settings_credentials
-except ImportError: 
+except ImportError:
     from os.path import dirname, abspath
     import shutil
     thisdir = dirname(abspath(__file__))
@@ -19,19 +19,19 @@ except ImportError:
 
 DEBUG = settings_credentials.__dict__.get("DEBUG", False)
 TEMPLATE_DEBUG = DEBUG
-ADMINS         = settings_credentials.__dict__.get("ADMINS", ()) 
+ADMINS         = settings_credentials.__dict__.get("ADMINS", ())
 MANAGERS = ADMINS
 NB_SERVERNAME   = settings_credentials.__dict__.get("NB_SERVERNAME", "localhost")
 NB_HTTP_PORT    = settings_credentials.__dict__.get("NB_HTTP_PORT", "80")
 CRON_EMAIL      = settings_credentials.__dict__.get("CRON_EMAIL", "planet.nb+cron@gmail.com")
-DATABASES       = settings_credentials.DATABASES 
+DATABASES       = settings_credentials.DATABASES
 FACEBOOK_APP_ID = settings_credentials.FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET =  settings_credentials.FACEBOOK_APP_SECRET
 GOOGLE_DEVELOPER_KEY =  settings_credentials.__dict__.get("GOOGLE_DEVELOPER_KEY", "CHANGE_ME")
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="": 
+if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="":
     print msg_credentials()
     exit(1)
 
@@ -110,6 +110,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -146,11 +147,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     "django_openid_auth",
+    'corsheaders',
    # 'django_facebook',
 #    'facebook',
     "base",
-    "polls", 
-#"fixture_magic" #add this for 
+    "polls",
+#"fixture_magic" #add this for
 )
 
 
@@ -175,19 +177,19 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-            }, 
+            },
         'scrolling': {
             'level': 'INFO',
             'class' : 'logging.FileHandler',
             'formatter': 'scrolling',
             'filename': "%s/%s" % (ROOTDIR, 'scrolling.log')
-            }, 
+            },
         'errorlog': {
             'level': 'ERROR',
             'class' : 'logging.FileHandler',
             'formatter': 'verbose',
             'filename': "%s/%s" % (ROOTDIR, 'errors.log'),
-            }, 
+            },
         },
     'loggers': {
         'django.request': {
@@ -196,7 +198,7 @@ LOGGING = {
             'propagate': False,
         },
         'scrolling':{
-            'handlers': ['scrolling'], 
+            'handlers': ['scrolling'],
             'level': 'INFO',
             'propagate': False,
             }
@@ -206,7 +208,7 @@ LOGGING = {
 AUTHENTICATION_BACKENDS = (
     'django_openid_auth.auth.OpenIDBackend',
 #    'django_facebook.auth_backends.FacebookBackend',
-    'facebook.backend.FacebookBackend',                                                                                        
+    'facebook.backend.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -245,23 +247,23 @@ REPOSITORY_DIR = "pdf/repository"
 ANNOTATED_DIR = "pdf/annotated"
 RESTRICTED_REPOSITORY_DIR = "pdf/restricted_repository"
 RESOLUTIONS = {"72":{"20": None, "100": None},"288":{"25": None, "33": None, "50": None, "65": None, "80": None, "100": None }}
-SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com" 
+SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com"
 #SMTP_CC_USER
 #SMTP_REPLY_TO
 #SMTP_SERVER
 #SMTP_USER
 
-#URL of a google form (or similar service) that can be used for user to contact the NB Team: 
-SUPPORT_LINK = "http://nbproject.vanillaforums.com" 
+#URL of a google form (or similar service) that can be used for user to contact the NB Team:
+SUPPORT_LINK = "http://nbproject.vanillaforums.com"
 
-#EMAIL to contact he NB Team: 
+#EMAIL to contact he NB Team:
 NBTEAM_EMAIL = "nb-team@csail.mit.edu"
 
 
-#for db: 
+#for db:
 DEBUG_QUERY = False
 
-#for rpc: 
+#for rpc:
 SMTP_TEST_USER = "planet.nb+testuser@gmail.com"
 #HOSTNAME
 SMTP_CC_LOSTPASSWORD =  "planet.nb+lostpassword@gmail.com"
@@ -280,28 +282,28 @@ EMAIL_BCC               = settings_credentials.__dict__.get("EMAIL_BCC",  "plane
 EMAIL_BACKEND           = settings_credentials.__dict__.get("EMAIL_BACKEND",  'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_FILE_PATH         = settings_credentials.__dict__.get("EMAIL_FILE_PATH", '/tmp/app-messages')
 
-#For Personae framework: 
+#For Personae framework:
 PERSONA_EMAIL           = settings_credentials.__dict__.get("PERSONA_EMAIL", "planet.nb+%s@gmail.com")
 PERSONA_PASSWORD        = settings_credentials.__dict__.get("PERSONA_PASSWORD", "secret")
 
-#For remote debugging: 
+#For remote debugging:
 #ENABLE_REMOTE_DEBUGGING = True
 ENABLE_REMOTE_DEBUGGING = False
 
 REMOTE_DEBUGGING_PATH = "/var/local/home/sacha/bin/aptana3/plugins/org.python.pydev.debug_1.6.3.2010100422/pysrc"
-if ENABLE_REMOTE_DEBUGGING: 
+if ENABLE_REMOTE_DEBUGGING:
     import sys
     sys.path.append(REMOTE_DEBUGGING_PATH)
 
-#What signals should be monitored. 
-MONITOR = {"PAGE_SERVED": True, 
-           "FILE_DOWNLOAD": True           
-           }            
+#What signals should be monitored.
+MONITOR = {"PAGE_SERVED": True,
+           "FILE_DOWNLOAD": True
+           }
 REDIRECT = False
 REDIRECT_URL = "http://nb.mit.edu"
 
 
-#OPENID SSO: 
+#OPENID SSO:
 OPENID_CREATE_USERS             = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
 OPENID_SSO_SERVER_URL           = 'https://www.google.com/accounts/o8/id'
@@ -313,10 +315,14 @@ OPENID_USE_AS_ADMIN_LOGIN       = False
 
 #Facebook stuff:
 #AUTH_PROFILE_MODULE             = 'django_facebook.FacebookProfile'
-AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'                                                                          
+AUTH_PROFILE_MODULE             = 'facebook.FacebookProfile'
 FACEBOOK_SCOPE = 'email'
 
-#Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS). 
+# Django Cors headers for cross-origin requests to ensure font-awesome can be accessed by the embedded JS file
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+#Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS).
 ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
 
 
@@ -329,7 +335,7 @@ CUSTOM_DUMPS = {
 'excludes': {
             'base.user': ('password',)}
 
-}, 
+},
 'comments':{
 'primary': 'base.Comment',  # This is our reference model.
 'dependents': [  # These are the attributes/methods of the model that we wish to dump.

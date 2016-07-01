@@ -156,12 +156,32 @@ module.exports = function (grunt) {
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
       addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
       MODS.EDITORVIEW.src_css),
     dest_css: DEST_DIR + 'embed_NB.css',
     servername: servername,
+  };
+
+  TARGETS.NEWSITE = {
+    include: ['init_newsite', 'launch'],
+    src_js: [].concat(['build_newsite']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
+      addPrefix(UI_DIR, ['template.css']),
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'newsite_NB.js',
+    dest_css: DEST_DIR + 'newsite.css',
   };
 
   TARGETS.DESKTOP = {
@@ -171,6 +191,7 @@ module.exports = function (grunt) {
     src_css: [].concat(
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
@@ -181,6 +202,102 @@ module.exports = function (grunt) {
     ),
     dest_js: DEST_DIR + 'desktop_NB.js',
     dest_css: DEST_DIR + 'desktop.css',
+  };
+
+  TARGETS.PROPERTIES_ENSEMBLE_USERS = {
+      // MODS.BREADCRUMB.src_js
+    include: ['init_properties_ensemble_users', 'launch'],
+    src_js: [].concat(['build_properties_ensemble_users']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'properties_ensemble_users_NB.js',
+    dest_css: DEST_DIR + 'properties_ensemble_users.css',
+  };
+
+  TARGETS.PROPERTIES_ENSEMBLE = {
+    include: ['init_properties_ensemble', 'launch'],
+    src_js: [].concat(['build_properties_ensemble']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'properties_ensemble_NB.js',
+    dest_css: DEST_DIR + 'properties_ensemble.css',
+  };
+
+  TARGETS.PROPERTIES_ENSEMBLE_SECTIONS = {
+    include: ['init_properties_ensemble_sections', 'launch'],
+    src_js: [].concat(['build_properties_ensemble_sections']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'properties_ensemble_sections_NB.js',
+    dest_css: DEST_DIR + 'properties_ensemble_sections.css',
+  };
+
+  TARGETS.SUBSCRIBE = {
+    include: ['init_subscribe', 'launch'],
+    src_js: [].concat(['build_subscribe']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'subscribe_NB.js',
+    dest_css: DEST_DIR + 'subscribe.css',
+  };
+
+  TARGETS.STATIC_PAGE = {
+    include: ['init_static_page', 'launch'],
+    src_js: [].concat(['build_static_page']),
+    src_css: [].concat(
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
+      addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
+      MODS.FILTERWIZARD.src_css,
+      MODS.FILTERWIZARDEMOTICON.src_css,
+      MODS.DUPLICATEWIZARD.src_css,
+      MODS.TREEVIEW.src_css,
+      MODS.FILESVIEW.src_css,
+      MODS.BREADCRUMB.src_css
+    ),
+    dest_js: DEST_DIR + 'static_page_NB.js',
+    dest_css: DEST_DIR + 'static_page.css',
   };
 
   TARGETS.LOGIN = {
@@ -199,6 +316,7 @@ module.exports = function (grunt) {
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
       MODS.DOCVIEW.src_css,
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
@@ -226,6 +344,7 @@ module.exports = function (grunt) {
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
       MODS.DOCVIEW_YOUTUBE.src_css,
       MODS.NOTEPANEVIEW_YOUTUBE.src_css,
       MODS.THREADVIEW.src_css,
@@ -270,6 +389,7 @@ module.exports = function (grunt) {
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
+      'content/ui/classic/base.css',
       MODS.SPREADSHEETVIEW.src_css,
       MODS.NOTEPANEVIEW_SPREADSHEET.src_css,
       MODS.DOCVIEW_SPREADSHEET.src_css,
@@ -285,11 +405,12 @@ module.exports = function (grunt) {
   };
 
   TARGETS.SETTINGS = {
-    include: ['your_settings'],
+    include: ['your_settings', 'launch'],
     src_js: [].concat(['build_yoursettings']),
     src_css: [].concat(
       addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
+      'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
     dest_js: DEST_DIR + 'settings_NB.js',
     dest_css: DEST_DIR + 'settings.css',

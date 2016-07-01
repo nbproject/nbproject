@@ -48,7 +48,7 @@ define(function(require) {
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('file', 'doc_viewer', function (id) {
       var pers_id        = 'pers_' + id;
-      var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+      var $vp        = $(".nb-viewport");
       var $pers        = $("<div id='" + pers_id + "'/>").appendTo($vp);
       var docview        =  { priority: 1, min_width: 970, desired_width: 50,
                                    content: function ($div) {

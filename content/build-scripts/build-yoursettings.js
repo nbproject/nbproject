@@ -1,5 +1,7 @@
 require(['requirescript'], function() {
-  require(['your_settings', 'pers'], function(settings, pers) {
-    Pers = pers;
+  require(['handlebars'], function(handlebars){
+    require(['your_settings'], function(your_settings){
+      require(['launch']);
+    });
   });
 });

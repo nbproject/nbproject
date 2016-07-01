@@ -1,40 +1,16 @@
-{% extends "web/base.html" %}
-{% block title %}Your NB Settings{% endblock %}
-{% block css %}
+<!DOCTYPE html>
+<html class='nb_fullscreen'>
+  <head>
+    <meta charset="utf-8"/>
+    <!--
+      Author: cf AUTHORS.txt
+      License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+      MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+    -->
+    <title>NB</title>
     <link type="text/css" href="/content/compiled/settings.css" rel="stylesheet" />
-{% endblock %}
-{% block js %}
-<script type="text/javascript" src="/content/compiled/settings_NB.js"></script>
-{% endblock %}
-{% block content %}
-
-
-      <h1>NB Settings for <span id="your_firstname"/> <span id="your_lastname"/> (<span id="your_email"/>)</h1>
-      <div id="settings_panel">
-	<ul>
-	  <li>
-	    <div class="settings-section-title">Authentication</div>
-	    <div class="settings-section-body">
-
-	      <table>
-		<tr><td>New Password</td><td><input type="password" id="new_password1" onkeyup="Pers.validateNewPassword(event)"></input></td></tr><tr><td> Please Retype</td><td> <input type="password" id="new_password2" onkeyup="Pers.validateNewPassword(event)" ></input></td></tr></table>
-<span id="newpassword_msg"/> </div>
-	  </li>
-	  <li>
-	    <div class="settings-section-title" >Email Notifications</div>
-	    <div  class="settings-section-body">
-	      <table>
-		<tr><td>Comments that I wrote</td><td><select  class="settings_selector" id_item="email_confirmation_author" onchange="Pers.on_setting_change(event)"/></td></tr>
-		<tr><td>New reply in a discussion to which I participated</td><td><select class="settings_selector" id_item="email_confirmation_reply_author" onchange="Pers.on_setting_change(event)"/></td></tr>
-		<tr><td>New comments in classes for which I'm a staff member (if any)</td><td><select class="settings_selector" id_item="email_confirmation_all" onchange="Pers.on_setting_change(event)"/></td></tr>
-                <tr><td>New comments in which I am tagged</td><td><select class="settings_selector" id_item="email_confirmation_tags" onchange="Pers.on_setting_change(event)"/></td></tr>
-
-	      </table>
-	    </div>
-	  </li>
-	</ul>
-	<div class="buttons"><button id="cancel_button">Cancel</button> <button id="save_button">Save Changes</button></div>
-      </div>
-
-{% endblock %}
-
+    <link type="text/css" href="/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/settings_NB.js"></script>
+  </head>
+  <body/>
+</html>

@@ -17,17 +17,18 @@
 /*global NB$:true NB:true*/
 
 define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
-      Pers            = require('pers'),
-      Conf            = require('conf'),
-      Models          = require('models'),
-      perspective     = require('perspective'),
-      treeview        = require('treeview'),
-      filesview       = require('filesview'),
-      Auth            = require('auth'),
-      breadcrumb      = require('breadcrumb'),
-      files           = require('files');
+  var $               = require('jquery');
+  var concierge       = require('concierge');
+  var Pers            = require('pers');
+  var Conf            = require('conf');
+  var Models          = require('models');
+  var perspective     = require('perspective');
+  var treeview        = require('treeview');
+  var filesview       = require('filesview');
+  var Auth            = require('auth');
+  var breadcrumb      = require('breadcrumb');
+  var files           = require('files');
+  var Handlebars      = require('handlebars');
 
   if ('NB$' in window) {
     var $ = NB$;
@@ -36,16 +37,11 @@ define(function(require) {
   var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
-    //pers.admin=true;
-    //Extra menus:
-    if (!(Conf.userinfo.guest)) {
-      $('#menu_settings').after("<li><a href='javascript:" + $str + ".concierge.get_component(\"add_ensemble_menu\")()'>Create a new class.</a></li>");
-    }
 
     //Factories: methods called if an event calls for a function that's not yet present
     $.concierge.addFactory('admin_init', 'admin_viewer', function (id) {
       var pers_id        = 'pers_' + id;
-      var $vp        = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('body');
+      var $vp = $(".nb-viewport");
 
       // Add breadcrumb
       $(".nb-widget-header").breadcrumb({
@@ -193,8 +189,6 @@ define(function(require) {
       duplicate_file_menu: function (P, cb) {files.duplicate_file(P.id, P.item_type);},
 
       update_file_menu: function (P, cb) {files.update_file(P.id);},
-
-      add_ensemble_menu: function (P, cb) {files.addEnsemble();},
 
       add_ensemble: function (P, cb) {Pers.call('add_ensemble', P, cb);},
 

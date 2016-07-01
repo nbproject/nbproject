@@ -33,18 +33,19 @@ define(function(require) {
   var id_ensemble = null;
   Pers.iframe_id = 'nb_iframe';
   var f_prepare_sidebar = function () {
-    //SACHA: TODO. Do a better job that just displaying the user name, and maybe refactor with pers2._authenticate.
-    //for now, just update user name and email on hover. :
-    var uinfo = Conf.userinfo;
-    if (!uinfo.guest) {
-      var screenname = uinfo.firstname === null ? $.E(uinfo.email) : $.E(uinfo.firstname) + ' ' + $.E(uinfo.lastname);
-      $('#login-name').text(screenname).attr('title', $.E(uinfo.email));
-    }
-
     //now move stuff here it's supposed to be:
-    $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('.nb_sidebar');
-    $('#login-window').appendTo('.nb-widget-header'); // add this here so it's fixed as well
+    // $vp = $("<div class='nb-viewport'><div class='nb-widget-header' style='height:24px;' /></div>").prependTo('.nb_sidebar');
+    $vp = $(".nb-viewport").detach();
+    $vp.prependTo('.nb_sidebar');
+    Pers.set_nav_user();
     //TODO: get id_ensemble from cookie or localStorage if available.
+
+
+
+    // ************************************
+
+    // ***********************************
+
     $.concierge.addConstants({ res: 288, scale: 25, QUESTION: 1, STAR: 2 });
     $.concierge.addComponents({
       notes_loader:    function (P, cb) {Pers.call('getNotes', P, cb);},
@@ -83,7 +84,8 @@ define(function(require) {
     });
     Pers.store = new Models.Store();
     Pers.call(
-        'getHTML5Info', { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '') },
+        'getHTML5Info',
+        { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '') },
         function (payload) {
           //TODO: refactor (same as in step16.js:createStore)
           Pers.store.create(payload, {
@@ -276,7 +278,7 @@ define(function(require) {
           $(function () {Html.init();});
         },
 
-        function (P) {
+        function (P) { // Error Callback
           //FIXME: login can break if ckey expires while
           //userinfo guest status still suggests user logged in
           //which confuses the interface
@@ -316,6 +318,7 @@ define(function(require) {
     var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
     var server_url = server_info[1] + '://' + server_info[2];
     Pers.add_css(server_url + '/content/compiled/embed_NB.css');
+    Pers.add_css(server_url + '/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css');
 
     //Pers.openid_url=server_url+"/openid/login?next=/embedopenid";
     //sacha: disabled this as well for now.
@@ -328,13 +331,10 @@ define(function(require) {
     $.concierge.addListeners(Pers, {
       successful_login: function (evt) {
         Auth.set_cookie('ckey', evt.value.ckey);
-        Auth.set_cookie('userinfo', JSON.stringify(evt.value));
-        Conf.userinfo = evt.value;
-        $.L('Welcome TO NB !');
-        $('#splash-welcome').parent().remove();
-
-        f_prepare_sidebar();
-
+        Auth.set_cookie('userinfo', evt.value.userinfo);
+        Conf.userinfo = JSON.parse(unescape(evt.value.userinfo));
+        $.I('Welcome ' + Conf.userinfo.firstname + " " + Conf.userinfo.lastname);
+        Pers.set_nav_user();
       },
     }, 'globalPersObject');
 

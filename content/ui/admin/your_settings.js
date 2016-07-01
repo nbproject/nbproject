@@ -12,11 +12,12 @@
 /*global NB$:true NB:true $:true*/
 
 define(function(require) {
-  var Conf            = require('conf'),
-      Dom             = require('dom'),
-      Models          = require('models'),
-      Pers            = require('pers'),
-      concierge       = require('concierge');
+  var Conf            = require('conf');
+  var Dom             = require('dom');
+  var Models          = require('models');
+  var Pers            = require('pers');
+  var Handlebars 	= require('handlebars');
+  var concierge       = require('concierge');
 
   if ('NB$' in window) {
     var $ = NB$;
@@ -27,6 +28,7 @@ define(function(require) {
     var payload_objects = { types: ['settings'] };
     Pers.call('getObjects', payload_objects, Pers.createStore);
     $.concierge.addComponents({});
+    $(".nb-widget-body").append(require("hbs!templates_dir/your_settings")());
   };
 
   Pers.createStore = function (payload) {

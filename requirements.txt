@@ -6,3 +6,6 @@ pyPdf>=1.13
 python-openid>=2.2.5
 pytz>=2014.4
 xlwt>=0.7.5
+google-api-python-client>=1.5
+django-cors-headers>=1.1.0
+

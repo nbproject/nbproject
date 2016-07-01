@@ -1,22 +1,29 @@
 # Create your views here.
-from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.template import TemplateDoesNotExist
-import  urllib, json, base64, logging
+import json
+import logging
+import random
+import string
+import urllib
+from random import choice
+
 from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
-import string, random, forms
-from random import choice
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.core.mail.message import EmailMessage
+from django.http import HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils.html import escape
 
+import base.forms as forms
+from django_remote_forms.forms import RemoteForm
+
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+
 
 def on_serve_page(sender, **payload):
     req = payload["req"]
@@ -65,9 +72,9 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, con
     if user is None:
         redirect_url = nologin_url if nologin_url is not None else ("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
         return HttpResponseRedirect(redirect_url)
-    if user.guest is False and (user.firstname is None or user.lastname is None): 
-        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,)) 
-    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None}) 
+    if user.guest is False and (user.firstname is None or user.lastname is None):
+        return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
+    user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
     r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
@@ -81,6 +88,11 @@ def collage(req):
 
 def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
+
+
+@ensure_csrf_cookie
+def static_page(req):
+    return render_to_response('web/static_page.html')
 
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
@@ -156,6 +168,7 @@ def your_settings(req):
 def embedopenid(req):
     return __serve_page(req, 'web/embedopenid.html', content_type="text/html")
 
+@ensure_csrf_cookie
 def newsite(req):
     import base.models as M, random, string
     form                = None
@@ -196,7 +209,6 @@ def newsite(req):
 
 
 def enter_your_name(req):
-    import base.models as M
     user       = UR.getUserInfo(req, False)
     if user is None:
         redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
@@ -240,7 +252,7 @@ def add_html_doc(req, ensemble_id):
             # trailing slash is sometimes added by server redirects
             # but person specifying upload url may not realize this
             # so remove trailing slash as well as hash part of the URL
-            info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/") 
+            info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/")
             info.save();
             return HttpResponseRedirect("/")
     return render_to_response("web/add_html_doc.html", {"form": addform})
@@ -320,7 +332,7 @@ def invite(req):
 
 def logout(req):
     o = {}
-    r = render_to_response("web/logout.html", {"o": o})
+    r = __serve_page(req, 'web/static_page.html', content_type="text/html", allow_guest=True)
     user = UR.getUserInfo(req, False)
     if user is not None and user.guest:
         r.set_cookie("pgid", user.id, 1e9)
@@ -347,57 +359,9 @@ def confirm_invite(req):
     r = render_to_response("web/confirm_invite.html", {"o": m})
     return r
 
+@ensure_csrf_cookie
 def subscribe(req):
-    key     = req.GET.get("key", "")
-    e       = M.Ensemble.objects.get(invitekey=key)
-    if not e.use_invitekey:
-        return HttpResponseRedirect("/notallowed")
-    auth_user       = UR.getUserInfo(req)
-    user = None
-    P = {"ensemble": e, "key": key}
-    if req.method == 'POST':
-        if auth_user is None:
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
-            user_form = forms.UserForm(req.POST, instance=user)
-            if user_form.is_valid():
-                user_form.save()
-                m = M.Membership(user=user, ensemble=e)
-                m.save() #membership exists but user is still invalid until has confirmed their email
-                p = {
-                    "tutorial_url": settings.GUEST_TUTORIAL_URL,
-                    "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey),
-                    "firstname": user.firstname,
-                    "email": user.email
-                }
-                email = EmailMessage(
-                "Welcome to NB, %s" % (user.firstname,),
-                render_to_string("email/confirm_subscribe", p),
-                settings.EMAIL_FROM,
-                (user.email, ),
-                (settings.EMAIL_BCC, ))
-                email.send()
-                return HttpResponseRedirect('/subscribe_thanks')
-            else:
-                P["form"] = forms.UserForm(req.POST, instance=user)
-                return render_to_response("web/subscribe_newuser.html", P)
-        else:
-            user = auth_user
-            m = M.Membership.objects.filter(user=user, ensemble=e)
-            if m.count() ==0:
-                m = M.Membership(user=user, ensemble=e)
-                m.save()
-            return HttpResponseRedirect('/')
-        #user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
-    else:
-        if auth_user is not None:
-            P["user"] = auth_user
-            P["form"] = forms.UserForm(instance=user)
-            return render_to_response("web/subscribe_existinguser.html", P)
-        else:
-            P["form"] = forms.UserForm()
-            return render_to_response("web/subscribe_newuser.html", P)
-
-
+    return render_to_response("web/subscribe.html")
 
 
 def properties_ensemble(req, id):
@@ -414,23 +378,18 @@ def properties_ensemble(req, id):
             ensemble_form.save()
             return HttpResponseRedirect('/')
     else:
-        ensemble_form = forms.EnsembleForm(instance=ensemble)
-    return render_to_response("web/properties_ensemble.html", {"form": ensemble_form, "conf_url":  "%s://%s/subscribe?key=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, ensemble.invitekey)})
+        return render_to_response("web/properties_ensemble.html")
 
 
 def properties_ensemble_users(req, id):
-    user       = UR.getUserInfo(req)
+    user = UR.getUserInfo(req)
     if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
-    sections = M.Section.objects.filter(ensemble=ensemble)
     memberships = M.Membership.objects.filter(ensemble=ensemble)
-    pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
-    deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
-    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
     if "action" in req.GET and "membership_id" in req.GET:
         if req.GET["action"] == "delete":
             m = real_memberships.filter(id=req.GET["membership_id"])
@@ -440,6 +399,7 @@ def properties_ensemble_users(req, id):
                 m.save()
                 return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "undelete":
+            deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
             m = deleted_memberships.filter(id=req.GET["membership_id"])
             if len(m):
                 m = m[0]
@@ -463,8 +423,9 @@ def properties_ensemble_users(req, id):
         elif req.GET["action"] == "setsection":
             m = real_memberships.filter(id=req.GET["membership_id"])
             if req.POST["section_id"] == "None":
-		s = None
+                s = None
             else:
+                sections = M.Section.objects.filter(ensemble=ensemble)
                 s = sections.filter(id=req.POST["section_id"])[0]
             if len(m):
                 m = m[0]
@@ -472,21 +433,16 @@ def properties_ensemble_users(req, id):
                 m.save()
                 return HttpResponseRedirect(req.path)
 
-    return render_to_response("web/properties_ensemble_users.html", {"ensemble": ensemble, "memberships": real_memberships, "pendinginvites": pendinginvites, "pendingconfirmations": pendingconfirmations, "deleted_memberships": deleted_memberships, "sections": sections})
+    return render_to_response("web/properties_ensemble_users.html")
 
 def properties_ensemble_sections(req, id):
-    user       = UR.getUserInfo(req)
+    user = UR.getUserInfo(req)
     if user is None:
         return HttpResponseRedirect("/login?next=%s" % (req.META.get("PATH_INFO","/"),))
     if not auth.canEditEnsemble(user.id, id):
         return HttpResponseRedirect("/notallowed")
     ensemble = M.Ensemble.objects.get(pk=id)
     sections = M.Section.objects.filter(ensemble=ensemble)
-    all_students = M.Membership.objects.filter(ensemble=ensemble).filter(guest=False)
-    students = {}
-    for s in sections:
-        students[s] = all_students.filter(section=s)
-    no_section = all_students.filter(section=None)
     err = ""
     if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
@@ -495,6 +451,7 @@ def properties_ensemble_sections(req, id):
             else:
                 s = M.Section(name=req.POST["name"], ensemble=ensemble)
                 s.save()
+                return HttpResponseRedirect(req.path)
         elif req.GET["action"] == "delete" and "section_id" in req.GET:
             s = sections.filter(id=req.GET["section_id"])
             if len(s):
@@ -524,9 +481,10 @@ def properties_ensemble_sections(req, id):
                 err = "Cannot find section"
         else:
            err = "Unrecognized Command"
-    if "json" in req.GET:
+    if err or "json" in req.GET:
         return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
-    return render_to_response("web/properties_ensemble_sections.html", {"ensemble": ensemble, "sections": sections, "students": students, "no_section": no_section, "error_message": err })
+    else:
+        return render_to_response("web/properties_ensemble_sections.html")
 
 
 def spreadsheet(req):
@@ -540,20 +498,6 @@ def fbchannel(req):
     r["Cache-Control"] = "max-age="+cache_expire
     r["Expires"]=(datetime.datetime.now()+datetime.timedelta(cache_expire)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     return r
-
-
-
-#
-# UR.getUserInfo(req)
-#    if user is None:
-#        return HttpResponseRedirect("/login?next=%s" % (req.get_full_path(),))
-#    if "id_ensemble" not in req.GET:
-#        from django.http import HttpResponse
-#        return HttpResponse("missing id_ensemble")
-#    id_ensemble = req.GET["id_ensemble"]
-#    if not auth.canEditEnsemble(user.id,id_ensemble):
-#        return HttpResponseRedirect("/notallowed")
-#
 
 def openid_index(request):
     s = ['<p>']
@@ -582,3 +526,120 @@ def debug(request):
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')
+
+@csrf_protect
+def subscribe_with_key(req):
+    key = req.GET.get("key", "")
+    if not key:
+        return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
+    e = M.Ensemble.objects.get(invitekey=key)
+    if not e.use_invitekey:
+        return  HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
+    auth_user = UR.getUserInfo(req)
+    if req.method == 'GET':
+        if auth_user is None:  # Guest retrieving the subscribe page
+            remote_form = RemoteForm(forms.UserForm())
+            return HttpResponse(UR.prepare_response({"new_user": True, "class_settings": UR.model2dict(e),
+                                                     "form": remote_form.as_dict()}))
+        else:  # Logged in user retrieving the subscribe page
+            user = auth_user
+            remote_form = RemoteForm(forms.UserForm(instance=user))
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return HttpResponse(UR.prepare_response({"new_user": False, "user": UR.model2dict(user),
+                                                     "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
+    else:  # POST requests
+        if auth_user is None:  # Guest subscribing to a class
+            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+            req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+            user_form = forms.UserForm(req.POST, instance=user)
+            if user_form.is_valid():
+                user_form.save()
+                m = M.Membership(user=user, ensemble=e)
+                m.save() # membership exists but user is still invalid until has confirmed their email
+                p = {
+                    "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                    "conf_url": "%s://%s/?ckey=%s" %(settings.PROTOCOL, settings.NB_SERVERNAME, user.confkey),
+                    "firstname": user.firstname,
+                    "email": user.email
+                }
+                email = EmailMessage(
+                "Welcome to NB, %s" % (user.firstname,),
+                render_to_string("email/confirm_subscribe", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
+                (settings.EMAIL_BCC, ))
+                email.send()
+                return HttpResponse(UR.prepare_response({"new_user": True, "class_settings": UR.model2dict(e),
+                                                         "next": "/subscribe_thanks"}))
+            else:  # Invalid form - return form with error messages
+                __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
+                remote_form = RemoteForm(user_form)
+                return HttpResponse(UR.prepare_response({"new_user": True, "user": UR.model2dict(user),
+                                                     "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
+        else:  # Logged in user subscribing to a class
+            user = auth_user
+            m = M.Membership.objects.filter(user=user, ensemble=e)
+            if m.count() ==0:
+                m = M.Membership(user=user, ensemble=e)
+                m.save()
+            return HttpResponse(UR.prepare_response({"new_user": False, "class_settings": UR.model2dict(e), "next": "/"}))
+
+
+@csrf_protect
+def newsite_form(req):
+    import base.models as M, random, string
+    auth_user = UR.getUserInfo(req)
+    if auth_user is not None:
+        return HttpResponse(UR.prepare_response({"redirect": "/"}))
+    if req.method == 'GET':
+        remote_user_form = RemoteForm(forms.UserForm())
+        remote_class_form = RemoteForm(forms.EnsembleForm())
+        return HttpResponse(UR.prepare_response({"user_form": remote_user_form.as_dict(), "class_form": remote_class_form.as_dict()}))
+    else:
+        user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+        ensemble = M.Ensemble()
+        req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+        user_form       = forms.UserForm(req.POST, instance=user)
+        ensemble_form   = forms.EnsembleForm(req.POST, instance=ensemble)
+        if user_form.is_valid() and ensemble_form.is_valid():
+            user_form.save()
+            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+            ensemble_form.save()
+            m = M.Membership(user=user, ensemble=ensemble, admin=True)
+            m.save()
+            p = {
+                "tutorial_url": settings.GUEST_TUTORIAL_URL,
+                "conf_url": "http://%s?ckey=%s" %(settings.NB_SERVERNAME, user.confkey),
+                "firstname": user.firstname,
+                "email": user.email
+            }
+            email = EmailMessage(
+                "Welcome to NB, %s" % (user.firstname),
+                render_to_string("email/confirm_newsite", p),
+                settings.EMAIL_FROM,
+                (user.email, ),
+                (settings.EMAIL_BCC, ))
+            email.send()
+            return HttpResponse(UR.prepare_response({"redirect": "/newsite_thanks"}))
+        else:  # Invalid form - return form with error messages
+            __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
+            __clean_form(ensemble_form)  # Ensure user-generated data gets cleaned before sending back the form
+            remote_user_form = RemoteForm(user_form)
+            remote_class_form = RemoteForm(ensemble_form)
+            return HttpResponse(UR.prepare_response({"user_form": remote_user_form.as_dict(),
+                                                     "class_form": remote_class_form.as_dict()}))
+
+
+def __clean_form(form):
+    """
+    This method should be called before sending a form to the client if the form was created from
+    user-generated json.
+    """
+    form.is_valid() # Calling this method will populate the cleaned_data field.
+    # Replace data with cleaned_data to ensure the values get sent back as the right type e.g.
+    # javascript boolean value of true gets sent as string "true". Cleaning converts it back to
+    # boolean
+    form.data = form.cleaned_data

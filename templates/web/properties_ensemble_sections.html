@@ -1,153 +1,16 @@
-{% extends "web/base.html" %}
-{% block title %}Sections for {{ensemble.name}}{% endblock %}
-{% block style %}
-span.lowcontrast{
-	color: #a0a0a0;
-}
-div.section{
-	color: #404040;
-	margin-left: 30px;	
-}
-table{
-	border-spacing: 15px 3px;	
-}
-
-p.error-message:not(:empty) {
-  border: 1px solid #C22;
-  background-color: #FCC;
-  padding: 8px;
-}
-
-.section-assign {
-  border: 2px rgba(0,0,0,0) solid;
-  padding: 8px;
-}
-
-.section-assign.active {
-  border: 2px rgba(32, 255, 32, 1) solid;
-}
-
-.student-record-helper {
-  display: inline-block;
-  padding: 6px;
-  line-height: 1em;
-  font-size: 0.7em;
-  color: #555;
-  background-color: #EEE;
-}
-
-.section-assign-space {
-  height: 1.5em;
-}
-
-{% endblock %} 
-{% block content %}
-
-  <h1>Sections for {{ensemble.name}}</h1>
-
-<div class='section'>
-<p class="error-message">{{error_message}}</p>
-      <table>
-      	<thead><tr><th>Section Name</th><th>Actions</th></tr></thead>
-      	<tbody>
-	{% for o in sections %}	
-		<tr>
-			<td>{{o.name|default:'<span class="lowcontrast">untitled</span>'}}</td>
-            <td><a style='margin-right: 10px' href='?action=delete&section_id={{o.id}}'>Delete</a>
-            </td>
-		</tr>
-        {% endfor %}
-	
-	</tbody>
-      </table>
-      </div>
-
-<div class='section'>
-<h3>Create a new section</h3>
-<form method="POST" action="?action=create">
-<label for="name">Section Name</label> <input type="text" name="name" value="" /><input type="submit" value="Create Section" />
-</form>
-
-</div>
-
-<div class='section'>
-<h2>Section Student Listing</h2>
-<p>You can assign students to sections by dragging student names between each section.</p>
-{% for key, value in students.items %}
-<h3>{{key.name|default:'untitled'}}</h3>
-<div class="section-assign" data-section="{{key.id}}">
-{% if value %}
-<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody>
-    {% for o in value %}
-		<tr data-membership-id='{{o.id}}' data-user-firstname='{{o.user.firstname}}' class='student-record'>
-			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
-			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
-			<td>{{o.user.email}}</td>
-		</tr>
-    {% endfor %}
-</tbody></table>
-{%else%}
-<div><em>There are no students in this section. Drag students here to assign them to this section.</em></div>
-{% endif %}
-</div>
-{% endfor %}
-
-<h3>Unassigned</h3>
-<div class="section-assign" data-section="None">
-{%if no_section%}
-<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody>
-    {% for o in no_section %}
-		<tr data-membership-id='{{o.id}}' data-user-firstname='{{o.user.firstname}}' class='student-record'>
-			<td>{{o.user.firstname|default:'<span class="lowcontrast">-</span>'}}</td>
-			<td>{{o.user.lastname|default:'<span class="lowcontrast">-</span>'}}</td>
-			<td>{{o.user.email}}</td>
-		</tr>
-    {% endfor %}
-</tbody></table>
-{%else%}
-<div><em>No student is unassigned. Drag students here to remove their section assignment.</em></div>
-{%endif%}
-</div>
-
-</div>
-
-<script type="text/javascript">
-$(".student-record").each(function() {
-  $(this).draggable({
-    helper: function() { return $("<div>").addClass("student-record-helper").attr("data-membership-id", $(this).attr("data-membership-id")).text($(this).attr("data-user-firstname") ); } ,
-    revert: "invalid",
-    start: function(even, ui) {
-      $(".section-assign").addClass("active");
-    },
-    stop: function(event, ui) {
-      $(".section-assign").removeClass("active");
-    },
-  });
-});
-
-$(".section-assign").each(function() {
-  $(this).droppable({
-    drop: function(event, ui) {
-      if ( $(this).find("tr[data-membership-id=" + ui.draggable.attr("data-membership-id") + "]").length > 0) return;
-      if ( $(this).find("table").length == 0) {
-        // create new table
-        $(this).find("div").remove();
-        $(this).append("<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody></tbody></table>");
-      }
-      var membership = ui.draggable.attr("data-membership-id");
-      var section = $(this).attr("data-section");
-      $(this).find("tbody").append(ui.draggable);
-      $.post("?action=reassign&json", {section_id: section, membership_id: membership}, function(data) {
-        var e= data.error_message;
-        if (e != "") alert("Operation failed: " + e + " Please try to reload your page before doing anything else.");
-      });
-    },
-  });
-});
-
-</script>
-
-
-
-{% endblock %}
-
+<!DOCTYPE html>
+<html class='nb_fullscreen'>
+  <head>
+    <meta charset="utf-8"/>
+<!--
+   Author: cf AUTHORS.txt
+   License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+   MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+  -->
+    <title>NB Desktop</title>
+    <link type="text/css" href="/content/compiled/properties_ensemble_sections.css" rel="stylesheet" />
+    <link type="text/css" href="/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/properties_ensemble_sections_NB.js"></script>
+  </head>
+  <body/>
+</html>

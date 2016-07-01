@@ -1,0 +1,19 @@
+<script>
+  $("title").html("Confirm your subscription to {{class.name}}");
+</script>
+<style>
+  ul.errorlist{
+    color: #ff0000;
+    font-weight: bold;
+    list-style: none;
+  }
+</style>
+  <h1>Confirm subscription to <i>{{class_settings.name}}</i></h1>
+
+  <p>Hello {{#if user.firstname}}{{user.firstname}} {{/if}} ({{user.email}}),</p>
+  <p>Please confirm that you'd like to become a member of the NB group <i>{{class_settings.name}}</i>, by clicking on the "Confirm" button.
+<form class="confirm-existing-user" action="" method="post">
+    <p><input style="margin-top: 10px", type="submit" value="Confirm" /></p>
+</form>
+
+

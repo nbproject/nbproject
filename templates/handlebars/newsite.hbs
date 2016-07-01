@@ -1,0 +1,186 @@
+<script>
+  $("title").html("Creating your first site on NB");
+</script>
+<style>
+  ul.errorlist{
+    color: #ff0000;
+    font-weight: bold;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .submit-btn {
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    background-color: #1e88e5;
+    padding: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+
+  .submit-btn:hover, .submit-btn:focus {
+    background-color: #1879cd;
+  }
+</style>
+<h1>Creating your first site on NB</h1>
+<p>Welcome to NB ! With this form, you can create your user profile and the site for your first class. </p>
+<p><b>Important</b> This form is for <i>new NB users only</i>. If you already have an account on NB, please use your <a href="javascript:$.concierge.get_component('login_user_menu')();">NB Admin Console</a> instead, in order to create your site.</p>
+<div>
+  <form action="" method="post" class="create-site">
+    <h2>About yourself...</h2>
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="id_firstname">Firstname:</label></td>
+          <td><input id="id_firstname" maxlength="63" name="firstname" type="text" value="{{user_form.data.firstname}}"></td>
+          {{#if user_form.errors.firstname}}
+          <td>
+            <ul class="errorlist">
+              {{#each user_form.errors.firstname}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </td>
+          {{/if}}
+        </tr>
+        <tr>
+          <td><label for="id_lastname">Lastname:</label></td>
+          <td><input id="id_lastname" maxlength="63" name="lastname" type="text" value="{{user_form.data.lastname}}"></td>
+          {{#if user_form.errors.lastname}}
+          <td>
+            <ul class="errorlist">
+              {{#each user_form.errors.lastname}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </td>
+          {{/if}}
+        </tr>
+        <tr>
+          <td><label for="id_email">Email:</label></td>
+          <td><input id="id_email" maxlength="63" name="email" type="email" value="{{user_form.data.email}}"></td>
+          {{#if user_form.errors.email}}
+          <td>
+            <ul class="errorlist">
+              {{#each user_form.errors.email}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </td>
+          {{/if}}
+        </tr>
+        <tr>
+          <td><label for="id_password">Password:</label></td>
+          <td><input id="id_password" maxlength="63" name="password" type="password"></td>
+          {{#if user_form.errors.password}}
+          <td>
+            <ul class="errorlist">
+              {{#each user_form.errors.password}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </td>
+          {{/if}}
+        </tr>
+        <tr>
+          <td><label for="id_confirm_password">Confirm password:</label></td>
+          <td><input id="id_confirm_password" name="confirm_password" type="password"></td>
+          {{#if user_form.errors.confirm_password}}
+          <td>
+            <ul class="errorlist">
+              {{#each user_form.errors.confirm_password}}
+              <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </td>
+          {{/if}}
+        </tr>
+      </tbody>
+    </table>
+    {{#if user_form.non_field_errors}}
+    <ul class="errorlist nonfield">
+      {{#each user_form.non_field_errors}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+    {{/if}}
+    <br/>
+    <h2>About the site you wish to create...</h2>
+
+    <table>
+      <tbody>
+        <tr>
+          <td><label for="id_name">Name:</label></td>
+          <td><input id="id_name" maxlength="255" name="name" type="text" value="{{class_form.data.name}}"></td>
+        </tr>
+        <tr>
+          <td><label for="id_description">Description:</label></td>
+          <td>
+            {{#if class_form.data.description}}
+            <input id="id_description" maxlength="255" name="description" type="text" value="{{class_form.data.description}}">
+            {{else}}
+            <input id="id_description" maxlength="255" name="description" type="text" value="No description available">
+            {{/if}}
+          </td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_staffonly">Allow users to write 'staff-only' comments:</label></td>
+          <td><input id="id_allow_staffonly" name="allow_staffonly" type="checkbox" {{#equal class_form.data.allow_staffonly true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_anonymous">Allow users to write anonymous comments:</label></td>
+          <td><input id="id_allow_anonymous" name="allow_anonymous" type="checkbox" {{#equal class_form.data.allow_anonymous true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_tag_private">Allow users to make comments private to tagged users only:</label></td>
+          <td><input id="id_allow_tag_private" name="allow_tag_private" type="checkbox" {{#equal class_form.data.allow_tag_private true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_guest">Allow guests (i.e. non-members) to access the site:</label></td>
+          <td><input id="id_allow_guest" name="allow_guest" type="checkbox" {{#equal class_form.data.allow_guest true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_use_invitekey">Allow users who have the 'subscribe link' to register by themselves:</label></td>
+          <td><input id="id_use_invitekey" name="use_invitekey" type="checkbox" {{#equal class_form.data.use_invitekey true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_download">Allow users to download the PDFs:</label></td>
+          <td><input id="id_allow_download" name="allow_download" type="checkbox" {{#equal class_form.data.allow_download true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_allow_ondemand">Allow users to add any PDF accessible on the internet by pointing to its URL:</label></td>
+          <td><input id="id_allow_ondemand" name="allow_ondemand" type="checkbox" {{#equal class_form.data.allow_ondemand true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_default_pause">Pause on staff Video comments by default:</label></td>
+          <td><input id="id_default_pause" name="default_pause" type="checkbox" {{#equal class_form.data.default_pause true}}checked{{/equal}}></td>
+        </tr>
+        <tr>
+          <td><label for="id_section_assignment">Section assignment:</label></td>
+          <td>
+            <select id="id_section_assignment" name="section_assignment">
+              {{#equal class_form.data.section_assignment 2}}
+              <option value="1">NULL</option>
+              <option value="2" selected="selected">RANDOM</option>
+              {{else}}
+              <option value="1" selected="selected">NULL</option>
+              <option value="2">RANDOM</option>
+              {{/equal}}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="id_metadata">Metadata:</label></td>
+          <td><textarea cols="40" id="id_metadata" name="metadata" rows="10">{{class_form.data.metadata}}</textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input class="submit-btn" ,="" type="submit" value="Save Changes"></td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+<p><b>IMPORTANT</b> By using this form, you certify that you've read and approved the <a href="/terms_public_site" target="_blank">NB Terms and Conditions</a>.</p>

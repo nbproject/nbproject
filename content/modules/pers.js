@@ -1,11 +1,5 @@
 /*
  * pers.js: common fct for perspective-based views
- * This module defines the namespace Pers
- * It requires the following modules:
- *        NB
- *        Auth
- *        jquery
- *
  Author
  cf AUTHORS.txt
 
@@ -13,14 +7,13 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-/*global unescape:true NB:true NB$:true jQuery:true alert:false*/
 define(function(require) {
-  var Auth          = require('auth'),
-      Dom           = require('dom'),
-      Conf          = require('conf'),
-      Models        = require('models'),
-      concierge     = require('concierge'),
-      jquery_ui     = require('jquery_ui');
+  var Auth          = require('auth');
+  var Dom           = require('dom');
+  var Conf          = require('conf');
+  var Models        = require('models');
+  var concierge     = require('concierge');
+  var jquery_ui     = require('jquery_ui');
 
   var $ = 'NB$' in window ? NB$ : $;
 
@@ -97,28 +90,153 @@ define(function(require) {
   };
 
   Pers.__configure_user_menu = function (init_ui) {
-    var uinfo = Conf.userinfo = JSON.parse(Auth.get_cookie('userinfo')) || { guest: true };
-    var nbhostname = Pers.server_url;
-    var $login_contents;
-    if (uinfo.guest) {
-      $login_contents = $("<ul class='nb-dropdown-menu'><li><span id='login-name'>Guest</span><ul><li><a class='link-style nb-login'>Log in</a</li><li><span class='link-style nb-register'>Register</span></li><li><a class='link-style nb-logout'>Log out</a></li></ul></li></ul>");
-    } else {
-      var screenname = uinfo.firstname === null ? $.E(uinfo.email) : $.E(uinfo.firstname) + ' ' + $.E(uinfo.lastname);
-      $login_contents = $("<ul class='nb-dropdown-menu'><li><a class='link-style' id='login-name' title='" + $.E(uinfo.email) + "'>" + screenname + "</a><ul><li id='menu_settings'><a target='_blank' href='" + nbhostname + "/settings'>Settings</a></li><li id='menu_logout'><a class='link-style nb-logout'>Log out</a></li></ul></li></ul>");
-    }
+    if (init_ui) { // Remove the nav-bar (if previously present) and re-add it.
+      $("body").prepend(require('hbs!templates_dir/nav_template')());
 
-    $('.nb-logout', $login_contents).click($.concierge.get_component('logout'));
-    $('.nb-login', $login_contents).click($.concierge.get_component('login_user_menu'));
-    $('.nb-register', $login_contents).click($.concierge.get_component('register_user_menu'));
-    if (init_ui) {
-      $('#login-window').remove();
-      var $login_window = $("<div id='login-window'/>");
-      $login_contents.append($("<li><a href='#'>Help</a><ul><li><a href='" + nbhostname + "/tutorial'>Tutorial</a></li><li><a href='" + nbhostname + "/faq'>FAQ</a></li><li><a href='" + nbhostname + "/contact'>Contact Us</a></li><li><a href='" + nbhostname + "/disclaimer'>Disclaimer</a></li></ul></li>"));
-      $login_window.append($login_contents);
-      $('body').append($login_window);
-    }
+      // Set URL of nb homepage in the navbar logo. We cannot simply use "/" because that
+      // won't work with embedded scripts and the bookmarklet.
+      var cur =  Pers.currentScript;
+      var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
+      var server_url = server_info[1] + '://' + server_info[2] + "/";
+      $(".nb-nav__logo").attr("href", server_url);
 
+      // Add the dialogs for logging in and registering a new user (they'll be invisble until the right button gets clicked).
+      var $util_window = $.concierge.get_component('get_util_window')();
+      $util_window.append(require('hbs!templates_dir/register_user_dialog')());
+      $util_window.append(require('hbs!templates_dir/login_user_dialog')());
+
+      /* Start of Navbar event handlers: Attach even handlers after adding the elements to the dom */
+
+      // Close the nb-nav if the user clicks outside of it
+      $(window).click(function(event) {
+        if (!event.target.matches('.nb-nav__btn') && !$(event.target).parents('.nb-nav__ul').length) {
+          nb_nav__ul_close();
+        }
+      });
+
+      $(".nb-nav__menu-btn").click(function() {
+        if (is_nb_nav__ul_open()) {
+          nb_nav__ul_close();
+        } else {
+          nb_nav__ul_open();
+        }
+      });
+
+      // Toggle dropdown within the menu
+      $(".nb-nav__li--dropdown").click(function(e) {
+        $(".nb-nav__li--dropdown__icon").toggleClass("nb-nav__li--dropdown--open__icon");
+        $(this).children("ul").slideToggle(300); // 0.3 seconds
+      });
+      nb_nav__ul_close();
+
+      /* End of Navbar event handlers */
+
+      $.concierge.addListeners(Pers, {
+        successful_login: function (evt) {
+          Auth.set_cookie('ckey', evt.value.ckey);
+          Auth.set_cookie('userinfo', evt.value.userinfo);
+          document.location = document.location.protocol + '//' + document.location.host + document.location.pathname;
+
+          // After logging in, remain on the same page so long as you are not on the login, logout or welcome page
+          var nextpage = window.location.pathname + window.location.search;
+          if(nextpage.lastIndexOf("/login", 0) === 0 || nextpage.lastIndexOf("/logout", 0) === 0 ||
+            nextpage.lastIndexOf("/welcome", 0) === 0){
+            nextpage = "/";
+          }
+
+          if(Pers.params.next){
+            nextpage = Pers.params.next;
+          }
+          window.location.href = window.location.protocol + '//' + window.location.host + nextpage;
+          $.I('Welcome !');
+        },
+      }, 'globalPersObject');
+
+      function nb_nav__ul_close() {
+        $(".nb-nav__icon-bar").removeClass("nb-nav__icon-bar--open");
+        $(".nb-nav--guest__icon-bar").removeClass("nb-nav--guest__icon-bar--open");
+        $(".nb-nav__ul").removeClass('nb-nav__ul--open');
+        $(".nb-nav__li--dropdown__icon").removeClass("nb-nav__li--dropdown--open__icon");
+        $(".nb-nav__ul2").hide();
+      }
+
+      function nb_nav__ul_open() {
+        $(".nb-nav__icon-bar").addClass("nb-nav__icon-bar--open");
+        $(".nb-nav--guest__icon-bar").addClass("nb-nav--guest__icon-bar--open");
+        $(".nb-nav__ul").addClass('nb-nav__ul--open');
+      }
+
+      function is_nb_nav__ul_open(){
+        return $(".nb-nav__ul").hasClass('nb-nav__ul--open');
+      }
+    }
+    Pers.set_nav_user();
     Pers.params = Dom.getParams();
+  };
+
+  Pers.enable_csrf_protection = function() {
+    // This function ensures that the CSRF Token will get set in the header of appropriate Post requests. This
+    // would enable us to submit protected Django forms using Ajax.
+    // Sources:
+    // * Explanation and code: https://docs.djangoproject.com/en/1.9/ref/csrf/#ajax
+    // * Blog with further details and example code: https://realpython.com/blog/python/django-and-ajax-form-submissions/
+
+    // This function gets cookie with a given name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    /*
+    The functions below will create a header with csrftoken
+    */
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+  }
+
+  Pers.set_nav_user = function() {
+    var userinfo = Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+    var screenname = "Guest";
+    var viewportGuestClass = "nb--guest";
+    var mainContentClass2 = "content_main--guest";
+
+    if (!Conf.userinfo.guest) {
+      screenname = userinfo.firstname === null ? $.E(userinfo.email) : $.E(userinfo.firstname) + ' ' + $.E(userinfo.lastname);
+      viewportGuestClass = "";
+      mainContentClass2 = "";
+    }
+
+    // Remove the defaults
+    $(".nb-viewport").removeClass("nb--guest");
+    $("#content_main").removeClass("main-content-class2");
+
+    // Add the appropriate name and classes
+    $("#login-name").text(screenname);
+    $(".nb-viewport").addClass(viewportGuestClass);
+    $("#content_main").addClass(mainContentClass2);
   };
 
   Pers.add_css = function (url) {
@@ -130,6 +248,9 @@ define(function(require) {
   };
 
   Pers.preinit = function (init_ui) {
+    // Set user as guest by default
+    Conf.userinfo = JSON.parse(unescape(Auth.get_cookie('userinfo'))) || { guest: true };
+
     if (init_ui === undefined) {
       init_ui = true;
     }
@@ -139,6 +260,17 @@ define(function(require) {
     if ('init' in Pers) {
       Pers.init();
     }
+    Pers.enable_csrf_protection();
+
+    // Set error handler for Ajax calls. Source: http://api.jquery.com/ajaxerror/
+    $(document).ajaxError(function(jqXHR, textStatus, errorThrown){
+      if(textStatus.status == 403) { // CSRF error
+        alert(textStatus.status + ": " + textStatus.statusText);
+      } else {
+        console.log(textStatus.status + ": " + textStatus.statusText);
+      }
+
+    });
   };
 
   /* stuff that can be used in various views */
@@ -147,9 +279,9 @@ define(function(require) {
       Auth.delete_cookie('userinfo');
       Auth.delete_cookie('ckey');
       if (Pers.embedded) {
-        document.location.reload();
+        window.location.reload();
       }      else {
-        document.location.pathname = '/logout';
+        window.location.pathname = '/logout';
       }
 
     },
@@ -231,6 +363,14 @@ define(function(require) {
       $('#register_user_dialog').dialog({
         title: 'Register for a new account...',
         width: 400,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) {
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
         buttons: {
           Cancel: function () {
             $(this).find('div.form_errors').empty();
@@ -268,13 +408,14 @@ define(function(require) {
               return;
             }
 
+            var ckey = Conf.userinfo.ckey ? Conf.userinfo.ckey : "";
             var payload = {
                 firstname: $('#register_user_firstname')[0].value,
                     lastname: $('#register_user_lastname')[0].value,
                     email: $('#register_user_email')[0].value,
                     pseudonym: $('#register_user_pseudonym')[0].value,
                 password: $('#register_user_password1')[0].value,
-                    ckey: Conf.userinfo.ckey, };
+                    ckey: ckey, };
             $.concierge.get_component('register_user')(payload, function (p) {
               $.I('Thanks for registering... You should receive a confirmation code by email in less than a minute...');
               $dlg.dialog('destroy');
@@ -288,14 +429,7 @@ define(function(require) {
     },
 
     login_user_menu: function (P, cb) {
-      var nbhostname = Pers.server_url;
-      var $util_window = $.concierge.get_component('get_util_window')();
-      $('#register_user_dialog, #login_user_dialog').remove();
-
-      $util_window.append("<div id='register_user_dialog'>   <div id='reg_welcome'>Welcome to NB !</div><div id='reg_benefits'>Registering only takes a few seconds and lets you annotate online PDFs...</div>  <table> <tr><td>Firstname</td><td><input type='text' id='register_user_firstname' /></td></tr> <tr><td>Lastname</td><td><input type='text' id='register_user_lastname' /></td></tr> <tr style='display: none;'><td>Pseudonym</td><td><input type='text' id='register_user_pseudonym' /></td></tr><tr><td>Email</td><td><input type='text' id='register_user_email' /></td></tr><tr><td>Password</td><td><input type='password' id='register_user_password1' /></td></tr><tr><td>Confirm Password</td><td><input type='password' id='register_user_password2' /></td></tr>  <tr><td><span>Or use</span> </td><td><button title='Register using your Google account' onclick='if(" + $str + "('#termsandconditions:checked').length){document.location='" + nbhostname + '/openid/login?next=' + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "';}else{alert('In order to register with your Google account, please agree with NB Terms and Conditions by checking the checkbox below');}'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button  title='Register using your Facebook account' onclick='if(" + $str + "('#termsandconditions:checked').length){document.location='/openid/login?next=" + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "';}else{alert('In order to register with your Facebook account, please agree with NB Terms and Conditions by checking the checkbox below');}'><img style='vertical-align: middle;' src='" + nbhostname + "/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button> </td></tr> </table> <div>     <input type='checkbox' id='termsandconditions' />      <label for='termsandconditions'>I agree with <a target='_blank' href='" + nbhostname + "/terms_public_site'>NB Terms and Conditions</a></label></div>  <div class='form_errors'></div> </div>").append($.concierge.get_component('get_login_dialog_markup')());
-
-      $('#login_user_password').keypress(function (e) {if (e.keyCode === 13 && this.value.length > 0) {
-        $.L('using shortcut');
+      $('#login_user_password2').keypress(function (e) {if (e.keyCode === 13 && this.value.length > 0) {
         $('#login_user_dialog').parent().find("button:contains('Ok')").click();
       }});
 
@@ -303,6 +437,14 @@ define(function(require) {
       $('#login_user_dialog').dialog({
         title: 'Log in...',
         width: 390,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) {
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
         buttons: {
           Cancel: function () {
             $(this).find('div.form_errors').empty();
@@ -316,8 +458,8 @@ define(function(require) {
             };
 
             var payload = {
-              email: $('#login_user_email')[0].value,
-              password: $('#login_user_password')[0].value,
+              email: $('#login_user_email2')[0].value,
+              password: $('#login_user_password2')[0].value,
             };
             $.concierge.get_component('login_user')(payload, function (p) {
               if (p.ckey !== null) {
@@ -335,14 +477,7 @@ define(function(require) {
     },
 
     get_util_window: function (P, cb) {
-      var $util_window = $('div.util_windows');
-
-      if ($util_window.length === 0) {
-        $util_window = $("<div class='util_windows' style='display:none'/>");
-      }
-
-      $('body').append($util_window);
-      return $util_window;
+      return $('div.util_windows');
     },
 
     register_user: function (P, cb, eb) {
@@ -365,13 +500,10 @@ define(function(require) {
       var widget;
       var nbhostname  = Pers.server_url;
       if (Conf.userinfo.guest) { //splashscreen for non-registered user
-        widget =  "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div><div id='nb-def'>...a forum on top of every PDF.</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>New user ? <a class='link-style nb-register'>Register</a> now to be able to post comments...</li> <li>Existing user ? <a class='link-style nb-login'>Log in</a> now...</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
+        widget =  require('hbs!templates_dir/mini_splash_screen_guest');
       }      else { //splashscreen for registered user
-        widget = "<div class='minisplashscreen ui-corner-all'>  <div id='splash-welcome'>Welcome to NB !</div> <ul id='splash-list-instructions'> <li>Use your mouse or the <span class='ui-icon ui-icon-circle-triangle-w'></span> and <span class='ui-icon ui-icon-circle-triangle-e'></span> keys to move from discussion to discussion.</li> <li>Use your mouse or the  <span class='ui-icon ui-icon-circle-triangle-n'></span> and  <span class='ui-icon ui-icon-circle-triangle-s'></span> keys to scroll up and down the document.</li> <li>Drag across any region on the pdf to create a new discussion</li> <li>Right-click on any comment to post a reply</li> </ul>  <a target='_blank' href='" + nbhostname + "/help'>More help...</a>  </div>       ";
+        widget = require('hbs!templates_dir/mini_splash_screen_registered');
       }
-
-      $('.nb-register', widget).click($.concierge.get_component('register_user_menu'));
-      $('.nb-login', widget).click($.concierge.get_component('login_user_menu'));
       return widget;
     },
 
@@ -419,12 +551,6 @@ define(function(require) {
       return s;
     },
 
-    get_login_dialog_markup: function (P, cb) {
-      var nbhostname = Pers.server_url;
-
-      return "<div id='login_user_dialog' > <table cellspacing='5px'> <tr><td>Email</td><td><input type='text'  id='login_user_email' ></input></td></tr><tr><td>Password</td><td><input type='password'  id='login_user_password' ></input></td></tr><tr><td/><td><span id='loginbutton_classic'/><a style='padding-left: 10px;  font-size: x-small' href='" + nbhostname + "/password_reminder'>Lost password ?</a></td></tr><tr style='display: none'><td style='font-size: small'>Or use</td><td id='loginbuttons_sso'><button title='Login using your Google account' onclick='document.location='" + nbhostname + '/openid/login?next=' + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "'><img style='vertical-align: middle;' src='" + nbhostname + "/content/data/icons/png/1345558452_social_google_box.png' alt='your Google account'/></button><button style='display: none' title='Login using your Facebook account' onclick='document.location='/facebook/login?next=" + (document.location.pathname === '/login' ? '/' : document.location.pathname) + "'><img style='vertical-align: middle;' src='/content/data/icons/png/1345558472_social_facebook_box_blue.png' alt='your Facebook account'/></button></td></tr></table><div class='form_errors'/></div>";
-    },
-
     get_sec_mult_factor: function () {
       return 100;
     },
@@ -432,6 +558,57 @@ define(function(require) {
     get_metronome_period_s: function () {
       return 0.2;
     },
+
+    addEnsembleMenu: function () {
+      if(!$("#add_ensemble_dialog").length) {
+        var $util_window = $.concierge.get_component('get_util_window')();
+        $util_window.append(require('hbs!templates_dir/new_class_dialog'));
+      }
+      //defaults:
+      $('input[name=allow_staffonly][value=1]')[0].checked = 'true';
+      $('input[name=allow_anonymous][value=1]')[0].checked = 'true';
+      $('input[name=allow_guest][value=0]')[0].checked = 'true';
+      $('input[name=allow_download][value=1]')[0].checked = 'true';
+      $('input[name=allow_ondemand][value=0]')[0].checked = 'true';
+      $('input[name=use_invitekey][value=1]')[0].checked = 'true';
+      $('input[name=default_pause][value=0]')[0].checked = 'true';
+      $('#add_ensemble_dialog').dialog({
+        title: 'Create a new class...',
+        width: 540,
+        modal: true,
+        position: { my: "top", at: "top+80", of: window },
+        open: function(event, ui) {
+          // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+          $('.ui-widget-overlay').bind('click', function() {
+            $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+          });
+        },
+        buttons: {
+          Cancel: function () {
+            $(this).dialog('close');
+          },
+
+          Ok: function () {
+            $.concierge.get_component('add_ensemble')({
+              name: $('#add_ensemble_name')[0].value,
+              description: $('#add_ensemble_description')[0].value,
+              allow_staffonly:$('input[name=allow_staffonly]:checked')[0].value === '1',
+              allow_anonymous: $('input[name=allow_anonymous]:checked')[0].value === '1',
+              allow_guest: $('input[name=allow_guest]:checked')[0].value === '1',
+              default_pause: $('input[name=default_pause]:checked')[0].value === '1',
+              allow_download: $('input[name=allow_download]:checked')[0].value === '1',
+              allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1',
+              use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' },
+              function (p) {
+                Files.model.add('ensemble', p);
+                $.I('Class created !');
+              });
+            $(this).dialog('destroy');
+          },
+        },
+      });
+      $('#add_ensemble_dialog').dialog('open');
+    }
   };
 
   return Pers;

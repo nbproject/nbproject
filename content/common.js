@@ -20,6 +20,9 @@ requirejs.config({
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
     'underscore': 'lib/underscore/underscore',
     'wgxpath': 'lib/wgxpath/wgxpath.install',
+    'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
+    'templates_dir': '../templates/handlebars/', // handlebars templates directory
+    'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
 
     // modules
     'auth': 'modules/auth',
@@ -41,6 +44,14 @@ requirejs.config({
     'embedopenid': 'ui/admin/embedopenid',
     'init_analytics': 'ui/admin/init.analytics',
     'init_desktop': 'ui/admin/init.desktop',
+    'init_dev_test': 'ui/admin/init.dev_test',
+    'init_dev_test2': 'ui/admin/init.dev_test2',
+    'init_newsite': 'ui/admin/init.newsite',
+    'init_properties_ensemble': 'ui/admin/init.properties_ensemble',
+    'init_properties_ensemble_sections': 'ui/admin/init.properties_ensemble_sections',
+    'init_properties_ensemble_users': 'ui/admin/init.properties_ensemble_users',
+    'init_static_page': 'ui/admin/init.static_page',
+    'init_subscribe': 'ui/admin/init.subscribe',
     'init_collage': 'ui/admin/init.collage',
     'init_pdfviewer': 'ui/admin/init.pdfviewer',
     'init_spreadsheet': 'ui/admin/init.spreadsheet',
@@ -75,13 +86,21 @@ requirejs.config({
     'build_analytics': 'build-scripts/build-analytics',
     'build_collage': 'build-scripts/build-collage',
     'build_desktop': 'build-scripts/build-desktop',
+    'build_devtest': 'build-scripts/build-devtest',
+    'build_devtest2': 'build-scripts/build-devtest2',
     'build_embed': 'build-scripts/build-embed',
     'build_embedopenid': 'build-scripts/build-embedopenid',
     'build_login': 'build-scripts/build-login',
     'build_logout': 'build-scripts/build-logout',
+    'build_newsite': 'build-scripts/build-newsite',
     'build_passwordreminder': 'build-scripts/build-passwordreminder',
     'build_pdfviewer': 'build-scripts/build-pdfviewer',
+    'build_properties_ensemble': 'build-scripts/build-properties-ensemble',
+    'build_properties_ensemble_sections': 'build-scripts/build-properties-ensemble-sections',
+    'build_properties_ensemble_users': 'build-scripts/build-properties-ensemble-users',
     'build_spreadsheet': 'build-scripts/build-spreadsheet',
+    'build_static_page': 'build-scripts/build-static-page',
+    'build_subscribe': 'build-scripts/build-subscribe',
     'build_yoursettings': 'build-scripts/build-yoursettings',
     'build_youtubeviewer': 'build-scripts/build-youtubeviewer',
 
@@ -113,5 +132,18 @@ requirejs.config({
     'underscore': {
         exports: 'underscore'
     },
+    'handlebars': {
+        exports: 'Handlebars'
+    }
+  },
+  hbs: {
+    // Reference: https://github.com/SlexAxton/require-handlebars-plugin/blob/master/README.md
+    helpers: true,            // default: true
+    templateExtension: 'hbs', // default: 'hbs'
+    partialsUrl: '',          // default: ''
+    helperPathCallback: function(name) {
+        // Set the path for handlebars helpers. Default: templates/helpers/*
+        return 'templates_dir/helpers/' + name;
+    }
   }
 });
