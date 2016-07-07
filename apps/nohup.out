@@ -1,0 +1,132 @@
+Error: That port is already in use.
+[23/Jun/2016 11:26:39] "GET / HTTP/1.1" 200 512
+[23/Jun/2016 11:26:40] "GET /content/compiled/desktop_NB.js HTTP/1.1" 304 0
+[23/Jun/2016 11:26:40] "GET /content/compiled/desktop.css HTTP/1.1" 200 46323
+[23/Jun/2016 11:26:40] "GET /content/data/icons/png/arrows.png HTTP/1.1" 200 244
+[23/Jun/2016 11:26:40] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 2078
+[23/Jun/2016 11:26:40] "GET /themes/default/style.css HTTP/1.1" 404 2262
+[23/Jun/2016 11:26:40] "GET /content/compiled/d.png HTTP/1.1" 404 2262
+[23/Jun/2016 11:26:40] "GET /content/data/icons/png/theme_dark.png HTTP/1.1" 200 21728
+[23/Jun/2016 11:26:40] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 157
+[23/Jun/2016 11:26:40] "GET /content/compiled/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 2262
+[23/Jun/2016 11:26:40] "GET /content/compiled/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 2262
+[23/Jun/2016 11:26:40] "GET /content/compiled/images/ui-icons_888888_256x240.png HTTP/1.1" 404 2262
+[01/Jul/2016 12:56:41] "GET / HTTP/1.1" 302 0
+[01/Jul/2016 12:56:42] "GET /welcome HTTP/1.1" 200 4877
+[01/Jul/2016 12:56:42] "GET /content/ui/classic/base.css HTTP/1.1" 200 4656
+[01/Jul/2016 12:56:42] "GET /content/data/img/suggest01.png HTTP/1.1" 200 32745
+[01/Jul/2016 12:56:42] "GET /content/data/img/suggest02.png HTTP/1.1" 200 23899
+[01/Jul/2016 12:56:42] "GET /content/data/img/suggest03.png HTTP/1.1" 200 8177
+[01/Jul/2016 12:56:42] "GET /content/data/img/suggest04.png HTTP/1.1" 200 30715
+[01/Jul/2016 12:56:42] "GET /favicon.ico HTTP/1.1" 404 2262
+[01/Jul/2016 12:56:55] "GET /welcome HTTP/1.1" 200 4877
+[01/Jul/2016 12:56:55] "GET /content/ui/classic/base.css HTTP/1.1" 304 0
+[01/Jul/2016 12:56:55] "GET /content/data/img/suggest01.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:55] "GET /content/data/img/suggest02.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:55] "GET /content/data/img/suggest03.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:55] "GET /content/data/img/suggest04.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:56] "GET /welcome HTTP/1.1" 200 4877
+[01/Jul/2016 12:56:56] "GET /content/ui/classic/base.css HTTP/1.1" 304 0
+[01/Jul/2016 12:56:56] "GET /content/data/img/suggest01.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:56] "GET /content/data/img/suggest02.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:56] "GET /content/data/img/suggest03.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:56] "GET /content/data/img/suggest04.png HTTP/1.1" 304 0
+[01/Jul/2016 12:56:59] "GET /about HTTP/1.1" 301 0
+[01/Jul/2016 12:56:59] "GET /about/ HTTP/1.1" 200 8319
+[01/Jul/2016 14:36:13] "GET /login HTTP/1.1" 200 2967
+[01/Jul/2016 14:36:13] "GET /content/compiled/login_NB.js HTTP/1.1" 200 406608
+[01/Jul/2016 14:36:13] "GET /content/data/icons/png/1345558452_social_google_box.png HTTP/1.1" 200 4395
+[01/Jul/2016 14:36:13] "GET /content/data/icons/png/1345558472_social_facebook_box_blue.png HTTP/1.1" 200 2978
+[01/Jul/2016 15:55:11] "GET / HTTP/1.1" 200 512
+[01/Jul/2016 15:55:11] "GET /content/compiled/desktop_NB.js HTTP/1.1" 304 0
+[01/Jul/2016 15:55:11] "GET /content/compiled/desktop.css HTTP/1.1" 200 46323
+[01/Jul/2016 15:55:12] "GET /favicon.ico HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/data/icons/png/arrows.png HTTP/1.1" 200 244
+[01/Jul/2016 15:55:12] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 2078
+[01/Jul/2016 15:55:12] "GET /themes/default/style.css HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/compiled/d.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/data/icons/png/theme_dark.png HTTP/1.1" 200 21728
+[01/Jul/2016 15:55:12] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 157
+[01/Jul/2016 15:55:12] "GET /content/compiled/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/compiled/images/ui-icons_888888_256x240.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/compiled/images/ui-bg_glass_75_e6e6e6_1x400.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/compiled/images/ui-bg_glass_75_dadada_1x400.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:12] "GET /content/compiled/images/ui-icons_454545_256x240.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:13] "GET /content/compiled/images/ui-bg_glass_65_ffffff_1x400.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:15] "GET /content/lib/tablesorter/asc.gif HTTP/1.1" 200 54
+[01/Jul/2016 15:55:15] "GET /content/lib/tablesorter/desc.gif HTTP/1.1" 200 54
+[01/Jul/2016 15:55:15] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 500 368
+[01/Jul/2016 15:55:18] "GET /f/10 HTTP/1.1" 200 634
+[01/Jul/2016 15:55:18] "GET /content/compiled/pdfviewer.css HTTP/1.1" 200 54333
+[01/Jul/2016 15:55:19] "GET /content/compiled/pdfviewer_NB.js HTTP/1.1" 200 673010
+[01/Jul/2016 15:55:19] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 261
+[01/Jul/2016 15:55:20] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 740
+[01/Jul/2016 15:55:20] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 210
+[01/Jul/2016 15:55:20] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 148
+[01/Jul/2016 15:55:20] "GET /content/compiled/images/ui-bg_flat_75_ffffff_40x100.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:20] "GET /content/compiled/images/ui-icons_222222_256x240.png HTTP/1.1" 404 2262
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/curious.png HTTP/1.1" 200 2700
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/confused.png HTTP/1.1" 200 3074
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/interested.png HTTP/1.1" 200 1908
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/frustrated.png HTTP/1.1" 200 2001
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/useful.png HTTP/1.1" 200 3038
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/help.png HTTP/1.1" 200 4033
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/questionMark.png HTTP/1.1" 200 2851
+[01/Jul/2016 15:55:20] "GET /content/views/emoticons/idea.png HTTP/1.1" 200 3409
+[01/Jul/2016 15:55:20] "GET /pdf/cache2/288/33/10?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj&amp;page=1 HTTP/1.1" 200 240191
+[01/Jul/2016 15:55:20] "GET /pdf/cache2/288/33/10?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj&amp;page=2 HTTP/1.1" 200 216765
+[01/Jul/2016 15:55:20] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 841
+[01/Jul/2016 15:55:23] "GET /content/data/icons/png/theme_light.png HTTP/1.1" 200 9109
+[01/Jul/2016 15:57:21] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 173
+[01/Jul/2016 15:57:21] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 157
+- Broken pipe from ('127.0.0.1', 56313)
+[01/Jul/2016 15:57:24] "POST /pdf4/rpc?ckey=2D1ybJSKUcfjfjdpcgYges8DWB8JtbVj HTTP/1.1" 200 173
+- Broken pipe from ('127.0.0.1', 56341)
+Performing system checks...
+
+System check identified no issues (0 silenced).
+June 23, 2016 - 11:26:30
+Django version 1.8.13, using settings 'nbsite.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[04/Jul/2016 10:53:40] "GET / HTTP/1.1" 302 0
+[04/Jul/2016 10:53:40] "GET /welcome HTTP/1.1" 200 4877
+[04/Jul/2016 10:53:40] "GET /content/ui/classic/base.css HTTP/1.1" 200 4656
+[04/Jul/2016 10:53:40] "GET /content/data/img/suggest01.png HTTP/1.1" 200 32745
+[04/Jul/2016 10:53:40] "GET /content/data/img/suggest02.png HTTP/1.1" 200 23899
+[04/Jul/2016 10:53:40] "GET /content/data/img/suggest03.png HTTP/1.1" 200 8177
+[04/Jul/2016 10:53:40] "GET /content/data/img/suggest04.png HTTP/1.1" 200 30715
+[04/Jul/2016 10:53:41] "GET /favicon.ico HTTP/1.1" 404 2262
+Performing system checks...
+
+System check identified no issues (0 silenced).
+July 04, 2016 - 10:32:15
+Django version 1.8.13, using settings 'nbsite.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+July 05, 2016 - 16:16:36
+Django version 1.8.13, using settings 'nbsite.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+Unhandled exception in thread started by <function wrapper at 0x104a46758>
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/utils/autoreload.py", line 229, in wrapper
+    fn(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/core/management/commands/runserver.py", line 107, in inner_run
+    autoreload.raise_last_exception()
+  File "/usr/local/lib/python2.7/site-packages/django/utils/autoreload.py", line 252, in raise_last_exception
+    six.reraise(*_exception)
+  File "/usr/local/lib/python2.7/site-packages/django/utils/autoreload.py", line 229, in wrapper
+    fn(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/__init__.py", line 18, in setup
+    apps.populate(settings.INSTALLED_APPS)
+  File "/usr/local/lib/python2.7/site-packages/django/apps/registry.py", line 85, in populate
+    app_config = AppConfig.create(entry)
+  File "/usr/local/lib/python2.7/site-packages/django/apps/config.py", line 86, in create
+    module = import_module(entry)
+  File "/usr/local/Cellar/python/2.7.11/Frameworks/Python.framework/Versions/2.7/lib/python2.7/importlib/__init__.py", line 37, in import_module
+    __import__(name)
+ImportError: No module named corsheaders

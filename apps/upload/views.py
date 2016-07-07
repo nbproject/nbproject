@@ -106,14 +106,16 @@ def upload(req):
     id_folder = req.GET.get("id_folder", None)
     uid = UR.getUserId(req);
     logging.info("upload uid=%s, id_source=%s, id_ensemble=%s, id_folder=%s" %  (uid,id_source,id_ensemble,id_folder))
-    url = "http://%s:%s/%s?id_ensemble=%s" %("localhost", "8080",f.name, id_ensemble)
+    url = "http://%s:%s/%s?id_ensemble=%s" %("localhost", "8000",f.name, id_ensemble)
     payload = {"url": url, "id_source": id_source, "id_folder": id_folder }
     if auth.canInsertFile(uid, id_ensemble, id_folder):
         #the followong data will be deleted in utils_pdf if an PDF error happens later...
         annotations.createSource(uid, payload)
         ownership = annotations.addOwnership(id_source, id_ensemble, id_folder)
         source = ownership.source
-        REPOSITORY_DIR = "%s/%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
+        #bug? before it was %s/%s which produced //
+        REPOSITORY_DIR = "%s%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
+        print REPOSITORY_DIR
         f2 = open("%s/%s" % (REPOSITORY_DIR, id_source,),"wb")    
         f2.write(f.read())
         f2.close()                 

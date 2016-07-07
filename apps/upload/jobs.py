@@ -280,7 +280,7 @@ def upload_chapters(*t_args):
             title = "%s%s" % ( P["chapter_prefix"], fmt)
             fn = "%s/%s" % (P["outputdir"], title)
             id_source = DB.getVal(""" select nextval('source_id_seq') """,())
-            DB.doTransaction("""insert into source(id, scheme,dn,port, path, query, submittedby) values (?, ?, ?, ?, ?, ?, ?)""", (id_source, "http", "localhost","8080","/%s" %(title,), "id_ensemble=%s" % (P["id_ensemble"], ), None))
+            DB.doTransaction("""insert into source(id, scheme,dn,port, path, query, submittedby) values (?, ?, ?, ?, ?, ?, ?)""", (id_source, "http", "localhost","8000","/%s" %(title,), "id_ensemble=%s" % (P["id_ensemble"], ), None))
             DB.doTransaction("insert into ownership(id_source, id_ensemble) values (?,?)", (id_source,P["id_ensemble"]))
             shutil.copy2(fn,"%s/%s" % (rep_dir, id_source))
             for res in resolutions:
