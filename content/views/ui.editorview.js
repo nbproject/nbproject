@@ -273,8 +273,8 @@ define(function(require) {
       var emoticon7 = "<img title='question' onclick='but_toogle(this,"+'"question"'+");' id='questionId'  class='emoticon questionUnclicked' />";
       var emoticon8 = "<img title='idea' onclick='but_toogle(this,"+'"idea"'+");' id='ideaId'  class='emoticon ideaUnclicked' />";
 
-      var addTag = "var txt=document.getElementById('commentTB').value;txt='#' + type + ' ' + txt ;document.getElementById('commentTB').value=txt;";
-      var removeTag = "var txt=document.getElementById('commentTB').value; var test=txt.replace('#' + type + ' ','');" +
+      var addTag = "var txt=document.getElementById('commentTB').value;txt=txt + ' #' + type ;document.getElementById('commentTB').value=txt;";
+      var removeTag = "var txt=document.getElementById('commentTB').value; var test=txt.replace(' #' + type, '');" +
                       "if(document.getElementById('commentTB').value === test){document.getElementById('commentTB').value = txt.replace('#' + type,'');} else {document.getElementById('commentTB').value = test;}";
       var toog = "if(el.className.indexOf('Unclicked')>-1) {el.className=el.className.replace('Unclicked','Clicked'); add_tag(type);}" +
                 "else if(el.className.indexOf('Clicked')>-1) {el.className=el.className.replace('Clicked','Unclicked'); remove_tag(type);} return;";
@@ -315,6 +315,8 @@ define(function(require) {
             }
 
             checkTags = currentValue.split(" ");
+            console.log('checkTags');
+            console.log(checkTags);
             for(i=0; i<checkTags.length && !deleteEvent; i++)
             {
                 if(checkTags[i].charAt(0) === "#" && knownTags.indexOf(checkTags[i]) > -1)
