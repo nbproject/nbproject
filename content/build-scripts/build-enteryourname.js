@@ -1,6 +1,6 @@
 require(['requirescript'], function() {
   require(['handlebars'], function(handlebars){
-    require(['init_static_page'], function(init_static_page){
+    require(['init_enteryourname'], function(init_enteryourname){
       require(['launch']);
     });
   });

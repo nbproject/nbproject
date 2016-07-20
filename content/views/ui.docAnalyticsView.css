@@ -23,8 +23,7 @@ body
 
 .control-bar
 {
-    padding: 10px;
-
+    padding: 10px 0 10px 10px;
     border-radius: 12px 12px 0 0;
     background-color: #d5d2d2;
 }
@@ -93,10 +92,13 @@ label
     background-color: #ebebeb;
 }
 
-.header-link
+.main-wrapper h2 {
+  margin-bottom: 10px;
+}
+
+.main-wrapper a.header-link
 {
     text-decoration: none;
-
     color: rgb(255,234,128);
 }
 
@@ -255,13 +257,9 @@ label
 
 .tip
 {
-    font-style: italic;
+    padding: 10px 0 0 0;
+}
 
-    float: right;
-
-    margin-right: 20px;
-    padding: 3px 10px;
-
-    -moz-border-radius: 5px;
-         border-radius: 5px;
+.tip1 {
+  margin-left: 20px;
 }

@@ -90,10 +90,6 @@ def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
 
-@ensure_csrf_cookie
-def static_page(req):
-    return render_to_response('web/static_page.html')
-
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
     if url:
@@ -149,6 +145,7 @@ def source(req, n, allow_guest=False):
     else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
+
 def source_analytics(req, n):
     pages, chart_stats = doc_analytics.get_page_stats(n)
     highlights = doc_analytics.get_highlights(n)
@@ -160,7 +157,12 @@ def source_analytics(req, n):
         'highlights': highlights,
         'numpages': source.numpages
     }
-    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, content_type="text/html")
+    return HttpResponse(UR.prepare_response({"source": UR.model2dict(source),
+                                             "pages": pages,
+                                             "chart_stats": chart_stats,
+                                             "highlights": highlights,
+                                             "numpages": source.numpages}))
+
 
 def your_settings(req):
     return __serve_page(req, 'web/your_settings.html', content_type="text/html")
@@ -208,18 +210,25 @@ def newsite(req):
     return render_to_response("web/newsite.html", {"user_form": user_form, "ensemble_form": ensemble_form})
 
 
-def enter_your_name(req):
-    user       = UR.getUserInfo(req, False)
+def user_name_form(req):
+    user = UR.getUserInfo(req, False)
     if user is None:
         redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
-        return HttpResponseRedirect(redirect_url)
-    user_form = forms.EnterYourNameUserForm(instance=user)
+        return HttpResponse(UR.prepare_response({"redirect": redirect_url}))
+
+    remote_form = RemoteForm(forms.UserForm(instance=user))
     if req.method == 'POST':
         user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
         if user_form.is_valid():
             user_form.save()
-            return HttpResponseRedirect("/?ckey=%s" % (user.confkey,))
-    return render_to_response("web/enteryourname.html", {"user_form": user_form})
+            return HttpResponse(UR.prepare_response({"redirect": "/?ckey=%s" % user.confkey}))
+        else:  # Invalid form - return form with error messages
+            __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
+            remote_form = RemoteForm(user_form)
+            return HttpResponse(UR.prepare_response({"form": remote_form.as_dict()}))
+    else:
+        return HttpResponse(UR.prepare_response({"form": remote_form.as_dict()}))
+
 
 def add_html_doc(req, ensemble_id):
     import base.models as M
@@ -342,7 +351,7 @@ def logout(req):
     djangologout(req)
     return r
 
-def confirm_invite(req):
+def membership_from_invite(req):
     invite_key  = req.GET.get("invite_key", None)
     invite      = M.Invite.objects.get(key=invite_key)
     m = M.Membership.objects.filter(user=invite.user, ensemble=invite.ensemble)
@@ -356,8 +365,7 @@ def confirm_invite(req):
     if invite.user.valid == False:
         invite.user.valid=True
         invite.user.save()
-    r = render_to_response("web/confirm_invite.html", {"o": m})
-    return r
+    return HttpResponse(UR.prepare_response({"is_admin": m.admin, "email": m.user.email, "class_name": m.ensemble.name, "confkey": m.user.confkey}))
 
 @ensure_csrf_cookie
 def subscribe(req):

@@ -1,59 +1,16 @@
-{% extends "web/base.html" %}
-{% block title %}What's your name ?{% endblock %}
-{% block style %}
-ul.errorlist{
-	color: #ff0000;
-	font-weight: bold;
-	list-style: none;	
-}
-#differences{
-margin: 20px;
-padding: 10px;
-border: thin solid #c0c0c0;
-color: #707070; 	
-}
-
-#intro{
-margin: 20px;
-padding: 10px;
-color: #505050; 	
-}
-
-#form{
-margin: 20px;
-padding: 10px;
-font-size: large; 	
-}
-
-{% endblock %} 
-{% block content %}
-  <div id="intro">
-  <h1>Welcome to the new NB !</h1>
-Currently, NB only knows you as <b>{{user_form.instance.email}}</b>. Conversations are much more pleasant when people know who they're talking to. 
-  </div>
-  <div id="form">
-  <b>Hence, please take a few moments to enter your...</b>.  
-  
-    <form action="" method="post">
-      <table>
-	{% for field in user_form %}
-	
-	<tr>
-        <td>{{ field.label_tag }} </td>  <td>{{ field}}</td>{% if field.errors %}<td>{{ field.errors}}</td>	{% endif %}
-
-	</tr>
-	
-        {% endfor %}  
-	
-      </table>
-          {{ user_form.non_field_errors }} 
-               
-<div><input style="margin-top: 10px", type="submit" value="Send" /></div>	   
-    </form>
-    </div>  
-  
-
-
-
-{% endblock %}
-
+<!DOCTYPE html>
+<html class='nb_fullscreen'>
+  <head>
+    <meta charset="utf-8"/>
+    <!--
+      Author: cf AUTHORS.txt
+      License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+      MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+    -->
+    <title>NB</title>
+    <link type="text/css" href="/content/compiled/enteryourname.css" rel="stylesheet" />
+    <link type="text/css" href="/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/enteryourname_NB.js"></script>
+  </head>
+  <body/>
+</html>
