@@ -15,7 +15,7 @@
 /*global console:false*/
 
 define(function(require) {
-	var concierge       = require('concierge'),
+ 	var concierge       = require('concierge'),
 			view            = require('view'),
 			$               = require('jquery'),
 			jquery_ui       = require('jquery_ui');
