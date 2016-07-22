@@ -41,14 +41,14 @@ define(function(require) {
       //  - $filterType : type of filter ["random", "reply", "students", "longest"]
 
       var $emot = [];
-      $emot.push($("<img>").attr("title","curious").attr("id","curious").attr("onClick","but_toggle(this);").addClass("emoticon curiousUnclicked"));
-      $emot.push($("<img>").attr("title","confused").attr("id","confused").attr("onClick","but_toggle(this);").addClass("emoticon confusedUnclicked"));
-      $emot.push($("<img>").attr("title","useful").attr("id","useful").attr("onClick","but_toggle(this);").addClass("emoticon usefulUnclicked"));
-      $emot.push($("<img>").attr("title","interested").attr("id","interested").attr("onClick","but_toggle(this);").addClass("emoticon interestedUnclicked"));
-      $emot.push($("<img>").attr("title","frustrated").attr("id","frustrated").attr("onClick","but_toggle(this);").addClass("emoticon frustratedUnclicked"));
-      $emot.push($("<img>").attr("title","help").attr("id","help").attr("onClick","but_toggle(this);").addClass("emoticon helpUnclicked"));
-      $emot.push($("<img>").attr("title","question").attr("id","question").attr("onClick","but_toggle(this);").addClass("emoticon questionUnclicked"));
-      $emot.push($("<img>").attr("title","idea").attr("id","idea").attr("onClick","but_toggle(this);").addClass("emoticon ideaUnclicked"));
+      $emot.push($("<img>").attr("title","curious").attr("id","curious").attr("onClick","but_toggle(this);").addClass("emoticonFilter curiousUnclicked"));
+      $emot.push($("<img>").attr("title","confused").attr("id","confused").attr("onClick","but_toggle(this);").addClass("emoticonFilter confusedUnclicked"));
+      $emot.push($("<img>").attr("title","useful").attr("id","useful").attr("onClick","but_toggle(this);").addClass("emoticonFilter usefulUnclicked"));
+      $emot.push($("<img>").attr("title","interested").attr("id","interested").attr("onClick","but_toggle(this);").addClass("emoticonFilter interestedUnclicked"));
+      $emot.push($("<img>").attr("title","frustrated").attr("id","frustrated").attr("onClick","but_toggle(this);").addClass("emoticonFilter frustratedUnclicked"));
+      $emot.push($("<img>").attr("title","help").attr("id","help").attr("onClick","but_toggle(this);").addClass("emoticonFilter helpUnclicked"));
+      $emot.push($("<img>").attr("title","question").attr("id","question").attr("onClick","but_toggle(this);").addClass("emoticonFilter questionUnclicked"));
+      $emot.push($("<img>").attr("title","idea").attr("id","idea").attr("onClick","but_toggle(this);").addClass("emoticonFilter ideaUnclicked"));
 
       var togg = "if(el.className.indexOf('Unclicked')>-1) {el.className=el.className.replace('Unclicked','Clicked');}" +
                 "else if(el.className.indexOf('Clicked')>-1) {el.className=el.className.replace('Clicked','Unclicked');} return;";
