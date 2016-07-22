@@ -280,15 +280,20 @@ define(function(require) {
 				var text= comment.val();
 				var cursorIndex = comment.prop('selectionStart');
 				var tag = '#' + type;
+				//formats such that tag has one space on either side
 				if (text[cursorIndex - 1] !== ' ' && cursorIndex !== 0) {
 					tag = ' ' + tag;
 				}
 				if (text[cursorIndex] !== ' ' && cursorIndex !== text.length) {
 					tag = tag + ' ';
 				}
+				//inserts tag at cursor location
 				text = [text.slice(0, cursorIndex), tag, text.slice(cursorIndex)].join('');
 				comment.val(text);
 				comment.focus();
+				//positions cursor at the end of the tag
+				comment.prop('selectionStart', cursorIndex + tag.length);
+				comment.prop('selectionEnd', cursorIndex + tag.length);
 			}
 
 			var removeTag = function(type) {
@@ -300,7 +305,7 @@ define(function(require) {
 				comment.focus();
 			}
 
-			var toggleTag = function(e) {
+			var toggleTag = function() {
 				if($(this).hasClass('icon-clicked')) {
 					removeTag($(this).attr('title'));
 				} else {
@@ -374,11 +379,10 @@ define(function(require) {
 			$('.emoticon').click(toggleTag);
 
 			var watchTextBox = function(e) {
-				console.log(e);
 				var knownTags = ['curious','confused','useful','interested','frustrated','help','question','idea'];
 				for (var i in knownTags) {
 					var tag = knownTags[i];
-					if (($('#commentTB').val() + ' ').indexOf('#' + tag + ' ') > -1) {
+					if ((' ' + $('#commentTB').val() + ' ').indexOf(' #' + tag + ' ') > -1) {
 						$('.emoticon[title="' + tag + '"]').addClass('icon-clicked');
 					} else {
 						$('.emoticon[title="' + tag + '"]').removeClass('icon-clicked');
