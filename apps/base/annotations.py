@@ -13,6 +13,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 import datetime, os, re, json
+import dateutil.parser
 import models as M
 import auth
 import constants as CST
@@ -1187,7 +1188,7 @@ def edit_assignment(uid, P):
     source = M.Source.objects.get(pk=P['id'])
     ownership = M.Ownership.objects.get(source=source)
     ownership.assignment = P["assignment"]
-    ownership.due = datetime.datetime.strptime(P["due"], '%Y-%m-%d %H:%M')
+    ownership.due = dateutil.parser.parse(P["due"])
     ownership.save()
     return get_files(uid, {"id":  P["id"]})
 

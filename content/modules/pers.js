@@ -574,7 +574,7 @@ define(function(require) {
       $('input[name=default_pause][value=0]')[0].checked = 'true';
       $('#add_ensemble_dialog').dialog({
         title: 'Create a new class...',
-        width: 540,
+        width: 560,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
         open: function(event, ui) {

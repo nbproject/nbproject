@@ -41,17 +41,19 @@ body
 .links
 {
     text-align: right;
-
     color: #fff;
 }
 
-.links a,
-.links a:visited
+.links a:link,
+.links a:visited,
+.main-wrapper a.header-link
 {
-    color: white;
+    color: #fff;
+    text-decoration: none;
 }
 
-.links a:hover
+.links a:hover,
+.main-wrapper a.header-link:hover
 {
     color: rgb(255,234,128);
 }
@@ -94,17 +96,6 @@ label
 
 .main-wrapper h2 {
   margin-bottom: 10px;
-}
-
-.main-wrapper a.header-link
-{
-    text-decoration: none;
-    color: rgb(255,234,128);
-}
-
-.header-link:hover
-{
-    color: #fff;
 }
 
 .page-num

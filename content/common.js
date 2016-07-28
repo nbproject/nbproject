@@ -13,6 +13,7 @@ requirejs.config({
     'jquery': 'lib/jquery/1.8.3/jquery.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
+    'moment': 'lib/moment/moment',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
     'rangy-core': 'lib/rangy/rangy-core',
     'rangy-serializer': 'lib/rangy/rangy-serializer',
