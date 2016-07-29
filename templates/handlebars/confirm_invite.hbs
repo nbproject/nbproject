@@ -1,0 +1,23 @@
+<script>
+  $("title").html("NB Invitation Confirmed");
+</script>
+<style>
+  h1, p {
+    color: #505050;
+  }
+
+  p, h1+p, a.next {
+    font-size: 14px;
+    margin-top: 0.75em;
+  }
+
+  a.next {
+    color: #1e88e5;
+  }
+</style>
+
+<h1>Congratulations!</h1>
+<p>
+  <b>{{m.email}}</b> is now a member of the <b>{{m.class_name}}</b> group{{#equal m.is_admin true}} with admin privileges{{/equal}}.
+</p>
+<a class="next" href="/?ckey={{m.confkey}}">Go to my NB Desktop</a>

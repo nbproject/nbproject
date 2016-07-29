@@ -1,6 +1,6 @@
 require(['requirescript'], function() {
   require(['handlebars'], function(handlebars){
-    require(['logout'], function(logout){
+    require(['init_confirm_invite'], function(init_confirm_invite){
       require(['launch']);
     });
   });

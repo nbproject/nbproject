@@ -1,6 +1,6 @@
 require(['requirescript'], function() {
   require(['handlebars'], function(handlebars){
-    require(['logout'], function(logout){
+    require(['init_add_navbar'], function(init_add_navbar){
       require(['launch']);
     });
   });
