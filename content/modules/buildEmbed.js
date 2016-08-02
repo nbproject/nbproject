@@ -85,7 +85,7 @@ define(function(require) {
     Pers.store = new Models.Store();
     Pers.call(
         'getHTML5Info',
-        { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '') },
+        { id_ensemble: id_ensemble, url: document.location.href.replace(document.location.hash, '').replace(document.location.search,'') },
         function (payload) {
           //TODO: refactor (same as in step16.js:createStore)
           Pers.store.create(payload, {
