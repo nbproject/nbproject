@@ -231,6 +231,16 @@ h6 + p
     margin-top: .25em;
 }
 
+#invite_users_dialog h2 {
+  margin: 0.25em auto;
+  color: #505050;
+}
+
+#invite_users_dialog p {
+  margin: 0.25em auto;
+}
+
+
 /*
 Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.

@@ -219,8 +219,11 @@ define(function(require) {
 
   Files.inviteUsers = function (id_ensemble) {
     Files.currentEnsemble = id_ensemble;
-
-    $('#invite_users_ensemble').html("<option id_ensemble='" + Files.currentEnsemble + "'>" + Pers.store.o.ensemble[Files.currentEnsemble].name + '</option>').attr('disabled', 'disabled');
+    var className = Pers.store.o.ensemble[Files.currentEnsemble].name;
+    $('#invite_users_ensemble').html("<option id_ensemble='" + Files.currentEnsemble + "'>" + className + '</option>').attr('disabled', 'disabled');
+    var subscribeLink = Pers.server_url + "/subscribe?key=" + Pers.store.o.ensemble[Files.currentEnsemble].invitekey;
+    $("#invite_users_dialog .subscribe-link").attr("href", subscribeLink);
+    $("#invite_users_dialog .subscribe-link").html(subscribeLink);
 
     var sections_html = "<option value='None'>None</option>";
     var sections = Pers.store.get('section', { id_ensemble:Files.currentEnsemble }).items;
@@ -234,7 +237,7 @@ define(function(require) {
 
     $('#invite_users_section').html(sections_html);
     $('#invite_users_dialog').dialog({
-      title: 'Send an invitation...',
+      title: 'Send Invitation for ' + className,
       width: 550,
       modal: true,
       position: { my: "top", at: "top+80", of: window },
@@ -261,6 +264,7 @@ define(function(require) {
       },
     });
     $('#invite_users_dialog').dialog('open');
+    $('#invite_users_dialog a').blur();
   };
 
   Files.addFolder = function (id_ensemble, id_folder) {

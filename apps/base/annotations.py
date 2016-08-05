@@ -232,6 +232,7 @@ def get_ensembles(uid, payload):
         "allow_guest": "ensemble.allow_guest",
         "allow_download": "ensemble.allow_download",
         "allow_ondemand": "ensemble.allow_ondemand",
+        "invitekey": "ensemble.invitekey",
          }
     my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid, deleted=False)
     if id is not None:
