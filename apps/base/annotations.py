@@ -514,7 +514,7 @@ def get_files(uid, payload):
 
 def save_settings(uid, payload):
     #print "save settings w/ payload %s" % (payload, )
-    for k in [k for k in payload if k!="__PASSWD__"]:
+    for k in [k for k in payload if k not in ["__PASSWD__", "firstname", "lastname"]]:
         ds = M.DefaultSetting.objects.get(name=k)
         m = M.UserSetting.objects.filter(user__id=uid, setting__id=ds.id)
         if len(m)==0:
@@ -526,19 +526,33 @@ def save_settings(uid, payload):
         m.save()
         #DB().doTransaction("update nb2_user_settings set valid=0 where id_user=? and name=?", (uid, k))
         #DB().doTransaction("insert into nb2_user_settings(id_user, name, value) values (?, ?, ?)", (uid, k, payload[k]))
+
+    u = M.User.objects.get(pk=uid)
     if "__PASSWD__" in payload:
         password = payload["__PASSWD__"]
-        u = M.User.objects.get(pk=uid)
         u.set_password(password)
-        u.save()
+    u.firstname = payload["firstname"]
+    u.lastname = payload["lastname"]
+    u.save()
     return get_settings(uid, {})
+
 
 def get_settings(uid, payload):
     ds = M.DefaultSetting.objects.all()
     us = M.UserSetting.objects.filter(user__id=uid)
     sl = M.SettingLabel.objects.all()
-    retval =  {"ds": UR.qs2dict(ds), "us":UR.qs2dict(us), "sl":UR.qs2dict(sl)}
-    return retval
+    user = M.User.objects.get(pk=uid)
+    user_entry = UR.model2dict(user)
+    # Remove unnecessary fields
+    del user_entry["guest"]
+    del user_entry["confkey"]
+    del user_entry["valid"]
+    del user_entry["saltedhash"]
+    del user_entry["salt"]
+    del user_entry["password"]
+
+    return {"ds": UR.qs2dict(ds), "us":UR.qs2dict(us), "sl":UR.qs2dict(sl), "user":user_entry}
+
 
 def getLocation(id):
     """Returns an "enriched" location"""
