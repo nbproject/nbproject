@@ -11,10 +11,9 @@ div.filterWizardEmoticon .error-message {
     color: #C11;
 }
 
-div.filterWizardEmoticon .emoticonFilter {height:47px;
-    width:24px;
-    height:24px;
-    margin:10px;
+div.filterWizardEmoticon .emoticonFilter {
+    height: 24px;
+    box-sizing: content-box;
 }
 
 
