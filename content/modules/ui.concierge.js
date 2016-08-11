@@ -9,6 +9,7 @@
 */
 /*global jQuery:true console:true*/
 var NB$;
+
 define(function(require) {
   NB$ = require('jquery');
 
@@ -129,6 +130,8 @@ define(function(require) {
       self.historyHelper.timeout = timeout;
     }
 
+
+    // What does this function do ???
     var f = function () {
       var now = (new Date()).getTime();
       var delta = now - self.historyHelper.latestentrytime;
@@ -139,10 +142,17 @@ define(function(require) {
 
         self.historyHelper.log = {};
       }
+
     };
 
     NB$(window).unload(function () {
-      self.__updateIdleStatus();
+      var auth_str = Conf.userinfo.guest ? 'guest=1' : 'ckey=' + Conf.userinfo.ckey;
+      server_name = Conf.servers.rpc + '/pdf4/rpc?' + auth_str; //'/pdf4/rpc';
+      data = self.historyHelper.log;
+      formData = {f: "log_history", cid: Pers.connection_id, a: JSON.stringify(data)}
+      formData = JSON.stringify(formData)
+      formData = new Blob([formData], {type : 'application/json; charset=UTF-8'})
+      navigator.sendBeacon(server_name, formData);
       f();
     });
 
@@ -151,6 +161,7 @@ define(function(require) {
 
   Concierge.prototype.logHistory = function (name, id) {
     var now = (new Date()).getTime();
+    
     if (!(name in this.historyHelper.log)) {
       this.historyHelper.log[name] = {};
     }
