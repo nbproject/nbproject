@@ -293,18 +293,29 @@ def getHTML5Info(payload, req):
     #TODO: use optional argument id_ensemble to disambiguate if provided.
     sources_info = M.HTML5Info.objects.filter(url=url)
     ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
+    #TODO: with django 1.9, you can use Q objects to OR two conditions
+    #so instead of iterating to test below, just add .filter(Q(ensemble__memberships__user=UR.getUserId(req)) | Q(ensemble.allow_guest))
+    #then use UR.qs2dict as was done previously
+
     if not ownerships.exists():
         return UR.prepare_response({}, 1, "this URL is not recognized: ")
 
     output = {
-         "files": UR.qs2dict(ownerships, annotations.__NAMES["files2"] , "ID"),
-         "ensembles": UR.qs2dict(ownerships, annotations.__NAMES["ensembles2"] , "ID") ,
-         "folders": UR.qs2dict(ownerships, annotations.__NAMES["folders2"] , "ID") ,
-    }
-    for i in output["ensembles"]:
-        if not (output["ensembles"][i]["allow_guest"] or auth.isMember(UR.getUserId(req), i)):
-            return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
-    return UR.prepare_response(output)
+        "files": {},
+        "ensembles": {},
+        "folders": {}
+        }
+    for r in ownerships:
+        if (r.ensemble.allow_guest or 
+            auth.isMember(UR.getUserId(req),r.ensemble_id)):
+            output["ensembles"][r.ensemble_id]=UR.model2dict(r,annotations.__NAMES["ensembles2"])
+            output["files"][r.source_id]=UR.model2dict(r,annotations.__NAMES["files2"])
+            output["folders"][r.folder_id]=UR.model2dict(r,annotations.__NAMES["folders2"])
+    if (output["ensembles"]):
+        return UR.prepare_response(output)
+    else:
+        return  UR.prepare_response({}, 1, "not allowed: guest access isn't allowed for this file.")
+
 
 
 def getObjects(payload, req):
