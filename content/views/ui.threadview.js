@@ -278,6 +278,7 @@ define(function(require) {
         thanks: { name: 'That helped. Thanks!', icon: 'thanks' },
         edit: { name: 'Edit', icon: 'edit' },
         reply: { name: 'Reply', icon: 'reply' },
+        locLink: {name: 'Get link'},
         sep1: '---------',
         question: { name: 'Request a reply', icon: 'question' },
         noquestion: { name: "Remove 'reply requested'", icon: 'noquestion' },
@@ -392,6 +393,10 @@ define(function(require) {
         if (confirm('Are you sure you want to delete this note ?')) {
           $.concierge.get_component('note_deleter')({ id_comment: id_item }, self._on_delete);
         }
+
+      break;
+      case 'locLink':
+          location.hash="nb-comment-"+id_item;
 
       break;
       }
