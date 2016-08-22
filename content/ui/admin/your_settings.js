@@ -26,9 +26,12 @@ define(function(require) {
   Pers.init = function () {
     //get data:
     var payload_objects = { types: ['settings'] };
-    Pers.call('getObjects', payload_objects, Pers.createStore);
+    Pers.call('getObjects', payload_objects, function(payload){
+      $(".nb-widget-body").append(require("hbs!templates_dir/your_settings")({
+        firstname: payload.settings.user.firstname, lastname: payload.settings.user.lastname}));
+      Pers.createStore(payload);
+    });
     $.concierge.addComponents({});
-    $(".nb-widget-body").append(require("hbs!templates_dir/your_settings")());
   };
 
   Pers.createStore = function (payload) {
@@ -63,8 +66,26 @@ define(function(require) {
       $('#newpassword_msg').text('Passwords match');
     } else {
       savebutton.attr('disabled', 'disabled');
-      $('#newpassword_msg').html("<span style='color: #FF0000;'>Passwords don't match...</span>");
+      $('#newpassword_msg').html("<span class='error'>Passwords don't match...</span>");
     }
+  };
+
+  Pers.validateFirstName = function (event) {
+    var savebutton =  $('#save_button');
+    var firstname = $('#firstname')[0].value;
+    if(firstname.trim()) {
+      savebutton.removeAttr('disabled');
+      $('#firstname_msg').text("");
+    }
+    else {
+      savebutton.attr('disabled', 'disabled');
+      $('#firstname_msg').text("Firstname is required");
+    }
+    return;
+  };
+
+  Pers.validateLastName = function (event) {
+    // Currently, no validation is required for the last name
   };
 
   Pers.on_setting_change = function (event) {
@@ -107,17 +128,23 @@ define(function(require) {
           $('#new_password1')[0].value = '';
           $('#new_password2')[0].value = '';
         }
+        Pers.newSettings["firstname"] = $("#firstname")[0].value.trim();
+        Pers.newSettings["lastname"] = $("#lastname")[0].value.trim();
 
         Pers.call('save_settings', Pers.newSettings, function (payload) {
           //update new settings
           Pers.store.add('us', payload.settings.us);
+          // Reload the page to update Conf.userinfo if the user's name gets changed and also to
+          // ensure the name displayed at the top of the page is correct.
+          window.location.reload();
         });
-
-        $.I('Your changes have been saved...');
       }
     };
 
-    $('#cancel_button').click(function () {f_cleanup(false);});
+    $('#cancel_button').click(function () {
+      f_cleanup(false);
+      window.location.href = "/";
+    });
 
     $('#save_button').click(function () {f_cleanup(true);});
 
@@ -125,17 +152,6 @@ define(function(require) {
     $('#your_firstname').text(u.firstname);
     $('#your_lastname').text(u.lastname);
     $('#your_email').text(u.email);
-
   };
-
-  (function () {
-    var myJquery = NB$ || $;
-    myJquery(function () {
-      Pers.params = Dom.getParams();
-      Pers.admin = false;
-      Pers.preinit(false);
-    });
-
-  })();
 
 });
