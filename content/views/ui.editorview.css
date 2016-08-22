@@ -84,6 +84,32 @@ td.save-cancel
 .emoticon {
     height: 24px;
     padding: 5px;
+    box-sizing: content-box;
+}
+
+.emoticon[title="curious"] {
+    content: url("/content/views/emoticons/curious.png");
+}
+.emoticon[title="confused"] {
+    content: url("/content/views/emoticons/confused.png");
+}
+.emoticon[title="useful"] {
+    content: url("/content/views/emoticons/useful.png");
+}
+.emoticon[title="interested"] {
+    content: url("/content/views/emoticons/interested.png");
+}
+.emoticon[title="frustrated"] {
+    content: url("/content/views/emoticons/frustrated.png");
+}
+.emoticon[title="help"] {
+    content: url("/content/views/emoticons/help.png");
+}
+.emoticon[title="question"] {
+    content: url("/content/views/emoticons/question.png");
+}
+.emoticon[title="idea"] {
+    content: url("/content/views/emoticons/idea.png");
 }
 
 .emoticon.icon-clicked {
