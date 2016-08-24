@@ -1,5 +1,5 @@
 /*
-Author: cf AUTHORS.txt 
+Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
@@ -255,11 +255,10 @@ button.mark-toggle
 div.threadview-header
 {
     min-height: 24px;
-    padding: 3px 5px 8px 3px;
-
-    border-bottom: thin solid #ddd;
-    background-color: #efebe7;
-    box-shadow: 0 -1px 8px rgba(0, 0, 0, .2);
+    padding: 5px 0px 3px 0px;
+    border-bottom: 1px solid #eee;
+    border-top: 5px solid #efebe7;
+    background-color: #fff;
 }
 
 div.threadview-filter-controls .nbicon
@@ -350,4 +349,31 @@ button.mark-toggle.active
     max-width: 100px;
 
     color: #707070;
+}
+
+div.threadview-pane .note-body {
+  height: 20px;
+  margin-right: 5px;
+  overflow: hidden;
+  display: block;
+}
+
+div.threadview-pane p,
+div.threadview-pane ul,
+div.threadview-pane pre,
+div.threadview-pane xmp,
+div.threadview-pane plaintext,
+div.threadview-pane listing {
+  margin: 2px;
+}
+
+div.threadview-pane ul {
+  padding-left: 15px;
+}
+
+div.threadview-pane span.empty_comment {
+  font-weight: 700;
+  font-variant: normal;
+  padding: 1px 7px;
+  font-size: 0.8em;
 }

@@ -16,6 +16,7 @@ requirejs.config({
     'moment': 'lib/moment/moment',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
     'rangy-core': 'lib/rangy/rangy-core',
+    'rangy-selectionsaverestore': 'lib/rangy/rangy-selectionsaverestore',
     'rangy-serializer': 'lib/rangy/rangy-serializer',
     'rangy-textrange': 'lib/rangy/rangy-textrange',
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
@@ -24,6 +25,7 @@ requirejs.config({
     'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
     'templates_dir': '../templates/handlebars/', // handlebars templates directory
     'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
+    'tinyMCE': 'lib/tinymce/js/tinymce/tinymce',
 
     // modules
     'auth': 'modules/auth',
@@ -135,6 +137,14 @@ requirejs.config({
     },
     'handlebars': {
         exports: 'Handlebars'
+    },
+    'tinyMCE': {
+        exports: 'tinyMCE',
+        init: function () {
+            this.tinyMCE.DOM.events.domLoaded = true;
+            this.tinyMCE.baseURL = "/content/lib/tinymce/js/tinymce";
+            return this.tinyMCE;
+        }
     }
   },
   hbs: {

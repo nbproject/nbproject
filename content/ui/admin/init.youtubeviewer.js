@@ -56,7 +56,7 @@ define(function(require) {
                                      $div.docView('set_model', Pers.store);
                                    },
                                };
-      var notesview    =  { priority: 1, min_width: 630, desired_width: 35, min_height: 1000, desired_height: 50,
+      var notesview    =  { priority: 1, min_width: 630, desired_width: 35, min_height: 800, desired_height: 50,
                         content: function ($div) {
                           $div.notepaneView();
                           $div.notepaneView('set_model', Pers.store);
@@ -68,7 +68,7 @@ define(function(require) {
                          $div.threadview('set_model', Pers.store);
                        },
                    };
-      var editorview    =  { priority: 1, min_width: 630, desired_width: 35,  min_height: 1000, desired_height: 50, transcient: true,
+      var editorview    =  { priority: 1, min_width: 630, desired_width: 35,  min_height: 2200, desired_height: 50, transcient: true,
                                   content: function ($div) {
                                     var m = Pers.store;
                                     var ensemble = m.o.ensemble[m.o.file[id].id_ensemble];
