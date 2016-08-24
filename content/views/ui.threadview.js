@@ -203,17 +203,8 @@ define(function(require) {
       var replymenu        = "<span class='replymenu clickable'><span class='nbicon replyicon' title='Reply' /></span>";
       var optionmenu       = " <span class='optionmenu clickable'><span title='Actions'>&#183;&#183;&#183;</span></span> "; //xml doctype rejects &middot;
       var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
-      var body        = o.body.replace(/\s/g, '') === '' ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, '<br/>').replace(url_regex, '<a href="$1" target="_blank" title="$1">$1</a>');
-
-      // Truncate long URLs: If url > 23 characters, only display first 20 characters followed by ...
-      var $html = $('<div />',{html:body});
-      $($html).find('a').each(function() {
-        if($(this).html().length >= 23){
-          $(this).html($(this).html().slice(0, 20) + "...");
-        }
-      });
-      body = $html.html();
-      // Finished truncating long URLs
+      var body        = o.body.replace(/\s/g, '') === '' ? "<span class='empty_comment'>Empty Comment</span>" : o.body.replace(/\n/g, '<br/>').replace(url_regex, '<a href="$1" target="_blank" title="$1">$1</a>');
+      body = $.truncateURL(body);
 
       var commentlabels = self._commentLabelsFactory(o, 1);
       return ["<div class='note-lens ", tms.is_empty() ? '' : 'replyrequested', "' id_item='", o.ID, "'><div class='lensmenu'>", replymenu, optionmenu, '</div>', commentlabels, "<span class='note-body ", bold_cl, "'>", body, "</span><div class='authorship-info'>", author_name, admin_info, me_info, question_info, type_info, creation_info, '</div>', '</div>'].join('');

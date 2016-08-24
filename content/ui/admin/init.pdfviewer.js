@@ -98,7 +98,7 @@ define(function(require) {
         priority: 1,
         min_width: 650,
         desired_width: 35,
-        min_height: 1000,
+        min_height: 1500,
         desired_height: 50,
         transcient: true,
         content: function ($div) {

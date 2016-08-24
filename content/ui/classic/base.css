@@ -702,3 +702,9 @@ div.big-button > a:hover
   margin: auto;
   min-height: 80vh; /* To ensure the footer appears at the bottom of the page even if there's little or no content on the page */
 }
+
+div.ui-widget-header {
+    border: 1px solid #aaa;
+    color: #505050;
+    background-color: #ccc;
+}
