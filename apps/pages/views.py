@@ -455,7 +455,7 @@ def properties_ensemble_sections(req, id):
     if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
             if M.Section.objects.filter(ensemble=ensemble, name=req.POST["name"]).exists():
-                err = "Could not create section: a section with the same name already exists."
+                err = "Could not create section \"%s\" because it already exists." % req.POST["name"]
             else:
                 s = M.Section(name=req.POST["name"], ensemble=ensemble)
                 s.save()

@@ -140,75 +140,12 @@ td.save-cancel
   margin-left: 5px;
 }
 
-button {
-    margin: 5px 0;
-    font-size: 1em;
-    border-radius: 0px;
-    outline: 0;
-    border: 1px solid #fff;
-    color: #fff;
-    cursor: pointer;
-    padding: 5px 10px;
-}
-
-button.blue {
-  background-color: #1e88e5;
-}
-
-button.blue:hover,
-button.blue:focus {
-  background-color: #1879cd;
-}
-
-button.white-blue {
-  background-color: #fff;
-  color: #1e88e5;
-  border: 1px solid #1e88e5;
-}
-
-button.white-blue:hover,
-button.white-blue:focus {
-  background-color: #1e88e5;
-  color: #fff;
-}
-
-button.white-gray {
-  background-color: #fff;
-  color: #505050;
-  border: 1px solid #aaa;
-}
-
-button.white-gray:hover,
-button.white-gray:focus {
-  background-color: #999;
-  color: #fff;
-}
-
-button.gray {
-  background-color: #999;
-}
-
-button.gray:hover,
-button.gray:focus {
-  background-color: #777;
-}
-
 .clearfix:after { /* Clear float */
    content: ".";
    visibility: hidden;
    display: block;
    height: 0;
    clear: both;
-}
-
-button[disabled=disabled],
-button[disabled=disabled]:hover,
-button[disabled=disabled]:focus {
-    background-color: #eee;
-    color: #ff0;
-    border: 1px solid #aaa;
-    color: #777;
-    cursor: not-allowed;
 }
 
 .notebox,
@@ -281,6 +218,7 @@ button.tag-people {
   padding: 2px 6px 3px;
   margin: 0;
   border-radius: 5px;
+  color: #505050;
 }
 
 .time_button {

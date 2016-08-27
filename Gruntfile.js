@@ -243,7 +243,8 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble_sections', 'launch'],
     src_js: [].concat(['build_properties_ensemble_sections']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css',
+      'DataTables-1.10.12/media/css/jquery.dataTables.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',

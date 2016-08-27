@@ -13,6 +13,8 @@ define(function(require) {
   var $               = require('jquery');
   var Pers            = require('pers');
   var Handlebars     = require('handlebars');
+  require("datatables");
+  require("datatables_select");
 
   Pers.init = function () {
     var url_parts = window.location.href.toString().split("/");
@@ -30,12 +32,41 @@ define(function(require) {
         "error_message": p.error_message
       };
       $(".nb-widget-body").append(require('hbs!templates_dir/properties_ensemble_sections')(obj));
+
+      // Initialize the datatable.
+      $("#listing").DataTable({
+        // The dom setting below specifies the layout of various elements in the table and adds the listing-filter class
+        // to the div containing the search box. For more details, see https://datatables.net/reference/option/dom#Styling
+        "dom": '<"listing-filter"f>t',
+        "oSearch": {"bSmart": false}, // Only do exact match in searches.
+        language: { // This replaces the label of the search field with a placeholder. For more details, see https://datatables.net/reference/option/language.searchPlaceholder
+            search: "_INPUT_",
+            searchPlaceholder: "Search or Filter..."
+        },
+        "columnDefs": [
+          { // Disable sorting and filtering on the 4th column (The index starts at 0)
+            "targets": 3,
+            "orderable": false,
+            "bSearchable": false,
+          },
+          {
+            "targets": 4,
+            // Hide the 5th column. Although invisible, it is added to enable filtering by section because this
+            // column will contain the section as plain text instead of a select element (i.e. dropdown). I couldn't
+            // figure out an easy way to make the datatable search box work with the select element in the visible Section column
+            "visible": false,
+          },
+        ]
+
+      });
       setPageHandlers();
     };
+
     Pers.call('getObjects', payload, cb);
   };
 
   function setPageHandlers() {
+
     $(".student-record").each(function() {
       $(this).draggable({
         helper: function() { return $("<div>").addClass("student-record-helper").attr("data-membership-id", $(this).attr("data-membership-id")).text($(this).attr("data-user-firstname") ); } ,
@@ -49,24 +80,28 @@ define(function(require) {
       });
     });
 
-    $(".section-assign").each(function() {
-      $(this).droppable({
-        drop: function(event, ui) {
-          if ( $(this).find("tr[data-membership-id=" + ui.draggable.attr("data-membership-id") + "]").length > 0) return;
-          if ( $(this).find("table").length == 0) {
-            // create new table
-            $(this).find("div").remove();
-            $(this).append("<table><thead><th>First Name</th><th>Last Name</th><th>E-mail Address</th></thead><tbody></tbody></table>");
-          }
-          var membership = ui.draggable.attr("data-membership-id");
-          var section = $(this).attr("data-section");
-          $(this).find("tbody").append(ui.draggable);
-          $.post("?action=reassign&json", {section_id: section, membership_id: membership}, function(data) {
-            var e= data.error_message;
-            if (e != "") alert("Operation failed: " + e + " Please try to reload your page before doing anything else.");
-          });
-        },
+    $("select[name='section_id'").change(function() {
+      var optionSelected = $("option:selected", this);
+      var sectionId = optionSelected.val();
+      var sectionName = optionSelected.text();
+      var membershipId = $(this).attr("data-membership-id");
+      $.post("?action=reassign&json", {section_id: sectionId, membership_id: membershipId}, function(data) {
+        var e= data.error_message;
+        if (e != "") {
+          alert("Operation failed: " + e + " Please try to reload your page before doing anything else.");
+          return;
+        } else {
+          // Update the invisible column (index 4) with the new section name to ensure filtering works well with the update.
+          var $rowSelector = "[data-membership-id=" + membershipId + "]";
+          $('#listing').DataTable().cell($rowSelector, 4).data(sectionName);
+        }
       });
+    });
+
+    $(".create-section-toggle").click(function(e){
+      e.preventDefault();
+      $("p.error-message").text("");
+      $(".create-section-form").toggleClass("hide");
     });
 
     $("a.delete-link").click(function(){
@@ -78,6 +113,7 @@ define(function(require) {
             $(".error-message").text(p.error_message);
           } else {
             $(".section-" + section_id + "-info").remove();
+            $("p.error-message").text("");
           }
         });
         return false;
@@ -88,6 +124,10 @@ define(function(require) {
       // message if there's in an error when trying to create a section.
       // Reference: http://stackoverflow.com/questions/25983603/how-to-submit-html-form-without-redirection
       e.preventDefault();
+      if(!$("#new-section-name").val().trim()){
+        $("p.error-message").text("Section name should not be empty");
+        return;
+      }
       var url=$(this).closest('form').attr('action');
       var data=$(this).closest('form').serialize();
       $.ajax({
