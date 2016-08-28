@@ -500,6 +500,7 @@ div.big-button > a:hover
     align-items: center;
     padding-top: 14px;
     box-sizing: border-box;
+    border-radius: 0;
 }
 
 .nb-nav__btn:hover {
@@ -753,16 +754,34 @@ table.dataTable thead .sorting_desc_disabled {
 
 button,
 input.button,
-a.button {
-    margin: 5px 0;
+a.button,
+button.gray,
+input.button.gray,
+a.button.gray {
     font-size: 1em;
-    border-radius: 0px;
+    border-radius: 5px;
     outline: 0;
-    border: 1px solid #fff;
-    color: #fff;
     cursor: pointer;
     padding: 5px 10px;
     text-decoration: none;
+    background-color: #999;
+    border: 1px solid #777;
+    color: #fff;
+}
+
+button:hover,
+button:focus,
+input.button:hover,
+input.button:focus,
+a.button:hover,
+a.button:focus,
+button.gray:hover,
+button.gray:focus,
+input.button.gray:hover,
+input.button.gray:focus,
+a.button.gray:hover,
+a.button.gray:focus {
+  background-color: #777;
 }
 
 button.blue,
@@ -817,23 +836,6 @@ a.button.white-gray:focus
 {
   background-color: #999;
   color: #fff;
-}
-
-button.gray,
-input.button.gray,
-a.button.gray {
-  background-color: #999;
-  border: 1px solid #777;
-  color: #fff;
-}
-
-button.gray:hover,
-button.gray:focus,
-input.button.gray:hover,
-input.button.gray:focus,
-a.button.gray:hover,
-a.button.gray:focus {
-  background-color: #777;
 }
 
 button[disabled=disabled],

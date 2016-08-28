@@ -228,12 +228,13 @@ button.tag-people {
     font-size: 0.9em;
 }
 
-.main-btn {
+button.main-btn {
   width: 50%;
   margin: 0;
+  border-radius: 0;
 }
 
-.main-btn.submit {
+button.main-btn.submit {
   float: right;
 }
 
