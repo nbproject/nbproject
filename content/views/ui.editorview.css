@@ -36,16 +36,19 @@ div.editor textarea
 div.editor-header
 {
     overflow: hidden;
-
-    padding: 3px 5px 8px 3px;
-
+    padding: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
-
     color: #606060;
     border-bottom: thin solid #ddd;
     background-color: #efebe7;
     box-shadow: 0 -1px 8px rgba(0,0,0,.2);
+}
+
+div.editor-header * {
+  margin: 0;
+  display: inline-block;
+  font-size: 1em;
 }
 
 div.editor table.editorcontrols

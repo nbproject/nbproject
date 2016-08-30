@@ -250,7 +250,7 @@ define(function(require) {
 			var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration / self._SEC_MULT_FACTOR) : '2.0';
 
 			var duration_option = allow_time_set ? "<label for='duration' class='shift-right1'>Duration: </label><input id='duration' type='text' size='3' value='" + init_duration + "' /> seconds<br/>" : ' ';
-			var header    = self._inReplyTo ? 'Re: ' + $.E($.ellipsis(self._note.body, 100)) : 'New Comment';
+			var header    = self._inReplyTo ? 'Re: ' + self._note.body : 'New Comment';
 			self._id_ensemble = model.o.file[self._file].ID_ensemble;
 			self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
 			var fetch_pause = self._note ? model.get('location', { ID: self._note.ID_location }).first().pause : self._defaultPause;
@@ -453,7 +453,7 @@ define(function(require) {
 				menubar: false,
 				statusbar: false,
 				inline: true,
-				// toolbar: false,  // Default buttons at the top
+				toolbar: true,
 				theme: 'modern',
 				// height: '200',
 				width: '100%',
@@ -630,6 +630,7 @@ define(function(require) {
 
 			var f_discard = function (evt) {
 				f_cleanup();
+				tinyMCE.remove();
 				$.concierge.trigger({ type:'editor_delete', value: '' });
 			};
 

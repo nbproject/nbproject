@@ -358,6 +358,12 @@ div.threadview-pane .note-body {
   display: block;
 }
 
+div.threadview-pane h1,
+div.threadview-pane h2,
+div.threadview-pane h3,
+div.threadview-pane h4,
+div.threadview-pane h5,
+div.threadview-pane h6,
 div.threadview-pane p,
 div.threadview-pane ul,
 div.threadview-pane pre,
@@ -365,6 +371,7 @@ div.threadview-pane xmp,
 div.threadview-pane plaintext,
 div.threadview-pane listing {
   margin: 2px;
+  font-size: 1em;
 }
 
 div.threadview-pane ul {

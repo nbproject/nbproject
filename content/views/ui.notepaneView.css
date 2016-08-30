@@ -99,6 +99,12 @@ div.location-shortbody-text
     margin-right: 5px;
 }
 
+div.notepaneView h1,
+div.notepaneView h2,
+div.notepaneView h3,
+div.notepaneView h4,
+div.notepaneView h5,
+div.notepaneView h6,
 div.notepaneView p,
 div.notepaneView ul,
 div.notepaneView pre,
@@ -106,6 +112,7 @@ div.notepaneView xmp,
 div.notepaneView plaintext,
 div.notepaneView listing{
   margin: 2px;
+  font-size: 1em;
 }
 
 div.notepaneView ul {

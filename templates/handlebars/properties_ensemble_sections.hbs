@@ -118,12 +118,19 @@
     margin-top: 10px;
   }
 
-  .section-info {
+  .section-info,
+  #new-sections-from-csv span {
     margin-right: 10px;
     border: 1px solid #ccc;
     padding: 2px 5px 2px 22px;
-    background-color: #eee;
+    background-color: #f5f5f5;
     position: relative;
+  }
+
+  #new-sections-from-csv span {
+    padding: 2px 5px;
+    display: inline-block;
+    margin: 10px 10px 5px 5px;
   }
 
   a.delete-link {
@@ -143,9 +150,42 @@
     transform-origin: center;
   }
 
+  #sections-update {
+    display: none;
+    color: #505050;
+  }
+
+  .btn-container {
+    width: 100%;
+    font-size: 0;
+    text-align: center;
+  }
+
+  .btn-container button {
+    width: 50%;
+    font-size: 14px;
+    border-radius: 0;
+  }
+
+  .updated-listing-filter {
+    text-align: left;
+    display: inline-block;
+    margin: 10px 0 0 0;
+  }
+
+  .save-loader {
+    width: 10px;
+    margin-left: 12px;
+  }
+
+  .section-listing-header {
+    margin-top: 30px;
+  }
+
+
 </style>
 
-<h1>Sections for {{ensemble.name}}</h1>
+<h1 class="section-heading">Sections for {{ensemble.name}}</h1>
 <a class="create-section-toggle button gray" href="#"><i class="fa fa-plus" aria-hidden="true"></i>Create New Section</a>
 <form method="POST" action="?action=create" id="create-section-form" class="create-section-form hide">
     <input id="new-section-name" type="text" name="name" value="" placeholder="Section Name"/><input type="submit" class="create-section-btn button blue" value="Create"/>
@@ -164,10 +204,11 @@
     </div>
 </div>
 
-<h1 style="margin-top:30px;">Section Student Listing</h1>
+<h1 class="section-listing-header">Section Student Listing</h1>
 <div class="section-btns-holder">
-    <!--<a class="section-btn button gray" href="#"><i class="fa fa-download" aria-hidden="true"></i>Download CSV</a>-->
-    <!--<a class="section-btn button gray" href="#"><i class="fa fa-upload" aria-hidden="true"></i>Upload CSV</a>-->
+    <a class="download-csv section-btn button gray" href="#"><i class="fa fa-download" aria-hidden="true"></i>Download CSV</a>
+    <a class="upload-csv section-btn button gray" href="#"><i class="fa fa-upload" aria-hidden="true"></i>Upload CSV</a>
+    <input type="file" name="File Upload" id="csv-uploader" accept=".csv" style="display:none"/>
 </div>
 <table id="listing" class="display">
     <thead>
@@ -181,6 +222,7 @@
             easy way to make the datatable search box work with the select element in the visible Section column
              -->
             <th>Section (Hidden)</th>
+            <th>Membership ID (Hidden)</th>
         </tr>
     </thead>
     <tbody>
@@ -192,15 +234,16 @@
               <td>{{email}}</td>
               <td>
                 <select name="section_id" data-membership-id="{{membership_id}}">
-                  <option value="None" {{#unless section}} selected="selected" {{/unless}}>No Section</option>
+                  <option value="None" {{#unless section}} selected="selected" {{/unless}}></option>
                   {{#each ../../class_sections}}
-                    <option value="{{id}}" {{#equal ../section name}}selected="selected"{{/equal}}>{{#if name}}{{name}}{{else}}Untitled{{/if}}</option>
+                    <option value="{{id}}" {{#equal ../section name}}selected="selected"{{/equal}}>{{name}}</option>
                   {{/each}}
                 </select>
               </td>
               <td>
-                {{#if section}}{{section}}{{else}}Untitled{{/if}}
+                {{section}}
               </td>
+              <td>{{membership_id}}</td>
             </tr>
           {{/each}}
         {{/each}}
@@ -211,16 +254,35 @@
               <td>{{email}}</td>
               <td>
                 <select name="section_id" data-membership-id="{{membership_id}}">
-                  <option value="None" {{#unless section}} selected="selected" {{/unless}}>No Section</option>
+                  <option value="None" {{#unless section}} selected="selected" {{/unless}}></option>
                   {{#each ../class_sections}}
-                    <option value="{{id}}">{{#if name}}{{name}}{{else}}Untitled{{/if}}</option>
+                    <option value="{{id}}">{{name}}</option>
                   {{/each}}
                 </select>
               </td>
-              <td>
-                No Section
-              </td>
+              <td></td>
+              <td>{{membership_id}}</td>
             </tr>
         {{/each}}
     </tbody>
+</table>
+<div id="sections-update">
+
+  <div class="btn-container">
+    <button class="gray cancel">Cancel</button>
+    <button class="blue save">Save</button>
+  </div>
+  <h2><span id="new-sections-count"></span> new sections will be created</h2>
+  <div id="new-sections-from-csv"></div>
+  <h2><span id="updated-sections-count"></span> students' sections will be updated</h2>
+  <table id="updated-listing" class="display" width="100%">
+    <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>E-mail Address</th>
+      <th>Section</th>
+    </tr>
+    </thead>
   </table>
+</div>
