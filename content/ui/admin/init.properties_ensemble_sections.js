@@ -233,9 +233,8 @@ define(function(require) {
             });
 
             if(newSections.length === 0 && rawUpdatedSections.length === 0) {
-              $("button.save").hide();
-            } else {
-              $("button.save").show();
+              $.I("No section changes detected in the CSV file");
+              return;
             }
 
             /*
