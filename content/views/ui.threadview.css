@@ -352,7 +352,7 @@ button.mark-toggle.active
 }
 
 div.threadview-pane .note-body {
-  height: 20px;
+  height: 1.5em;
   margin-right: 5px;
   overflow: hidden;
   display: block;
@@ -372,6 +372,7 @@ div.threadview-pane plaintext,
 div.threadview-pane listing {
   margin: 2px;
   font-size: 1em;
+  line-height: 1.5em;
 }
 
 div.threadview-pane ul {

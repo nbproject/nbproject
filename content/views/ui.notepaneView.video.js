@@ -254,7 +254,7 @@ define(function(require) {
       var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : '';
       var root =    m.get('comment', { ID_location: l.ID, id_parent: null }).first();
 
-      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : root.body;
+      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : $.truncateURL($.E(root.body));
       return "<div class='location-flags'>" + lf_numnotes + lf_admin + lf_me_private + lf_star + lf_question + "</div><div class='location-shortbody " + (numquestion > 0 ? 'replyrequested' : '') + "'><div class='location-shortbody-text " + bold_cl + title_cl + "'>" + body + '</div></div>';
     },
 

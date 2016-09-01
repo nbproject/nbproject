@@ -68,7 +68,7 @@ define(function(require) {
 						}
 					}
 
-					//TODO: if existting draft, sync its content w/ its model
+					//TODO: if existing draft, sync its content w/ its model
 					//now create new draft:
 					id_item        = (new Date()).getTime();
 					draft        = {};
@@ -134,7 +134,15 @@ define(function(require) {
 					self._inReplyTo        = 0;
 					self._selection        = null;
 					self._sel        = null;
-					self._note        = model.o.comment[evt.value];
+
+					var rawComment = model.o.comment[evt.value];
+					if($.isHtmlComment(rawComment.body)){
+					  // Remove tag added (during comment creation) to distinguish HTML comments from the
+					  // older text comments that were created before introducing the WYSIWYG editor.
+					  rawComment.body = $.removeHtmlMarker(rawComment.body);
+					}
+
+					self._note        = rawComment;
 					model.add('draft', drafts);
 					self._render(id_item);
 				break;
@@ -702,7 +710,7 @@ define(function(require) {
 
 				var msg = {
 					type: $('select[name=vis_' + id_item + ']', self.element).val(),
-					body:  $('#commentTB').html(),
+					body:  $.addHtmlMarker($('#commentTB').html()),
 					signed: self._allowAnonymous ? $('input[value=anonymous]:not(:checked)', self.element).length : 1,
 					marks: {},
 					title: $('input[value=title]:checked', self.element).length,

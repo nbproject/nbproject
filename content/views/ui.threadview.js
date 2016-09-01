@@ -203,7 +203,7 @@ define(function(require) {
       var replymenu        = "<span class='replymenu clickable'><span class='nbicon replyicon' title='Reply' /></span>";
       var optionmenu       = " <span class='optionmenu clickable'><span title='Actions'>&#183;&#183;&#183;</span></span> "; //xml doctype rejects &middot;
       var url_regex = /(\b(https?|ftp|file):\/\/[\-A-Z0-9+&@#\/%?=~_|!:,.;]*[\-A-Z0-9+&@#\/%=~_|])/ig;
-      var body        = o.body.replace(/\s/g, '') === '' ? "<span class='empty_comment'>Empty Comment</span>" : o.body.replace(/\n/g, '<br/>').replace(url_regex, '<a href="$1" target="_blank" title="$1">$1</a>');
+      var body        = o.body.replace(/\s/g, '') === '' ? "<span class='empty_comment'>Empty Comment</span>" : $.E(o.body).replace(/\n/g, '<br/>').replace(url_regex, '<a href="$1" target="_blank" title="$1">$1</a>');
       body = $.truncateURL(body);
 
       var commentlabels = self._commentLabelsFactory(o, 1);

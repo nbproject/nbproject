@@ -664,7 +664,7 @@ define(function(require) {
       var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : '';
       var root =  m.get('comment', { ID_location: l.ID, id_parent: null }).first();
 
-      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : root.body;
+      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : $.truncateURL($.E(root.body));
 
       var selected_top = (self._selected_locs.top.indexOf(l.ID) !== -1);
       var selected_all = (self._selected_locs.all.indexOf(l.ID) !== -1);
