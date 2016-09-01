@@ -99,31 +99,6 @@ td.save-cancel
     vertical-align: top;
 }
 
-.emoticon[title="curious"] {
-    content: url("/content/views/emoticons/curious.png");
-}
-.emoticon[title="confused"] {
-    content: url("/content/views/emoticons/confused.png");
-}
-.emoticon[title="useful"] {
-    content: url("/content/views/emoticons/useful.png");
-}
-.emoticon[title="interested"] {
-    content: url("/content/views/emoticons/interested.png");
-}
-.emoticon[title="frustrated"] {
-    content: url("/content/views/emoticons/frustrated.png");
-}
-.emoticon[title="help"] {
-    content: url("/content/views/emoticons/help.png");
-}
-.emoticon[title="question"] {
-    content: url("/content/views/emoticons/question.png");
-}
-.emoticon[title="idea"] {
-    content: url("/content/views/emoticons/idea.png");
-}
-
 .emoticon.icon-clicked {
     background-color: #ddd;
     border-radius: 5px;
@@ -217,7 +192,7 @@ button.tag-people {
   height: 24px;
   position: absolute;
   top: 5px;
-  width: 85px;
+  width: 90px;
   padding: 2px 6px 3px;
   margin: 0;
   border-radius: 5px;
