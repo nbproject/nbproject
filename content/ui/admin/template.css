@@ -1,5 +1,5 @@
 /*
-Author: cf AUTHORS.txt 
+Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
@@ -80,7 +80,7 @@ div.viewport
     font-weight: bold;
 
     position: fixed;
-    z-index: 100;
+    z-index: 10000;
     top: 30px;
     left: 50%;
 

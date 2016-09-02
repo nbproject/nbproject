@@ -500,6 +500,7 @@ div.big-button > a:hover
     align-items: center;
     padding-top: 14px;
     box-sizing: border-box;
+    border-radius: 0;
 }
 
 .nb-nav__btn:hover {
@@ -701,4 +702,155 @@ div.big-button > a:hover
   max-width: 950px;
   margin: auto;
   min-height: 80vh; /* To ensure the footer appears at the bottom of the page even if there's little or no content on the page */
+  color: #505050;
+}
+
+div.ui-widget-header {
+    border: 1px solid #aaa;
+    color: #505050;
+    background-color: #ccc;
+}
+
+/*
+*****************************************************
+* Font-awesome CSS override
+*****************************************************
+* This overrides some of the styles specified in content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.css
+*/
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.eot?v=4.6.1');
+  src: url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.eot?#iefix&v=4.6.1') format('embedded-opentype'), url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.woff2?v=4.6.1') format('woff2'), url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.woff?v=4.6.1') format('woff'), url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.ttf?v=4.6.1') format('truetype'), url('../lib/font-awesome/font-awesome-4.6.1/fonts/fontawesome-webfont.svg?v=4.6.1#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*
+*****************************************************
+* Beginning of CSS override for Datatable icons
+*****************************************************
+* This overrides some of the styles specified in content/lib/DataTables-1.10.12/media/css/jquery.dataTables.css
+*/
+table.dataTable thead .sorting {
+  background-image: url("../lib/DataTables-1.10.12/media/images/sort_both.png");
+}
+table.dataTable thead .sorting_asc {
+  background-image: url("../lib/DataTables-1.10.12/media/images/sort_asc.png");
+}
+table.dataTable thead .sorting_desc {
+  background-image: url("../lib/DataTables-1.10.12/media/images/sort_desc.png");
+}
+table.dataTable thead .sorting_asc_disabled {
+  background-image: url("../lib/DataTables-1.10.12/media/images/sort_asc_disabled.png");
+}
+table.dataTable thead .sorting_desc_disabled {
+  background-image: url("../lib/DataTables-1.10.12/media/images/sort_desc_disabled.png");
+}
+
+/*
+*****************************************************
+* End of CSS override for Datatable icons
+*****************************************************
+*/
+
+button,
+input.button,
+a.button,
+button.gray,
+input.button.gray,
+a.button.gray {
+    font-size: 1em;
+    border-radius: 5px;
+    outline: 0;
+    cursor: pointer;
+    padding: 5px 10px;
+    text-decoration: none;
+    background-color: #999;
+    border: 1px solid #777;
+    color: #fff;
+}
+
+button:hover,
+button:focus,
+input.button:hover,
+input.button:focus,
+a.button:hover,
+a.button:focus,
+button.gray:hover,
+button.gray:focus,
+input.button.gray:hover,
+input.button.gray:focus,
+a.button.gray:hover,
+a.button.gray:focus {
+  background-color: #777;
+}
+
+button.blue,
+input.button.blue,
+a.button.blue {
+  background-color: #1e88e5;
+  border: 1px solid #1879cd;
+  color: #fff;
+}
+
+button.blue:hover,
+button.blue:focus,
+input.button.blue:hover,
+input.button.blue:focus,
+a.button.blue:hover,
+a.button.blue:focus {
+  background-color: #1879cd;
+}
+
+button.white-blue,
+input.button.white-blue,
+a.button.white-blue {
+  background-color: #fff;
+  color: #1e88e5;
+  border: 1px solid #1e88e5;
+}
+
+button.white-blue:hover,
+button.white-blue:focus,
+input.button.white-blue:hover,
+input.button.white-blue:focus,
+a.button.white-blue:hover,
+a.button.white-blue:focus {
+  background-color: #1e88e5;
+  color: #fff;
+}
+
+button.white-gray,
+input.button.white-gray,
+a.button.white-gray {
+  background-color: #fff;
+  color: #999;
+  border: 1px solid #aaa;
+}
+
+button.white-gray:hover,
+button.white-gray:focus,
+input.button.white-gray:hover,
+input.button.white-gray:focus,
+a.button.white-gray:hover,
+a.button.white-gray:focus
+{
+  background-color: #999;
+  color: #fff;
+}
+
+button[disabled=disabled],
+button[disabled=disabled]:hover,
+button[disabled=disabled]:focus,
+input.button[disabled=disabled],
+input.button[disabled=disabled]:hover,
+input.button[disabled=disabled]:focus,
+a.button[disabled=disabled],
+a.button[disabled=disabled]:hover,
+a.button[disabled=disabled]:focus {
+    background-color: #eee;
+    color: #ff0;
+    border: 1px solid #aaa;
+    color: #777;
+    cursor: not-allowed;
 }

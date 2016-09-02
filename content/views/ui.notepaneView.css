@@ -91,10 +91,45 @@ div.location-shortbody-text
 {
     font-family: arial;
     font-size: medium;
-    overflow-x: hidden;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: #226;
+    margin-right: 5px;
+    height: 22px;
+}
+
+div.notepaneView h1,
+div.notepaneView h2,
+div.notepaneView h3,
+div.notepaneView h4,
+div.notepaneView h5,
+div.notepaneView h6,
+div.notepaneView p,
+div.notepaneView ul,
+div.notepaneView pre,
+div.notepaneView xmp,
+div.notepaneView plaintext,
+div.notepaneView listing{
+  margin: 2px;
+  font-size: 1em;
+  line-height: 1.2em;
+}
+
+div.notepaneView ul {
+  padding-left: 15px;
+}
+
+div.notepaneView span.empty_comment {
+  font-weight: 700;
+  font-variant: normal;
+  padding: 1px 7px;
+  font-size: 0.8em;
+}
+
+div.location-lens.selected span.tag-person {
+  background-color: #1976D2;
+  border: 1px solid #1565C0;
 }
 
 div.location-title
@@ -187,6 +222,7 @@ div.location-flags
     float: left;
     min-width: 60px;
     margin-left: 3px;
+    margin-top: 3px;
 }
 
 div.location-lens input[type=button].threadselect

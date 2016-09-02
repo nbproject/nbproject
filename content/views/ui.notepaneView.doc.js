@@ -353,7 +353,7 @@ define(function(require) {
         autoOpen: false,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
-        open: function(event, ui) { 
+        open: function(event, ui) {
           // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
           $('.ui-widget-overlay').bind('click', function() {
             $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
@@ -464,9 +464,9 @@ define(function(require) {
         case "filter_emoticons":
           var m = self._model;
           var locs = m.get("location", {id_source:  self._id_source});
-  
+
           var root =  m.get("comment", {});
-  
+
           var emoticon_id_locs={};
           if(root!==null)
           {
@@ -479,10 +479,10 @@ define(function(require) {
                           break;
                        }
                   }
-  
+
               }
           }
-  
+
           self._filters.emoticon=emoticon_id_locs;
           self._page = 1;
           self._pages = {};
@@ -664,7 +664,7 @@ define(function(require) {
       var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : '';
       var root =  m.get('comment', { ID_location: l.ID, id_parent: null }).first();
 
-      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
+      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : $.truncateURL($.E(root.body));
 
       var selected_top = (self._selected_locs.top.indexOf(l.ID) !== -1);
       var selected_all = (self._selected_locs.all.indexOf(l.ID) !== -1);

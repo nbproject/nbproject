@@ -15,10 +15,14 @@
 /*global console:false*/
 
 define(function(require) {
-	var concierge       = require('concierge'),
-			view            = require('view'),
-			$               = require('jquery'),
-			jquery_ui       = require('jquery_ui');
+	var concierge = require('concierge');
+	var view = require('view');
+	var $ = require('jquery');
+	var jquery_ui = require('jquery_ui');
+	var tinyMCE = require('tinyMCE');
+	var rangy = require('rangy-core');
+	var rangySelectionSaveRestore = require('rangy-selectionsaverestore');
+	var class_members = [];
 
 	var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
 	var FILETYPES = { TYPE_PDF: 1, TYPE_YOUTUBE: 2, TYPE_HTML5VIDEO: 3, TYPE_HTML5: 4 };
@@ -26,7 +30,7 @@ define(function(require) {
 		_create: function () {
 			$.ui.view.prototype._create.call(this);
 			var self = this;
-			var O        = self.options;
+			var O = self.options;
 			self._allowStaffOnly = O.allowStaffOnly;
 			self._allowAnonymous = O.allowAnonymous;
 			self._allowTagPrivate = O.allowTagPrivate;
@@ -56,7 +60,7 @@ define(function(require) {
 
 					// only allow one current editor if draft is not empty
 					if (self.element.children().length) {
-						if ($('textarea', self.element).val().length > 0) {
+						if ($('#commentTB').text().trim().length > 0) {
 							$.I('You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.');
 							return;
 						} else {
@@ -64,7 +68,7 @@ define(function(require) {
 						}
 					}
 
-					//TODO: if existting draft, sync its content w/ its model
+					//TODO: if existing draft, sync its content w/ its model
 					//now create new draft:
 					id_item        = (new Date()).getTime();
 					draft        = {};
@@ -88,7 +92,7 @@ define(function(require) {
 
 					// only allow one current editor if draft is not empty
 					if (self.element.children().length) {
-						if ($('textarea', self.element).val().length > 0) {
+						if ($('#commentTB').text().trim().length > 0) {
 							$.I('You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.');
 							return;
 						} else {
@@ -113,7 +117,7 @@ define(function(require) {
 
 					// only allow one current editor if draft is not empty
 					if (self.element.children().length) {
-						if ($('textarea', self.element).val().length > 0) {
+						if ($('#commentTB').text().trim().length > 0) {
 							$.I('You have an active comment being authored right now. If you want to create a new one, please either save or cancel this draft.');
 							return;
 						} else {
@@ -130,14 +134,22 @@ define(function(require) {
 					self._inReplyTo        = 0;
 					self._selection        = null;
 					self._sel        = null;
-					self._note        = model.o.comment[evt.value];
+
+					var rawComment = model.o.comment[evt.value];
+					if($.isHtmlComment(rawComment.body)){
+					  // Remove tag added (during comment creation) to distinguish HTML comments from the
+					  // older text comments that were created before introducing the WYSIWYG editor.
+					  rawComment.body = $.removeHtmlMarker(rawComment.body);
+					}
+
+					self._note        = rawComment;
 					model.add('draft', drafts);
 					self._render(id_item);
 				break;
 				case 'focus_thread':
 
 					// We assume the thread is already rendered, we simply focus
-					$('textarea', self.element).focus();
+					$('#commentTB').focus();
 				break;
 				case 'set_duration_box':
 					var durationBox = $('#duration')[0];
@@ -147,7 +159,7 @@ define(function(require) {
 
 					// only allow one current editor if draft is not empty
 					if (self.element.children().length) {
-						if ($('textarea', self.element).val().length === 0) {
+						if ($('#commentTB').text().trim().length === 0) {
 							$('button[action=discard]', self.element).click(); // HACK: get f_discard to work from our scope.
 						}
 					}
@@ -167,9 +179,6 @@ define(function(require) {
 			var self = this;
 			var m = self._model;
 			var members = m.get('members', {}).items || {};
-			var tag_table = $('#tagBoxes');
-			var i = 0;
-			var row;
 			var strcmp = function(s,t) {
 					s=s.toUpperCase();
 					t=t.toUpperCase();
@@ -188,21 +197,20 @@ define(function(require) {
 			});
 			// Helper for generating checkbox HTML
 			var get_checkbox_html = function (member) {
-				return "<input type='checkbox' class='tag_checkbox' name='tags' value='" + member.id + "' id='tag_checkbox_" + member.id + "'/>";
+				return "<label class='tag-person gray-hover'>" +
+                  "<input type='checkbox' class='tag-checkbox' name='tags' value='" + member.id + "' id='tag-checkbox-" + member.id + "'>" +
+                  ' ' + member.firstname + ' ' + member.lastname +
+                "</label>";
 			};
 
+      var $tags_container = $('#tagBoxes');
 			order.forEach(function(id) {
 					var member = members[id];
-					if (member.firstname !== null ||
-					//hack to skip "guest" accounts
-							member.lastname !== null) {
-							var member_html = '<td>' + get_checkbox_html(member) + ' ' + member.firstname + ' ' + member.lastname + '</td>';
-							if (i % 3 === 0) {
-									row = $('<tr>').addClass('data')
-											.appendTo(tag_table);
-							}
-							row.append(member_html);
-							i++;
+					if (member.firstname !== null || member.lastname !== null) {  // hack to skip "guest" accounts
+							$tags_container.append(get_checkbox_html(member));
+							class_members.push({
+							  name: member.firstname + ' ' + member.lastname,
+							  id: member.id});
 					}
 			});
 		},
@@ -239,155 +247,252 @@ define(function(require) {
 			var is_video = model.o.file[self._file].filetype === FILETYPES.TYPE_YOUTUBE;
 			var staffoption    = self._allowStaffOnly ? "<option value='2'>Instructors and TAs</option>" : ' ';
 			var tagPrivateOption = self._allowTagPrivate ? "<option value='4'>Myself and Tagged Users</option>" : ' ';
-			var signoption    = self._allowAnonymous ? "<span id='signoption' title=\"check to keep this comment anonymous to other students\"><input type='checkbox' id='checkbox_sign' value='anonymous'/><label for='checkbox_sign'>Anonymous to students</label></span>" : ' ';
-			var questionoption = self._doEdit ? ' ' : "<span><input type='checkbox' id='checkbox_question' value='question'/><label for='checkbox_question'>Reply Requested</label></span><br/> ";
-			var titleoption = self._note === null && is_video ? "<span><input type='checkbox' id='checkbox_title' value='title' /><label for='checkbox_question'>Is Section Title</label></span><br/> " : ' ';
+			var signoption    = self._allowAnonymous ? "<div id='signoption' title=\"check to keep this comment anonymous to other students\"><label for='checkbox_sign' class='gray-hover'><input type='checkbox' id='checkbox_sign' value='anonymous'/>Anonymous to students</label></div>" : ' ';
+			var questionoption = self._doEdit ? ' ' : "<div><label for='checkbox_question' class='gray-hover'><input type='checkbox' id='checkbox_question' value='question'/>Reply Requested</label></div> ";
+			var titleoption = self._note === null && is_video ? "<div><label for='checkbox_question' class='gray-hover'><input type='checkbox' id='checkbox_title' value='title' />Is Section Title</label></div> " : ' ';
 			var checkbox_options = questionoption + titleoption + signoption;
 
 			// Determines whether setting time and duration should be allowed
 			var allow_time_set = is_video && !self._inReplyTo && (!self._doEdit || (self._note && self._note.id_parent == null));
 			var fetch_duration = self._note ? model.get('location', { ID: self._note.ID_location }).first().duration : null;
-			var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration / self._SEC_MULT_FACTOR) : '2.00';
+			var init_duration = allow_time_set && self._doEdit && fetch_duration != null ? String(fetch_duration / self._SEC_MULT_FACTOR) : '2.0';
 
-			var duration_option = allow_time_set ? "<label for='duration'>Duration:</label><br/><input id='duration' type='text' size='1' value='" + init_duration + "' /> seconds<br/>" : ' ';
-			var header    = self._inReplyTo ? 'Re: ' + $.E($.ellipsis(self._note.body, 100)) : 'New note...';
+			var duration_option = allow_time_set ? "<label for='duration' class='shift-right1'>Duration: </label><input id='duration' type='text' size='3' value='" + init_duration + "' /> seconds<br/>" : ' ';
+			var header    = self._inReplyTo ? 'Re: ' + self._note.body : 'New Comment';
 			self._id_ensemble = model.o.file[self._file].ID_ensemble;
 			self._admin = self._id_ensemble === null ? false : self._model.o.ensemble[self._id_ensemble].admin;
 			var fetch_pause = self._note ? model.get('location', { ID: self._note.ID_location }).first().pause : self._defaultPause;
 			var pause_checked = ' ';
 			if (fetch_pause) {pause_checked = 'checked';}
 
-			var pause_option = is_video && self._admin ? "<span><input type='checkbox' id='checkbox_pause' value='pause' " + pause_checked + "/><label for='checkbox_pause'>Pause on comment?</label></span><br/> " : ' '; //TODO: add classwide option whether to show this or not
+			var pause_option = is_video && self._admin ? "<span><label for='checkbox_pause' class='gray-hover'><input type='checkbox' id='checkbox_pause' value='pause' " + pause_checked + "/>Pause on comment</label></span><br/> " : ' '; //TODO: add classwide option whether to show this or not
 			console.log(self.options);
-			var set_time_buttons = allow_time_set ? "<button action='start' class='time_button'>Set Start Time Here</button><button action='end' class='time_button'>Set End Time Here</button>" : '';
+			var set_time_buttons = allow_time_set ? "<button action='start' class='time_button white-gray'>Set Start Time Here</button><button action='end' class='time_button white-gray'>Set End Time Here</button>" : '';
 
 			var section_tag_option2 = "<br /><br /><label for='section_tag'>Tag Full Section:</label><br /><select id='section_tag' name='section_tag'><option value='0'>----Select Section to Tag----</option></select>";
 			var section_tag_option = ''; //hack to hide tags
-			var curiousIcon = $('<img title="curious" class="emoticon"/>');
-			var confusedIcon = $('<img title="confused" class="emoticon"/>');
-			var usefulIcon = $('<img title="useful" class="emoticon"/>');
-			var interestedIcon = $('<img title="interested" class="emoticon"/>');
-			var frustratedIcon = $('<img title="frustrated" class="emoticon"/>');
-			var helpIcon = $('<img title="help" class="emoticon"/>');
-			var questionIcon = $('<img title="question" class="emoticon"/>');
-			var ideaIcon = $('<img title="idea" class="emoticon"/>');
-			
+
+			var curiousIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/curious.png" title="curious" class="emoticon"/>');
+			var confusedIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/confused.png" title="confused" class="emoticon"/>');
+			var usefulIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/useful.png" title="useful" class="emoticon"/>');
+			var interestedIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/interested.png" title="interested" class="emoticon"/>');
+			var frustratedIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/frustrated.png" title="frustrated" class="emoticon"/>');
+			var helpIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/help.png" title="help" class="emoticon"/>');
+			var questionIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/question.png" title="question" class="emoticon"/>');
+			var ideaIcon = $('<img src="' + Pers.server_url + '/content/views/emoticons/idea.png" title="idea" class="emoticon"/>');
+
 			var iconList = [curiousIcon, confusedIcon, usefulIcon, interestedIcon, frustratedIcon, helpIcon, questionIcon, ideaIcon];
 
 			var addTag = function(type) {
-				var comment = $('#commentTB');
-				var text= comment.val();
-				var cursorIndex = comment.prop('selectionStart');
-				var tag = '#' + type;
-				//formats such that tag has one space on either side
-				if (text[cursorIndex - 1] !== ' ' && cursorIndex !== 0) {
-					tag = ' ' + tag;
-				}
-				if (text[cursorIndex] !== ' ' && cursorIndex !== text.length) {
-					tag = tag + ' ';
-				}
-				//inserts tag at cursor location
-				text = [text.slice(0, cursorIndex), tag, text.slice(cursorIndex)].join('');
-				comment.val(text);
-				comment.focus();
-				//positions cursor at the end of the tag
-				comment.prop('selectionStart', cursorIndex + tag.length);
-				comment.prop('selectionEnd', cursorIndex + tag.length);
+			  // Ensure that the input has focus before inserting tag (if it wasn't previously selected). This is important
+			  // because pasteHtmlAtCaret() inserts its content into any element that has the focus.
+        pasteHtmlAtCaret('#' + type + ' ');
 			}
 
 			var removeTag = function(type) {
-				var comment = $('#commentTB');
-				var text= comment.val();
-				text = text.replace('#' + type, '');
-				text = text.replace('  ', ' ').trim();
-				comment.val(text);
-				comment.focus();
+			  var savedSel = rangy.saveSelection();  // Save cursor position
+				var $comment = $('#commentTB');
+				var htmlVal = replaceNbsps($comment.html());
+				htmlVal = htmlVal.replace(new RegExp('#' + type, 'gi'), '');
+				htmlVal = htmlVal.replace(new RegExp('  ', 'gi'), ' ').trim();
+				$comment.html(htmlVal);
+        rangy.restoreSelection(savedSel, true);  // Restore cursor position
+			}
+
+			var trimComment = function() {
+			  var savedSel = rangy.saveSelection();  // Save cursor position
+				var $comment = $('#commentTB');
+				var htmlVal = replaceNbsps($comment.html());
+				htmlVal = htmlVal.replace(new RegExp('  ', 'gi'), ' ').trim();
+				$comment.html(htmlVal);
+				if(htmlVal){
+				  $comment.append("&nbsp;");
+				}
+        rangy.restoreSelection(savedSel, true);  // Restore cursor position
 			}
 
 			var toggleTag = function() {
 				if($(this).hasClass('icon-clicked')) {
 					removeTag($(this).attr('title'));
+					$(this).removeClass('icon-clicked');
 				} else {
 					addTag($(this).attr('title'));
+					$(this).addClass('icon-clicked');
 				}
-				$(this).toggleClass('icon-clicked');
 			}
 
-			var emoticonList = $('<div></div>');
-			for (var i in iconList) {
-				emoticonList.append(iconList[i]);
-			}
+			/*
+			Use this function to select the textbox before calling pasteHtmlAtCaret(). This function
+			expects to receive a javascript object (not jQuery)
+			*/
+      function selectElement(element) {
+        if (window.getSelection) {
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          var range = document.createRange();
+          range.selectNodeContents(element);
+          sel.addRange(range);
+        } else if (document.selection) {
+          var textRange = document.body.createTextRange();
+          textRange.moveToElementText(element);
+          textRange.select();
+        }
+      }
 
-			var contents = $([
-												"<div class='editor-header'>", header, "</div>" +
-												"<div class='notebox'>" + 
-													"<div class='notebox-body'>" + 
-														"<div>" + 
-															"<a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a>" + 
-														"</div>"+
-														"<table id='textBoxs'>" +
-															"<tr>" +
-																"<b>Comment: <font size='1'>(feel free to write your own tags)</font></b>" +
-																"<textarea id='commentTB'></textarea>" + 
-															"</tr>" +
-														"</table>" +
-													"</div>" +
-												"</div>" +
-												"<div class='editor-footer'>" +
-													"<table class='editorcontrols'>" + 
-														"<tr>" + 
-															"<td class='group'>",
-															duration_option,
-															pause_option,
-															"<label for='share_to'>Shared&nbsp;with:&nbsp;</label>" + 
-															"<select id='share_to' name='vis_", id_item, "'>" + 
-																"<option value='3'>The entire class</option>",
-																staffoption,
-																"<option value='1'>Myself only</option>" + 
-																tagPrivateOption +
-															"</select>" +
-															"<br/>" +
-															checkbox_options +
-															"</td>" + 
-															"<td class='save-cancel'>" +
-																set_time_buttons +
-																"<button action='save'>Submit</button>" + 
-																"<button action='discard' >Cancel</button>" + 
-																section_tag_option +
-															"</td>" + 
-														"</tr>" + 
-													"</table>" + 
-													"<br>" + 
-													"<table id='tagBoxes'>" +
-														"<tr>" +
-															"<td>" + 
-																"<b>Select Users to Tag:</b>" + 
-															"</td>" + 
-															"<td>" +
-																"<button id='select_all_button' action='select_all'>Select All</button>" + 
-															"</td>" + 
-															"<td>" + 
-																"<button id='deselect_all_button' action='deselect_all'>Deselect All</button>" + 
-															"</td>" + 
-														"</tr>" + 
-													"</table>" + 
-												"</div>" + 
-											"</div>"].join(""));
-			self.element.append(contents);
-			$('.notebox-body').append(emoticonList);
+      /*
+      * Code for inserting html at cursor in a content editable div. selectPastedContent is an extra boolean parameter
+      * to indicated whether or not the pasted element should be highlighted. Source: http://stackoverflow.com/a/6691294/978369
+      *
+      */
+      function pasteHtmlAtCaret(html, selectPastedContent) {
+        var sel, range;
+        if (window.getSelection) {
+            // IE9 and non-IE
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+
+                // Range.createContextualFragment() would be useful here but is
+                // only relatively recently standardized and is not supported in
+                // some browsers (IE9, for one)
+                var el = document.createElement("div");
+                el.innerHTML = html;
+                var frag = document.createDocumentFragment(), node, lastNode;
+                while ( (node = el.firstChild) ) {
+                    lastNode = frag.appendChild(node);
+                }
+                var firstNode = frag.firstChild;
+                range.insertNode(frag);
+
+                // Preserve the selection
+                if (lastNode) {
+                    range = range.cloneRange();
+                    range.setStartAfter(lastNode);
+                    if (selectPastedContent) {
+                        range.setStartBefore(firstNode);
+                    } else {
+                        range.collapse(true);
+                    }
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+        } else if ( (sel = document.selection) && sel.type != "Control") {
+            // IE < 9
+            var originalRange = sel.createRange();
+            originalRange.collapse(true);
+            sel.createRange().pasteHTML(html);
+            if (selectPastedContent) {
+                range = sel.createRange();
+                range.setEndPoint("StartToStart", originalRange);
+                range.select();
+            }
+        }
+      }
+
+			self.element.append(require("hbs!templates_dir/editorview")(
+			  {header:header,
+			  durationOption: duration_option,
+			  pauseOption: pause_option,
+			  idItem: id_item,
+			  staffOption: staffoption,
+			  tagPrivateOption: tagPrivateOption,
+			  checkboxOptions: checkbox_options,
+			  setTimeButtons: set_time_buttons,
+			  sectionTagOption: section_tag_option}));
+
+      var $emoticonList = $(".emoticon-container");
+      for (var i in iconList) {
+        $emoticonList.append(iconList[i]);
+      }
+      $emoticonList.append($(".tag-people-container").detach());  // Move the "Tag People" button to the end.
 			$('.emoticon').click(toggleTag);
 
+			var replaceNbsps = function(str) { // Replace &nbsp; with " "
+        var str2 = str.replace(new RegExp('&nbsp;', 'g'), ' ');
+        return str2.replace(new RegExp(String.fromCharCode(160), 'g'), ' ');
+      }
+
+      var isTagInText = function(tag) {
+        var tag2 = tag.toLowerCase();
+        var paddedText = ' ' + replaceNbsps($('#commentTB').text().toLowerCase()) + ' ';
+				return paddedText.indexOf(' ' + tag2 + ' ') > -1;
+      }
+
 			var watchTextBox = function(e) {
+
 				var knownTags = ['curious','confused','useful','interested','frustrated','help','question','idea'];
 				for (var i in knownTags) {
 					var tag = knownTags[i];
-					if ((' ' + $('#commentTB').val() + ' ').indexOf(' #' + tag + ' ') > -1) {
+					if (isTagInText("#" + tag)) {
 						$('.emoticon[title="' + tag + '"]').addClass('icon-clicked');
 					} else {
 						$('.emoticon[title="' + tag + '"]').removeClass('icon-clicked');
 					}
 				}
+
+				// Process tagged people: if the user edits the text to change the tag's text, remove
+        // the tag from the text box and deselect its check box.
+        var allMembers = model.get('members', {}).items;
+        $("#commentTB span.tag-person").each(function (index, element) {
+          var $this = $(this);
+					var id = parseInt($this.attr("data-person-id"));
+					var member = allMembers[id];
+					var memberTag = "@" + member.firstname + " " + member.lastname;
+					if($this.text() !== memberTag) {
+					  $this.remove(); // Remove tag from text box
+					  $('#tagBoxes input[value="' + id + '"]').prop('checked', false);  // Deselect its check box.
+					}
+				});
+
 			};
+
+			/*
+			*********************************************************
+      * Beginning of TinyMCE initialization
+      *********************************************************
+      */
+      // This baseURL gets set here to ensure that in the embedded sidebar, the baseURL points to
+      // the nb server instead of the domain of the webpage being viewed.
+      tinyMCE.baseURL = Pers.server_url + "/content/lib/tinymce/js/tinymce";
+			tinyMCE.init({
+				selector: '#commentTB',
+				menubar: false,
+				statusbar: false,
+				inline: true,
+				toolbar: true,
+				theme: 'modern',
+				// height: '200',
+				width: '100%',
+				plugins: 'link, autoresize, mention placeholder',
+				autoresize_bottom_margin: "2",
+				autoresize_min_height: 50,
+				toolbar: 'styleselect | bold italic | link | numlist bullist indent outdent',
+				skin_url: 'http://stevendevooght.github.io/tinyMCE-mention/stylesheets/tinymce/skins/light',
+				mentions: {
+					render: function(item) {
+						// Callback to set the HTML of an item in the autocomplete dropdown.
+						return '<li>' +
+							'<a href="#">' + item.name + '</a>' +
+							'</li>';
+					},
+					insert: function(item) {
+						// Callback to set the content you want to insert in tinyMCE.
+						  $('#tagBoxes input[value="' + item.id + '"]').prop('checked', true);  // Select its check box.
+					    return '<span class="tag-person" data-person-id="' + item.id + '">@' + item.name + '</span>';
+					},
+					source: function (query, process, delimiter)  {
+					  process(class_members);
+					}
+				}
+			});
+
+			/*
+			*********************************************************
+      * End of TinyMCE initialization
+      *********************************************************
+      */
 
 			$('#commentTB').bind('input',  null, watchTextBox);
 
@@ -403,7 +508,7 @@ define(function(require) {
 				$(this).val('0');
 				var section_members = model.get('members', { section: tagged_section_id });
 				for (var tagged_member_id in section_members.items) {
-					$('#tag_checkbox_' + String(tagged_member_id)).prop('checked', true);
+					$('#tag-checkbox-' + String(tagged_member_id)).prop('checked', true);
 				}
 			});
 
@@ -423,14 +528,80 @@ define(function(require) {
 			$('#tagBoxes').css('visibility', 'visible');
 
 			// Set Up Tagging
+			$(".tag-people").click(function(){
+			  /*
+			   * Disable auto focus before opening the dialog. That way, the first button won't have focus when the dialog opens.
+			   Source: http://stackoverflow.com/questions/9816299/unable-to-remove-autofocus-in-ui-dialog
+			  */
+			  $.ui.dialog.prototype._focusTabbable = function(){};
+
+			  $("#tagBoxes").dialog({
+          width: 450,
+          minHeight: 150,
+          maxHeight: 1000,
+          modal: true,
+          show: { effect: "blind", duration: 200, direction: "down"},
+          title: "Tag People",
+          position: { my: "right-5 bottom-65", at: "right bottom", of: "#commentTB" },
+          open: function(event, ui) {
+            // Select the check boxes that correspond to tags in the editor.
+            $("#commentTB span.tag-person").each(function (index, element) {
+              var $this = $(this);
+              var id = parseInt($this.attr("data-person-id"));
+              $('#tagBoxes input[value="' + id + '"]').prop('checked', true);  // Select its check box.
+            });
+
+            // Ensures that clicking outside the modal closes it. Ref: http://stackoverflow.com/a/4325673/978369
+            $('.ui-widget-overlay').bind('click', function() {
+              $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+            });
+          },
+        });
+			});
+
 			self._populate_tag_list();
+
+			var getTaggedMemberHtml = function(member) {
+			  return '<span class="tag-person" data-person-id="' + member.id + '">@' + member.firstname + ' ' + member.lastname + '</span>&nbsp;';
+			}
+
+			var removeTaggedMemberHtml = function(id) {
+			  $("#commentTB span[data-person-id='" + id + "']").remove();
+			}
+
+			$('#tagBoxes :checkbox').click(function() {
+        var $this = $(this);
+        var id = $this[0].value;
+        var member = model.get('members', {}).items[id];
+        // $this will contain a reference to the checkbox
+        if ($this.is(':checked')) {
+          $("#commentTB").append(getTaggedMemberHtml(member));
+        } else {
+          removeTaggedMemberHtml(id);
+          trimComment();
+        }
+      });
 
 			$('#select_all_button').click(function () {
 				$('#tagBoxes input').prop('checked', true);
+				var members = model.get('members', {}).items;
+				// Todo(Kes): Add all names to the text box
+				$('#tagBoxes input').each(function (index, element) {
+					var id = parseInt(element.value);
+					member = members[id];
+//					pasteHtmlAtCaret(memberTag);
+          $("#commentTB").append(getTaggedMemberHtml(member));
+				});
 			});
 
 			$('#deselect_all_button').click(function () {
+			  var members = model.get('members', {}).items;
+			  $('#tagBoxes input:checked').each(function (index, element) {
+					var id = parseInt(element.value);
+					removeTaggedMemberHtml(id);
+				});
 				$('#tagBoxes input').prop('checked', false);
+				trimComment();
 			});
 
 			// Check boxes for tagged people if editing
@@ -464,6 +635,7 @@ define(function(require) {
 
 			var f_discard = function (evt) {
 				f_cleanup();
+				tinyMCE.remove();
 				$.concierge.trigger({ type:'editor_delete', value: '' });
 			};
 
@@ -535,7 +707,7 @@ define(function(require) {
 
 				var msg = {
 					type: $('select[name=vis_' + id_item + ']', self.element).val(),
-					body:  $('textarea', self.element)[0].value,
+					body:  $.addHtmlMarker($('#commentTB').html()),
 					signed: self._allowAnonymous ? $('input[value=anonymous]:not(:checked)', self.element).length : 1,
 					marks: {},
 					title: $('input[value=title]:checked', self.element).length,
@@ -649,7 +821,7 @@ define(function(require) {
 
 			//if editing: fill in w/ exising values.
 			if (self._doEdit) {
-				$('textarea', self.element)[0].value = self._note.body;
+				$('#commentTB').html(self._note.body);
 				$('input[name=vis_' + id_item + ']:checked', self.element).removeAttr('checked');
 				$('input[name=vis_' + id_item + '][value=' + self._note.type + ']', self.element).attr('checked', 'checked');
 				if (self._note.signed) {
@@ -660,8 +832,17 @@ define(function(require) {
 			}
 
 			if (suppress_focus !== true || typeof suppress_focus === 'undefined') {
-				$('textarea', self.element).focus();
+				$('#commentTB').focus();
 			}
+
+			// Calculate the minimum height of the text area to ensure that we don't have wasted
+      // blank space underneath. In the equation below, 136 is a constant gotten by experimenting
+      // with various numbers. It accounts for the space occupied by the tagging icons and buttons.
+      var commentBoxMinHeight = $(".view.editor").height() - $(".editor-header").height() - $(".editor-footer").height() - 136;
+      if(commentBoxMinHeight < 50) {
+        commentBoxMinHeight = 50;
+      }
+      $("#commentTB").css("min-height", commentBoxMinHeight);
 		},
 
 		set_model: function (model) {
