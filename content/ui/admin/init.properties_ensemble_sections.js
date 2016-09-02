@@ -51,6 +51,7 @@ define(function(require) {
         // to the div containing the search box. For more details, see https://datatables.net/reference/option/dom#Styling
         "dom": '<"listing-filter"f>t',
         "oSearch": {"bSmart": false}, // Only do exact match in searches.
+        "paging": false,
         language: { // This replaces the label of the search field with a placeholder. For more details, see https://datatables.net/reference/option/language.searchPlaceholder
             search: "_INPUT_",
             searchPlaceholder: "Search or Filter..."
@@ -213,7 +214,7 @@ define(function(require) {
             // New sections to be created.
             $("#new-sections-from-csv").empty();
             for(var i = 0; i < newSections.length; i++) {
-              $("#new-sections-from-csv").append("<span>" + newSections[i] + "</span>");
+              $("#new-sections-from-csv").append("<span class='section-name'>" + newSections[i] + "</span>");
             }
             $("#new-sections-count").text(newSections.length);
 
@@ -225,6 +226,7 @@ define(function(require) {
               // to the div containing the search box. For more details, see https://datatables.net/reference/option/dom#Styling
               "dom": '<"updated-listing-filter"f>t',
               "oSearch": {"bSmart": false}, // Only do exact match in searches.
+              "paging": false,
               language: { // This replaces the label of the search field with a placeholder. For more details, see https://datatables.net/reference/option/language.searchPlaceholder
                   search: "_INPUT_",
                   searchPlaceholder: "Search or Filter..."

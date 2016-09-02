@@ -118,19 +118,17 @@
     margin-top: 10px;
   }
 
-  .section-info,
-  #new-sections-from-csv span {
-    margin-right: 10px;
+  span.section-name {
     border: 1px solid #ccc;
     padding: 2px 5px 2px 22px;
     background-color: #f5f5f5;
     position: relative;
+    display: inline-block;
+    margin: 5px;
   }
 
-  #new-sections-from-csv span {
-    padding: 2px 5px;
-    display: inline-block;
-    margin: 10px 10px 5px 5px;
+  #new-sections-from-csv span.section-name {
+    padding-left: 5px;
   }
 
   a.delete-link {
@@ -195,7 +193,7 @@
   <p class="error-message">{{error_message}}</p>
     <div class="all-sections">
       {{#each sections}}
-      <span class="section-{{ID}}-info section-info">
+      <span class="section-name section-{{ID}}-info">
         <!-- The action of this link is configured via Javascript -->
         <a href='#' class="delete-link" data-section-id="{{ID}}"><i class="fa fa-trash-o"></i></a>
         {{#if name}}{{name}}{{else}}<span class="lowcontrast">Untitled</span>{{/if}}
