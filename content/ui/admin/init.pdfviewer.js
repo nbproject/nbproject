@@ -26,12 +26,13 @@ define(function(require) {
   var threadview      = require('threadview');
   var editorview      = require('editorview');
   var Handlebars      = require('handlebars');
+  var $               = require('jquery');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str = NB$  ?  'NB$' : 'jQuery';
 
   Pers.init = function () {
 

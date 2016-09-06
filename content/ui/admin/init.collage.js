@@ -30,8 +30,8 @@ define(function(require) {
       threadview      = require('threadview'),
       editorview      = require('editorview');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   Pers.init = function () {

@@ -21,7 +21,7 @@ define(function(require) {
   var calendrical = require('calendrical');
   var moment = require('moment');
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {
       $.ui.view.prototype._create.call(this);

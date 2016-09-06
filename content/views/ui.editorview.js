@@ -24,7 +24,7 @@ define(function(require) {
 	var rangySelectionSaveRestore = require('rangy-selectionsaverestore');
 	var class_members = [];
 
-	var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+	var $str        = NB$ ? 'NB$' : 'jQuery';
 	var FILETYPES = { TYPE_PDF: 1, TYPE_YOUTUBE: 2, TYPE_HTML5VIDEO: 3, TYPE_HTML5: 4 };
 	var V_OBJ = $.extend({}, $.ui.view.prototype, {
 		_create: function () {

@@ -18,6 +18,7 @@ define(function(require) {
   var Pers            = require('pers');
   var Handlebars 	= require('handlebars');
   var concierge       = require('concierge');
+  var $               = require('jquery');
   var invitekey = window.location.href.split(document.location.pathname + "?invite_key=")[1];
   if (typeof invitekey === 'undefined'){
     invitekey = "";
@@ -25,8 +26,8 @@ define(function(require) {
 
   var form = null;
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   function cb(data, status){

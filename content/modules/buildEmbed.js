@@ -23,11 +23,11 @@ define(function(require) {
       Notepane        = require('notepane_doc'),
       threadview      = require('threadview'),
       editorview      = require('editorview');
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
 
   var $vp;
   var id_ensemble = null;

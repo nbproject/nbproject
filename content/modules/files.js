@@ -23,10 +23,11 @@ define(function(require) {
   var duplicatewizard = require('duplicatewizard');
   var filterwizard    = require('filterwizard');
   var moment = require('moment');
+  var $ = require('jquery');
 
   //require auth
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   var Files = {};

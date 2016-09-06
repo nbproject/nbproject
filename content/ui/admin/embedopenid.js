@@ -17,8 +17,8 @@ define(function(require) {
       Conf            = require('conf'),
       Dom             = require('dom');
   //require auth
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   Pers.init = function () {

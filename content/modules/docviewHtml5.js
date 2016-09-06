@@ -11,11 +11,11 @@ define(function(require) {
 
   var _scrollTimerID = null;
   var _scrollCounter = 0;
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
   var cssApplier = null;
   var lastClicked = { set: [], clicked: null };
 

@@ -13,9 +13,10 @@ define(function(require) {
   var Conf          = require('conf');
   var Models        = require('models');
   var concierge     = require('concierge');
+  var $             = require('jquery');
   var jquery_ui     = require('jquery_ui');
 
-  var $ = 'NB$' in window ? NB$ : $;
+  $ = NB$ ? NB$ : $;
 
   // it would be great to use document.currentScript, but it only seems to be supported
   // on firefox for now, so we match by filename.
@@ -34,7 +35,7 @@ define(function(require) {
     currentScript: nb_script[nb_script.length - 1],
     embedded: false,
   };
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
 
   /* trick for browsers that don't support document.activeElement
      adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
