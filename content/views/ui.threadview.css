@@ -351,13 +351,6 @@ button.mark-toggle.active
     color: #707070;
 }
 
-div.threadview-pane .note-body {
-  height: 20px;
-  margin-right: 5px;
-  overflow: hidden;
-  display: block;
-}
-
 div.threadview-pane p,
 div.threadview-pane ul,
 div.threadview-pane pre,
