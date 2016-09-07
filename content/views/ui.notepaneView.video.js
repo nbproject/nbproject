@@ -20,7 +20,7 @@ define(function(require) {
       contextmenu     = require('contextmenu'),
       filterwizard    = require('filterwizard');
 
-  var $str     = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str     = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _f_location_seen: function (id_location) {
       var self = this;

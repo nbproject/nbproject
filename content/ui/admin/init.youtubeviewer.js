@@ -28,11 +28,11 @@ define(function(require) {
       notepaneview    = require('notepane_video'),
       threadview      = require('threadview');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
     var matches = document.location.pathname.match(/\/(\d*)$/);

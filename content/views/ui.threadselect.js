@@ -12,7 +12,7 @@ define(function(require) {
       jquery_ui       = require('jquery_ui'),
       models          = require('models');
 
-  var $str = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {
       $.ui.view.prototype._create.call(this);

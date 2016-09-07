@@ -30,8 +30,8 @@ define(function(require) {
       editorview      = require('editorview'),
       spreadsheetview = require('spreadsheetview');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   Pers.init = function () {

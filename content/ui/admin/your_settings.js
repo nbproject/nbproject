@@ -19,8 +19,8 @@ define(function(require) {
   var Handlebars 	= require('handlebars');
   var concierge       = require('concierge');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
   Pers.init = function () {
