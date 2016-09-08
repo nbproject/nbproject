@@ -252,6 +252,7 @@ button.main-btn.submit {
 #commentTB {
   padding: 5px;
   min-height: 50px;
+  line-height: 1.5em;
 }
 
 #commentTB p,

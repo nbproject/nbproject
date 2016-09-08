@@ -203,7 +203,9 @@ define(function(require) {
                 "</label>";
 			};
 
-      var $tags_container = $('#tagBoxes');
+      var $tags_container = $('#tagListContainer');
+      $tags_container.empty();
+      class_members = [];
 			order.forEach(function(id) {
 					var member = members[id];
 					if (member.firstname !== null || member.lastname !== null) {  // hack to skip "guest" accounts
@@ -283,10 +285,15 @@ define(function(require) {
 
 			var iconList = [curiousIcon, confusedIcon, usefulIcon, interestedIcon, frustratedIcon, helpIcon, questionIcon, ideaIcon];
 
-			var addTag = function(type) {
-			  // Ensure that the input has focus before inserting tag (if it wasn't previously selected). This is important
-			  // because pasteHtmlAtCaret() inserts its content into any element that has the focus.
-        pasteHtmlAtCaret('#' + type + ' ');
+			var addTag = function(tag) {
+			  $("#commentTB").focus();
+			  // This if statement is necessary because sometimes the .focus() above doesn't work if a popup dialog is being
+			  // displayed e.g. while tagging people with checkboxes.
+			  if($("#commentTB").is(":focus")){
+          pasteHtmlAtCaret(tag);
+        } else {
+          $('#commentTB').append(tag);
+        }
 			}
 
 			var removeTag = function(type) {
@@ -316,7 +323,7 @@ define(function(require) {
 					removeTag($(this).attr('title'));
 					$(this).removeClass('icon-clicked');
 				} else {
-					addTag($(this).attr('title'));
+					addTag('#' + $(this).attr('title') + ' ');
 					$(this).addClass('icon-clicked');
 				}
 			}
@@ -421,7 +428,6 @@ define(function(require) {
       }
 
 			var watchTextBox = function(e) {
-
 				var knownTags = ['curious','confused','useful','interested','frustrated','help','question','idea'];
 				for (var i in knownTags) {
 					var tag = knownTags[i];
@@ -529,6 +535,8 @@ define(function(require) {
 
 			// Set Up Tagging
 			$(".tag-people").click(function(){
+			  // Repopulate the list just in case the server hadn't yet returned the data the last time the list was populated.
+			  self._populate_tag_list();
 			  /*
 			   * Disable auto focus before opening the dialog. That way, the first button won't have focus when the dialog opens.
 			   Source: http://stackoverflow.com/questions/9816299/unable-to-remove-autofocus-in-ui-dialog
@@ -559,8 +567,6 @@ define(function(require) {
         });
 			});
 
-			self._populate_tag_list();
-
 			var getTaggedMemberHtml = function(member) {
 			  return '<span class="tag-person" data-person-id="' + member.id + '">@' + member.firstname + ' ' + member.lastname + '</span>&nbsp;';
 			}
@@ -569,13 +575,13 @@ define(function(require) {
 			  $("#commentTB span[data-person-id='" + id + "']").remove();
 			}
 
-			$('#tagBoxes :checkbox').click(function() {
-        var $this = $(this);
-        var id = $this[0].value;
+			$('#tagBoxes').on("click", ".tag-person", function() {
+        var $checkbox = $(this).find('input');
+        var id = $checkbox[0].value;
         var member = model.get('members', {}).items[id];
         // $this will contain a reference to the checkbox
-        if ($this.is(':checked')) {
-          $("#commentTB").append(getTaggedMemberHtml(member));
+        if ($checkbox.is(':checked')) {
+          addTag(getTaggedMemberHtml(member));
         } else {
           removeTaggedMemberHtml(id);
           trimComment();
@@ -585,12 +591,10 @@ define(function(require) {
 			$('#select_all_button').click(function () {
 				$('#tagBoxes input').prop('checked', true);
 				var members = model.get('members', {}).items;
-				// Todo(Kes): Add all names to the text box
 				$('#tagBoxes input').each(function (index, element) {
 					var id = parseInt(element.value);
 					member = members[id];
-//					pasteHtmlAtCaret(memberTag);
-          $("#commentTB").append(getTaggedMemberHtml(member));
+          addTag(getTaggedMemberHtml(member));
 				});
 			});
 
@@ -843,6 +847,7 @@ define(function(require) {
         commentBoxMinHeight = 50;
       }
       $("#commentTB").css("min-height", commentBoxMinHeight);
+      self._populate_tag_list();
 		},
 
 		set_model: function (model) {
