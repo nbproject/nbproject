@@ -422,7 +422,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   background-color: #fff;
 }
 
-.nb-viewport .ui-dialog {
+.ui-dialog {
   box-shadow: 0px 0px 10px 0 rgba(0,0,0,.5);
   /*
     This z-index is to ensure the dialog appears on top of all other page elements,
@@ -446,7 +446,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   font-size: small;
 }
 
-.nb--guest .nb-nav {
+.nb-viewport.nb--guest .nb-nav {
   height: 48px;
   background-color: #34495e;
   box-shadow: none;
@@ -477,12 +477,12 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     color: #777; /* Added here to ensure we override the default in base.css*/
 }
 
-.nb--guest a.nb-nav__logo {
+.nb-viewport.nb--guest a.nb-nav__logo {
     font-size: 40px;
     color: #fff;
 }
 
-.nb-nav__btn {
+.nb-viewport .nb-nav__btn {
     color: #aaa;
     cursor: pointer;
     outline: none;
@@ -502,7 +502,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     border-radius: 0;
 }
 
-.nb-nav__btn:hover {
+.nb-viewport .nb-nav__btn:hover {
     background-color: #555;
 }
 
@@ -515,48 +515,48 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   text-overflow: ellipsis;
 }
 
-.nb--guest .nb-nav__screenname {
+.nb-viewport.nb--guest .nb-nav__screenname {
     font-size: 14px;
     padding: 18px;
     color: #90A4AE;
 }
 
-.nb-nav__menu-btn {
+.nb-viewport .nb-nav__menu-btn {
     /* To ensure the icon bars appear on top of each other instead of side by side */
     display: block;
     border-left: 1px solid #aaa;
-    padding-top: 0;
+    padding-top: 3px;
     background-color: #777
 }
 
-.nb--guest .nb-nav__btn {
+.nb-viewport.nb--guest .nb-nav__btn {
     color: #fff;
     border-left: 1px solid #90A4AE;
     font-size: 16px;
     background-color: transparent;
 }
 
-.nb--guest .nb-nav__account-btn,
-.nb--guest .nb-nav__logout-btn,
-.nb--guest .nb-nav__new-class-btn {
+.nb-viewport.nb--guest .nb-nav__account-btn,
+.nb-viewport.nb--guest .nb-nav__logout-btn,
+.nb-viewport.nb--guest .nb-nav__new-class-btn {
     display: none;
 }
 
-.nb-nav__login-btn,
-.nb-nav__signup-btn {
+.nb-viewport .nb-nav__login-btn,
+.nb-viewport .nb-nav__signup-btn {
     display: none;
 }
 
-.nb--guest .nb-nav__login-btn,
-.nb--guest .nb-nav__signup-btn {
+.nb-viewport.nb--guest .nb-nav__login-btn,
+.nb-viewport.nb--guest .nb-nav__signup-btn {
     display: block;
 }
 
-.nb--guest .nb-nav__btn:hover {
+.nb-viewport.nb--guest .nb-nav__btn:hover {
     background-color: #3f5973
 }
 
-.nb--guest .nb-nav__btn:hover .nb-nav__icon-bar {
+.nb-viewport.nb--guest .nb-nav__btn:hover .nb-nav__icon-bar {
     background-color: #fff;
 }
 
@@ -572,7 +572,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
     max-width: 22px;
 }
 
-.nb--guest .nb-nav__icon-bar {
+.nb-viewport.nb--guest .nb-nav__icon-bar {
     width: 30px;
     height: 2px;
     background-color: #fff;
@@ -586,7 +586,8 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   transform-origin: top right;
 }
 
-.nb-nav__icon-bar--open:nth-child(2) {
+.nb-nav__icon-bar--open:nth-child(2),
+.nb-viewport.nb--guest .nb-nav__icon-bar--open:nth-child(2){
   max-width: 0;
   transform-origin: right;
 }
@@ -597,8 +598,8 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   transform-origin: bottom right;
 }
 
-.nb--guest .nb-nav__icon-bar--open:nth-child(1),
-.nb--guest .nb-nav__icon-bar--open:nth-child(3) {
+.nb-viewport.nb--guest .nb-nav__icon-bar--open:nth-child(1),
+.nb-viewport.nb--guest .nb-nav__icon-bar--open:nth-child(3) {
   max-width: 22px;
 }
 
@@ -618,7 +619,7 @@ License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
   box-shadow: 0 2px 5px 0 rgba(0,0,0, 0.3);
 }
 
-.nb--guest #nb-main-nav .nb-nav__ul {
+.nb-viewport.nb--guest #nb-main-nav .nb-nav__ul {
     top: 48px;
 }
 

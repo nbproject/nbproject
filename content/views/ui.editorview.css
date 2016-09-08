@@ -64,6 +64,7 @@ div.editor table.editorcontrols
     overflow: auto;
     padding: 0 5px;
     display: none;
+    font-size: 14px;
 }
 
 #textBoxs h3,
@@ -170,6 +171,23 @@ span.tag-person {
   display: inline-block;
 }
 
+button.white-blue,
+input.button.white-blue,
+a.button.white-blue {
+  background-color: #fff;
+  color: #1e88e5;
+  border: 1px solid #1e88e5;
+}
+
+button.white-blue:hover,
+button.white-blue:focus,
+input.button.white-blue:hover,
+input.button.white-blue:focus,
+a.button.white-blue:hover,
+a.button.white-blue:focus {
+  background-color: #1e88e5;
+  color: #fff;
+}
 
 
 button.tag-btn {
@@ -186,9 +204,10 @@ button.tag-btn {
   width: 85px;
   position: relative;
   display: inline-block;
+  margin-left: 5px;
 }
 
-button.tag-people {
+.tag-people-container button.tag-people {
   height: 24px;
   position: absolute;
   top: 5px;
@@ -206,13 +225,13 @@ button.tag-people {
     font-size: 0.9em;
 }
 
-button.main-btn {
+.main-btn-container button.main-btn {
   width: 50%;
   margin: 0;
   border-radius: 0;
 }
 
-button.main-btn.submit {
+.main-btn-container button.main-btn.submit {
   float: right;
 }
 
