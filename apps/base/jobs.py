@@ -202,7 +202,7 @@ def do_digest(t_args):
 def do_auth_immediate():
     latestCtime = M.Comment.objects.all().aggregate(Max("ctime"))["ctime__max"]
     latestNotif = M.Notification.objects.get(type="auth_immediate")
-    setting_qry =    "select coalesce(value, (select value from base_defaultsetting where name='email_confirmation_author')) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_author') where u.id=base_comment.author_id" 
+    setting_qry =    "select min(coalesce(value, (select value from base_defaultsetting where name='email_confirmation_author'))) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_author') where u.id=base_comment.author_id" 
     comments = M.Comment.objects.extra(select={"setting_value": setting_qry}).filter(ctime__gt=latestNotif.atime)        
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
     for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet       
@@ -274,7 +274,7 @@ def do_all_immediate():
     latestNotif = M.Notification.objects.get(type="all_immediate")
     comments = M.Comment.objects.filter(ctime__gt=latestNotif.atime, type__gt=1)        
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
-    setting_qry = "select coalesce(value, (select value from base_defaultsetting where name='email_confirmation_all')) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_all') where u.id=base_membership.user_id" 
+    setting_qry = "select min(coalesce(value, (select value from base_defaultsetting where name='email_confirmation_all'))) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_all') where u.id=base_membership.user_id" 
     for c in comments:
         memberships = M.Membership.objects.extra(select={"setting_value": setting_qry}).filter(ensemble=c.location.ensemble, admin=True).exclude(user=c.author) #we don't want to send a notice to a faculty for a comment that he wrote !
         for m in (o for o in memberships if o.setting_value==2): #django doesn't let us filter by extra parameters yet
@@ -297,7 +297,7 @@ def do_all_immediate():
 def do_reply_immediate():
     latestCtime = M.Comment.objects.all().aggregate(Max("ctime"))["ctime__max"]
     latestNotif = M.Notification.objects.get(type="reply_immediate")
-    setting_qry =    "select coalesce(value, (select value from base_defaultsetting where name='email_confirmation_reply_author')) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_reply_author') where u.id=base_comment.author_id" 
+    setting_qry =    "select min(coalesce(value, (select value from base_defaultsetting where name='email_confirmation_reply_author'))) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_reply_author') where u.id=base_comment.author_id" 
     recentComments = M.Comment.objects.filter(ctime__gt=latestNotif.atime, type=3, parent__type=3)
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
     #TODO: This is ugly: I'd like to keep this vectorized at the DB level, but I don't know how to do it in django, hence the double forloop.
