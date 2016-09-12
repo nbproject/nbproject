@@ -130,8 +130,6 @@ define(function(require) {
       self.historyHelper.timeout = timeout;
     }
 
-
-    // What does this function do ???
     var f = function () {
       var now = (new Date()).getTime();
       var delta = now - self.historyHelper.latestentrytime;

@@ -19,4 +19,3 @@ apps/testwrite
 .DS_Store
 db_dumps/
 .idea/
-apps/base/migrations
