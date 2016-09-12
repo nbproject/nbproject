@@ -18,10 +18,11 @@ define(function(require) {
   var Pers            = require('pers');
   var Handlebars 	= require('handlebars');
   var concierge       = require('concierge');
+  var $               = require('jquery');
   var ckey = window.location.href.split(document.location.pathname + "?ckey=")[1];
   var url = "/user_name_form?ckey=" + ckey;
 
-  if ('NB$' in window) {
+  if (NB$) {
     var $ = NB$;
   }
 

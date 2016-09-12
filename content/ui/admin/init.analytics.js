@@ -65,11 +65,11 @@ define(function(require) {
   var Pers = require('pers');
   var img_server = Pers.server_url;
 
-  if ('NB$' in window) {
+  if (NB$) {
     $ = NB$;
   }
 
-  $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
 
   Pers.createStore = function () {
     Pers.store = new Models.Store();

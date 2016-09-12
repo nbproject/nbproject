@@ -30,11 +30,11 @@ define(function(require) {
   var files           = require('files');
   var Handlebars      = require('handlebars');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$  ? 'NB$' : 'jQuery';
 
   Pers.init = function () {
 

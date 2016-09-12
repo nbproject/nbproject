@@ -20,7 +20,7 @@ define(function(require) {
       contextmenu     = require('contextmenu'),
       filterwizard    = require('filterwizard');
 
-  var $str     = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str     = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _f_location_seen: function (id_location) {
       var self = this;
@@ -253,7 +253,8 @@ define(function(require) {
       var lf_star    = numstar > 0 ? "<ins class='locationflag'><div class='nbicon staricon-hicontrast' title='This thread has been starred'/></ins>" : '';
       var lf_question    = numquestion > 0 ? "<ins class='locationflag'><div class='nbicon questionicon-hicontrast' title='A reply is requested on this thread'/></ins>" : '';
       var root =    m.get('comment', { ID_location: l.ID, id_parent: null }).first();
-      var body = root.body.replace(/\s/g, '') === '' ? "<span class='empty_comment'>Empty Comment</span>" : $.E(root.body.substring(0, 200));
+
+      var body = (root === null || root.body.replace(/\s/g, '') === '') ? "<span class='empty_comment'>Empty Comment</span>" : $.truncateURL($.E(root.body));
       return "<div class='location-flags'>" + lf_numnotes + lf_admin + lf_me_private + lf_star + lf_question + "</div><div class='location-shortbody " + (numquestion > 0 ? 'replyrequested' : '') + "'><div class='location-shortbody-text " + bold_cl + title_cl + "'>" + body + '</div></div>';
     },
 

@@ -9,13 +9,18 @@ requirejs.config({
     'calendrical': 'lib/calendrical/jquery.calendrical',
     'contextmenu': 'lib/contextmenu/jquery.contextMenu',
     'contextmenu_position': 'lib/contextmenu/jquery.ui.position',
+    'datatables' : 'lib/DataTables-1.10.12/media/js/dataTables.bootstrap.min',
+    'datatables.net': 'lib/DataTables-1.10.12/media/js/jquery.dataTables.min',
+    'datatables_select': 'lib/DataTables-1.10.12/extensions/Select/js/dataTables.select.min',
     'dateformat': 'lib/dateformat/date.format',
     'jquery': 'lib/jquery/1.8.3/jquery.min',
+    'jquery-csv': 'lib/jquery-csv/src/jquery.csv.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
     'moment': 'lib/moment/moment',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
     'rangy-core': 'lib/rangy/rangy-core',
+    'rangy-selectionsaverestore': 'lib/rangy/rangy-selectionsaverestore',
     'rangy-serializer': 'lib/rangy/rangy-serializer',
     'rangy-textrange': 'lib/rangy/rangy-textrange',
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
@@ -24,6 +29,7 @@ requirejs.config({
     'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
     'templates_dir': '../templates/handlebars/', // handlebars templates directory
     'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
+    'tinyMCE': 'lib/tinymce/js/tinymce/tinymce',
 
     // modules
     'auth': 'modules/auth',
@@ -135,6 +141,14 @@ requirejs.config({
     },
     'handlebars': {
         exports: 'Handlebars'
+    },
+    'tinyMCE': {
+        exports: 'tinyMCE',
+        init: function () {
+            this.tinyMCE.DOM.events.domLoaded = true;
+            this.tinyMCE.baseURL = "/content/lib/tinymce/js/tinymce";
+            return this.tinyMCE;
+        }
     }
   },
   hbs: {

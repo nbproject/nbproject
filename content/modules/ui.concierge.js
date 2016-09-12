@@ -283,8 +283,55 @@ define(function(require) {
   };
 
   NB$.E = function (s) {
-    return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'None';
+    if(NB$.isHtmlComment(s)) {
+      // Note that there's no need to escape HTML comments partly because unsafe comment would have already
+      // been escaped by TinyMCE but mostly because if we escape such comments, they will show up as
+      // something different from what was created in the WYSIWYG editor.
+      return NB$.removeHtmlMarker(s);
+    } else {
+      return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'None';
+    }
   };
+
+  NB$.truncateURL = function (str) {
+    // Wrap the entire content in a div because if you have html with text at the end (without an enclosing tag),
+    // jQuery would ignore it. We don't want that to happen here.
+    var $htmlStr = $("<div class='temp-nb-wrapper'>" + str + "</div>");
+    $($htmlStr).find('a').each(function() {
+      if($(this).html().length >= 23){
+        $(this).html($(this).html().slice(0, 20) + "...");
+      }
+    });
+    return $($htmlStr, "div.temp-nb-wrapper").first().html();
+  }
+
+  /***********************************************************************
+  * Start of functions required to identify and process HTML comments
+  ************************************************************************
+  * The following 3 functions are required to process HTML comments created with TinyMCE WYSIWYG editor.
+  * These 3 functions are all related so if you make a change to any of them, you need to change the
+  * other 2.
+  */
+
+  NB$.addHtmlMarker = function (s) {
+    return "<div class='nb-html-comment'>" + s + "</div>";
+  }
+
+  NB$.isHtmlComment = function (s) {
+    if(!s) {
+      return false;
+    }
+    return s.startsWith("<div class='nb-html-comment'>") && s.endsWith("</div>");
+  }
+
+  NB$.removeHtmlMarker = function (s) {
+    return s.substring(29, s.length - 6);
+  }
+
+  /***********************************************************************
+  * End of functions required to identify and process HTML comments
+  ************************************************************************
+  */
 
   NB$.ellipsis = function (s, n) {
     var l = s.length;

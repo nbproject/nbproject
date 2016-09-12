@@ -455,7 +455,7 @@ def properties_ensemble_sections(req, id):
     if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
             if M.Section.objects.filter(ensemble=ensemble, name=req.POST["name"]).exists():
-                err = "Could not create section: a section with the same name already exists."
+                err = "Could not create section \"%s\" because it already exists." % req.POST["name"]
             else:
                 s = M.Section(name=req.POST["name"], ensemble=ensemble)
                 s.save()
@@ -487,6 +487,52 @@ def properties_ensemble_sections(req, id):
                   err = "Cannot find member"
             else:
                 err = "Cannot find section"
+        elif req.GET["action"] == "reassign_many":
+            json_data = json.loads(req.body)
+            new_sections = set(json_data["new_sections"])
+
+            # Check that none of the new_sections already exist
+            old_sections = set([s.name for s in M.Section.objects.filter(ensemble=ensemble).all()])
+            sections_intersection = old_sections.intersection(new_sections)
+            if sections_intersection:
+                err = "Could not create the following sections because they already exists: " + \
+                      ", ".join(sections_intersection)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Check that all section names in updated_sections are valid i.e. either an existing section
+            # or one of the new_sections.
+            all_sections = old_sections.union(new_sections)
+            updated_sections = json_data["updated_sections"]
+            updated_sections_names = set([r["section"] for r in updated_sections])
+            invalid_section_names = updated_sections_names.difference(all_sections)
+            if invalid_section_names:
+                # Under normal circumstances the code should not get here because the UI should have ensured that all
+                # new sections are part of the new_sections field in the json data sent to the server.
+                err = "Could not update records because students cannot be added to these sections which do not exist: " + \
+                      ", ".join(invalid_section_names)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Check that all user IDs in updated_sections are valid
+            invalid_user_id = []
+            for r in updated_sections:
+                if not len(M.Membership.objects.filter(id=r["user_id"])):
+                    invalid_user_id.append(r["user_id"])
+            if invalid_user_id:
+                err = "Could not update records because the following user IDs are invalid: " + \
+                      ", ".join(invalid_user_id)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Create new sections
+            for section_name in new_sections:
+                section_object = M.Section(name=section_name, ensemble=ensemble)
+                section_object.save()
+
+            # Update students' sections
+            for r in updated_sections:
+                m = M.Membership.objects.filter(id=r["user_id"])[0]
+                s = sections.filter(name=r["section"], ensemble=ensemble)[0];
+                m.section = s
+                m.save()
         else:
            err = "Unrecognized Command"
     if err or "json" in req.GET:

@@ -479,7 +479,6 @@ def do_testwrite(t_args):
                              (settings.ADMINS[0][1],))
         email.send()
 
-@transaction.commit_on_success
 def do_auth_salt_upgrade():
     # This method does not handle database migrations, only schema
     #   upgrades. Make sure to run the following query before doing
