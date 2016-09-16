@@ -342,6 +342,7 @@ define(function(require) {
         Auth.set_cookie('userinfo', evt.value.userinfo);
         Conf.userinfo = JSON.parse(unescape(evt.value.userinfo));
         $.I('Welcome ' + Conf.userinfo.firstname + " " + Conf.userinfo.lastname);
+        f_prepare_sidebar();
         Pers.set_nav_user();
       },
     }, 'globalPersObject');
