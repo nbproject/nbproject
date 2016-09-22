@@ -354,6 +354,11 @@ define(function(require) {
       var RESOLUTIONS = $.concierge.get_constant('RESOLUTIONS');
       var f_sort = function (a, b) {return a - b;};
 
+      if (!model) {
+          //too soon; not ready.
+          return;
+      }
+
       for (var i = 0; i < items.length; i++) {
         pageinfo    = {};
         location    = model.o.location[items[i]];
