@@ -175,20 +175,20 @@ def source_analytics(req, n):
     source = M.Source.objects.get(pk=n)
     # Try/Except Added by Eran Yogev
     try:
-        print("1")
+        
         locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict = annotations.getCommentsByFile(n,1,None)
         if(len(html5locations_dict)>0):
             CACHE_DIR = "%s/%s" % (settings.HTTPD_MEDIA, settings.CACHE_DIR)
             res = settings.RESOLUTIONS
-            print("2")
+            
             url = annotations.getSourceUrl(n)
-            print("3")
-            print(url)
+            
+            #print(url)
 
             website_pic_name = "tmp_website_pic.png"
-            print("4")
+            
             generate_heat_map(url, website_pic_name, html5locations_dict)
-            print("5")
+            
             for key1 in res:
                 for key2 in res[key1]:
                     path = "{0}/{1}/{2}".format(CACHE_DIR,key1,key2)
@@ -196,7 +196,7 @@ def source_analytics(req, n):
                         os.mkdir(path)
                     file_loc = "{0}/{1}_0000.png".format(path,n)
                     copyfile(website_pic_name, file_loc)
-            print("6")
+            
             os.remove(website_pic_name)
     except Exception as e:
         print(str(e))
