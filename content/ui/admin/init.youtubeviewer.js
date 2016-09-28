@@ -206,7 +206,8 @@ define(function(require) {
     var noteLoaderCallback = function (P) {
       console.log('noteLoaderCallback:');
       console.log(P['tags']);
-      var m = Pers.store;
+      var m = Pers.store
+        , target_comment=null;
       m.add('seen', P['seen']);
       m.add('comment', P['comments']);
       m.add('location', P['locations']);
@@ -215,10 +216,18 @@ define(function(require) {
       m.add('tags', P['tags']);
 
       //now check if need to move to a given annotation:
-      if ('c' in Pers.params) {
+
+      if (location.hash.startsWith('#nb-comment')) {
+          target_comment=parseInt(location.hash.substring(12),10);
+          //failure to parse will yield (falsy) 0 and be ignored
+      }
+        else if ('c' in Pers.params) {
+            target_comment=Pers.params.c;
+        }
+      if (target_comment) {
         window.setTimeout(function () {
           var id =  Pers.params.c;
-          var c = m.get('comment', { ID: id }).items[id];
+          var c = m.get('comment', { ID: target_comment }).items[target_comment];
           if ('reply' in Pers.params) {
             $.concierge.trigger({ type: 'reply_thread', value: c.ID });
           }
