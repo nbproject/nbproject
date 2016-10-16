@@ -1,8 +1,16 @@
-{% extends "web/base.html" %}
-{% block title %}NB Invitation Confirmed{% endblock %}
-{% block content %}
-<h1>Congratulations !</h1> 
-<b>{{o.user.email}}</b> is now a member of the <b>{{o.ensemble.name}}</b> group{% if o.admin %}, with admin privileges{% endif %}.
-<br/><br/>
-<a href="/?ckey={{o.user.confkey}}">Go the My NB Desktop</a>  
-{% endblock %}
+<!DOCTYPE html>
+<html class='nb_fullscreen'>
+  <head>
+    <meta charset="utf-8"/>
+    <!--
+      Author: cf AUTHORS.txt
+      License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
+      MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
+    -->
+    <title>NB</title>
+    <link type="text/css" href="/content/compiled/confirm_invite.css" rel="stylesheet" />
+    <link type="text/css" href="/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/content/compiled/confirm_invite_NB.js"></script>
+  </head>
+  <body/>
+</html>

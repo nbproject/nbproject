@@ -1,3 +1,7 @@
 require(['requirescript'], function() {
-  require(['login']);
+  require(['handlebars'], function(handlebars){
+    require(['login'], function(login){
+      require(['launch']);
+    });
+  });
 });

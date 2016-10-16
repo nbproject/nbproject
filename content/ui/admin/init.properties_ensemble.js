@@ -20,7 +20,7 @@ define(function(require) {
     	"types":["class_settings"]
     };
     var cb = function(p) {
-      var host = window.location.host;
+      var host = Pers.server_url;
       var obj = {
         "name": p.class_settings.name,
         "host": host,

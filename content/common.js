@@ -9,12 +9,18 @@ requirejs.config({
     'calendrical': 'lib/calendrical/jquery.calendrical',
     'contextmenu': 'lib/contextmenu/jquery.contextMenu',
     'contextmenu_position': 'lib/contextmenu/jquery.ui.position',
+    'datatables' : 'lib/DataTables-1.10.12/media/js/dataTables.bootstrap.min',
+    'datatables.net': 'lib/DataTables-1.10.12/media/js/jquery.dataTables.min',
+    'datatables_select': 'lib/DataTables-1.10.12/extensions/Select/js/dataTables.select.min',
     'dateformat': 'lib/dateformat/date.format',
     'jquery': 'lib/jquery/1.8.3/jquery.min',
+    'jquery-csv': 'lib/jquery-csv/src/jquery.csv.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
+    'moment': 'lib/moment/moment',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
     'rangy-core': 'lib/rangy/rangy-core',
+    'rangy-selectionsaverestore': 'lib/rangy/rangy-selectionsaverestore',
     'rangy-serializer': 'lib/rangy/rangy-serializer',
     'rangy-textrange': 'lib/rangy/rangy-textrange',
     'tablesorter': 'lib/tablesorter/jquery.tablesorter.min',
@@ -23,6 +29,7 @@ requirejs.config({
     'hbs': 'lib/require-handlebars-plugin/hbs', // handlebars plugin for pre-compiling templates
     'templates_dir': '../templates/handlebars/', // handlebars templates directory
     'handlebars': 'lib/require-handlebars-plugin/hbs/handlebars.runtime', // handlebars runtime
+    'tinyMCE': 'lib/tinymce/js/tinymce/tinymce',
 
     // modules
     'auth': 'modules/auth',
@@ -42,15 +49,15 @@ requirejs.config({
     'conf': 'ui/admin/conf',
     'conf_local': 'ui/admin/conf_local',
     'embedopenid': 'ui/admin/embedopenid',
+    'init_add_navbar': 'ui/admin/init.add_navbar',
     'init_analytics': 'ui/admin/init.analytics',
+    'init_confirm_invite': 'ui/admin/init.confirm_invite',
     'init_desktop': 'ui/admin/init.desktop',
-    'init_dev_test': 'ui/admin/init.dev_test',
-    'init_dev_test2': 'ui/admin/init.dev_test2',
+    'init_enteryourname': 'ui/admin/init.enteryourname',
     'init_newsite': 'ui/admin/init.newsite',
     'init_properties_ensemble': 'ui/admin/init.properties_ensemble',
     'init_properties_ensemble_sections': 'ui/admin/init.properties_ensemble_sections',
     'init_properties_ensemble_users': 'ui/admin/init.properties_ensemble_users',
-    'init_static_page': 'ui/admin/init.static_page',
     'init_subscribe': 'ui/admin/init.subscribe',
     'init_collage': 'ui/admin/init.collage',
     'init_pdfviewer': 'ui/admin/init.pdfviewer',
@@ -83,11 +90,12 @@ requirejs.config({
     'threadview': 'views/ui.threadview',
 
     // build scripts
+    'build_add_navbar': 'build-scripts/build-add-navbar',
     'build_analytics': 'build-scripts/build-analytics',
     'build_collage': 'build-scripts/build-collage',
+    'build_confirm_invite': 'build-scripts/build-confirm-invite',
     'build_desktop': 'build-scripts/build-desktop',
-    'build_devtest': 'build-scripts/build-devtest',
-    'build_devtest2': 'build-scripts/build-devtest2',
+    'build_enteryourname': 'build-scripts/build-enteryourname',
     'build_embed': 'build-scripts/build-embed',
     'build_embedopenid': 'build-scripts/build-embedopenid',
     'build_login': 'build-scripts/build-login',
@@ -99,7 +107,6 @@ requirejs.config({
     'build_properties_ensemble_sections': 'build-scripts/build-properties-ensemble-sections',
     'build_properties_ensemble_users': 'build-scripts/build-properties-ensemble-users',
     'build_spreadsheet': 'build-scripts/build-spreadsheet',
-    'build_static_page': 'build-scripts/build-static-page',
     'build_subscribe': 'build-scripts/build-subscribe',
     'build_yoursettings': 'build-scripts/build-yoursettings',
     'build_youtubeviewer': 'build-scripts/build-youtubeviewer',
@@ -134,6 +141,14 @@ requirejs.config({
     },
     'handlebars': {
         exports: 'Handlebars'
+    },
+    'tinyMCE': {
+        exports: 'tinyMCE',
+        init: function () {
+            this.tinyMCE.DOM.events.domLoaded = true;
+            this.tinyMCE.baseURL = "/content/lib/tinymce/js/tinymce";
+            return this.tinyMCE;
+        }
     }
   },
   hbs: {

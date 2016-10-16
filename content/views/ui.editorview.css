@@ -1,9 +1,8 @@
 /*
-Author: cf AUTHORS.txt 
+Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-
 
 div.editor
 {
@@ -15,9 +14,17 @@ div.editor
 div.notebox
 {
     padding: 8px 5px 0 5px;
-
     border-right: 1px #ddd solid;
     border-left: 1px #ddd solid;
+}
+
+.notebox-body {
+  position: relative;
+}
+
+.comment-instruction {
+  margin: 0 0 3px 0;
+  color: #aaa;
 }
 
 div.editor textarea
@@ -29,16 +36,19 @@ div.editor textarea
 div.editor-header
 {
     overflow: hidden;
-
-    padding: 3px 5px 8px 3px;
-
+    padding: 5px;
     white-space: nowrap;
     text-overflow: ellipsis;
-
     color: #606060;
     border-bottom: thin solid #ddd;
     background-color: #efebe7;
     box-shadow: 0 -1px 8px rgba(0,0,0,.2);
+}
+
+div.editor-header * {
+  margin: 0;
+  display: inline-block;
+  font-size: 1em;
 }
 
 div.editor table.editorcontrols
@@ -49,27 +59,22 @@ div.editor table.editorcontrols
 
 #tagBoxes
 {
-    width: 100%;
+    width: 95%;
+    margin: 0 auto;
+    overflow: auto;
+    padding: 0 5px;
+    display: none;
+    font-size: 14px;
 }
 
-div.editor button[action=save]
-{
-    width: 100%;
-    min-height: 40px;
-    margin: 0;
-}
-
-div.editor button[action=discard]
-{
-    min-height: 28px;
-    margin: 0;
-    margin-top: 4px;
+#textBoxs h3,
+#tagBoxes h3 {
+  margin-top: 3px;
 }
 
 .group
 {
     padding: 8px;
-
     background-color: #efebe7;
 }
 
@@ -81,23 +86,351 @@ td.save-cancel
     vertical-align: top;
 }
 
-.emoticon {height:24px;
-          width:24px;
-          margin:5px;}
+.emoticon-container {
+  display: inline-block;
+}
 
-.emoticon.curiousClicked{content:url('/content/views/emoticons/curious_on.png');}
-.emoticon.curiousUnclicked{content:url('/content/views/emoticons/curious.png');}
-.emoticon.confusedClicked{content:url('/content/views/emoticons/confused_on.png');}
-.emoticon.confusedUnclicked{content:url('/content/views/emoticons/confused.png');}
-.emoticon.usefulClicked{content:url('/content/views/emoticons/useful_on.png');}
-.emoticon.usefulUnclicked{content:url('/content/views/emoticons/useful.png');}
-.emoticon.interestedClicked{content:url('/content/views/emoticons/interested_on.png');}
-.emoticon.interestedUnclicked{content:url('/content/views/emoticons/interested.png');}
-.emoticon.frustratedClicked{content:url('/content/views/emoticons/frustrated_on.png');}
-.emoticon.frustratedUnclicked{content:url('/content/views/emoticons/frustrated.png');}
-.emoticon.helpClicked{content:url('/content/views/emoticons/help_on.png');}
-.emoticon.helpUnclicked{content:url('/content/views/emoticons/help.png');}
-.emoticon.questionClicked{content:url('/content/views/emoticons/questionMark_on.png');}
-.emoticon.questionUnclicked{content:url('/content/views/emoticons/questionMark.png');}
-.emoticon.ideaClicked{content:url('/content/views/emoticons/idea_on.png');}
-.emoticon.ideaUnclicked{content:url('/content/views/emoticons/idea.png');}
+.emoticon {
+    height: 24px;
+    padding: 5px;
+    cursor: pointer;
+    vertical-align: top;
+    box-sizing: content-box;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+.emoticon.icon-clicked {
+    background-color: #ddd;
+    border-radius: 5px;
+}
+
+.emoticon:hover,
+.emoticon:focus {
+  background-color: #eee;
+}
+
+.editor-footer div {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.shift-right1 {
+  margin-left: 5px;
+}
+
+.clearfix:after { /* Clear float */
+   content: ".";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+
+.notebox,
+.editor-footer {
+  color: #505050;
+}
+
+.editor-footer {
+  margin-bottom: 40px;
+}
+
+label.gray-hover {
+  padding: 2px 5px;
+  cursor: pointer;
+}
+
+label.gray-hover:hover,
+label.gray-hover:focus {
+  background-color: #ddd;
+}
+
+label.tag-person {
+  width: 50%;
+  padding: 2px 0;
+  display: inline-block;
+}
+
+
+label.tag-person:hover,
+label.tag-person:focus {
+  background-color: #eee;
+  background-color: #ddd;
+}
+
+span.tag-person {
+  background-color: #eee;
+  padding: 0 1px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.main-title {
+  margin: 0;
+  display: inline-block;
+}
+
+button.white-blue,
+input.button.white-blue,
+a.button.white-blue {
+  background-color: #fff;
+  color: #1e88e5;
+  border: 1px solid #1e88e5;
+}
+
+button.white-blue:hover,
+button.white-blue:focus,
+input.button.white-blue:hover,
+input.button.white-blue:focus,
+a.button.white-blue:hover,
+a.button.white-blue:focus {
+  background-color: #1e88e5;
+  color: #fff;
+}
+
+
+button.tag-btn {
+    width: 40px;
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-size: .8em;
+    margin: 5px 10px 5px 0;
+    margin-right: 10px;
+}
+
+.tag-people-container {
+  height: 34px;
+  width: 85px;
+  position: relative;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.tag-people-container button.tag-people {
+  height: 24px;
+  position: absolute;
+  top: 5px;
+  width: 90px;
+  padding: 2px 6px 3px;
+  margin: 0;
+  border-radius: 5px;
+  color: #505050;
+}
+
+.time_button {
+    border-radius: 5px;
+    margin: 5px;
+    padding: 3px 5px;
+    font-size: 0.9em;
+}
+
+.main-btn-container button.main-btn {
+  width: 50%;
+  margin: 0;
+  border-radius: 0;
+}
+
+.main-btn-container button.main-btn.submit {
+  float: right;
+}
+
+.ui-widget-overlay {
+  /* Lighten the opacity to ensure the editor is still visible after the dialog for
+  tagging people pops up. */
+  opacity: 0.4;
+}
+
+.main-btn-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  margin: 0;
+  box-shadow: 0px 0px 5px 0 rgba(0,0,0,.5);
+}
+
+/*
+*********************************************************
+* Beginning of CSS for the text box styling
+*********************************************************
+*/
+
+[contentEditable=true]{
+  border:1px solid grey;
+}
+
+/* Add placeholder to contentEditable. Source: http://stackoverflow.com/a/18368720/978369 */
+
+[contentEditable=true]:empty:not(:focus):before{
+  content:attr(data-ph);
+  color:grey;
+  font-style:italic;
+}
+
+#commentTB {
+  padding: 5px;
+  min-height: 50px;
+  line-height: 1.5em;
+}
+
+#commentTB p,
+#commentTB pre,
+#commentTB xmp,
+#commentTB plaintext,
+#commentTB listing {
+  margin: 2px 0;
+}
+
+#commentTB ul {
+  padding-left: 25px;
+  margin: 2px;
+}
+
+div.mce-edit-focus {
+  outline: 1px solid #1e88e5;
+  border: 1px solid transparent;
+  box-shadow: 0 0 5px #1e88e5;
+}
+
+div.mce-tinymce.mce-tinymce-inline {
+  box-shadow: 0px 0px 2px 0 rgba(0,0,0,.5);
+}
+
+/*
+*********************************************************
+* End of CSS for the text box styling
+*********************************************************
+*/
+
+/*
+*********************************************************
+* Beginning of CSS for TinyMCE mention plugin
+*********************************************************
+*/
+
+.rte-autocomplete{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1000;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,0.2);
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
+
+.rte-autocomplete:before {
+    content: '';
+    display: inline-block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #ccc;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -7px;
+    left: 9px;
+}
+
+.rte-autocomplete:after {
+    content: '';
+    display: inline-block;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid white;
+    position: absolute;
+    top: -6px;
+    left: 10px;
+}
+
+.rte-autocomplete > li.loading {
+	background: url("http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif") center no-repeat;
+	height: 16px;
+}
+
+.rte-autocomplete > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.rte-autocomplete >li > a:hover,
+.rte-autocomplete > li > a:focus,
+.rte-autocomplete:hover > a,
+.rte-autocomplete:focus > a {
+    color: #505050;
+    text-decoration: none;
+    background-color: #ddd;
+}
+
+.rte-autocomplete >.active > a,
+.rte-autocomplete > .active > a:hover,
+.rte-autocomplete > .active > a:focus {
+    color: #505050;
+    text-decoration: none;
+    background-color: #ddd;
+    outline: 0;
+}
+
+
+#rte-container {
+	width: 40%;
+	/*height: 200px;*/
+	position: absolute;
+	left: 5px;
+	top: 50px;
+	margin: 0;
+}
+
+.tagged-person {
+	background-color: #dce6f8;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mce-toolbar .mce-btn button {
+    padding-left: 7px;
+    padding-right: 7px;
+    height: 22px;
+}
+
+.mce-toolbar .mce-btn button:hover,
+.mce-toolbar .mce-btn button:focus {
+	background-color: #eee;
+    border-radius: 3px;
+}
+
+#tinymce-textarea {
+  margin: 5px;
+}
+
+#tinymce-textarea p {
+  margin: 0 0 2px 0;
+}
+
+/*
+*********************************************************
+* End of CSS for TinyMCE mention plugin
+*********************************************************
+*/

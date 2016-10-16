@@ -13,28 +13,33 @@ define(function(require) {
   var Conf          = require('conf');
   var Models        = require('models');
   var concierge     = require('concierge');
+  var $             = require('jquery');
   var jquery_ui     = require('jquery_ui');
 
-  var $ = 'NB$' in window ? NB$ : $;
+  $ = NB$ ? NB$ : $;
 
-  // it would be great to use document.currentScript, but it only seems to be supported
-  // on firefox for now, so we match by filename.
   var scriptname = '_NB.js';
-  var nb_script = jQuery("script[src$='" + scriptname + "']");
-  if (nb_script.length === 0) {
-    alert("Error: Couldn't find  NB script, i.e ending in : " + scriptname);
-    return;
-  }
-
-  if (nb_script.length > 1) {
-    alert('Warning: Found more than one  NB script, i.e ending in : ' + scriptname + 'using the last one: ' + nb_script[nb_script.length - 1]);
+  var nb_script = document.currentScript;
+    
+  if (nb_script) {
+      nb_script = $(nb_script);
+  } else {
+      nb_script = $("script[src$='" + scriptname + "']");
+      if (nb_script.length === 0) {
+          alert("Error: Couldn't find  NB script, i.e ending in : " + scriptname);
+          return;
+      }
+      if (nb_script.length > 1) {
+          alert('Warning: Found more than one  NB script, i.e ending in : ' + scriptname + 'using the last one: ' + nb_script[nb_script.length - 1]);
+      }
+      nb_script = nb_script[nb_script.length - 1];
   }
 
   Pers = {
-    currentScript: nb_script[nb_script.length - 1],
-    embedded: false,
+    currentScript: nb_script,
+    embedded: false
   };
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
 
   /* trick for browsers that don't support document.activeElement
      adapted from http://ajaxandxml.blogspot.com/2007/11/emulating-activeelement-property-with.html
@@ -187,7 +192,7 @@ define(function(require) {
         if (document.cookie && document.cookie != '') {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
+                var cookie = $.trim(cookies[i]);
                 // Does this cookie string begin with the name we want?
                 if (cookie.substring(0, name.length + 1) == (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -574,7 +579,7 @@ define(function(require) {
       $('input[name=default_pause][value=0]')[0].checked = 'true';
       $('#add_ensemble_dialog').dialog({
         title: 'Create a new class...',
-        width: 540,
+        width: 560,
         modal: true,
         position: { my: "top", at: "top+80", of: window },
         open: function(event, ui) {

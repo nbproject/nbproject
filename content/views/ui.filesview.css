@@ -79,39 +79,15 @@ span.yesno
     padding-left: 30px;
 }
 
-div.filesView-header > a
-{
-    font-weight: bold;
-
-    margin-left: 15px;
-    padding: 3px 5px 3px 5px;
-
-    text-decoration: none;
-
-    color: #666;
-    border-radius: 5px;
-    background-color: #ccc;
-    box-shadow: 0 0 5px -1px rgba(0,0,0,1);
-}
-
-div.filesView-header > a:hover
-{
-    background-color: #ddd;
-}
-
 a.collagelink
 {
     font-size: .9em;
-
     display: inline-block;
     overflow: hidden;
-
     height: 23px;
     margin-right: 10px;
     padding: 0;
-
     text-decoration: none;
-
     color: #707070;
     background-color: #eee;
 }
@@ -224,18 +200,6 @@ span.filesView-reply-body
     font-size: x-large;
 }
 
-a.button
-{
-    margin: 0 5px;
-    padding: 1px 4px;
-
-    color: #303030;
-    border: thin solid #707070;
-    border-radius: 5px 5px 5px 5px;
-    border-radius: 5px;
-    background-color: #c0c0c0;
-}
-
 /* snippets  */
 
 div.snippet-selection
@@ -345,4 +309,15 @@ span.reply-rated-as
 .sort-option.desc > .arrow
 {
     background-image: url('/content/lib/tablesorter/desc.gif');
+}
+
+a.button
+{
+    margin: 0;
+    padding: 1px 4px;
+    color: #303030;
+    border: thin solid #707070;
+    border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    background-color: #c0c0c0;
 }

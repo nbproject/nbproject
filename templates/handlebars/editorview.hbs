@@ -1,0 +1,49 @@
+<div class='editor-header'>{{{header}}}</div>
+<div class='notebox'>
+  <div class='notebox-body'>
+    <div>
+      <a class='ui-view-tab-close ui-corner-all ui-view-semiopaque' role='button' href='#'><span class='ui-icon ui-icon-close'></span></a>
+    </div>
+    <p class="comment-instruction">Include tags with @ or #</p>
+    <div contenteditable="true" id="commentTB">
+
+    </div>
+    <span class="emoticon-container">
+      <span class="tag-people-container">
+        <button class="white-gray tag-people">Tag People</button>
+      </span>
+    </span>
+    <div id='tagBoxes'>
+      <div>
+        <button id='select_all_button' action='select_all' class='white-blue tag-btn'>All</button>
+        <button id='deselect_all_button' action='deselect_all' class='white-blue tag-btn'>None</button>
+      </div>
+      <div id="tagListContainer">
+      </div>
+    </div>
+  </div>
+</div>
+<div class='editor-footer'>
+  <div>
+    {{{durationOption}}}
+  </div>
+  <div>
+    {{{pauseOption}}}
+  </div>
+  <div>
+    <span class="shift-right1">Shared with: </span>
+    <select id='share_to' name='vis_{{{idItem}}}'>
+      <option value='3'>The entire class</option>
+      {{{staffOption}}}
+      <option value='1'>Myself only</option>
+      {{{tagPrivateOption}}}
+    </select>
+  </div>
+  {{{checkboxOptions}}}
+  {{{setTimeButtons}}}
+  {{{sectionTagOption}}}
+</div>
+<div class="main-btn-container">
+  <button action='discard' class="gray main-btn">Cancel</button>
+  <button action='save' class="blue submit clearfix main-btn">Submit</button>
+</div>

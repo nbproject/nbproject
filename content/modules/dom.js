@@ -10,8 +10,9 @@
 */
 
 define(function(require) {
-  if ('NB$' in window) {
-    var $ = NB$;
+  var $=require('jquery');
+  if (NB$) {
+    $ = NB$;
   };
 
   var Dom = {};

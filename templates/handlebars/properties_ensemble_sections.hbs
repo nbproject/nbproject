@@ -7,13 +7,24 @@
   }
   div.section{
     color: #404040;
-    margin-left: 30px;
+  }
+
+  p.error-message {
+    margin: 0;
+    top: -5px;
+    position: relative;
+    transition: 0.3s;
+    transform: scale(0);
+    transform-origin: top left;
   }
 
   p.error-message:not(:empty) {
     border: 1px solid #C22;
     background-color: #FCC;
-    padding: 8px;
+    padding: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    transform: scale(1);
   }
 
   .section-assign {
@@ -38,84 +49,238 @@
     height: 1.5em;
   }
 
-  thead {
+  #create-section-form input {
+    font-size: 1em;
+  }
+
+  thead,
+  tfoot {
     text-align: left;
   }
 
+  .dataTables_wrapper {
+    margin-top: 0;
+  }
+
+  .listing-filter {
+    text-align: left;
+    display: inline-block;
+  }
+
+  .listing-filter input {
+    width: 180px;
+  }
+
+  .section-btns-holder {
+    text-align: right;
+    position: relative;
+    top: 19px;
+    z-index: 1; /* To ensure it appears on top of the table's div */
+    padding-right: 5px;
+    margin-left: 200px;
+  }
+
+  a.section-btn.button,
+  .create-section-btn.button {
+    border-radius: 5px;
+    margin: 0;
+    padding: 2px 5px;
+    font-size: 0.9em;
+  }
+
+  .create-section-btn.button {
+    margin-left: 5px;
+  }
+
+  a.create-section-toggle.button {
+    margin: 5px 0 5px 0;
+    display: inline-block;
+    font-size: 0.9em;
+    padding: 2px 5px;
+  }
+
+  a.create-section-toggle.button i,
+  a.section-btn i {
+    margin-right: 4px;
+  }
+
+  .create-section-form {
+    transition: 0.3s;
+    height: 25px;
+    overflow: hidden;
+  }
+
+  .create-section-form.hide {
+    height: 0;
+  }
+
+  .all-sections {
+    margin-top: 10px;
+  }
+
+  span.section-name {
+    border: 1px solid #ccc;
+    padding: 2px 5px 2px 22px;
+    background-color: #f5f5f5;
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+
+  #new-sections-from-csv span.section-name {
+    padding-left: 5px;
+  }
+
+  a.delete-link {
+    background-color: transparent;
+    padding: 0 5px;
+    cursor: pointer;
+    color: #999;
+    position: absolute;
+    transition: 0.3s;
+    left: 0;
+  }
+
+  a.delete-link:hover,
+  a.delete-link:focus {
+    color: #1e88e5;
+    transform: scale(1.3);
+    transform-origin: center;
+  }
+
+  #sections-update {
+    display: none;
+    color: #505050;
+  }
+
+  .btn-container {
+    width: 100%;
+    font-size: 0;
+    text-align: center;
+  }
+
+  .btn-container button {
+    width: 50%;
+    font-size: 14px;
+    border-radius: 0;
+  }
+
+  .updated-listing-filter {
+    text-align: left;
+    display: inline-block;
+    margin: 10px 0 0 0;
+  }
+
+  .save-loader {
+    width: 10px;
+    margin-left: 12px;
+  }
+
+  .section-listing-header {
+    margin-top: 30px;
+  }
+
+
 </style>
 
-<h1>Sections for {{ensemble.name}}</h1>
+<h1 class="section-heading">Sections for {{ensemble.name}}</h1>
+<a class="create-section-toggle button gray" href="#"><i class="fa fa-plus" aria-hidden="true"></i>Create New Section</a>
+<form method="POST" action="?action=create" id="create-section-form" class="create-section-form hide">
+    <input id="new-section-name" type="text" name="name" value="" placeholder="Section Name"/><input type="submit" class="create-section-btn button blue" value="Create"/>
+</form>
 
 <div class='section'>
   <p class="error-message">{{error_message}}</p>
-  <table>
-    <thead><tr><th>Section Name &nbsp; &nbsp;</th><th>Actions</th></tr></thead>
-    <tbody>
+    <div class="all-sections">
       {{#each sections}}
-      <tr class="section-{{ID}}-info">
-        <td>{{#if name}}{{name}}{{else}}<span class="lowcontrast">untitled</span>{{/if}}</td>
-        <td>
-          <!-- The action of this link is configured via Javascript -->
-          <a style='margin-right: 10px' href='#' class="delete-link" data-section-id="{{ID}}">Delete</a>
-        </td>
-      </tr>
+      <span class="section-name section-{{ID}}-info">
+        <!-- The action of this link is configured via Javascript -->
+        <a href='#' class="delete-link" data-section-id="{{ID}}"><i class="fa fa-trash-o"></i></a>
+        {{#if name}}{{name}}{{else}}<span class="lowcontrast">Untitled</span>{{/if}}
+      </span>
       {{/each}}
-	  </tbody>
-  </table>
-</div>
-
-<div class='section'>
-  <h3>Create a new section</h3>
-  <form method="POST" action="?action=create" id="create-section-form">
-    <label for="name">Section Name</label> <input type="text" name="name" value="" /><input type="submit" value="Create Section" />
-  </form>
-</div>
-
-<h1 style="margin-top:30px;">Section Student Listing</h1>
-<p>You can assign students to sections by dragging student names between each section.</p>
-<div class='section'>
-  {{#each class_sections}}
-    <h2 class="section-{{id}}-info">{{#if name}}{{name}}{{else}}untitled{{/if}}</h2>
-    <div class="section-assign section-{{id}}-info" data-section="{{id}}">
-    {{#if participants}}
-    <table>
-      <thead><th>First Name &nbsp; &nbsp;</th><th>Last Name &nbsp; &nbsp;</th><th>E-mail Address</th></thead>
-      <tbody>
-        {{#each participants}}
-          <tr data-membership-id='{{membership_id}}' data-user-firstname='{{firstname}}' class='student-record'>
-            <td>{{#if firstname}}{{firstname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
-            <td>{{#if lastname}}{{lastname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
-            <td>{{email}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-    {{else}}
-      <div><em>There are no students in this section. Drag students here to assign them to this section.</em></div>
-    {{/if}}
     </div>
-  {{/each}}
+</div>
 
-  <h2>Unassigned</h2>
-  <div class="section-assign" data-section="None">
-    {{#if no_section.participants}}
-    <table>
-      <thead>
-        <th>First Name &nbsp; &nbsp;</th><th>Last Name &nbsp; &nbsp;</th><th>E-mail Address</th>
-      </thead>
-      <tbody>
-        {{#each no_section.participants}}
-          <tr data-membership-id='{{membership_id}}' data-user-firstname='{{firstname}}' class='student-record'>
-            <td>{{#if firstname}}{{firstname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
-              <td>{{#if lastname}}{{lastname}}{{else}}<span class="lowcontrast">-</span>{{/if}}</td>
-            <td>{{email}}</td>
-          </tr>
+<h1 class="section-listing-header">Section Student Listing</h1>
+<div class="section-btns-holder">
+    <a class="download-csv section-btn button gray" href="#"><i class="fa fa-download" aria-hidden="true"></i>Download CSV</a>
+    <a class="upload-csv section-btn button gray" href="#"><i class="fa fa-upload" aria-hidden="true"></i>Upload CSV</a>
+    <input type="file" name="File Upload" id="csv-uploader" accept=".csv" style="display:none"/>
+</div>
+<table id="listing" class="display">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>E-mail Address</th>
+            <th>Section</th>
+            <!-- This column is added to enable filtering by section because this column will contain
+            the section as plain text instead of a select element (i.e. dropdown). I couldn't figure out an
+            easy way to make the datatable search box work with the select element in the visible Section column
+             -->
+            <th>Section (Hidden)</th>
+            <th>Membership ID (Hidden)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each class_sections}}
+          {{#each participants}}
+            <tr data-membership-id="{{membership_id}}">
+              <td>{{firstname}}</td>
+              <td>{{lastname}}</td>
+              <td>{{email}}</td>
+              <td>
+                <select name="section_id" data-membership-id="{{membership_id}}">
+                  <option value="None" {{#unless section}} selected="selected" {{/unless}}></option>
+                  {{#each ../../class_sections}}
+                    <option value="{{id}}" {{#equal ../section name}}selected="selected"{{/equal}}>{{name}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td>
+                {{section}}
+              </td>
+              <td>{{membership_id}}</td>
+            </tr>
+          {{/each}}
         {{/each}}
-      </tbody>
-    </table>
-    {{else}}
-    <div><em>No student is unassigned. Drag students here to remove their section assignment.</em></div>
-    {{/if}}
-  </div>
+        {{#each no_section.participants}}
+            <tr data-membership-id="{{membership_id}}">
+              <td>{{firstname}}</td>
+              <td>{{lastname}}</td>
+              <td>{{email}}</td>
+              <td>
+                <select name="section_id" data-membership-id="{{membership_id}}">
+                  <option value="None" {{#unless section}} selected="selected" {{/unless}}></option>
+                  {{#each ../class_sections}}
+                    <option value="{{id}}">{{name}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td></td>
+              <td>{{membership_id}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+<div id="sections-update">
 
+  <div class="btn-container">
+    <button class="gray cancel">Cancel</button>
+    <button class="blue save">Save</button>
+  </div>
+  <h2><span id="new-sections-count"></span> new sections will be created</h2>
+  <div id="new-sections-from-csv"></div>
+  <h2><span id="updated-sections-count"></span> students' sections will be updated</h2>
+  <table id="updated-listing" class="display" width="100%">
+    <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>E-mail Address</th>
+      <th>Section</th>
+    </tr>
+    </thead>
+  </table>
 </div>

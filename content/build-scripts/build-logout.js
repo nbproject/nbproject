@@ -1,3 +1,7 @@
 require(['requirescript'], function() {
-  require(['logout']);
+  require(['handlebars'], function(handlebars){
+    require(['logout'], function(logout){
+      require(['launch']);
+    });
+  });
 });

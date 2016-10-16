@@ -13,6 +13,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 import datetime, os, re, json
+import dateutil.parser
 import models as M
 import auth
 import constants as CST
@@ -231,6 +232,7 @@ def get_ensembles(uid, payload):
         "allow_guest": "ensemble.allow_guest",
         "allow_download": "ensemble.allow_download",
         "allow_ondemand": "ensemble.allow_ondemand",
+        "invitekey": "ensemble.invitekey",
          }
     my_memberships = M.Membership.objects.select_related("ensemble").filter(user__id=uid, deleted=False)
     if id is not None:
@@ -513,7 +515,7 @@ def get_files(uid, payload):
 
 def save_settings(uid, payload):
     #print "save settings w/ payload %s" % (payload, )
-    for k in [k for k in payload if k!="__PASSWD__"]:
+    for k in [k for k in payload if k not in ["__PASSWD__", "firstname", "lastname"]]:
         ds = M.DefaultSetting.objects.get(name=k)
         m = M.UserSetting.objects.filter(user__id=uid, setting__id=ds.id)
         if len(m)==0:
@@ -525,19 +527,33 @@ def save_settings(uid, payload):
         m.save()
         #DB().doTransaction("update nb2_user_settings set valid=0 where id_user=? and name=?", (uid, k))
         #DB().doTransaction("insert into nb2_user_settings(id_user, name, value) values (?, ?, ?)", (uid, k, payload[k]))
+
+    u = M.User.objects.get(pk=uid)
     if "__PASSWD__" in payload:
         password = payload["__PASSWD__"]
-        u = M.User.objects.get(pk=uid)
         u.set_password(password)
-        u.save()
+    u.firstname = payload["firstname"]
+    u.lastname = payload["lastname"]
+    u.save()
     return get_settings(uid, {})
+
 
 def get_settings(uid, payload):
     ds = M.DefaultSetting.objects.all()
     us = M.UserSetting.objects.filter(user__id=uid)
     sl = M.SettingLabel.objects.all()
-    retval =  {"ds": UR.qs2dict(ds), "us":UR.qs2dict(us), "sl":UR.qs2dict(sl)}
-    return retval
+    user = M.User.objects.get(pk=uid)
+    user_entry = UR.model2dict(user)
+    # Remove unnecessary fields
+    del user_entry["guest"]
+    del user_entry["confkey"]
+    del user_entry["valid"]
+    del user_entry["saltedhash"]
+    del user_entry["salt"]
+    del user_entry["password"]
+
+    return {"ds": UR.qs2dict(ds), "us":UR.qs2dict(us), "sl":UR.qs2dict(sl), "user":user_entry}
+
 
 def getLocation(id):
     """Returns an "enriched" location"""
@@ -1187,7 +1203,7 @@ def edit_assignment(uid, P):
     source = M.Source.objects.get(pk=P['id'])
     ownership = M.Ownership.objects.get(source=source)
     ownership.assignment = P["assignment"]
-    ownership.due = datetime.datetime.strptime(P["due"], '%Y-%m-%d %H:%M')
+    ownership.due = dateutil.parser.parse(P["due"])
     ownership.save()
     return get_files(uid, {"id":  P["id"]})
 
