@@ -90,10 +90,6 @@ def dev_desktop(req, n):
     return __serve_page(req, settings.DEV_DESKTOP_TEMPLATE % (n,))
 
 
-@ensure_csrf_cookie
-def static_page(req):
-    return render_to_response('web/static_page.html')
-
 def ondemand(req, ensemble_id):
     url = req.GET.get("url", None)
     if url:
@@ -149,6 +145,7 @@ def source(req, n, allow_guest=False):
     else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
+
 def source_analytics(req, n):
     pages, chart_stats = doc_analytics.get_page_stats(n)
     highlights = doc_analytics.get_highlights(n)
@@ -160,7 +157,12 @@ def source_analytics(req, n):
         'highlights': highlights,
         'numpages': source.numpages
     }
-    return __serve_page_with_vars(req, 'web/source_analytics.html', var_dict, content_type="text/html")
+    return HttpResponse(UR.prepare_response({"source": UR.model2dict(source),
+                                             "pages": pages,
+                                             "chart_stats": chart_stats,
+                                             "highlights": highlights,
+                                             "numpages": source.numpages}))
+
 
 def your_settings(req):
     return __serve_page(req, 'web/your_settings.html', content_type="text/html")
@@ -208,18 +210,25 @@ def newsite(req):
     return render_to_response("web/newsite.html", {"user_form": user_form, "ensemble_form": ensemble_form})
 
 
-def enter_your_name(req):
-    user       = UR.getUserInfo(req, False)
+def user_name_form(req):
+    user = UR.getUserInfo(req, False)
     if user is None:
         redirect_url = "/login?next=%s" % (req.META.get("PATH_INFO","/"),)
-        return HttpResponseRedirect(redirect_url)
-    user_form = forms.EnterYourNameUserForm(instance=user)
+        return HttpResponse(UR.prepare_response({"redirect": redirect_url}))
+
+    remote_form = RemoteForm(forms.UserForm(instance=user))
     if req.method == 'POST':
         user_form = forms.EnterYourNameUserForm(req.POST, instance=user)
         if user_form.is_valid():
             user_form.save()
-            return HttpResponseRedirect("/?ckey=%s" % (user.confkey,))
-    return render_to_response("web/enteryourname.html", {"user_form": user_form})
+            return HttpResponse(UR.prepare_response({"redirect": "/?ckey=%s" % user.confkey}))
+        else:  # Invalid form - return form with error messages
+            __clean_form(user_form)  # Ensure user-generated data gets cleaned before sending back the form
+            remote_form = RemoteForm(user_form)
+            return HttpResponse(UR.prepare_response({"form": remote_form.as_dict()}))
+    else:
+        return HttpResponse(UR.prepare_response({"form": remote_form.as_dict()}))
+
 
 def add_html_doc(req, ensemble_id):
     import base.models as M
@@ -342,7 +351,7 @@ def logout(req):
     djangologout(req)
     return r
 
-def confirm_invite(req):
+def membership_from_invite(req):
     invite_key  = req.GET.get("invite_key", None)
     invite      = M.Invite.objects.get(key=invite_key)
     m = M.Membership.objects.filter(user=invite.user, ensemble=invite.ensemble)
@@ -356,8 +365,7 @@ def confirm_invite(req):
     if invite.user.valid == False:
         invite.user.valid=True
         invite.user.save()
-    r = render_to_response("web/confirm_invite.html", {"o": m})
-    return r
+    return HttpResponse(UR.prepare_response({"is_admin": m.admin, "email": m.user.email, "class_name": m.ensemble.name, "confkey": m.user.confkey}))
 
 @ensure_csrf_cookie
 def subscribe(req):
@@ -447,7 +455,7 @@ def properties_ensemble_sections(req, id):
     if "action" in req.GET:
         if req.GET["action"] == "create" and "name" in req.POST:
             if M.Section.objects.filter(ensemble=ensemble, name=req.POST["name"]).exists():
-                err = "Could not create section: a section with the same name already exists."
+                err = "Could not create section \"%s\" because it already exists." % req.POST["name"]
             else:
                 s = M.Section(name=req.POST["name"], ensemble=ensemble)
                 s.save()
@@ -479,6 +487,52 @@ def properties_ensemble_sections(req, id):
                   err = "Cannot find member"
             else:
                 err = "Cannot find section"
+        elif req.GET["action"] == "reassign_many":
+            json_data = json.loads(req.body)
+            new_sections = set(json_data["new_sections"])
+
+            # Check that none of the new_sections already exist
+            old_sections = set([s.name for s in M.Section.objects.filter(ensemble=ensemble).all()])
+            sections_intersection = old_sections.intersection(new_sections)
+            if sections_intersection:
+                err = "Could not create the following sections because they already exists: " + \
+                      ", ".join(sections_intersection)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Check that all section names in updated_sections are valid i.e. either an existing section
+            # or one of the new_sections.
+            all_sections = old_sections.union(new_sections)
+            updated_sections = json_data["updated_sections"]
+            updated_sections_names = set([r["section"] for r in updated_sections])
+            invalid_section_names = updated_sections_names.difference(all_sections)
+            if invalid_section_names:
+                # Under normal circumstances the code should not get here because the UI should have ensured that all
+                # new sections are part of the new_sections field in the json data sent to the server.
+                err = "Could not update records because students cannot be added to these sections which do not exist: " + \
+                      ", ".join(invalid_section_names)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Check that all user IDs in updated_sections are valid
+            invalid_user_id = []
+            for r in updated_sections:
+                if not len(M.Membership.objects.filter(id=r["user_id"])):
+                    invalid_user_id.append(r["user_id"])
+            if invalid_user_id:
+                err = "Could not update records because the following user IDs are invalid: " + \
+                      ", ".join(invalid_user_id)
+                return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
+
+            # Create new sections
+            for section_name in new_sections:
+                section_object = M.Section(name=section_name, ensemble=ensemble)
+                section_object.save()
+
+            # Update students' sections
+            for r in updated_sections:
+                m = M.Membership.objects.filter(id=r["user_id"])[0]
+                s = sections.filter(name=r["section"], ensemble=ensemble)[0];
+                m.section = s
+                m.save()
         else:
            err = "Unrecognized Command"
     if err or "json" in req.GET:

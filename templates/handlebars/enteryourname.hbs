@@ -1,0 +1,105 @@
+<script>
+  $("title").html("What's your name?");
+</script>
+<style>
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 0 5px;
+  }
+
+  ul.errorlist{
+    color: #ff0000;
+    list-style: none;
+    margin: 0;
+    padding-left: 10px;
+    font-size: 14px;
+  }
+
+  #differences{
+    margin: 20px;
+    padding: 10px;
+    border: thin solid #c0c0c0;
+    color: #707070;
+  }
+
+  #intro{
+    margin: 20px 20px 0 20px;
+    color: #505050;
+  }
+
+  #intro p{
+    font-size: 1.2em;
+    margin-top: 10px;
+  }
+
+  form{
+    margin: 0 20px 20px 20px;
+    font-size: large;
+  }
+
+  button {
+    font-size: 14px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    background-color: #1e88e5;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-top: 10px;
+  }
+
+  button:hover,
+  button:focus {
+    background-color: #1879cd;
+  }
+
+</style>
+
+<div id="intro">
+  <h1>Welcome to the new NB!</h1>
+  <p>Currently, NB only knows you as <b>{{user_form.instance.email}}</b>. Conversations are much more pleasant when people know who they're talking to.</p>
+  <p><b>Hence, please take a few moments to enter your...</b></p>
+</div>
+<form action="" method="post">
+  <table>
+    <tr>
+      <td><label for="id_firstname">Firstname:</label> </td>
+      <td><input id="id_firstname" maxlength="63" name="firstname" type="text" value="{{form.data.firstname}}"/></td>
+      {{#if form.errors.firstname}}
+      <td>
+        <ul class="errorlist">
+          {{#each form.errors.firstname}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      {{/if}}
+    </tr>
+    <tr>
+      <td><label for="id_lastname">Lastname:</label> </td>
+      <td><input id="id_lastname" maxlength="63" name="lastname" type="text" value="{{form.data.lastname}}"/></td>
+      {{#if form.errors.lastname}}
+      <td>
+        <ul class="errorlist">
+          {{#each form.errors.lastname}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      {{/if}}
+    </tr>
+  </table>
+  {{#if form.non_field_errors}}
+  <ul class="errorlist nonfield">
+    {{#each form.non_field_errors}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  <button type="submit">Send</button>
+</form>

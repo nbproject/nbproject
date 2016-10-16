@@ -26,12 +26,13 @@ define(function(require) {
   var threadview      = require('threadview');
   var editorview      = require('editorview');
   var Handlebars      = require('handlebars');
+  var $               = require('jquery');
 
-  if ('NB$' in window) {
-    var $ = NB$;
+  if (NB$) {
+    $ = NB$;
   }
 
-  var $str = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str = NB$  ?  'NB$' : 'jQuery';
 
   Pers.init = function () {
 
@@ -98,7 +99,7 @@ define(function(require) {
         priority: 1,
         min_width: 650,
         desired_width: 35,
-        min_height: 1000,
+        min_height: 1500,
         desired_height: 50,
         transcient: true,
         content: function ($div) {

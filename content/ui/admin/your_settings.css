@@ -1,28 +1,28 @@
-#settings_panel li
+.settings_panel li
 {
     margin-top: 30px;
 
     list-style: none;
 }
 
-#settings_panel td
+.settings_panel td
 {
     padding-right: 30px;
 }
 
-#settings_panel button
-{
-    margin-right: 40px;
+h1 {
+  color: #505050;
 }
 
-
+.error {
+  color: #FF0000;
+}
 
 div.settings-section-title
 {
     font-size: large;
     font-weight: bold;
-
-    color: #4090c0;
+    color: #505050;
 }
 
 
@@ -31,8 +31,48 @@ div.settings-section-body
     margin-left: 20px;
 }
 
-div.buttons
-{
-    margin-top: 30px;
-    margin-left: 40px;
+
+.settings_panel button {
+  margin: 30px 40px 0 40px;
+  font-size: 1em;
+  border-radius: 5px;
+  outline: none;
+  /*
+  The transparent border ensures that the button does not change size if we need to set the
+  border e.g. when the button is disabled
+  */
+  border: 1px solid transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px 7px;
+  transition-duration: 0.3s;
 }
+
+button.save {
+  background-color: #1e88e5;
+}
+
+button.save:hover,
+button.save:focus {
+  background-color: #1879cd;
+}
+
+button.cancel {
+  background-color: #999;
+}
+
+button.cancel:hover,
+button.cancel:focus {
+  background-color: #777;
+}
+
+button[disabled=disabled],
+button[disabled=disabled]:hover,
+button[disabled=disabled]:focus {
+    background-color: #eee;
+    color: #ff0;
+    border: 1px solid #aaa;
+    color: #777;
+    cursor: not-allowed;
+}
+

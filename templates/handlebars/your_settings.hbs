@@ -2,8 +2,29 @@
   $("title").html("Your NB Settings");
 </script>
 <h1>NB Settings for <span id="your_firstname"/> <span id="your_lastname"/> (<span id="your_email"/>)</h1>
-<div id="settings_panel">
+<div class="settings_panel">
   <ul>
+    <li>
+      <div class="settings-section-title">Personal Details</div>
+      <div class="settings-section-body">
+        <table>
+          <tr>
+            <td>Firstname</td>
+            <td>
+              <input type="text" id="firstname" onkeyup="Pers.validateFirstName(event)" value="{{firstname}}" />
+              <span id="firstname_msg" class="error"/>
+            </td>
+          </tr>
+          <tr>
+            <td>Lastname</td>
+            <td>
+              <input type="text" id="lastname" onkeyup="Pers.validateLastName(event)" value="{{lastname}}" />
+              <span id="lastname_msg" class="error"/>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </li>
     <li>
       <div class="settings-section-title">Authentication</div>
       <div class="settings-section-body">
@@ -44,5 +65,5 @@
       </div>
     </li>
   </ul>
-  <div class="buttons"><button id="cancel_button">Cancel</button> <button id="save_button">Save Changes</button></div>
+  <button id="cancel_button" class="cancel">Cancel</button> <button id="save_button" class="save">Save</button></div>
 </div>

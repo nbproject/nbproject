@@ -1,25 +1,21 @@
 /*
-Author: cf AUTHORS.txt 
+Author: cf AUTHORS.txt
 License:  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
           MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 
-
 div.notepaneView
 {
     overflow: hidden;
-
     background-color: #efebe7;
 }
 
 div.location-lens
 {
     position: relative;
-
     margin: 0 0 0 0;
     padding-top: 3px;
     padding-bottom: 3px;
-
     cursor: pointer;
 }
 
@@ -37,19 +33,15 @@ div.notepaneView div.lens-even
 div.notepaneView span.gradecontainer
 {
     float: right;
-
     padding-left: 20px;
 }
 
 div.notepaneView span.gradeitem
 {
     font-size: medium;
-
     margin: 2px;
     padding: 3px;
-
     cursor: pointer;
-
     color: #707070;
     border: thin solid #f0f0f0;
     border-radius: 5px;
@@ -59,7 +51,6 @@ div.notepaneView span.gradeitem
 div.notepaneView span.gradeitem.selected
 {
     font-weight: bold;
-
     color: #ffe0d0;
     background-color: #707070;
 }
@@ -72,7 +63,6 @@ div.mode-select div.location-shortbody
 div.location-shortbody
 {
     overflow: hidden;
-
     padding-left: 5px;
 }
 
@@ -90,11 +80,9 @@ div.location-shortbody-ellipsis
 {
     position: absolute;
     right: 8px;
-
     width: 20px;
     height: 25px;
     margin-top: -4px;
-
     background-image: url(/content/data/icons/png/fuzzy_border_right_20.png);
     background-repeat: repeat-y;
 }
@@ -103,13 +91,45 @@ div.location-shortbody-text
 {
     font-family: arial;
     font-size: medium;
-
-    overflow-x: hidden;
-
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-
     color: #226;
+    margin-right: 5px;
+    height: 22px;
+}
+
+div.notepaneView h1,
+div.notepaneView h2,
+div.notepaneView h3,
+div.notepaneView h4,
+div.notepaneView h5,
+div.notepaneView h6,
+div.notepaneView p,
+div.notepaneView ul,
+div.notepaneView pre,
+div.notepaneView xmp,
+div.notepaneView plaintext,
+div.notepaneView listing{
+  margin: 2px;
+  font-size: 1em;
+  line-height: 1.2em;
+}
+
+div.notepaneView ul {
+  padding-left: 15px;
+}
+
+div.notepaneView span.empty_comment {
+  font-weight: 700;
+  font-variant: normal;
+  padding: 1px 7px;
+  font-size: 0.8em;
+}
+
+div.location-lens.selected span.tag-person {
+  background-color: #1976D2;
+  border: 1px solid #1565C0;
 }
 
 div.location-title
@@ -146,10 +166,8 @@ div.location-pagesummary
 {
     font-size: large;
     font-style: italic;
-
     padding-top: 20px;
     padding-left: 5px;
-
     color: #7070a0;
 }
 
@@ -162,7 +180,6 @@ div.location-pagesummary.selected
 div.notepaneView-pages
 {
     overflow-y: auto;
-
     border-width: 0 1px 0 1px;
     border-style: solid;
     border-color: #ddd;
@@ -190,11 +207,8 @@ div.notepaneView-selected span
 div.mode-select div.notepaneView-selected
 {
     position: relative;
-
     display: block;
-
     padding: 3px 5px;
-
     color: #888;
 }
 
@@ -206,18 +220,16 @@ div.mode-select div.notepaneView-selected
 div.location-flags
 {
     float: left;
-
     min-width: 60px;
     margin-left: 3px;
+    margin-top: 3px;
 }
 
 div.location-lens input[type=button].threadselect
 {
     position: absolute;
     right: 0;
-
     display: none;
-
     height: 20px;
 }
 
@@ -236,7 +248,6 @@ div.mode-select div.location-lens input[type=button].threadselect.selected
 {
     position: relative;
     left: 5px;
-
     height: 1.25em;
 }
 
@@ -249,9 +260,7 @@ div.mode-select div.location-lens input[type=button].threadselect.selected
 .select-bar div.labels > abbr
 {
     position: absolute;
-
     display: block;
-
     cursor: help;
     text-align: center;
 }
@@ -259,9 +268,7 @@ div.mode-select div.location-lens input[type=button].threadselect.selected
 div.mode-select .selectors > span
 {
     position: absolute;
-
     display: block;
-
     text-align: center;
 }
 
@@ -269,7 +276,6 @@ div.mode-select .selectors > span
 div.mode-select .selectors > span:nth-child(1)
 {
     right: 56px;
-
     width: 32px;
 }
 
@@ -277,7 +283,6 @@ div.mode-select .selectors > span:nth-child(1)
 div.mode-select .selectors > span:nth-child(2)
 {
     right: 4px;
-
     width: 48px;
 }
 
@@ -285,11 +290,8 @@ ins.locationflag
 {
     font-family: monospace;
     font-size: 11px;
-
     display: inline-block;
-
     margin: 0 2px;
-
     vertical-align: top;
     text-decoration: none;
 }
@@ -301,9 +303,7 @@ ins.lf-numnewnotes
     height: 14px;
     margin-top: 2px;
     padding: 1px 3px;
-
     text-align: center;
-
     border-radius: 2px;
 }
 
@@ -316,7 +316,6 @@ ins.lf-numnotes
 ins.lf-numnewnotes
 {
     font-weight: bold;
-
     color: #7070ff;
     background-color: #ffff70;
 }
@@ -324,16 +323,13 @@ ins.lf-numnewnotes
 div.notepaneView span.standout
 {
     font-weight: bold;
-
     color: #e0f0ff;
 }
 
 div.notepaneView div.collectioninfo
 {
     font-size: medium;
-
     padding: 9px;
-
     color: #d0d0d0;
     background-color: #b0b0b0;
 }
@@ -353,7 +349,6 @@ div.threadview div.note-lens
 {
     padding-top: 5px;
     padding-bottom: 5px;
-
     border: thin solid transparent;
     border-right-width: 5px;
 }
@@ -361,7 +356,6 @@ div.threadview div.note-lens
 div.threadview span.note-bold
 {
     font-weight: bold;
-
     color: #000;
 }
 
@@ -373,9 +367,7 @@ div.threadview span.note-bold
 div.threadview span.author
 {
     font-style: italic;
-
     margin-left: 10px;
-
     color: #a0a0a0;
 }
 
@@ -396,9 +388,7 @@ div.location-lens.selected span.author
 div.threadview div.lensmenu
 {
     float: right;
-
     padding: 5px;
-
     opacity: .2;
 }
 
@@ -411,7 +401,6 @@ div.threadview  div.note-abridgedlens div.lensmenu
 {
     margin: 0;
     padding: 0;
-
     border: none;
 }
 
@@ -424,7 +413,6 @@ div.threadview div.note-abridgedlens:hover div.lensmenu
 div.note-abridgedlens
 {
     font-family: monospace;
-
     color: #a0a0a0;
     border: thin solid transparent;
 }
@@ -448,9 +436,7 @@ div.notepaneView span.empty_comment
 {
     font-weight: bold;
     font-variant: small-caps;
-
     padding: 3px;
-
     color: #a0a0a0;
     border: thin solid #a0a0a0;
     border-radius: 10px;
@@ -460,9 +446,7 @@ div.notepaneView span.empty_comment
 div.no-notes
 {
     font-size: x-large;
-
     margin: 10px;
-
     color: #c0c0c0;
 }
 
@@ -470,7 +454,6 @@ div.no-notes
 div.filter-controls
 {
     float: right;
-
     padding-top: 1px;
 }
 
@@ -478,13 +461,10 @@ div.filter-controls > a.filter
 {
     display: inline-block;
     overflow: hidden;
-
     height: 21px;
     margin-right: 10px;
     padding: 0;
-
     text-decoration: none;
-
     color: #707070;
     border: solid 1px #909090;
     -webkit-border-radius: 4px;
@@ -524,7 +504,6 @@ div.filter-controls > a.filter.active .nbicon
 div.filter-controls  a.filter span
 {
     font-weight: bold;
-
     padding: 5px 0 5px 5px;
 }
 
@@ -536,11 +515,8 @@ div.filter-controls .nbicon
 div.filter-controls  div.filter-count
 {
     font-weight: bold;
-
     display: inline-block;
-
     padding: 5px 10px;
-
     text-align: center;
 }
 
@@ -548,7 +524,6 @@ div.notepaneView-header
 {
     min-height: 24px;
     padding: 3px 5px;
-
     background-color: #efebe7;
 }
 
@@ -556,10 +531,8 @@ span.filter-msg-unfiltered,
 span.filter-msg-filtered
 {
     display: inline-block;
-
     margin-top: 3px;
     padding-right: 10px;
-
     color: #808080;
 }
 
@@ -567,8 +540,6 @@ span.n_filtered
 {
     font-size: large;
     font-weight: bold;
-
-    color: #ff0;
 }
 
 span.n_unfiltered

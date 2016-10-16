@@ -13,14 +13,15 @@
 */
 /*global jQuery:true NB$:true */
 define(function(require) {
-  var concierge       = require('concierge'),
-      view            = require('view'),
-      $               = require('jquery'),
-      contextmenu     = require('contextmenu'),
-      tablesorter     = require('tablesorter'),
-      calendrical     = require('calendrical');
+  var concierge = require('concierge');
+  var view = require('view');
+  var $ = require('jquery');
+  var contextmenu = require('contextmenu');
+  var tablesorter = require('tablesorter');
+  var calendrical = require('calendrical');
+  var moment = require('moment');
 
-  var $str        = 'NB$' in window ? 'NB$' : 'jQuery';
+  var $str        = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {
       $.ui.view.prototype._create.call(this);
@@ -137,7 +138,7 @@ define(function(require) {
       var opts = this._admin ? "<td><a class='optionmenu link-style'>Actions</a>" + analytics_link + '</td>' : '';
       var d = new Date(f.date_published);
       var date_added = d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear().toString().substring(2);
-      var assignment_info = f.assignment ? ('Yes - due ' + f.due.substring(4, 0) + '-' + f.due.substring(7, 5) + '-' + f.due.substring(10, 8) + ' at ' + f.due.substring(13, 11) + ':' + f.due.substring(16, 14)) : '<span>No</span>';
+      var assignment_info = f.assignment ? ('Yes - due ' + moment(f.due).format("YYYY-MM-DD [at] HH:mm"))  : 'No';
       var download = '';
       var f_stats =  this._model.o.file_stats[f.ID];
       if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download) {
@@ -317,7 +318,7 @@ define(function(require) {
         self._id_ensemble = null;
       }
       self._admin = self._id_ensemble === null? false : self._model.o.ensemble[self._id_ensemble].admin;
-      var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file'>Add file</button> <button action='add_folder'>New folder</button> <button action='invite_users'>Invite Users</button> <a id='see_users' target='_blank'>Users</a> <a id='group_sections' target='_blank'>Sections</a> <a id='group_props' target='_blank'>Properties</a>  <a id='spreadsheet' target='_blank'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank'>Download as .xls</a></div>" : '';
+      var header    = self._admin ? "<div class='filesView-header'><span class='title'>Admin Controls</span><button action='add_file' class='gray'>Add file</button> <button action='add_folder' class='gray'>New folder</button> <button action='invite_users' class='gray'>Invite Users</button> <a id='see_users' target='_blank' class='gray button'>Users</a> <a id='group_sections' target='_blank' class='gray button'>Sections</a> <a id='group_props' target='_blank' class='gray button'>Properties</a>  <a id='spreadsheet' target='_blank' class='gray button'>Spreadsheet</a> <a id='spreadsheet_download' target='_blank' class='gray button'>Download as .xls</a></div>" : '';
       var opts    = self._admin ? '<th>Actions</th>' : '';
 
       var filesView_pending =  "<h3  id='filesView-pending-header'><a href='#'>You have <span id='filesView-pending-header-total'>0</span> feedback request<span id='filesView-pending-header-plural'/>.</a></h3><div id='filesView-panel-pending' class='filesView-panel'><div id='filesView-pending-list'/></div>";

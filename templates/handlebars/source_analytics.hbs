@@ -1,0 +1,78 @@
+<script>
+  $("title").html("NB Analytics");
+</script>
+
+
+<div class="main-wrapper">
+  <div class="links">
+    <a class="guide" target="_blank" href="https://github.com/nbproject/nbproject/wiki/Analytics-Tools-for-Instructors">Guide</a> |
+    <a class="feedback" target="_blank" href="https://docs.google.com/forms/d/1iTxDtr-tohbyRZAgcIUjM8ACBmyfssO98xVFBzWjc4Q/viewform">Feedback</a>
+  </div>
+  <h2><a href="/f/{{ source.id }}" class="header-link">{{ source.title }}</a></h2>
+  <div class="panel chart">
+    <div class="control-bar">
+      <label>Page Stats</label>
+      <span class="tip tip1">
+      Click metric names to toggle bars on and off. Hover over page numbers for page previews.
+      </span>
+    </div>
+    <div class="panel-content">
+      <div id="chart_div"></div>
+    </div>
+  </div>
+  <div class="panel heatmap">
+    <div class="control-bar">
+      <div class="controls">
+        <label>Show: </label>
+        <select id="show-filter">
+          <option value="all">All pages</option>
+          <option value="annotations">Pages with comments</option>
+          <option value="questions">Pages with replies requested</option>
+        </select>
+        <label>Sort by: </label>
+        <select id="sort-by">
+          <option value="page_num">Page number</option>
+          <option value="num_threads">Number of threads</option>
+          <option value="num_annotations">Number of comments</option>
+          <option value="num_questions">Number of replies requested</option>
+          <option value="num_participants">Number of participants</option>
+        </select>
+      </div>
+      <div class="tip">
+      Hover over thumbnails for enlarged views. Click page numbers to view annotations in NB.
+      </div>
+    </div>
+    <div class="panel-content">
+      <div id="pages-container"></div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+<div class="pg-preview"><img class="img-enlarged" /></div>
+
+<!--
+  The page-template and highlight-template below use Underscore's template system instead of Handlebars. This is the
+  default configuration of Backbone. That's why in the code below we have <%= and %> instead of {{ and }} for inserting
+  variables. These templates get used in ui.docAnalyticsBackboneViews.js
+-->
+ <script type="text/template" id="page-template">
+    <div class="page-preview" id="page-preview-<%= page_num %>">
+      <img class="page-img" id="page-img-<%= page_num %>" src="<%= img_url %>">
+    </div>
+    <a class="page-link" id="link-<%=page_num%>" href="/f/{{ source.id }}?p=<%=page_num%>" target="_blank">
+      <span class="page-num"><%= page_num %></span>
+    </a>
+    <div class="page-stats">
+      <span class="threads color-stat"><span class="val"><%= num_threads %></span> threads</span>
+      <br/><span class="annotations color-stat"><span class="val"><%= num_annotations %></span> comments</span>
+      <br/><span class="questions color-stat"><span class="val"><%= num_questions %></span> replies req.</span>
+      <br/><span class="participants color-stat"><span class="val"><%= num_participants %></span> participants</span>
+    </div>
+    <div class="clearfix"></div>
+</script>
+<script type="text/template" id="highlight-template">
+  <div class="highlight" style="top:<%= y %>px; left:<%= x %>px; width: <%= w %>px; height: <%= h %>px;">
+  </div>
+</script>
+
+<script type="text/javascript" src="/content/modules/ui.docAnalyticsBackboneViews.js"></script>
