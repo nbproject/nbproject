@@ -100,11 +100,16 @@ def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
 @csrf_exempt
 def upload(req): 
     r = HttpResponse()
-    f = req.FILES["file"]
-    id_ensemble = req.GET["id_ensemble"]
-    id_source = req.GET["id_source"]
-    id_folder = req.GET.get("id_folder", None)
-    uid = UR.getUserId(req);
+    try:
+        f = req.FILES["file"]
+        id_ensemble = req.GET["id_ensemble"]
+        id_source = req.GET["id_source"]
+        id_folder = req.GET.get("id_folder", None)
+        uid = UR.getUserId(req);
+    except UnreadablePostError:
+        #most likely a canceled upload
+        r.content =  UR.prepare_response({})
+        return r
     logging.info("upload uid=%s, id_source=%s, id_ensemble=%s, id_folder=%s" %  (uid,id_source,id_ensemble,id_folder))
     url = "http://%s:%s/%s?id_ensemble=%s" %("localhost", "8000",f.name, id_ensemble)
     payload = {"url": url, "id_source": id_source, "id_folder": id_folder }

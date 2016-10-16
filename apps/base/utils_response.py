@@ -50,8 +50,8 @@ def getUserId(req):
             return  u["id_user"].id   
     if "guest" in req.GET:
         return  getUserInfo(req, True).id  
-    return None
-
+    #last try; do a full getUserInfo to hunt for id
+    return getattr(getUserInfo(req),"id",None)
 
 def getUserInfo(req, allow_guest=False, extra_confkey_getter=None): 
     try:
