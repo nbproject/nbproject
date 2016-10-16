@@ -137,7 +137,10 @@ def ondemand(req, ensemble_id):
 
 
 def source(req, n, allow_guest=False):
-    source = M.Source.objects.get(pk=n)
+    try:
+       source = M.Source.objects.get(pk=n)
+    except M.Source.DoesNotExist:
+       return HttpResponse("No such document number: %s " % (n,))
     if source.type==M.Source.TYPE_YOUTUBE:
         return __serve_page(req, settings.YOUTUBE_TEMPLATE, allow_guest , content_type="text/html")
     elif source.type==M.Source.TYPE_HTML5:
@@ -353,15 +356,18 @@ def logout(req):
 
 def membership_from_invite(req):
     invite_key  = req.GET.get("invite_key", None)
-    invite      = M.Invite.objects.get(key=invite_key)
+    try:
+        invite      = M.Invite.objects.get(key=invite_key)
+    except M.Invite.DoesNotExist:
+        return HttpResponse(UR.prepare_response({}, 1,  "Invalid Invite Key"))
     m = M.Membership.objects.filter(user=invite.user, ensemble=invite.ensemble)
     if m.count() > 0:
         m = m[0]
     else:
         m = M.Membership(user=invite.user, ensemble=invite.ensemble)
-    m.admin = invite.admin or m.admin #'or'-clause so that admins don't inadventertly lose their admin privileges by clicking on a non-admin invite.
-    m.section = invite.section
-    m.save()
+        m.admin = invite.admin
+        m.section = invite.section
+        m.save()
     if invite.user.valid == False:
         invite.user.valid=True
         invite.user.save()
