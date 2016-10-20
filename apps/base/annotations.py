@@ -12,7 +12,7 @@ from django.db.models import Count
 from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-import datetime, os, re, json
+import datetime, time, os, re, json
 import dateutil.parser
 import models as M
 import auth
@@ -956,6 +956,11 @@ def addNote(payload):
                 tag.save()
 
                 instantTagReminder(comment, tagged_user)
+
+        # mark seen by author
+        session, previous_activity = markActivity(UR.CID)
+        if session is not None:
+            markCommentSeen(author.id, session.id, {comment.id: time.time()*1000})
 
         return [comment]
 
