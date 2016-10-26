@@ -592,7 +592,10 @@ def subscribe_with_key(req):
     key = req.GET.get("key", "")
     if not key:
         return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
-    e = M.Ensemble.objects.get(invitekey=key)
+    try:
+        e = M.Ensemble.objects.get(invitekey=key)
+    except ObjectDoesNotExist:
+        return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
     if not e.use_invitekey:
         return  HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
     auth_user = UR.getUserInfo(req)

@@ -22,6 +22,7 @@ from django.template import Template
 from django.core.exceptions import ValidationError
 from django.conf import settings
 import shutil
+import logging
 
 #SINGLETONS:
 
@@ -888,7 +889,13 @@ def addNote(payload):
         location = M.Location()
         location.source = M.Source.objects.get(pk=payload["id_source"])
         location.ensemble = M.Ensemble.objects.get(pk=payload["id_ensemble"])
-        location.y = payload["top"]
+        try:
+            location.y = payload["top"]
+        except KeyError:
+            logger = logging.getLogger("errorlog")
+            logger.error("no top for loc source %s, ensemble %s, author %s" %(payload["id_source"],payload["id_ensemble"],payload["id_author"]))
+            raise
+
         location.x = payload["left"]
         location.w = payload["w"]
         location.h = payload["h"]

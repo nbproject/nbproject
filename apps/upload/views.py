@@ -11,9 +11,10 @@ License
 
 import logging
 from base import utils_response as UR
-from django.http import HttpResponse
+from django.http import HttpResponse, UnreadablePostError
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.utils.datastructures import MultiValueDictKeyError
 from base import auth, annotations, models as M
 from os.path import dirname, abspath
 import os
@@ -95,14 +96,13 @@ def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
     cmd_rasterize = "mudraw -o %s/%s -r %s %s %s" % (output_dir, output_file, density, src, (page+1))
     cmd_crop =  "echo" if crop_params=="" else "nice convert -quality 100  %s  -density %s %s/%s %s/%s" % (crop_params, density,output_dir, output_file, output_dir, output_file)
     cmd = "(%s) && (%s)" % (cmd_rasterize, cmd_crop)
-    print cmd
     retval =  os.system(cmd)
     return retval  
 
 @csrf_exempt
 def upload(req): 
-    r = HttpResponse()
     try:
+        r = HttpResponse()
         f = req.FILES["file"]
         id_ensemble = req.GET["id_ensemble"]
         id_source = req.GET["id_source"]
@@ -110,7 +110,11 @@ def upload(req):
         uid = UR.getUserId(req);
     except UnreadablePostError:
         #most likely a canceled upload
-        r.content =  UR.prepare_response({})
+        r.content =  UR.prepare_response({},1,"unreadable post")
+        return r
+    except MultiValueDictKeyError:
+        #most likely no file submitted
+        r.content =  UR.prepare_response({},1,"no file submitted")
         return r
     logging.info("upload uid=%s, id_source=%s, id_ensemble=%s, id_folder=%s" %  (uid,id_source,id_ensemble,id_folder))
     url = "http://%s:%s/%s?id_ensemble=%s" %("localhost", "8000",f.name, id_ensemble)

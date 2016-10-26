@@ -749,8 +749,10 @@ define(function(require) {
 						msg.x0 = 0;
 						msg.y0 = 0;
 						msg.page = 1;
-						delete self._html5range.apparent_height;
-						msg.html5range = self._html5range;
+						msg.html5range= Object.assign ? //for pre-es6 compatibility
+								Object.assign({},self._html5range) :
+								self._html5range;
+						delete msg.html5range.apparent_height;
 					break;
 					case FILETYPES.TYPE_HTML5VIDEO:
 						throw 'editorview: HTML5VIDEO not implemented';
