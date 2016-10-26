@@ -77,6 +77,8 @@ def process_page(id, page, res, scale, pdf_dir, img_dir, fmt):
         insert_pdf_metadata(id, pdf_dir)
         #TODO: Handle error cases using return value from insert_pdf_metadata 
     s = M.Source.objects.get(pk=id)    
+    if (s.type != M.Source.TYPE_PDF):
+        return -1  #can only rasterize pdf
     d_ref = 72
     density = (int(res)*int(scale))/100   
     output_dir =  "%s/%s/%s" % (img_dir, res, scale)

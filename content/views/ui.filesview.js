@@ -291,7 +291,9 @@ define(function(require) {
 
       var s =  m.o.file[l.source_id];
       var scalefactor, doc, inner,  inner_top, sel, link, numvotes;
-      var body, comment_link, reply_link, ensemble_info, lens;
+      var body, comment_link, reply_link, ensemble_info, lens, img;
+      
+
       body = $.E(c.body).replace(/\n/g, ' ');
       comment_link = '/c/' + c.id;
       reply_link = q === undefined ? '' : "<a target='_blank' href='/r/" + c.id + "'><button>Reply</button></a>";
@@ -303,7 +305,13 @@ define(function(require) {
       inner_top = Math.min(0, 50 - l.y * scalefactor);
       sel = "<div class='snippet-selection' id_item='" + l.id + "' style='top: " + l.y * scalefactor + 'px; left: ' + l.x * scalefactor + 'px; width: ' + l.w * scalefactor + 'px; height: ' + l.h * scalefactor + "px'/>";
 
-      inner = "<div class='snippet-innermaterial' style='top: " + inner_top + "px'><div class='snippet-selections'>" + sel + "</div><img class='snippet-material' page='" + (Number(i) + 1) + "' src2='" + self.options.img_server + '/pdf/cache2/288/33/' + l.source_id + '?ckey=' + self._me.ckey + '&amp;page=' + l.page + "'/></div>";
+      if (s.filetype == 1) {//only pdfs have thumbnails
+          img =  self.options.img_server + '/pdf/cache2/288/33/' + l.source_id + '?ckey=' + self._me.ckey + '&amp;page=' + l.page 
+      } else {
+          img = "";
+      }
+
+      inner = "<div class='snippet-innermaterial' style='top: " + inner_top + "px'><div class='snippet-selections'>" + sel + "</div><img class='snippet-material' page='" + (Number(i) + 1) + "' src2='" +img + "'/></div>";
       link = " <a target='_blank' href='" + comment_link + "'>" + $.E(m.o.ensemble[l.ensemble_id].name + ' - ' + s.title + ' (p.  ' + l.page + ')') + '</a>';
       numvotes = q === undefined ? '' : "<div class='nbicon questionicon-hicontrast'/><span class='filesView-question-numvotes'>" + q.length() + '</span>';
       doc = "<div class='snippet-material' page='" + (i + 1) + "'><div class='snippet-pagenumber pagenumbertop'>" + link + numvotes + reply_link + '  </div>' + inner + '</div>';
