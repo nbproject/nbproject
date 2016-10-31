@@ -176,9 +176,13 @@ def user_from_email(email):
     return users[0] if len(users)==1 else None
 
 def checkUser(email, password):
-    users = M.User.objects.filter(email=email.strip().lower(), valid=1, guest=0)
+    # allow case sensitive username
+    users = M.User.objects.filter(email=email.strip(), valid=1, guest=0)
     if len(users) != 1:
-        return None
+        #but backup plan is case insensitive
+        users = M.User.objects.filter(email__iexact=email.strip(), valid=1, guest=0)
+        if len(users) != 1:
+            return None
     user = users[0]
     return user if user.authenticate(password) else None
 

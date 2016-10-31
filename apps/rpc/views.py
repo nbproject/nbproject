@@ -222,8 +222,8 @@ def login_user(P,req):
         return UR.prepare_response({"ckey": None})
     try: 
         u_in = json.loads(urllib.unquote(req.COOKIES.userinfo)).ckey
-        #log that there's been an identity change
         if u_in != user.confKey:
+            #log that there's been an identity change
             auth.log_guest_login(u_in, user.id)
     except: 
         pass
