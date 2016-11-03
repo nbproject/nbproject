@@ -145,6 +145,7 @@ def sendInvites(payload, req):
     admin = 0 if "admin" not in payload else payload["admin"]
     if not auth.canSendInvite(uid,id_ensemble):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
+    ensemble = M.Ensemble.objects.get(pk=id_ensemble)
     #extract emails in a somewhat robust fashion (i.e. using several possible delimiters)
     emails = parseEntities(payload["to"], [",", "\n", " "])
     #remove spurious stuff: strings that don't have an "@" and trailings "<" and ">" characters,
@@ -164,7 +165,6 @@ def sendInvites(payload, req):
         invite_key      = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
         auth.addInvite(invite_key, user.id, id_ensemble, id_section, admin)
         link = "http://%s/confirm_invite?invite_key=%s" % (settings.HOSTNAME, invite_key,)
-        ensemble = M.Ensemble.objects.get(pk=id_ensemble)
 
         p = {
             "name": ensemble.name,
