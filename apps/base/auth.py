@@ -154,6 +154,12 @@ def addUser(email, password, conf, valid=0, guest=0):
         gh.save()
     return o
 
+def addToEnsemble(id_user, id_ensemble, id_section, admin):
+    if id_section == 'None':
+        membership = M.Membership(user_id=id_user, ensemble_id=id_ensemble, admin=admin)
+    else:
+        membership = M.Membership(user_id=id_user, ensemble_id=id_ensemble, section_id=id_section, admin=admin)
+    membership.save()
 
 def addInvite(key, id_user, id_ensemble, id_section, admin):
     if id_section == 'None':

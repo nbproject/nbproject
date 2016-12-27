@@ -143,6 +143,7 @@ def sendInvites(payload, req):
     id_ensemble = payload["id_ensemble"]
     id_section = payload.get("id_section", None)
     admin = 0 if "admin" not in payload else payload["admin"]
+    direct = True if "direct" not in payload else payload["direct"]
     if not auth.canSendInvite(uid,id_ensemble):
         return UR.prepare_response({}, 1,  "NOT ALLOWED")
     #extract emails in a somewhat robust fashion (i.e. using several possible delimiters)
@@ -157,6 +158,9 @@ def sendInvites(payload, req):
     for email in emails:
         user = auth.user_from_email(email)
         password=""
+        if user is not None and direct:
+            auth.addToEnsemble(user.id, id_ensemble, id_section, admin)
+            return UR.prepare_response({"msg": "%s added to %s" % (emails, ensemble.name,)})
         if user is None:
             ckey = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
             password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])

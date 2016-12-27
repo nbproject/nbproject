@@ -257,8 +257,9 @@ define(function(require) {
           var to = $('#invite_users_emails')[0].value;
           var msg = $('#invite_users_msg')[0].value;
           var admin = $('#invite_users_admin:checked').length;
+          var direct = $('#invite_users_direct:checked').length == 1 ? true : false;
           var section = $('#invite_users_section').val();
-          $.concierge.get_component('invite_users')({ id_ensemble: id_ensemble, id_section: section, to: to, msg: msg, admin: admin }, function () {$.I('Your invitation has been sent !');});
+          $.concierge.get_component('invite_users')({ id_ensemble: id_ensemble, id_section: section, to: to, msg: msg, admin: admin, direct: direct }, function () {$.I('Your invitation has been sent !');});
 
           $(this).dialog('destroy');
         },
