@@ -13,7 +13,7 @@ requirejs.config({
     'datatables.net': 'lib/DataTables-1.10.12/media/js/jquery.dataTables.min',
     'datatables_select': 'lib/DataTables-1.10.12/extensions/Select/js/dataTables.select.min',
     'dateformat': 'lib/dateformat/date.format',
-    'jquery': 'lib/jquery/1.8.3/jquery.min',
+    'jquery': 'lib/jquery/1.12.4/jquery.min',
     'jquery-csv': 'lib/jquery-csv/src/jquery.csv.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
