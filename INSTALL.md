@@ -10,7 +10,7 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
   * core ubuntu dependencies can be installed by running 'sudo make prereqs'
   
 ### CORE DEPENDENCIES
-These can be installed as ubuntu packages
+These can be installed as ubuntu packages. See installation instructions below for Mac OSX.
 
     python (>= 2.6)
     postgresql (>= 8.4)
@@ -24,25 +24,144 @@ These can be installed as ubuntu packages
     python-pip (used to install google python library and other dependencies).
     nodejs
     npm
-    nodejs-legacy (in order to use executable name node instead of nodejs) 
-   
+    nodejs-legacy (in order to use executable name node instead of nodejs)
+
+### Apache 2
+You will need to enable mod_headers on apache2. Do the following (you may need to use sudo):
+
+    a2enmod headers
+    apachectl restart
+
+
 ### Pip installations
-    cd nbproject # (or whatever name you may have choosen for the root NB code directory).
+
+    cd nbproject #(or whatever name you may have choosen for the root NB code directory).
     sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
-      
+
 ### grunt
-    # As of March 2016 we have been using grunt 0.4.X. 
-    # For questions on getting NB to work wit grunt 0.3.X, plrease refer to 
-    # http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way. 
-      npm install grunt 
+    # As of March 2016 we have been using grunt 0.4.X.
+    # For questions on getting NB to work wit grunt 0.3.X, plrease refer to
+    # http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way.
+      npm install grunt
       sudo npm install -g grunt-cli
       sudo npm install -g grunt-init
       npm install grunt-contrib-jshint  --save-dev
       npm install grunt-contrib-concat  --save-dev
       npm install grunt-contrib-cssmin  --save-dev
       npm install grunt-contrib-requirejs --save-dev
+
+### INSTALL INSTRUCTIONS FOR MAC OSX
+### Python 2.6+
+Install Python 2 on your system (2.6+). Some versions of OS X may require you to do this in a virtualenv depending on protections on the default installation. After installing, go to the "Python 2.7" subfolder of the system Applications folder, and double-click on the "Update Shell Profile" to use 2.7.5 from the command line.
+After doing that, type python --version from the command line to confirm your version of Python.
+
+### apache2 + mod_wsgi
+Install MacPorts if you haven't already. You may need to update your current installation. Then:
+
+    sudo port install apache2 mod_wsgi
+
+If you see a ```sudo: port: command not found error```, modify your path variable by entering the following into your terminal:
+
+    export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+Alternatively, instead of using port, if using Homebrew on Mavericks, you can also run:
+
+    sudo ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/ /Applications/Xcode.app/Contents/Developer/Toolchains/OSX10.9.xctoolchain
+    brew install mod_wsgi
+
+If you're having trouble, you can also try the following installation package: https://pypi.python.org/pypi/mod_wsgi
+
+After installing, using your favorite text editor, add the following to ```/opt/local/apache2/conf/httpd.conf``` (```/private/etc/apache2/httpd.conf``` in Mavericks and Sierra):
+
+    LoadModule wsgi_module modules/mod_wsgi.so
+
+If the file is read-only, run ```sudo chmod 777 httpd.conf``` before adding the line.
+
+In the same file, uncomment:
+
+    Include conf/extra/httpd-vhosts.conf #Include /private/etc/apache2/extra/httpd-vhosts.conf on some systems
+
+### Postgres
+Install Postgresapp: http://postgresapp.com/
+
+Add the following to your PATH (in .profile, .bashrc, .bash_profile, or .zshrc, in your home directory):
+
+    cd ~/
+    export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+
+Start Postgres, then run the command-line interface by typing ```psql```. If you get an error "could not connect to server", you need to start Postgres manually with a command like:
+
+    pg_ctl -D /Users/user/nbproject/postgres -l /Users/user/nbproject/postgres/server.log start
+
+If successful, create a local NB database, filling in blanks:
+
+    CREATE ROLE <admin> WITH SUPERUSER;
+    CREATE USER <username> WITH PASSWORD <password>;
+    CREATE DATABASE <dbname>;
+    GRANT ALL PRIVILEGES ON DATABASE <dbname> to <username>;
+
+After you set it up, type ```\l``` to make sure your database has been created.
+
+### Pip installations
+Install pip if you haven't already by running:
+
+    sudo easy_install pip
+
+If having problems installing pip with easy_install, follow http://pip.readthedocs.org/en/latest/installing.html. Then:
+
+    cd nbproject #(or whatever name you may have choosen for the root NB code directory).
+    sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
+    sudo pip install django-cors-headers
+
+If, after setting everything up, you have trouble uploading a pdf with permission denied error, run:
+
+    chmod ugo+rwx /var/local/nb/pdf/repository
+    chmod ugo+rwx /var/local/nb/pdf/cache2
+
+### grunt
+
+Install nodejs: http://nodejs.org/en/download/
+Then install Grunt: http://gruntjs.com/getting-started
+
+Then:
+
+    sudo npm install -g grunt-cli
+    sudo npm install -g grunt-init
+    npm install grunt-contrib-jshint  --save-dev
+    npm install grunt-contrib-concat  --save-dev
+    npm install grunt-contrib-cssmin  --save-dev
+    npm install grunt-contrib-requirejs --save-dev
  
- 
+### mupdf
+Run:
+
+    sudo port install mupdf
+
+Alternatively, using Homebrew,
+
+    brew install mupdf
+
+
+Change instances of ```pdfdraw``` in the codebase to ```mudraw``` (currently in ```apps/upload/jobs.py```, line 82; run ```grep -r 'pdfdraw'``` to find others).
+
+NOTE: To ignore this file on git, go to your working directory, and edit ```.git/info/exclude``` to add this line (you might have to create it as a new file):
+
+    apps/upload/jobs.py
+
+Then in the terminal, type:
+
+    git update-index --assume-unchanged apps/upload/jobs.py
+
+
+### Other
+Install imagemagick: http://www.imagemagick.org/script/binary-releases.php#macosx
+
+Install ConTeXt (for rich, i.e. annotated pdf generation): http://wiki.contextgarden.net/Mac_Installation (we recommend MacText distribution)
+
+Start postfix (to enable sending mail if faced with "Connection refused"):
+
+    sudo postfix start
+
 ### [optional] Enable mod_rewrite
  If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
  
@@ -61,9 +180,9 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
    Once you've satisfied the dependencies listed above, you need to run the following installation commands (from nb root folder):
 
     npm install #in order to install specific grunt modules, such as grunt-css, execSync
-    make django #create configuration files. You can safely ignore the "Error 127" message
     #[copy apps/nbsite/settings_credentials.py.skel to settings_credentials.py and]
     #[edit values in apps/nbsite/settings_credentials.py, following the direction there]
+    make django #create configuration files. You can safely ignore the "Error 127" message
     sudo make create_dirs  # create root folder and some folders below that for nb data
     make django  # one more time...
     #[If you're deploying a production environmant, use the cmds given in output in order to configure apache]
@@ -76,12 +195,29 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
     # whether or not you're using localhost as your  databse server, but if you do use several server, make sure 
     # they all use the same database, for consistency.  Don't forget to re-run 'grunt' if you change conf.js
 
-## 3 - Database Initialization
-   * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres')
-    createuser nbadmin -P #important to setup as superuser since only superusers can create a language (used for plpythonu) 
+### Debugging the installation
+   * If you run into an illegal group name error, modify ```SERVER_USERNAME``` in ```nbsite/settings.py``` to be ```'_www'```.
+   * If grunt-css doesn't exist, run ```npm install grunt-css --save-dev```.
 
-   * Back to the regular user:
-    createdb -U <YOUR_POSTGRES_USER> -h localhost <YOUR_NB_DATABASE_NAME>
+## 3 - Database Initialization
+   * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres', or sudo -i -u postgres)
+
+        ```
+        createuser nbadmin -P #important to setup as superuser since only superusers can create a language (used for plpythonu)
+        ```
+
+   * Then, filling in <YOUR_POSTGRES_USER> with the superuser from before:
+
+        ```
+        createdb -U <YOUR_POSTGRES_USER> -h localhost <dbname>
+        ```
+
+   * Alternatively, in psql (while logged in to the postgres user), do:
+
+        ```
+        CREATE DATABASE <dbname>;
+        GRANT ALL PRIVILEGES ON DATABASE <dbname> to nbadmin;
+        ```
 
    * Exit from the database
 
@@ -91,6 +227,14 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
     ./manage.py migrate # To create the database tables from the migrations files
     ./manage.py sqlcustom base | ./manage.py dbshell # to create custom views. If this throws an error, you could simply log in to your postgres database and run the query contained in https://github.com/nbproject/nbproject/blob/dev/apps/base/sql/ensemble.sql 
 ```
+If you run into a base_user does not exist error, you will need to run migrate commands before these two steps. Try:
+
+    ./manage.py migrate auth
+    ./manage.py migrate contenttypes
+    ./manage.py migrate sites
+    ./manage.py migrate base
+
+Follow any instructions in the terminal for other migrations that may need to be done first.
 
    * You may also have to allow remote connections
      * sudo nano /etc/postgresql/[YOUR_VERSION]/main/pg_hba.conf 
