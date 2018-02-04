@@ -594,7 +594,7 @@ def subscribe_with_key(req):
         return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
     try:
         e = M.Ensemble.objects.get(invitekey=key)
-    except ObjectDoesNotExist:
+    except M.Ensemble.DoesNotExist:
         return HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))
     if not e.use_invitekey:
         return  HttpResponse(UR.prepare_response({}, 1,  "NOT ALLOWED"))

@@ -461,7 +461,8 @@ div.filter-controls > a.filter
 {
     display: inline-block;
     overflow: hidden;
-    height: 21px;
+    min-height: 21px;
+    line-height: 1;
     margin-right: 10px;
     padding: 0;
     text-decoration: none;

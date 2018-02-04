@@ -91,6 +91,7 @@ td.save-cancel
 }
 
 .emoticon {
+    display: inline-block;
     height: 24px;
     padding: 5px;
     cursor: pointer;
