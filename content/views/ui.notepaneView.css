@@ -523,7 +523,7 @@ div.filter-controls  div.filter-count
 
 div.notepaneView-header
 {
-    min-height: 24px;
+    min-height: 32px;
     padding: 3px 5px;
     background-color: #efebe7;
 }
