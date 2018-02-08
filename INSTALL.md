@@ -9,11 +9,11 @@ On a typical debian-like (ubuntu etc...) distribution, NB requires the following
   * packages in square brackets are optional
   * core ubuntu dependencies can be installed by running 'sudo make prereqs'
   
-### CORE DEPENDENCIES
+### CORE DEPENDENCIES FOR UBUNTU
 These can be installed as ubuntu packages. See installation instructions below for Mac OSX.
 
     python (>= 2.6)
-    postgresql (>= 8.4)
+    [postgresql] (>= 8.4)
     imagemagick
     mupdf-tools (for pdfdraw)
     context (for rich, i.e. annotated pdf generation)
@@ -25,32 +25,9 @@ These can be installed as ubuntu packages. See installation instructions below f
     nodejs
     npm
     nodejs-legacy (in order to use executable name node instead of nodejs)
-
-### Apache 2
-You will need to enable mod_headers on apache2. Do the following (you may need to use sudo):
-
-    a2enmod headers
-    apachectl restart
-
-
-### Pip installations
-
-    cd nbproject #(or whatever name you may have choosen for the root NB code directory).
-    sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
-
-### grunt
-    # As of March 2016 we have been using grunt 0.4.X.
-    # For questions on getting NB to work wit grunt 0.3.X, plrease refer to
-    # http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way.
-      npm install grunt
-      sudo npm install -g grunt-cli
-      sudo npm install -g grunt-init
-      npm install grunt-contrib-jshint  --save-dev
-      npm install grunt-contrib-concat  --save-dev
-      npm install grunt-contrib-cssmin  --save-dev
-      npm install grunt-contrib-requirejs --save-dev
-
-### INSTALL INSTRUCTIONS FOR MAC OSX
+      
+      
+### CORE DEPENDENCIES FOR MAC OSX
 ### Python 2.6+
 Install Python 2 on your system (2.6+). Some versions of OS X may require you to do this in a virtualenv depending on protections on the default installation. After installing, go to the "Python 2.7" subfolder of the system Applications folder, and double-click on the "Update Shell Profile" to use 2.7.5 from the command line.
 After doing that, type python --version from the command line to confirm your version of Python.
@@ -101,36 +78,6 @@ If successful, create a local NB database, filling in blanks:
     GRANT ALL PRIVILEGES ON DATABASE <dbname> to <username>;
 
 After you set it up, type ```\l``` to make sure your database has been created.
-
-### Pip installations
-Install pip if you haven't already by running:
-
-    sudo easy_install pip
-
-If having problems installing pip with easy_install, follow http://pip.readthedocs.org/en/latest/installing.html. Then:
-
-    cd nbproject #(or whatever name you may have choosen for the root NB code directory).
-    sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
-    sudo pip install django-cors-headers
-
-If, after setting everything up, you have trouble uploading a pdf with permission denied error, run:
-
-    chmod ugo+rwx /var/local/nb/pdf/repository
-    chmod ugo+rwx /var/local/nb/pdf/cache2
-
-### grunt
-
-Install nodejs: http://nodejs.org/en/download/
-Then install Grunt: http://gruntjs.com/getting-started
-
-Then:
-
-    sudo npm install -g grunt-cli
-    sudo npm install -g grunt-init
-    npm install grunt-contrib-jshint  --save-dev
-    npm install grunt-contrib-concat  --save-dev
-    npm install grunt-contrib-cssmin  --save-dev
-    npm install grunt-contrib-requirejs --save-dev
  
 ### mupdf
 Run:
@@ -153,7 +100,15 @@ Then in the terminal, type:
     git update-index --assume-unchanged apps/upload/jobs.py
 
 
-### Other
+### Miscellaneous
+Install pip if you haven't already by running:
+
+    sudo easy_install pip
+    
+Install nodejs: http://nodejs.org/en/download/
+
+Then install Grunt: http://gruntjs.com/getting-started
+
 Install imagemagick: http://www.imagemagick.org/script/binary-releases.php#macosx
 
 Install ConTeXt (for rich, i.e. annotated pdf generation): http://wiki.contextgarden.net/Mac_Installation (we recommend MacText distribution)
@@ -162,6 +117,41 @@ Start postfix (to enable sending mail if faced with "Connection refused"):
 
     sudo postfix start
 
+### NEXT STEPS (ALL SYSTEMS)
+### Apache 2
+You will need to enable mod_headers on apache2. Do the following (you may need to use sudo):
+
+    a2enmod headers
+    apachectl restart
+
+### Pip installations
+
+    cd nbproject #(or whatever name you may have choosen for the root NB code directory).
+    sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
+
+On Mac, you will also need to do the following:
+    
+    sudo pip install django-cors-headers
+   
+If, after setting everything up, you have trouble uploading a pdf with permission denied error, run:
+    
+    chmod ugo+rwx /var/local/nb/pdf/repository
+    chmod ugo+rwx /var/local/nb/pdf/cache2
+    
+### grunt
+As of March 2016 we have been using grunt 0.4.X.
+For questions on getting NB to work wit grunt 0.3.X, please refer to
+http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way.
+
+      npm install grunt
+      sudo npm install -g grunt-cli
+      sudo npm install -g grunt-init
+      npm install grunt-contrib-jshint  --save-dev
+      npm install grunt-contrib-concat  --save-dev
+      npm install grunt-contrib-cssmin  --save-dev
+      npm install grunt-contrib-requirejs --save-dev
+      npm install grunt-css --save-dev
+      
 ### [optional] Enable mod_rewrite
  If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
  
@@ -197,7 +187,6 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
 
 ### Debugging the installation
    * If you run into an illegal group name error, modify ```SERVER_USERNAME``` in ```nbsite/settings.py``` to be ```'_www'```.
-   * If grunt-css doesn't exist, run ```npm install grunt-css --save-dev```.
 
 ## 3 - Database Initialization
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres', or sudo -i -u postgres)
