@@ -301,8 +301,13 @@ def getHTML5Info(payload, req):
     #so instead of iterating to test below, just add .filter(Q(ensemble__memberships__user=UR.getUserId(req)) | Q(ensemble.allow_guest))
     #then use UR.qs2dict as was done previously
 
-    if not ownerships.exists():
-        return UR.prepare_response({}, 1, "this URL is not recognized: ")
+    if not ownerships.exists() and url.find(':') > 0:
+        #try to match without protocol portion
+        url=url.partition(':')[2]
+        sources_info = M.HTML5Info.objects.filter(url__endswith=url)
+        ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
+        if not ownerships.exists():
+            return UR.prepare_response({}, 1, "this URL is not recognized: ")
 
     output = {
         "files": {},
