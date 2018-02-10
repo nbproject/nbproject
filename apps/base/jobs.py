@@ -24,6 +24,8 @@ from django.db.models import Max
 from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 from django.db import transaction
+from HTMLParser import HTMLParser
+htmlParser=HTMLParser()
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class", 4: "Private to Tags"}
 
@@ -206,7 +208,7 @@ def do_auth_immediate():
     comments = M.Comment.objects.extra(select={"setting_value": setting_qry}).filter(ctime__gt=latestNotif.atime)        
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
     for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet       
-        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type]})
+        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": htmlParser.unescape(c), "visibility": VISIBILITY[c.type]})
         email = EmailMessage("You've posted a new note on NB...",
                              msg, 
                              settings.EMAIL_FROM,
@@ -278,7 +280,7 @@ def do_all_immediate():
     for c in comments:
         memberships = M.Membership.objects.extra(select={"setting_value": setting_qry}).filter(ensemble=c.location.ensemble, admin=True).exclude(user=c.author) #we don't want to send a notice to a faculty for a comment that he wrote !
         for m in (o for o in memberships if o.setting_value==2): #django doesn't let us filter by extra parameters yet
-            msg = render_to_string("email/msg_all_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type], "m": m})    
+            msg = render_to_string("email/msg_all_immediate",{"V":V, "c": htmlParser.unescape(c), "visibility": VISIBILITY[c.type], "m": m})    
             email = EmailMessage("%s %s just wrote a comment on %s" % (c.author.firstname, c.author.lastname, c.location.source.title),
                                  msg, 
                                  settings.EMAIL_FROM,
@@ -307,7 +309,7 @@ def do_reply_immediate():
         for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet
             if c.author_id not in emailed_uids: 
                 emailed_uids.append(c.author_id)
-                msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
+                msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":htmlParser.unescape(c), "rc":htmlParser.unescape(rc)})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
                 email.send(fail_silently=True)
