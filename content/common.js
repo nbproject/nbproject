@@ -14,6 +14,7 @@ requirejs.config({
     'datatables_select': 'lib/DataTables-1.10.12/extensions/Select/js/dataTables.select.min',
     'dateformat': 'lib/dateformat/date.format',
     'jquery': 'lib/jquery/1.12.4/jquery.min',
+    'jquery-private': 'lib/jquery-private/jquery-private',
     'jquery-csv': 'lib/jquery-csv/src/jquery.csv.min',
     'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
@@ -112,6 +113,19 @@ requirejs.config({
     'build_youtubeviewer': 'build-scripts/build-youtubeviewer',
 
   },
+    // from http://requirejs.org/docs/jquery.html
+    // Add this map config in addition to any baseUrl or
+    // paths config you may already have in the project.
+  map: {
+      // '*' means all modules will get 'jquery-private'
+      // for their 'jquery' dependency.
+      '*': { 'jquery': 'jquery-private' },
+
+      // 'jquery-private' wants the real jQuery module
+      // though. If this line was not here, there would
+      // be an unresolvable cyclic dependency.
+      'jquery-private': { 'jquery': 'jquery' }
+      },
   shim: {
     'concierge': {
         deps: ['jquery'],

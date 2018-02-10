@@ -285,13 +285,13 @@ define(function(require) {
   NB$.truncateURL = function (str) {
     // Wrap the entire content in a div because if you have html with text at the end (without an enclosing tag),
     // jQuery would ignore it. We don't want that to happen here.
-    var $htmlStr = $("<div class='temp-nb-wrapper'>" + str + "</div>");
-    $($htmlStr).find('a').each(function() {
-      if($(this).html().length >= 23){
-        $(this).html($(this).html().slice(0, 20) + "...");
+    var $htmlStr = NB$("<div class='temp-nb-wrapper'>" + str + "</div>");
+    NB$($htmlStr).find('a').each(function() {
+      if(NB$(this).html().length >= 23){
+        NB$(this).html(NB$(this).html().slice(0, 20) + "...");
       }
     });
-    return $($htmlStr, "div.temp-nb-wrapper").first().html();
+    return NB$($htmlStr, "div.temp-nb-wrapper").first().html();
   }
 
   /***********************************************************************

@@ -372,7 +372,7 @@ define(function(require) {
 
   };
 
-  jQuery(function () {
+  $(function () {
     Pers.params = Dom.getParams();
     Pers.preinit();
   });
