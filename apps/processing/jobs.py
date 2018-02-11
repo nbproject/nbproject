@@ -28,6 +28,8 @@ from base import utils, models as M, annotations, utils_response as UR
 import glob, json,   pyPdf, shutil, re, random, string, logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from HTMLParser import HTMLParser
+htmlParser=HTMLParser()
 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_processing_pdf_%s.log' % ( id_log,), filemode='a')
@@ -116,7 +118,7 @@ def process_file(id_source):
             me = 1
         else:
             me = 0
-        msg = '\n'+r'\comment{note-%s}{%d}{%s}{%d}{%d}' % (n, levels, texify(body), me, int(n))
+        msg = '\n'+r'\comment{note-%s}{%d}{%s}{%d}{%d}' % (n, levels, texify(htmlParser.unescape(body)), me, int(n))
         OUTPUT.append(unicode(msg).encode("ascii", "ignore"))
         if levels == 0 and page != 0:  # a root comment not on page 0 needs callout
             root = roots[n]
