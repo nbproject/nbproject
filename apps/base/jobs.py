@@ -24,6 +24,7 @@ from django.db.models import Max
 from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 from django.db import transaction
+from django.utils.html import strip_tags
 from HTMLParser import HTMLParser
 htmlParser=HTMLParser()
 
@@ -208,7 +209,7 @@ def do_auth_immediate():
     comments = M.Comment.objects.extra(select={"setting_value": setting_qry}).filter(ctime__gt=latestNotif.atime)        
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
     for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet       
-        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": htmlParser.unescape(c), "visibility": VISIBILITY[c.type]})
+        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": htmlParser.unescape(strip_tags(c)), "visibility": VISIBILITY[c.type]})
         email = EmailMessage("You've posted a new note on NB...",
                              msg, 
                              settings.EMAIL_FROM,
