@@ -193,7 +193,8 @@ def sendInvites(payload, req):
     return UR.prepare_response({"msg": "Invite for %s sent to %s" % (ensemble.name, emails,)})
 
 def register_user(P, req):
-    users = M.User.objects.filter(email=P["email"].strip().lower())
+    P["email"]=P["email"].strip().lower() #normalize login id
+    users = M.User.objects.filter(email=P["email"])
     if users.count() != 0:
         return UR.prepare_response({}, 1,"A user with this email already exists - please choose another email.")
     user= auth.getGuest(P["ckey"])
