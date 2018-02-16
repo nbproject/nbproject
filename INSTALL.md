@@ -151,6 +151,7 @@ http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the op
       npm install grunt-contrib-cssmin  --save-dev
       npm install grunt-contrib-requirejs --save-dev
       npm install grunt-css --save-dev
+      npm install grunt-contrib-copy --save-dev
       
 ### [optional] Enable mod_rewrite
  If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
