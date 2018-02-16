@@ -548,6 +548,14 @@ module.exports = function (grunt) {
     qunit: {
       files: ['templates/web/*.html'],
     },
+    copy: {
+        files: {
+            cwd: 'content/lib/jquery_ui/images/',
+            src: '**/*',
+            dest: 'content/compiled/images',
+            expand: true 
+        }
+    },
     cssmin: CSS_TARGETS,
     min: {
       dist: {
@@ -565,9 +573,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task.
   // grunt.registerTask('default', 'lint qunit concat min');
   // grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('default', ['requirejs', 'cssmin']);
+  grunt.registerTask('default', ['requirejs', 'cssmin', 'copy']);
 };
