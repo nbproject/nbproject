@@ -70,10 +70,10 @@ define(function(require) {
 
   Dom.elementPosition = function (node) {
     /**
-        	 * returns the 0-based element-position of 'node',
-        	 * i.e. the number of DOM **elements** that are before 'node'
-        	 *
-        	 **/
+     * returns the 0-based element-position of 'node',
+     * i.e. the number of DOM **elements** that are before 'node'
+     *
+     **/
     var i = 0;
     var n = Dom.previousElement(node);
     while (n) {
@@ -118,10 +118,10 @@ define(function(require) {
   }; //parameters.
   Dom.addSection = function () {
     /*
-    	 * inspired from sections.js in stats2
-    	 * just need to initialize it with
-    	 *     $("div.section").each(Dom.addSection);
-    	 */
+         * inspired from sections.js in stats2
+         * just need to initialize it with
+         *     $("div.section").each(Dom.addSection);
+         */
     var title = this.getAttribute('label');
     if (Dom.__sections.do_toc) {
       $('#' + Dom.__sections.toc_id).append("<a href='#" + this.id + "'>" + title + '</a>');

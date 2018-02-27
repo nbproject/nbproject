@@ -15,10 +15,10 @@
 
 define(function(require) {
   var concierge       = require('concierge'),
-      view            = require('view'),
-      $               = require('jquery'),
-      contextmenu     = require('contextmenu'),
-      filterwizard    = require('filterwizard');
+  view            = require('view'),
+  $               = require('jquery'),
+  contextmenu     = require('contextmenu'),
+  filterwizard    = require('filterwizard');
 
   var $str     = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
@@ -48,14 +48,14 @@ define(function(require) {
       self.SEC_MULT_FACTOR = $.concierge.get_component('get_sec_mult_factor')();
       self.T_METRONOME = $.concierge.get_component('get_metronome_period_s')();
       self._page =    null;
-      self._scrollTimerID	=    null;
-      self._seenTimerID	= null;
-      self._id_location	= null; //location_id of selected thread
-      self._is_first_stroke	= true;
-      self._rendered		= false;
-      self._filters		= { me: false, star: false, question: false, tag: false, title: false };
-      self.QUESTION		= null;
-      self.STAR		= null;
+      self._scrollTimerID       =    null;
+      self._seenTimerID = null;
+      self._id_location = null; //location_id of selected thread
+      self._is_first_stroke     = true;
+      self._rendered            = false;
+      self._filters             = { me: false, star: false, question: false, tag: false, title: false };
+      self.QUESTION             = null;
+      self.STAR         = null;
       self.element.addClass('notepaneView').append("<div class='notepaneView-header'><div class='filter-controls'><a title='toggle filter: threads in which I am tagged' class='filter' action='tag' id='filter_tag'><span>tag</span><div class='filter-count'>...</div></a><a title='toggle filter: threads which are section titles' class='filter' action='title' id='filter_title'><span>title</span><div class='filter-count'>...</div></a><a title='toggle filter: threads in which I participated' class='filter' action='me' id='filter_me'><span>me</span><div class='filter-count'>...</div></a><a title='toggle filter: starred threads' class='filter' action='star' id='filter_star'><span><div class='nbicon staricon' style='margin-top: -3px'/></span><div class='filter-count'>...</div></a><a title='toggle filter: threads with standing questions' class='filter' action='question' id='filter_question'><span>    <div class='nbicon questionicon' style='margin-top: -3px'/>    </span><div class='filter-count'>...</div></a></div><span class='filter-msg-filtered'><span class='n_filtered'>0</span> threads out of <span class='n_total'>0</span></span><span class='filter-msg-unfiltered'><span class='n_unfiltered'>0</span> threads</span></div><div class='notepaneView-pages'/>");
 
       $('#filter_me').click(function () {$.concierge.trigger({ type: 'filter_toggle', value: 'me' });});
@@ -79,7 +79,7 @@ define(function(require) {
             self._render();
           }
 
-        break;
+          break;
         case 'filter_toggle':
           if (evt.value in self._filters) {
             self._filters[evt.value] = (!(self._filters[evt.value]));
@@ -88,22 +88,22 @@ define(function(require) {
             self._render(true);
           }
 
-        break;
+          break;
         case 'note_hover':
           $('div.location-lens[id_item=' + evt.value + ']', self.element).addClass('hovered');
-        break;
+          break;
         case 'note_out':
           $('div.location-lens[id_item=' + evt.value + ']', self.element).removeClass('hovered');
-        break;
+          break;
         case 'warn_page_change':
           $.L('[notepaneView11] TODO: warn_page_change');
-        break;
+          break;
         case 'deselect_all_threads':
           $('div.location-pagesummary.selected', self.element).removeClass('selected');
           $('div.location-lens[id_item=' + self._id_location + ']', self.element).removeClass('selected');
           self._page = null;
           self._id_location = null;
-        break;
+          break;
         case 'select_thread':
           $('div.location-pagesummary.selected', self.element).removeClass('selected');
           if (self._seenTimerID != null) {
@@ -138,10 +138,10 @@ define(function(require) {
             }
           }
 
-        break;
+          break;
         case 'keydown':
           self._keydown(evt.value);
-        break;
+          break;
         }
       }
     },
@@ -324,8 +324,8 @@ define(function(require) {
 
     _render: function (do_erase) {
       /*
-     * this is where we implement the caching strategy we want...
-     */
+       * this is where we implement the caching strategy we want...
+       */
       var self = this;
       if (do_erase) {
         self.element.children('div.notepaneView-pages').children('div.notepaneView-comments').empty();

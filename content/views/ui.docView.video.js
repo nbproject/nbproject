@@ -25,77 +25,77 @@ var ytDefineCallbacks = jQuery.Deferred();
 // Resolves when duration of video is available
 var ytMetadataCallbacks = jQuery.Deferred();
 
-	//Update a particular HTML element with a new value
-	function updateHTML(elmId, value) {
+        //Update a particular HTML element with a new value
+        function updateHTML(elmId, value) {
   document.getElementById(elmId).innerHTML = value;
-	}
+        }
 
-	// This function is called when an error is thrown by the player
-	function onPlayerError(errorCode) {
+        // This function is called when an error is thrown by the player
+        function onPlayerError(errorCode) {
   alert('An error occured of type:' + errorCode);
-	}
+        }
 
-	// This function is called when the player changes state
-	function onPlayerStateChange(newState) {
+        // This function is called when the player changes state
+        function onPlayerStateChange(newState) {
   //updateHTML("playerState", newState);
-	}
+        }
 
-	// Display information about the current state of the player
-	// It’s called every 250 milliseconds in onYoutubePlayerReady()
-	function updatePlayerInfo() {
+        // Display information about the current state of the player
+        // It’s called every 250 milliseconds in onYoutubePlayerReady()
+        function updatePlayerInfo() {
   // Also check that at least one function exists since when IE unloads the
   // page, it will destroy the SWF before clearing the interval.
   if (ytplayer && ytplayer.getDuration) {
     NB_vid.methods.updateHTML('videoTimeDisplay', NB_vid.methods.calculateTime(ytplayer.getCurrentTime())); //seen under progressbar
     NB_vid.methods.updateHTML('videoTotalTimeDisplay', NB_vid.methods.calculateTime(ytplayer.getDuration()));
   }
-	}
+        }
 
-	// Sets time display to given time, useful if updating immediately after seek
-	function setPlayerInfo(time) {
+        // Sets time display to given time, useful if updating immediately after seek
+        function setPlayerInfo(time) {
   // Also check that at least one function exists since when IE unloads the
   // page, it will destroy the SWF before clearing the interval.
   if (ytplayer && ytplayer.getDuration) {
     NB_vid.methods.updateHTML('videoTimeDisplay', NB_vid.methods.calculateTime(time)); //seen under progressbar
     NB_vid.methods.updateHTML('videoTotalTimeDisplay', NB_vid.methods.calculateTime(ytplayer.getDuration()));
   }
-	}
+        }
 
-	// Allow the user to set the volume from 0-100
-	function setVideoVolume(volume) {
+        // Allow the user to set the volume from 0-100
+        function setVideoVolume(volume) {
   if (ytplayer) {
     ytplayer.setVolume(volume);
   }
-	}
+        }
 
-	function playVideo() {
+        function playVideo() {
   if (ytplayer) {
     NB_vid.isPlaying = true;
     ytplayer.playVideo();
   }
-	}
+        }
 
-	function pauseVideo() {
+        function pauseVideo() {
   if (ytplayer) {
     NB_vid.isPlaying = false;
     ytplayer.pauseVideo();
   }
-	}
+        }
 
-	function muteVideo() {
+        function muteVideo() {
   if (ytplayer) {
     ytplayer.mute();
   }
-	}
+        }
 
-	function unMuteVideo() {
+        function unMuteVideo() {
   if (ytplayer) {
     ytplayer.unMute();
   }
-	}
+        }
 
-	//give the time in seconds, return the time as a string with (hours:)minutes:seconds
-	function calculateTime(givenTime) {
+        //give the time in seconds, return the time as a string with (hours:)minutes:seconds
+        function calculateTime(givenTime) {
   var totalSec = parseInt(givenTime);
   var hours = 0;
   if (totalSec >= 3600) {
@@ -127,10 +127,10 @@ var ytMetadataCallbacks = jQuery.Deferred();
   }
 
   return display;
-	}
+        }
 
-	// Given the time as a string, return the time as a number of seconds
-	function calculateTime_stringToNum(timeStr) {
+        // Given the time as a string, return the time as a number of seconds
+        function calculateTime_stringToNum(timeStr) {
   var seconds = parseInt(timeStr.substring(timeStr.length - 2, timeStr.length)); //gets seconds
   timeStr = timeStr.substring(0, timeStr.length - 3); //gets rid of the seconds portion of string
   var minutes, hours = 0;
@@ -144,14 +144,14 @@ var ytMetadataCallbacks = jQuery.Deferred();
 
   var totalSeconds = hours * 3600 + minutes * 60 + seconds;
   return totalSeconds;
-	}
+        }
 
-	function videoClicked() {
+        function videoClicked() {
   NB_vid.methods.playORpause();
-	}
+        }
 
-	// This function is automatically called by the player once it loads
-	function onYouTubePlayerReady(event) {
+        // This function is automatically called by the player once it loads
+        function onYouTubePlayerReady(event) {
   console.log('ytplayer ready');
 
   NB_vid.ytLoaded = true;
@@ -164,9 +164,9 @@ var ytMetadataCallbacks = jQuery.Deferred();
   ytplayer.addEventListener('onStateChange', 'onPlayerStateChange');
   ytplayer.addEventListener('onError', 'onPlayerError');
   ytDefineCallbacks.resolve();
-	}
+        }
 
-	function defineYouTubePlayer() {
+        function defineYouTubePlayer() {
   console.log('defining ytplayer');
   ytplayer = new YT.Player('videoDiv', {
     height: '423',
@@ -181,13 +181,13 @@ var ytMetadataCallbacks = jQuery.Deferred();
     },
   });
   if (ytplayer) {console.log('ytplayer defined!');}  else {console.log('ytplayer definition failed');}
-	}
+        }
 
-	function videoLocSort(a, b) {
+        function videoLocSort(a, b) {
   return b.page - a.page;
-	}
+        }
 
-	NB_vid = {
+        NB_vid = {
   methods: {
     updateHTML: updateHTML,
     onPlayerError: onPlayerError,
@@ -215,12 +215,12 @@ var ytMetadataCallbacks = jQuery.Deferred();
   renderedInitialTicks: false,
   videoSortFunc: videoLocSort,
   tickVisibility: {},
-		};
+                };
 
-	function onYouTubeIframeAPIReady() {
+        function onYouTubeIframeAPIReady() {
   console.log('Iframe API Ready');
   ytApiCallbacks.resolve();
-	}
+        }
 
 define(function(require) {
   var concierge       = require('concierge'),
@@ -233,50 +233,50 @@ define(function(require) {
   ['<div class = "videoView">',
               '<div class = "titleContainer">',
               '</div>',
-		'<div class = "videoContainer">',
-			'<div id="videoDiv">Loading...</div>',
-			'<div id = "videoCover">',
-			'</div>',
-			'<div class="selections"></div>',
-		'</div>',
-		'<div class = "videoMenu">',
-			'<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/pause.png"></div>',
-			'<div class = "playback"><img class = "playback" src="/content/data/images/refresh.png"></div>',
-			'<div class = "progressbar_container">',
-				'<div id= "dragRangeContainer">',
-					'<div id="rangeTick">',
-						'<div class = "rightTooltipDiv" style = "float: right"></div>',
-					'</div>',
-				'</div>',
-				'<div id= "progressbar">',
-					'<div class = "mouseTooltipDiv"></div>',
-					'<div id = "progressbar_filler"></div>',
-				'</div>',
-				'<div id = "zoomTick"><div class = "rightTooltipDiv" style = "float: right"></div></div>',
-				'<div class = "tickmark_holder">',
+                '<div class = "videoContainer">',
+                        '<div id="videoDiv">Loading...</div>',
+                        '<div id = "videoCover">',
+                        '</div>',
+                        '<div class="selections"></div>',
+                '</div>',
+                '<div class = "videoMenu">',
+                        '<div class = "playORpause_holder"><img class = "playORpause" src="/content/data/images/pause.png"></div>',
+                        '<div class = "playback"><img class = "playback" src="/content/data/images/refresh.png"></div>',
+                        '<div class = "progressbar_container">',
+                                '<div id= "dragRangeContainer">',
+                                        '<div id="rangeTick">',
+                                                '<div class = "rightTooltipDiv" style = "float: right"></div>',
+                                        '</div>',
+                                '</div>',
+                                '<div id= "progressbar">',
+                                        '<div class = "mouseTooltipDiv"></div>',
+                                        '<div id = "progressbar_filler"></div>',
+                                '</div>',
+                                '<div id = "zoomTick"><div class = "rightTooltipDiv" style = "float: right"></div></div>',
+                                '<div class = "tickmark_holder">',
 
-				'</div>',
+                                '</div>',
 
-				'<div id ="showTime">',
-					'<div id = "videoTimeDisplay">--:--</div><text> /</text>',
-					'<div id = "videoTotalTimeDisplay">--:--</div>',
-				'</div>',
-			'</div>',
-			'<div class = "muteORunmute_holder"><img class = "muteORunmute" src = "/content/data/images/volume_up.png"></div>',
-		'</div>',
-		'<div class = "enlargedTickContainer">',
-			'<div class = "enlargedTickStart">--:--</div>',
-			'<div class = "enlargedTickBar"><div class = "tickmark currentPlayerLocationTick"></div></div>',
+                                '<div id ="showTime">',
+                                        '<div id = "videoTimeDisplay">--:--</div><text> /</text>',
+                                        '<div id = "videoTotalTimeDisplay">--:--</div>',
+                                '</div>',
+                        '</div>',
+                        '<div class = "muteORunmute_holder"><img class = "muteORunmute" src = "/content/data/images/volume_up.png"></div>',
+                '</div>',
+                '<div class = "enlargedTickContainer">',
+                        '<div class = "enlargedTickStart">--:--</div>',
+                        '<div class = "enlargedTickBar"><div class = "tickmark currentPlayerLocationTick"></div></div>',
 
-			'<button onclick = "NB_vid.zoom.zoomClose()" type="button" class="close closeEnlarged" style = "margin-top: 10px; margin-right: 8px; float: right">&times;</button>',
-			'<div class = "enlargedTickEnd">--:--</div>',
-		'</div>',
-		'<div class = "tagListContainer">',
-		'<table id = "tagList">',
-		'<tr><td><b>Tagged:</b></td></tr>',
-		'</table>',
-		'</div>',
-	'</div>', ].join('\n');
+                        '<button onclick = "NB_vid.zoom.zoomClose()" type="button" class="close closeEnlarged" style = "margin-top: 10px; margin-right: 8px; float: right">&times;</button>',
+                        '<div class = "enlargedTickEnd">--:--</div>',
+                '</div>',
+                '<div class = "tagListContainer">',
+                '<table id = "tagList">',
+                '<tr><td><b>Tagged:</b></td></tr>',
+                '</table>',
+                '</div>',
+        '</div>', ].join('\n');
 
   function completeMethods() {
     // called when the play/pause button is clicked
@@ -541,13 +541,13 @@ define(function(require) {
     //This function should be called the the page is loading, it appends all the ticks to the tickholder
     // NOT IMPLEMENTED
     function createTickPopover(ID) {
-      //			for (var i = 0; i <= NB_vid.commentObj.length - 1; i++){
-      //				if (NB_vid.commentObj[i].ID == ID){
-      //					var tickContent = NB_vid.commentObj[i].text;
-      //					var tickTitle = NB_vid.commentObj[i].userName;
-      //					$("#tickmark" + ID).popover({trigger: "hover", placement: "bottom",title: tickTitle, content: tickContent});
-      //				}
-      //			}
+      //                        for (var i = 0; i <= NB_vid.commentObj.length - 1; i++){
+      //                                if (NB_vid.commentObj[i].ID == ID){
+      //                                        var tickContent = NB_vid.commentObj[i].text;
+      //                                        var tickTitle = NB_vid.commentObj[i].userName;
+      //                                        $("#tickmark" + ID).popover({trigger: "hover", placement: "bottom",title: tickTitle, content: tickContent});
+      //                                }
+      //                        }
     }
 
     //changes the tick css given the necessary information
@@ -836,16 +836,16 @@ define(function(require) {
     },
 
     _defaultHandler: function (evt) {
-      var self	= this;
-      var id_source	= self._id_source;
-      var model	= self._model;
+      var self  = this;
+      var id_source     = self._id_source;
+      var model = self._model;
       var new_duration = null;
       if (id_source !== $.concierge.get_state('file')) {
         return;
       }
       /*
-      			* From now on, we assume the event is directed to this view !
-      			*/
+                        * From now on, we assume the event is directed to this view !
+                        */
       switch (evt.type){
       case 'note_hover':
         $('div.selection[id_item=' + evt.value + ']', self.element).addClass('hovered');
@@ -1100,8 +1100,8 @@ define(function(require) {
       };
 
       if (action === 'add' && items_fieldname === 'location') {
-        var id_source	= this._id_source;
-        var page		= this._page;
+        var id_source   = this._id_source;
+        var page                = this._page;
         if (!NB_vid.renderedInitialTicks) {
           //initial rendering: Let's render the first page. We don't check the id_source here since other documents will most likely have their page variable already set.
           NB_vid.renderedInitialTicks = true;
@@ -1124,7 +1124,7 @@ define(function(require) {
           }
         }
       }      else if (action === 'remove' && items_fieldname === 'location') { //just re-render the pages where locations were just removed.
-        var D		= payload.diff;
+        var D           = payload.diff;
         console.log('REMOVE EVENT');
         $.L('[docView11] TODO: remove');
       }
@@ -1148,10 +1148,10 @@ define(function(require) {
       $.ui.view.prototype._update.call(this);
       var self = this;
       /*
-      			//TODO: If we just do this, we loose the place we were at in the video
-      			self._generate_contents();
-      			self._render();
-      			*/
+                        //TODO: If we just do this, we loose the place we were at in the video
+                        self._generate_contents();
+                        self._render();
+                        */
     },
 
     close: function () {
@@ -1163,8 +1163,8 @@ define(function(require) {
 
     _render: function () {
       /*
-      			* this is where we implement the caching strategy we want...
-      			*/
+                        * this is where we implement the caching strategy we want...
+                        */
       var p = this._page;
       this._render_one(p);
     },
@@ -1175,7 +1175,7 @@ define(function(require) {
     },
 
     _render_one: function (page) {
-      var self	= this;
+      var self  = this;
       self._draw_selections(page);
     },
 

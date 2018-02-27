@@ -1,6 +1,6 @@
 /**
  * mvc.js: Generic definitions for models and views
- *		NB
+ * NB
  Author
  cf AUTHORS.txt
 

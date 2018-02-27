@@ -3,14 +3,14 @@
  *    ui.core.js
  *     ui.view.js
  *
-*/
+ */
 /*global jQuery:true NB$:true */
 define(function(require) {
   var concierge       = require('concierge'),
-      $               = require('jquery'),
-      view            = require('view'),
-      jquery_ui       = require('jquery_ui'),
-      models          = require('models');
+  $               = require('jquery'),
+  view            = require('view'),
+  jquery_ui       = require('jquery_ui'),
+  models          = require('models');
 
   var $str = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
@@ -34,36 +34,36 @@ define(function(require) {
 
       for (var loc_id in self.comments) {
         self.element.append(
-            $('<div>').append(
-                $("<input type='checkbox' checked='checked'>").
-                    attr('name', 'loc[' + loc_id + ']').
-                    attr('loc_id', loc_id)
-            ).append(
-                $("<ins class='locationflag lf-numnotes'>").
-                    text(self.comments[loc_id].replies)
-            ).append(
-			$("<div class='location-shortbody-text'>").
-                    text(self.comments[loc_id].head_body)
-            )
+          $('<div>').append(
+            $("<input type='checkbox' checked='checked'>").
+              attr('name', 'loc[' + loc_id + ']').
+              attr('loc_id', loc_id)
+          ).append(
+            $("<ins class='locationflag lf-numnotes'>").
+              text(self.comments[loc_id].replies)
+          ).append(
+            $("<div class='location-shortbody-text'>").
+              text(self.comments[loc_id].head_body)
+          )
         );
       }
 
       self.element.append(
-          $("<input type='button' value='Ok'>").
-                    click(function () {
-                      var locs = [];
-                      self.element.find('input:checked').each(function () {
-                        var loc_id = parseInt($(this).attr('loc_id'), 10);
-                        if (isNaN(loc_id) === false) {
-                          locs.push(loc_id);
-                        }
-                      });
+        $("<input type='button' value='Ok'>").
+          click(function () {
+            var locs = [];
+            self.element.find('input:checked').each(function () {
+              var loc_id = parseInt($(this).attr('loc_id'), 10);
+              if (isNaN(loc_id) === false) {
+                locs.push(loc_id);
+              }
+            });
 
-                      if (self.options.callbacks.onOk) {
-                        self.options.callbacks.onOk(locs);
-                      }
-                    })
-            );
+            if (self.options.callbacks.onOk) {
+              self.options.callbacks.onOk(locs);
+            }
+          })
+      );
 
     },
 
@@ -71,14 +71,14 @@ define(function(require) {
       var self = this;
       self._model = model;
       model.register(
-          $.ui.view.prototype.get_adapter.call(this),
-                {
-                  file: null,
-                  folder: null,
-                  file_stats: null,
-                  replyrating: null,
-                  question: null,
-                });
+        $.ui.view.prototype.get_adapter.call(this),
+        {
+          file: null,
+          folder: null,
+          file_stats: null,
+          replyrating: null,
+          question: null,
+        });
 
     },
 
