@@ -1398,9 +1398,12 @@ def register_user(uid, P):
     u.set_password(P["password"])
     u.guest = False
     u.save()
-    gh = M.GuestHistory.objects.get(user=u)
-    gh.t_end = datetime.datetime.now()
-    gh.save()
+    try:
+        gh = M.GuestHistory.objects.get(user=u)
+        gh.t_end = datetime.datetime.now()
+        gh.save()
+    except M.GuestHistory.DoesNotExist:
+        pass
     return new_confkey
 
 
