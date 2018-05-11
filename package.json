@@ -12,7 +12,8 @@
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-cssmin": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-requirejs": "^1.0.0"
+    "grunt-contrib-requirejs": "^1.0.0",
+    "grunt-css": "^0.5.4"
   },
   "_comment": {
     "name": "dashboard-server",

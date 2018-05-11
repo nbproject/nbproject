@@ -303,8 +303,8 @@ def getHTML5Info(payload, req):
     #then use UR.qs2dict as was done previously
 
     if not ownerships.exists() and url.find(':') > 0:
-        #try to match without protocol portion
-        url=url.partition(':')[2]
+        #try to match without protocol and query portions
+        url=url.partition(':')[2].partition('#')[0].partition('?')[0]
         sources_info = M.HTML5Info.objects.filter(url__endswith=url)
         ownerships =  M.Ownership.objects.select_related("source", "ensemble", "folder").filter(source__html5info__in=sources_info, deleted=False)
         if not ownerships.exists():

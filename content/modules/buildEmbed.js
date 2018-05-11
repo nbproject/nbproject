@@ -322,11 +322,14 @@ define(function(require) {
     Pers.embedded = true;
 
     //add our CSS
-    var cur =  Pers.currentScript;
-    var server_info =  cur.src.match(/([^:]*):\/\/([^\/]*)/);
-    var server_url = server_info[1] + '://' + server_info[2];
-    Pers.add_css(server_url + '/content/compiled/embed_NB.css');
-    Pers.add_css(server_url + '/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css');
+    var cur =  new URL(Pers.currentScript.src);
+    var params = (new URL(document.location)).searchParams;
+    if (params.has("nb-server")) {
+      cur = new URL(params.get("nb-server"), cur);
+    }
+    Pers.server_url =  cur.protocol+"//" + cur.host;;
+    Pers.add_css(Pers.server_url + '/content/compiled/embed_NB.css');
+    Pers.add_css(Pers.server_url + '/content/lib/font-awesome/font-awesome-4.6.1/css/font-awesome.min.css');
 
     //Pers.openid_url=server_url+"/openid/login?next=/embedopenid";
     //sacha: disabled this as well for now.
