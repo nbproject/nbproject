@@ -141,7 +141,7 @@ define(function(require) {
       }
     };
 
-    NB$(window).unload(function () {
+  NB$(window).on("unload", function () {
       self.__updateIdleStatus();
       f();
     });

@@ -322,7 +322,7 @@ define(function(require) {
     if (f.due != null) {
       var dueDateObject = moment(f.due);
       $('#due_date')[0].value = dueDateObject.format("MM/DD/YYYY");
-      $('#due_time')[0].value = dueDateObject.format("HH:mm");
+      $('#due_time')[0].value = dueDateObject.format("HH:mm a");
     }
 
     $('#edit_assignment_dialog').dialog({
@@ -349,7 +349,7 @@ define(function(require) {
           //TODO: validate form
           var due_datetime = null;
           if(v_date){
-            var dateTimeObject = moment(v_date + ' ' + v_time, 'MM/DD/YYYY HH:mm');
+            var dateTimeObject = moment(v_date + ' ' + v_time, 'MM/DD/YYYY HH:mm a');
             due_datetime = dateTimeObject.format(); // Returns ISO 8601 datetime format e.g. "2014-09-08T08:02:17-05:00"
           }
           $.concierge.get_component('edit_assignment')({ id: id, assignment:  $('input[name=is_assignment]:checked')[0].value === '1', due:due_datetime }, function (p) {

@@ -138,7 +138,7 @@ define(function(require) {
       var opts = this._admin ? "<td><a class='optionmenu link-style'>Actions</a>" + analytics_link + '</td>' : '';
       var d = new Date(f.date_published);
       var date_added = d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear().toString().substring(2);
-      var assignment_info = f.assignment ? ('Yes - due ' + moment(f.due).format("YYYY-MM-DD [at] HH:mm"))  : 'No';
+      var assignment_info = f.assignment ? ('Yes - due ' + moment(f.due).format("YYYY-MM-DD [at] HH:mm a"))  : 'No';
       var download = '';
       var f_stats =  this._model.o.file_stats[f.ID];
       if (this._admin || this._model.o.ensemble[f.id_ensemble].allow_download) {
