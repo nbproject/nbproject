@@ -116,7 +116,7 @@ class Invite(models.Model):                                                     
     user                = ForeignKey(User)                                      # old: id_user
     ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
     admin               = BooleanField(default=False)                           # old: admin integer
-    ctime               = DateTimeField(null=True, default=datetime.now(), db_index=True)
+    ctime               = DateTimeField(null=True, default=datetime.now, db_index=True)
     section             = ForeignKey(Section, null=True)
 
     def __unicode__(self):
@@ -180,7 +180,7 @@ class Ownership(models.Model):                                                  
     published           = DateTimeField(default=datetime.now, db_index=True)    # old: published timestamp without time zone DEFAULT now()
     deleted             = BooleanField(default=False)
     assignment          = BooleanField(default=False)
-    due                 = DateTimeField(default=datetime.now(), null=True)
+    due                 = DateTimeField(default=datetime.now, null=True)
     def __unicode__(self):
         return "%s %s: source %s in ensemble %s" % (self.__class__.__name__,self.id,  self.source_id, self.ensemble_id)
 
@@ -357,21 +357,21 @@ class SourceVersion(models.Model):
     published           = DateTimeField()
 
 class FileDownload(models.Model):
-    ctime               = DateTimeField(default=datetime.now())
+    ctime               = DateTimeField(default=datetime.now)
     user                = ForeignKey(User)
     source              = ForeignKey(Source)
     annotated           = BooleanField(default=False)
 
 class Notification(models.Model):
     type                = CharField(max_length=127)
-    atime               = DateTimeField(null=True, default=datetime.now())
+    atime               = DateTimeField(null=True, default=datetime.now)
 
 class GuestHistory(models.Model):
     """
     Records the period during which a user was a guest. t_end gets populated if the user ever converts their guest account into a regular account by registering (not using SSO).
     """
     user                = ForeignKey(User)
-    t_start             = DateTimeField(null=True, default=datetime.now())
+    t_start             = DateTimeField(null=True, default=datetime.now)
     t_end               = DateTimeField(null=True)
 
 class GuestLoginHistory(models.Model):
@@ -380,19 +380,19 @@ class GuestLoginHistory(models.Model):
     """
     guest               = ForeignKey(User, related_name="u1")
     user                = ForeignKey(User, related_name="u2")
-    ctime               = DateTimeField(null=True, default=datetime.now())
+    ctime               = DateTimeField(null=True, default=datetime.now)
 
 class AssignmentGrade(models.Model):
     user                = ForeignKey(User, related_name="u_grade")
     grader              = ForeignKey(User, related_name="g_grade")
-    ctime               = DateTimeField(default=datetime.now())
+    ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
     source              = ForeignKey(Source)
 
 class AssignmentGradeHistory(models.Model):
     user                = ForeignKey(User, related_name="u_grade_h")
     grader              = ForeignKey(User, related_name="g_grade_h")
-    ctime               = DateTimeField(default=datetime.now())
+    ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
     source              = ForeignKey(Source)
 
@@ -418,14 +418,14 @@ class LabelCategoryCaption(models.Model):
 class CommentLabel(models.Model):
     """Used for finer grain grading or categorizing comments or threads"""
     grader              = ForeignKey(User)
-    ctime               = DateTimeField(default=datetime.now())
+    ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
     category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post.
     comment             = ForeignKey(Comment)
 
 class CommentLabelHistory(models.Model):
     grader              = ForeignKey(User)
-    ctime               = DateTimeField(default=datetime.now())
+    ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
     category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post.
     comment             = ForeignKey(Comment)
