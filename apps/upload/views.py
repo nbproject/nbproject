@@ -22,7 +22,7 @@ import random, string
 from django.template.loader import render_to_string
 from django.core.mail.message import EmailMessage
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
-logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log_%s.log', filemode='a')
+logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log', filemode='a')
 
 def insert_pdf_metadata(id, pdf_dir):
     import pyPdf, sys
@@ -120,7 +120,7 @@ def upload(req):
     url = "http://%s:%s/%s?id_ensemble=%s" %("localhost", "8000",f.name, id_ensemble)
     payload = {"url": url, "id_source": id_source, "id_folder": id_folder }
     if auth.canInsertFile(uid, id_ensemble, id_folder):
-        #the followong data will be deleted in utils_pdf if an PDF error happens later...
+        #the following data will be deleted in utils_pdf if an PDF error happens later...
         annotations.createSource(uid, payload)
         ownership = annotations.addOwnership(id_source, id_ensemble, id_folder)
         source = ownership.source
