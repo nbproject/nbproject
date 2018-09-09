@@ -236,7 +236,9 @@ define(function(require) {
     if ('id_ensemble' in Pers.params) {
       P2['id_ensemble'] = Pers.params.id_ensemble;
     }
-
+    if ('enforce_deadline' in Pers.params) {
+      P2['enforce_deadline'] = Pers.params.enforce_deadline;
+    }
     Pers.call('get_stats_ensemble', P2,  Pers.createStore);
   };
 

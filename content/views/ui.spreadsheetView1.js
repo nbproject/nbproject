@@ -204,7 +204,20 @@ define(function(require) {
       self._users = m.get('user', { guest: false }).sort(f_sort_user);
       self._files = m.get('file', {}).sort(f_sort_file);
       var i, j, file, user, stat, lens, grade, lens_stat, lens_grade;
-      var s = ["<table class='spreadsheet'><thead><tr><th/>"];
+      var s = ["<table class='spreadsheet'><thead><tr><th/>"]
+        , switchURL = new URL(document.location)
+	, params = switchURL.searchParams
+	, deadlineLink = $('<a></a>');;
+
+      if (params.has('enforce_deadline')) {
+	  params.delete('enforce_deadline');
+	  deadlineLink.text("ignore deadline");
+      } else {
+	  params.append('enforce_deadline',true);
+	  deadlineLink.text("enforce deadline");
+      }
+      deadlineLink.attr('href',switchURL);
+	  
       for (i in self._files) {
         file = self._files[i];
         s.push("<th><a class='vertical' title='" + $.E(file.title) + "' target='_blank' href='/f/" + file.id + "'>" + $.E($.ellipsis(file.title, 12)) + '</a></th>');
@@ -239,7 +252,7 @@ define(function(require) {
       }
 
       s.push('</tbody></table>');
-      var contents = $('div.spreadsheetView-contents', self.element).html(s.join(''));
+      var contents = $('div.spreadsheetView-contents', self.element).html(s.join('')).prepend(deadlineLink);
       var f_cell_click = function (event) {
         var td = event.currentTarget;
         var tr = td.parentNode;
