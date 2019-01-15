@@ -467,7 +467,7 @@ module.exports = function (grunt) {
     }
 
     if (TARGETS[i].servername) {
-      CSS_TARGETS[i].servername = 'http://' + TARGETS[i].servername + '/';
+      CSS_TARGETS[i].servername = '//' + TARGETS[i].servername + '/';
     }
   }
 
