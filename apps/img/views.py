@@ -41,7 +41,7 @@ def serve_img(req, res, scale, id_source):
         return response
     except Http404: 
         #let's generate on demand
-        try: 
+        try:
             pdf_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
             img_dir =  "%s/%s" % (settings.HTTPD_MEDIA_CACHE,settings.CACHE_DIR)
             process_page(id_source, page,  res, scale, pdf_dir, img_dir, settings.IMG_FMT_STRING)

@@ -254,7 +254,7 @@ SMTP_CC_PDFERROR = "planet.nb+pdferror@gmail.com"
 #SMTP_USER
 
 #URL of a google form (or similar service) that can be used for user to contact the NB Team:
-SUPPORT_LINK = "http://nbproject.vanillaforums.com"
+SUPPORT_LINK = "https://groups.google.com/forum/#!forum/nbusers"
 
 #EMAIL to contact he NB Team:
 NBTEAM_EMAIL = "nb-team@csail.mit.edu"
@@ -300,7 +300,7 @@ MONITOR = {"PAGE_SERVED": True,
            "FILE_DOWNLOAD": True
            }
 REDIRECT = False
-REDIRECT_URL = "http://nb.mit.edu"
+REDIRECT_URL = "https://nb.mit.edu"
 
 
 #OPENID SSO:
