@@ -1,3 +1,4 @@
+{% autoescape off %}
 Hello {{c.author.firstname}}, 
 
 This is a confirmation that you've posted the following note on NB:
@@ -7,8 +8,8 @@ For class:     {{c.location.ensemble.name}}
 On file:       {{c.location.source.title}}
 Visibility:    {{visibility}}
 Authored at:   {{c.ctime}}
-{% if c.parent %}In reply to:   {{c.parent.body|safe}}{% endif %}
-Content:       {{c.body|striptags}}
+{% if c.parent %}In reply to:   {{c.parent.body}}{% endif %}
+Content:       {{c.body}}
 
 
 To change how often you receive e-mails from NB, please visit {{V.protocol}}://{{V.hostname}}/settings?org=ma_i
@@ -16,3 +17,4 @@ To change how often you receive e-mails from NB, please visit {{V.protocol}}://{
 Dutifully yours,
 
 NBNB  -  the NB Notification Bot
+{% endautoescape %}

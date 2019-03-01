@@ -208,8 +208,11 @@ def do_auth_immediate():
     setting_qry =    "select min(coalesce(value, (select value from base_defaultsetting where name='email_confirmation_author'))) from base_user u left join base_usersetting us on us.user_id=u.id and us.setting_id=(select id from base_defaultsetting where name='email_confirmation_author') where u.id=base_comment.author_id" 
     comments = M.Comment.objects.extra(select={"setting_value": setting_qry}).filter(ctime__gt=latestNotif.atime)        
     V={"reply_to": settings.SMTP_REPLY_TO, "protocol": settings.PROTOCOL, "hostname":  settings.HOSTNAME }
-    for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet       
-        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": htmlParser.unescape(strip_tags(c)), "visibility": VISIBILITY[c.type]})
+    for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet
+        c.body = htmlParser.unescape(strip_tags(c.body))
+        if (c.parent is not None):
+            c.parent.body=htmlParser.unescape(strip_tags(c.parent.body))
+        msg = render_to_string("email/msg_auth_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type]})
         email = EmailMessage("You've posted a new note on NB...",
                              msg, 
                              settings.EMAIL_FROM,
@@ -281,7 +284,10 @@ def do_all_immediate():
     for c in comments:
         memberships = M.Membership.objects.extra(select={"setting_value": setting_qry}).filter(ensemble=c.location.ensemble, admin=True).exclude(user=c.author) #we don't want to send a notice to a faculty for a comment that he wrote !
         for m in (o for o in memberships if o.setting_value==2): #django doesn't let us filter by extra parameters yet
-            msg = render_to_string("email/msg_all_immediate",{"V":V, "c": htmlParser.unescape(c), "visibility": VISIBILITY[c.type], "m": m})    
+            c.body=htmlParser.unescape(strip_tags(c.body))
+            if (c.parent is not None):
+                c.parent.body=htmlParser.unescape(strip_tags(c.parent.body))
+            msg = render_to_string("email/msg_all_immediate",{"V":V, "c": c, "visibility": VISIBILITY[c.type], "m": m})    
             email = EmailMessage("%s %s just wrote a comment on %s" % (c.author.firstname, c.author.lastname, c.location.source.title),
                                  msg, 
                                  settings.EMAIL_FROM,
@@ -310,7 +316,9 @@ def do_reply_immediate():
         for c in (o for o in comments if o.setting_value==2): #django doesn't let us filter by extra parameters yet
             if c.author_id not in emailed_uids: 
                 emailed_uids.append(c.author_id)
-                msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":htmlParser.unescape(c), "rc":htmlParser.unescape(rc)})
+                rc.body=htmlParser.unescape(strip_tags(rc.body))
+                rc.parent.body=htmlParser.unescape(strip_tags(rc.parent.body))
+                msg =  render_to_string("email/msg_reply_immediate",{"V": V, "c":c, "rc":rc})
                 email = EmailMessage("New reply on %s" % (c.location.source.title,), 
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
                 email.send(fail_silently=True)

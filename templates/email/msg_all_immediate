@@ -1,11 +1,12 @@
+{% autoescape off %}
 Hello {{m.user.firstname}}, 
 
 {{c.author.firstname}} {{c.author.lastname}} ({{c.author.email}}) wrote:  
-{{c.body|striptags}}
+{{c.body}}
 {% if c.parent and c.parent.type > 1 %}
 
 ...as a reply to: 
-{{c.parent.body|striptags}}
+{{c.parent.body}}
 {% endif %}
 
 Please visit {{V.protocol}}://{{V.hostname}}/c/{{c.id}}?org=mall_i to see the whole discussion, in its context. 
@@ -14,3 +15,4 @@ You've received this email because you have staff privileges on {{c.location.ens
 Dutifully yours,
 NBNB  -  the NB Notification Bot
 
+{% endautoescape %}
