@@ -16,7 +16,9 @@ define(function(require) {
   var $             = require('jquery');
   var jquery_ui     = require('jquery_ui');
 
-  $ = NB$ ? NB$ : $;
+  if (NB$) {
+    $ = NB$
+  }
 
   var scriptname = '_NB.js';
   var nb_script = document.currentScript;
@@ -26,11 +28,11 @@ define(function(require) {
   } else {
       nb_script = $("script[src$='" + scriptname + "']");
       if (nb_script.length === 0) {
-          alert("Error: Couldn't find  NB script, i.e ending in : " + scriptname);
+          alert("Error: Couldn't find NB script, i.e ending in : " + scriptname);
           return;
       }
       if (nb_script.length > 1) {
-          alert('Warning: Found more than one  NB script, i.e ending in : ' + scriptname + 'using the last one: ' + nb_script[nb_script.length - 1]);
+          alert('Warning: Found more than one NB script, i.e ending in : ' + scriptname + 'using the last one: ' + nb_script[nb_script.length - 1]);
       }
       nb_script = nb_script[nb_script.length - 1];
   }
@@ -605,6 +607,8 @@ define(function(require) {
               allow_ondemand: $('input[name=allow_ondemand]:checked')[0].value === '1',
               use_invitekey: $('input[name=use_invitekey]:checked')[0].value === '1' },
               function (p) {
+		var r=require;  //hack to prevent require parser from adding dependency
+                Files = r('files');
                 Files.model.add('ensemble', p);
                 $.I('Class created !');
               });

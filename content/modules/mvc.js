@@ -10,7 +10,7 @@
 
 */
 
-define(function(require) {
+define(function() {
   var MVC = {};
 
   MVC.model = function () {

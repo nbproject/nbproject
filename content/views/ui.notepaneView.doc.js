@@ -12,13 +12,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true NB$:true*/
-define(function(require) {
-  var concierge       = require('concierge'),
-      view            = require('view'),
-      $               = require('jquery'),
-      contextmenu     = require('contextmenu'),
-      filterwizard    = require('filterwizard');
-      filterwizardEmoticon    = require('filterwizardEmoticon');
+define(['concierge','view','jquery','contextmenu','filterwizard','filterwizardEmoticon'],
+       function(concierge,view,$,contextmenu,filterwizard,filterwizardEmoticon) {
 
   var $str = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {

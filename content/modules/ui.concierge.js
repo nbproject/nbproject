@@ -8,12 +8,13 @@
 
 */
 /*global jQuery:true console:true*/
-var NB$;
-define(function(require) {
-  NB$ = require('jquery');
-
-  var Concierge = function () {
+var NB$;  /*need a global for certain functions inlined in HTML */
+define(["jquery"],function($) {
+    NB$=$;
+    var Concierge = function () {
     var self = this;
+
+
     this.providers = {};
     this.listeners = {} ;
     this.transitions = {};

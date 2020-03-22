@@ -13,12 +13,8 @@
 */
 /*global jQuery:true NB$:true */
 
-define(function(require) {
-  var concierge       = require('concierge'),
-  view            = require('view'),
-  $               = require('jquery'),
-  contextmenu     = require('contextmenu'),
-  filterwizard    = require('filterwizard');
+define(['concierge','view','jquery','contextmenu','filterwizard'],
+       function(concierge,view,$,contextmenu,filterwizard) {
 
   var $str     = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {

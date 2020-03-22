@@ -9,8 +9,7 @@
 
 */
 
-define(function(require) {
-  var $=require('jquery');
+define(["jquery"],function($) {
   if (NB$) {
     $ = NB$;
   };

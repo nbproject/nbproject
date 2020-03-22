@@ -2,10 +2,7 @@
 
 /* breadcrumb Plugin */
 
-define(function(require) {
-  var concierge       = require('concierge'),
-      view            = require('view'),
-      $               = require('jquery');
+define(['concierge','view','jquery'],function(concierge,view,$) {
 
   var V_OBJ = $.extend({},$.ui.view.prototype,{
   options: {

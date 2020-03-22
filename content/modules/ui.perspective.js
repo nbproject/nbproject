@@ -24,10 +24,7 @@
  $("#pers1").perspective();
 */
 /*global alert:true jQuery:true console:false*/
-define(function(require) {
-  var $               = require('jquery');
-  var    concierge       = require('concierge'),
-      jquery_ui       = require('jquery_ui');
+define(['jquery','concierge','jquery_ui'],function($,concierge,jquery_ui) {
   var P_OBJ = {
     SEP_TOTAL_SIZE: 4,
     SEP_INSIDE_SIZE:4,

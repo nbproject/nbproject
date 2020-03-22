@@ -12,8 +12,7 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global console:true NB:true */
-define(function(require) {
-  var MVC = require('mvc');
+define(["mvc"],function(MVC) {
 
   var Models = {};
 

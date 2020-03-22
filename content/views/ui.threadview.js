@@ -12,14 +12,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true confirm:true*/
-define(function(require) {
-  var concierge       = require('concierge'),
-      view            = require('view'),
-      contextmenu     = require('contextmenu'),
-      $               = require('jquery'),
-      jquery_ui       = require('jquery_ui'),
-      dateformat      = require('dateformat'),
-      models          = require('models');
+define(['concierge','view','contextmenu','jquery','jquery_ui','dateformat','models'],
+       function(concierge,view,contextmenu,$,jquery_ui,dateformat,models) {
 
   var V_OBJ = $.extend({}, $.ui.view.prototype, {
     _create: function () {

@@ -12,14 +12,8 @@
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
 /*global jQuery:true NB$:true */
-define(function(require) {
-  var concierge = require('concierge');
-  var view = require('view');
-  var $ = require('jquery');
-  var contextmenu = require('contextmenu');
-  var tablesorter = require('tablesorter');
-  var calendrical = require('calendrical');
-  var moment = require('moment');
+define(['concierge','view','jquery','contextmenu','tablesorter','calendrical','moment'],
+       function(concierge,view,$,contextmenu,tablesorter,calendrical,moment) {
 
   var $str        = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {

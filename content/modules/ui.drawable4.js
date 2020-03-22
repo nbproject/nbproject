@@ -11,11 +11,7 @@
 */
 /*global jQuery:true */
 
-define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
-      jquery_ui       = require('jquery_ui');
-
+define(['jquery','concierge','jquery_ui'],function($,concierge,jquery_ui) {
   var V_OBJ = {
     _create: function () {
       this._mouseInit();

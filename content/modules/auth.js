@@ -10,7 +10,7 @@
 
 */
 
-define(function(require) {
+define(function() {
   var Auth = {};
   Auth.set_cookie = function (name, value, expires_year, expires_month, expires_day, path, domain, secure) {
     var cookie_string = name + '=' + escape(value);

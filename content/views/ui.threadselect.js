@@ -5,12 +5,8 @@
  *
  */
 /*global jQuery:true NB$:true */
-define(function(require) {
-  var concierge       = require('concierge'),
-  $               = require('jquery'),
-  view            = require('view'),
-  jquery_ui       = require('jquery_ui'),
-  models          = require('models');
+define(['concierge','jquery','view','jquery_ui','moderls'],
+       function(concierge,$,view,jquery_ui,models) {
 
   var $str = NB$ ? 'NB$' : 'jQuery';
   var V_OBJ = $.extend({}, $.ui.view.prototype, {

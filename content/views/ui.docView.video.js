@@ -222,13 +222,7 @@ var ytMetadataCallbacks = jQuery.Deferred();
   ytApiCallbacks.resolve();
         }
 
-define(function(require) {
-  var concierge       = require('concierge'),
-      view            = require('view'),
-      $               = require('jquery'),
-      jquery_ui       = require('jquery_ui'),
-      drawable        = require('drawable');
-
+define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,view,$,jquery_ui,drawable) {
   var PLAYER_HTML_TEMPLATE =
   ['<div class = "videoView">',
               '<div class = "titleContainer">',
