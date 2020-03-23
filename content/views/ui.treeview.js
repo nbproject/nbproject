@@ -141,7 +141,7 @@ define(['concierge','view','jstree','jquery'],
       var tree_data = {
         plugins: ['themes', 'json_data', 'ui'],
         json_data: { data: data },
-        core: { html_titles: true },
+        core: { html_titles: true }
       };
       $('div.tree', self.element).jstree(tree_data).bind('select_node.jstree', function (e, data) {
         var o = data.rslt.obj;
