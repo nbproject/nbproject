@@ -65,6 +65,11 @@ div.nb_controls_inactive
     padding: 0px;
 }
 
+/*override to disable nb highlighting*/
+.nb-no-highlight .nb-comment-highlight {
+    background-color: rgba(255, 204, 1, .02);
+    }
+
 .nb-comment-highlight.hovered
 {
     background-color: rgba(1, 99, 255, .2);
