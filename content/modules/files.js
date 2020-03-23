@@ -16,14 +16,11 @@
 */
 /*global NB$:true alert:true NB:true*/
 
-define(function(require) {
-  var concierge = require('concierge');
-  var Pers            = require('pers');
-  var Conf            = require('conf');
-  var duplicatewizard = require('duplicatewizard');
-  var filterwizard    = require('filterwizard');
-  var moment = require('moment');
-  var $ = require('jquery');
+define(['require','concierge','pers','conf','duplicatewizard','filterwizard','moment','jquery',
+	'hbs!templates_dir/file_dialogs','hbs!templates_dir/invite_users_dialog',
+	'hbs!templates_dir/edit_assignment_dialog'],
+       function(require,concierge,Pers,Conf,duplicatewizard,filterwizard,moment,$,
+		file_dialogs,invite_users_dialog,edit_assignment_dialog) {
 
   //require auth
   if (NB$) {
@@ -39,9 +36,9 @@ define(function(require) {
   Files.set_model = function (model) {
     Files.model = model;
     var $util_window = $.concierge.get_component('get_util_window')();
-    $util_window.append(require('hbs!templates_dir/file_dialogs'));
-    $util_window.append(require('hbs!templates_dir/invite_users_dialog'));
-    $util_window.append(require('hbs!templates_dir/edit_assignment_dialog'));
+    $util_window.append(file_dialogs);
+    $util_window.append(invite_users_dialog);
+    $util_window.append(edit_assignment_dialog);
   };
 
   // Returns 'file', 'html', or 'youtube' depending on the selected upload type ('' if there is an error)

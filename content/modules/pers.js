@@ -7,14 +7,16 @@
  Copyright (c) 2010-2012 Massachusetts Institute of Technology.
  MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 */
-define(function(require) {
-  var Auth          = require('auth');
-  var Dom           = require('dom');
-  var Conf          = require('conf');
-  var Models        = require('models');
-  var concierge     = require('concierge');
-  var $             = require('jquery');
-  var jquery_ui     = require('jquery_ui');
+define(['require','auth','dom','conf','models','concierge','jquery','jquery_ui',
+
+	'hbs!templates_dir/nav_template','hbs!templates_dir/register_user_dialog',
+	'hbs!templates_dir/login_user_dialog',
+	'hbs!templates_dir/mini_splash_screen_guest','hbs!templates_dir/mini_splash_screen_registered',
+	'hbs!templates_dir/new_class_dialog'],
+       function(require,Auth,Dom,Conf,Models,concierge,$,jquery_ui,
+		nav_template,register_user_dialog,login_user_dialog,mini_splash_screen_guest,mini_splash_screen_registered,
+		new_class_dialog) {
+	
 
   if (NB$) {
     $ = NB$
@@ -98,7 +100,7 @@ define(function(require) {
 
   Pers.__configure_user_menu = function (init_ui) {
     if (init_ui) { // Remove the nav-bar (if previously present) and re-add it.
-      $("body").prepend(require('hbs!templates_dir/nav_template')());
+      $("body").prepend(nav_template());
 
       // Set URL of nb homepage in the navbar logo. We cannot simply use "/" because that
       // won't work with embedded scripts and the bookmarklet.
@@ -109,8 +111,8 @@ define(function(require) {
 
       // Add the dialogs for logging in and registering a new user (they'll be invisble until the right button gets clicked).
       var $util_window = $.concierge.get_component('get_util_window')();
-      $util_window.append(require('hbs!templates_dir/register_user_dialog')());
-      $util_window.append(require('hbs!templates_dir/login_user_dialog')());
+      $util_window.append(register_user_dialog());
+      $util_window.append(login_user_dialog());
 
       /* Start of Navbar event handlers: Attach even handlers after adding the elements to the dom */
 
@@ -211,7 +213,7 @@ define(function(require) {
     */
 
     function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
+        // these HTTP methods do not need CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
 
@@ -507,9 +509,9 @@ define(function(require) {
       var widget;
       var nbhostname  = Pers.server_url;
       if (Conf.userinfo.guest) { //splashscreen for non-registered user
-        widget =  require('hbs!templates_dir/mini_splash_screen_guest');
+        widget =  mini_splash_screen_guest;
       }      else { //splashscreen for registered user
-        widget = require('hbs!templates_dir/mini_splash_screen_registered');
+        widget = mini_splash_screen_registered;
       }
       return widget;
     },
@@ -569,7 +571,7 @@ define(function(require) {
     addEnsembleMenu: function () {
       if(!$("#add_ensemble_dialog").length) {
         var $util_window = $.concierge.get_component('get_util_window')();
-        $util_window.append(require('hbs!templates_dir/new_class_dialog'));
+        $util_window.append(new_class_dialog());
       }
       //defaults:
       $('input[name=allow_staffonly][value=1]')[0].checked = 'true';

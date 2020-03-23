@@ -1,13 +1,6 @@
 /*global NB:true NB$:true $:true rangy:true alert:true wgxpath:true jQuery:true getElementCSSSelector:true console:true */
-define(function(require) {
-  var $                   = require('jquery'),
-      concierge           = require('concierge'),
-      Pers                = require('pers'),
-      rangy               = require('rangy-core'),
-      rangy_classapplier  = require('rangy-classapplier'),
-      rangy_serializer    = require('rangy-serializer'),
-      rangy_textrange     = require('rangy-textrange'),
-      wgx                 = require('wgxpath');
+define(['jquery','concierge','pers','rangy-core','rangy-classapplier','rangy-serializer','rangy-textrange','wgxpath'],
+       function($,concierge,Pers,rangy,rangy_classapplier,rangy_serializer,tangy_textrange,wgx){
 
   var _scrollTimerID = null;
   var _scrollCounter = 0;

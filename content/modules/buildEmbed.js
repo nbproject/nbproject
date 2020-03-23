@@ -10,19 +10,9 @@
 */
 /*global jQuery:true $:true NB$:true NB:true alert:true escape:false console:false*/
 
-define(function(require) {
-  var $               = require('jquery'),
-      concierge       = require('concierge'),
-      Auth            = require('auth'),
-      Conf            = require('conf'),
-      Dom             = require('dom'),
-      Html            = require('docviewHtml'),
-      Models          = require('models'),
-      Pers            = require('pers'),
-      Perspective     = require('perspective'),
-      Notepane        = require('notepane_doc'),
-      threadview      = require('threadview'),
-      editorview      = require('editorview');
+define(['jquery','concierge','auth','conf','dom','docviewHtml','models','pers','perspective','notepane_doc','threadview','editorview'],
+       function($,concierge,Auth,Conf,Dom,Html,Models,Pers,Perspective,Notepane,threadview,editorview) {
+	   
   if (NB$) {
     $ = NB$;
   }
