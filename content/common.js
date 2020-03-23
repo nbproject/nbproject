@@ -15,8 +15,9 @@ requirejs.config({
     'dateformat': 'lib/dateformat/date.format',
     'jquery': 'lib/jquery/3.4.1/jquery.min',
     'jquery-private': 'lib/jquery-private/jquery-private',
+    'jquery-migrate': 'lib/jquery-migrate/jquery-migrate-3.1.0.min',
     'jquery-csv': 'lib/jquery-csv/src/jquery.csv.min',
-    'jquery_ui': 'lib/jquery_ui/js/jquery-ui.min',
+    'jquery_ui': 'lib/jquery-ui/1.12.1/jquery-ui.min',
     'jstree': 'lib/jstree/jquery.jstree',
     'moment': 'lib/moment/moment',
     'rangy-classapplier': 'lib/rangy/rangy-classapplier',
@@ -131,12 +132,16 @@ requirejs.config({
         deps: ['jquery'],
         exports: 'concierge'
     },
+    'jquery-migrate': {
+	deps: ['jquery'],
+	exports: 'jquery-migrate'
+    },
     'contextmenu': {
         deps: ['contextmenu_position'],
         exports: 'contextmenu'
     },
     'jstree': {
-        deps: ['jquery']
+        deps: ['jquery','jquery-migrate']
     },
     'tablesorter': {
         deps: ['jquery']

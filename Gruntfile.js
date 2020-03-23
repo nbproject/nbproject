@@ -149,7 +149,7 @@ module.exports = function (grunt) {
     src_js: [].concat(['build_embed']),
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
       addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
       'content/ui/classic/base.css',
@@ -165,7 +165,7 @@ module.exports = function (grunt) {
     include: ['init_newsite', 'launch'],
     src_js: [].concat(['build_newsite']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
@@ -185,7 +185,7 @@ module.exports = function (grunt) {
     include: ['init_desktop', 'launch'],
     src_js: [].concat(['build_desktop']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css']),
@@ -205,7 +205,7 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble_users', 'launch'],
     src_js: [].concat(['build_properties_ensemble_users']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -224,7 +224,7 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble', 'launch'],
     src_js: [].concat(['build_properties_ensemble']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -243,7 +243,7 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble_sections', 'launch'],
     src_js: [].concat(['build_properties_ensemble_sections']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css',
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css',
       'DataTables-1.10.12/media/css/jquery.dataTables.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
@@ -263,7 +263,7 @@ module.exports = function (grunt) {
     include: ['init_subscribe', 'launch'],
     src_js: [].concat(['build_subscribe']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -282,7 +282,7 @@ module.exports = function (grunt) {
     include: ['init_add_navbar', 'launch'],
     src_js: [].concat(['build_add_navbar']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -301,7 +301,7 @@ module.exports = function (grunt) {
     include: ['login', 'launch'],
     src_js: [].concat(['build_login']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css'),
     dest_js: DEST_DIR + 'login_NB.js',
@@ -312,7 +312,7 @@ module.exports = function (grunt) {
     include: ['init_pdfviewer', 'launch'],
     src_js: [].concat(['build_pdfviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -328,7 +328,7 @@ module.exports = function (grunt) {
     include: ['init_analytics', 'launch'],
     src_js: [].concat(['build_analytics']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       addPrefix(VIEWS_DIR, ['ui.docAnalyticsView.css']),
@@ -341,7 +341,7 @@ module.exports = function (grunt) {
     include: ['init_youtubeviewer', 'launch'],
     src_js: [].concat(['build_youtubeviewer']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -357,7 +357,7 @@ module.exports = function (grunt) {
     include: ['init_collage', 'launch'],
     src_js: [].concat(['build_collage']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       MODS.DOCVIEW_COLLAGE.src_css,
@@ -372,7 +372,7 @@ module.exports = function (grunt) {
     include: ['logout', 'launch'],
     src_js: [].concat(['build_logout']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css'),
     dest_js: DEST_DIR + 'logout_NB.js',
@@ -383,7 +383,7 @@ module.exports = function (grunt) {
     include: ['password_reminder', 'launch'],
     src_js: [].concat(['build_passwordreminder']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/css/smoothness/jquery-ui-1.9.2.custom.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css'),
     dest_js: DEST_DIR + 'password_reminder_NB.js',
@@ -394,7 +394,7 @@ module.exports = function (grunt) {
     include: ['init_spreadsheet', 'launch'],
     src_js: [].concat(['build_spreadsheet']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
       addPrefix(UI_DIR, ['template.css']),
       'content/ui/classic/base.css',
@@ -416,7 +416,7 @@ module.exports = function (grunt) {
     include: ['your_settings', 'launch'],
     src_js: [].concat(['build_yoursettings']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
@@ -428,7 +428,7 @@ module.exports = function (grunt) {
     include: ['init_enteryourname', 'launch'],
     src_js: [].concat(['build_enteryourname']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css'])),
@@ -440,7 +440,7 @@ module.exports = function (grunt) {
     include: ['init_confirm_invite', 'launch'],
     src_js: [].concat(['build_confirm_invite']),
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery_ui/jquery-ui.css']),
+      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.css']),
       addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
       'content/ui/classic/base.css',
       addPrefix(UI_DIR, ['template.css'])),
@@ -550,7 +550,7 @@ module.exports = function (grunt) {
     },
     copy: {
         files: {
-            cwd: 'content/lib/jquery_ui/images/',
+            cwd: 'content/lib/jquery-ui-1.12.1/images/',
             src: '**/*',
             dest: 'content/compiled/images',
             expand: true 
