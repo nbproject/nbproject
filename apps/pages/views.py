@@ -4,7 +4,11 @@ import logging
 import random
 import string
 import urllib
+import subprocess
+import os
+import sys
 from random import choice
+from shutil import copyfile
 
 from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
 from django.conf import settings
@@ -148,11 +152,59 @@ def source(req, n, allow_guest=False):
     else:
         return __serve_page(req, settings.SOURCE_TEMPLATE, allow_guest, content_type="text/html")
 
+#Added by Eran Yogev
+def generate_heat_map( url, image_path, comments_dictionary_data):
+    npm_path = "/var/local/nb/heatmap/";
+    with open(npm_path + 'json_data.txt', 'w') as outfile:
+        try:
+            json.dump(comments_dictionary_data, outfile)
+        except Exception as e:
+            print("Error with dumping file")
+            print(str(e))
+            print(str(sys.exc_info()))
+
+
+    args = ["phantomjs", npm_path+"phantom.js", url, image_path]
+    result = subprocess.call(args)
+    if result !=0:
+        print("Failed to run phantomjs: "+ str(result))# No result means no error
+    else:
+        print("Succeded to run phantomjs: " + str(result))  # No result means no error
+    return
 
 def source_analytics(req, n):
     pages, chart_stats = doc_analytics.get_page_stats(n)
     highlights = doc_analytics.get_highlights(n)
     source = M.Source.objects.get(pk=n)
+    # Try/Except Added by Eran Yogev
+    try:
+        
+        locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict = annotations.getCommentsByFile(n,1,None)
+        if(len(html5locations_dict)>0):
+            CACHE_DIR = "%s/%s" % (settings.HTTPD_MEDIA, settings.CACHE_DIR)
+            res = settings.RESOLUTIONS
+            
+            url = annotations.getSourceUrl(n)
+            
+            #print(url)
+
+            website_pic_name = "tmp_website_pic.png"
+            
+            generate_heat_map(url, website_pic_name, html5locations_dict)
+            
+            for key1 in res:
+                for key2 in res[key1]:
+                    path = "{0}/{1}/{2}".format(CACHE_DIR,key1,key2)
+                    if not os.path.exists(path):
+                        os.mkdir(path)
+                    file_loc = "{0}/{1}_0000.png".format(path,n)
+                    copyfile(website_pic_name, file_loc)
+            
+            os.remove(website_pic_name)
+    except Exception as e:
+        print(str(e))
+        print(str(sys.exc_info()))
+
     var_dict = {
         'source': source,
         'pages': pages,
@@ -164,7 +216,8 @@ def source_analytics(req, n):
                                              "pages": pages,
                                              "chart_stats": chart_stats,
                                              "highlights": highlights,
-                                             "numpages": source.numpages}))
+                                             "numpages": source.numpages,
+                                             "html5locations": html5locations_dict}))
 
 
 def your_settings(req):

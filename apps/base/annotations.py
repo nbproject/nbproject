@@ -671,6 +671,12 @@ def getCommentsByFile(id_source, uid, after):
             c["id_author"]=0
     return locations_dict, html5locations_dict, comments_dict, threadmarks_dict, tag_dict
 
+
+#Added by eran
+def getSourceUrl(id_source):
+    return M.HTML5Info.objects.get(source__pk=id_source).url
+	
+
 def get_comments_collection(uid, P):
     output = {}
     comments_refs = M.Comment.objects.filter(id__in=P["comments"], deleted=False, moderated=False)

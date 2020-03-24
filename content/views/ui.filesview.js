@@ -128,7 +128,7 @@ define(['concierge','view','jquery','contextmenu','tablesorter','calendrical','m
 
     _filelens: function (f) {
       var ckey = $.concierge.get_component('get_userinfo')().ckey;
-      var analytics_link = (this._admin && f.filetype === 1) ?  "<br/><a href='/f/" + f.ID + "/analyze' target='_blank'>Analytics</a>" : '';
+      var analytics_link = (this._admin && (f.filetype === 1 || f.filetype === 4)) ?  "<br/><a href='/f/" + f.ID + "/analyze' target='_blank'>Analytics</a>" : '';
       var opts = this._admin ? "<td><a class='optionmenu link-style'>Actions</a>" + analytics_link + '</td>' : '';
       var d = new Date(f.date_published);
       var date_added = d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear().toString().substring(2);
