@@ -1,12 +1,16 @@
 # Copyright (c) 2010-2012 Massachusetts Institute of Technology.
 # MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 from os.path import abspath, dirname, basename
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import TemplateView
 from django.contrib import admin
 import rpc.urls
 import polls.urls
 from django.conf import settings
+import img.views as img_views
+import pages.views as pages_views
+import django.contrib.auth.views as auth_views
+import django.views.static as static
 
 admin.autodiscover()
 
@@ -22,99 +26,98 @@ if settings.REDIRECT:
         from django.http import HttpResponseRedirect
         return  HttpResponseRedirect(settings.REDIRECT_URL)
 
-    urlpatterns = patterns("",
-                           (r'^.*$',f_redirect ),
-                        )
+    urlpatterns = [
+                           url(r'^.*$',f_redirect ),
+                        ]
 
-urlpatterns = patterns("",
-                       (r'^pdf/cache2/(\d+)/(\d+)/(\d+)$', 'img.views.serve_img',),
-                       (r'^pdf/repository/(\d+)$', 'img.views.serve_doc',{"annotated": False}),
-                       (r'^pdf/annotated/(\d+)$', 'img.views.serve_doc',{"annotated": True}),
-                       (r'^pdf4/rpc', include(rpc.urls)),
-                       (r'^pdf3/upload', include('upload.urls')),
-                       (r'^$', 'pages.views.index'),
-                       (r'^collage/$', 'pages.views.collage'),
-                       (r'^dev/desktop/(\d+)$', 'pages.views.dev_desktop'),
-                       (r'^welcome$', TemplateView.as_view(template_name='web/welcome.html')),
-                       (r'^faq_student/$', TemplateView.as_view(template_name='web/faq_student.html')),
-                       (r'^faq_instructor/$', TemplateView.as_view(template_name='web/faq_instructor.html')),
-                       (r'^tutorial/$', TemplateView.as_view(template_name='web/tutorial.html')),
-                       (r'^contact/$', TemplateView.as_view(template_name='web/contact.html')),
-                       (r'^about/$', TemplateView.as_view(template_name='web/about.html')),
-                       (r'^disclaimer/$', TemplateView.as_view(template_name='web/disclaimer.html')),
-                       (r'^login$', TemplateView.as_view(template_name='web/login.html')),
-                       (r'^password_reminder/$', TemplateView.as_view(template_name='web/password_reminder.html')),
-                       (r'^terms_public_site/$', TemplateView.as_view(template_name='web/terms_public_site.html')),
-                       (r'^staff_benefits/$', TemplateView.as_view(template_name='web/staff_benefits.html')),
-                       (r'^subscribe_thanks$', TemplateView.as_view(template_name='web/subscribe_thanks.html')),
-                       (r'^notallowed$', TemplateView.as_view(template_name='web/notallowed.html')),
-                       (r'^newsite_thanks$', TemplateView.as_view(template_name='web/subscribe_thanks.html')),
+urlpatterns = [
+                       url(r'^pdf/cache2/(\d+)/(\d+)/(\d+)$', img_views.serve_img,),
+                       url(r'^pdf/repository/(\d+)$', img_views.serve_doc,{"annotated": False}),
+                       url(r'^pdf/annotated/(\d+)$', img_views.serve_doc,{"annotated": True}),
+                       url(r'^pdf4/rpc', include(rpc.urls)),
+                       url(r'^pdf3/upload', include('upload.urls')),
+                       url(r'^$', pages_views.index),
+                       url(r'^collage/$', pages_views.collage),
+                       url(r'^dev/desktop/(\d+)$', pages_views.dev_desktop),
+                       url(r'^welcome$', TemplateView.as_view(template_name='web/welcome.html')),
+                       url(r'^faq_student/$', TemplateView.as_view(template_name='web/faq_student.html')),
+                       url(r'^faq_instructor/$', TemplateView.as_view(template_name='web/faq_instructor.html')),
+                       url(r'^tutorial/$', TemplateView.as_view(template_name='web/tutorial.html')),
+                       url(r'^contact/$', TemplateView.as_view(template_name='web/contact.html')),
+                       url(r'^about/$', TemplateView.as_view(template_name='web/about.html')),
+                       url(r'^disclaimer/$', TemplateView.as_view(template_name='web/disclaimer.html')),
+                       url(r'^login$', TemplateView.as_view(template_name='web/login.html')),
+                       url(r'^password_reminder/$', TemplateView.as_view(template_name='web/password_reminder.html')),
+                       url(r'^terms_public_site/$', TemplateView.as_view(template_name='web/terms_public_site.html')),
+                       url(r'^staff_benefits/$', TemplateView.as_view(template_name='web/staff_benefits.html')),
+                       url(r'^subscribe_thanks$', TemplateView.as_view(template_name='web/subscribe_thanks.html')),
+                       url(r'^notallowed$', TemplateView.as_view(template_name='web/notallowed.html')),
+                       url(r'^newsite_thanks$', TemplateView.as_view(template_name='web/subscribe_thanks.html')),
 
-                       (r'^file/(\d+)$' , 'pages.views.source'),
-                       (r'^f/(\d+)$' , 'pages.views.source', {"allow_guest": True}),
-                       (r'^f/(\d+)/analyze$' , TemplateView.as_view(template_name='web/source_analytics.html')),
-                       (r'^f/(\d+)/source_analytics' , 'pages.views.source_analytics'),
-                       (r'^c/(\d+)$' , 'pages.views.comment'),
-                       (r'^r/(\d+)$' , 'pages.views.comment'),
-                       (r'^d/(\d+)$' , 'pages.views.ondemand'),
-                       (r'^settings$' , 'pages.views.your_settings',),
-                       (r'^embedopenid$' , 'pages.views.embedopenid',),
-                       (r'^invite$', 'pages.views.invite'),
-                       (r'^logout$', TemplateView.as_view(template_name='web/logout.html')),
-                       (r'^membership_from_invite$', 'pages.views.membership_from_invite'),
-                       (r'^newsite$', 'pages.views.newsite'),
-                       (r'^newsite_form$', 'pages.views.newsite_form'),
-                       (r'^subscribe$', 'pages.views.subscribe'),
-                       (r'^subscribe_with_key$', 'pages.views.subscribe_with_key'),
-                       (r'^user_name_form$', 'pages.views.user_name_form'),
-                       (r'^confirm_invite$', TemplateView.as_view(template_name='web/confirm_invite.html')),
-                       (r'^enteryourname$', TemplateView.as_view(template_name='web/enteryourname.html')),
-                       (r'^properties/ensemble/(\d+)$', 'pages.views.properties_ensemble'),
-                       (r'^properties/ensemble_users/(\d+)$', 'pages.views.properties_ensemble_users'),
-                       (r'^properties/ensemble_sections/(\d+)$', 'pages.views.properties_ensemble_sections'),
-                       (r'^addhtml/(\d+)$', 'pages.views.add_html_doc'),
-                       (r'^addyoutube/(\d+)$', 'pages.views.add_youtube_doc'),
-                       (r'^fbchannel$', 'pages.views.fbchannel'),  #TODO: not sure this is needed anymore.
-                       (r'^spreadsheet$', 'pages.views.spreadsheet'),
-                       (r'^spreadsheet_cluster/download/(\d+)$', 'img.views.spreadsheet_cluster'),
-                       (r'^spreadsheet_comments/download/(\d+)$', 'img.views.spreadsheet_comments'),
-                       (r'^spreadsheet/download/(\d+)$', 'img.views.serve_grades_spreadsheet'),
-                       (r'^debug', 'pages.views.debug'),
-                       (r'^polls', include(polls.urls)),
-                       )
+                       url(r'^file/(\d+)$' , pages_views.source),
+                       url(r'^f/(\d+)$' , pages_views.source, {"allow_guest": True}),
+                       url(r'^f/(\d+)/analyze$' , TemplateView.as_view(template_name='web/source_analytics.html')),
+                       url(r'^f/(\d+)/source_analytics' , pages_views.source_analytics),
+                       url(r'^c/(\d+)$' , pages_views.comment),
+                       url(r'^r/(\d+)$' , pages_views.comment),
+                       url(r'^d/(\d+)$' , pages_views.ondemand),
+                       url(r'^settings$' , pages_views.your_settings,),
+                       url(r'^embedopenid$' , pages_views.embedopenid,),
+                       url(r'^invite$', pages_views.invite),
+                       url(r'^logout$', TemplateView.as_view(template_name='web/logout.html')),
+                       url(r'^membership_from_invite$', pages_views.membership_from_invite),
+                       url(r'^newsite$', pages_views.newsite),
+                       url(r'^newsite_form$', pages_views.newsite_form),
+                       url(r'^subscribe$', pages_views.subscribe),
+                       url(r'^subscribe_with_key$', pages_views.subscribe_with_key),
+                       url(r'^user_name_form$', pages_views.user_name_form),
+                       url(r'^confirm_invite$', TemplateView.as_view(template_name='web/confirm_invite.html')),
+                       url(r'^enteryourname$', TemplateView.as_view(template_name='web/enteryourname.html')),
+                       url(r'^properties/ensemble/(\d+)$', pages_views.properties_ensemble),
+                       url(r'^properties/ensemble_users/(\d+)$', pages_views.properties_ensemble_users),
+                       url(r'^properties/ensemble_sections/(\d+)$', pages_views.properties_ensemble_sections),
+                       url(r'^addhtml/(\d+)$', pages_views.add_html_doc),
+                       url(r'^addyoutube/(\d+)$', pages_views.add_youtube_doc),
+                       url(r'^fbchannel$', pages_views.fbchannel),  #TODO: not sure this is needed anymore.
+                       url(r'^spreadsheet$', pages_views.spreadsheet),
+                       url(r'^spreadsheet_cluster/download/(\d+)$', img_views.spreadsheet_cluster),
+                       url(r'^spreadsheet_comments/download/(\d+)$', img_views.spreadsheet_comments),
+                       url(r'^spreadsheet/download/(\d+)$', img_views.serve_grades_spreadsheet),
+                       url(r'^debug', pages_views.debug),
+                       url(r'^polls', include(polls.urls)),
+                       ]
 
-urlpatterns += patterns('django.views.generic.simple',
-                        (r'^robots.txt/$', TemplateView.as_view(template_name='web/robots.txt')))
-urlpatterns += patterns('',
-                         (r'djangoadmin/',    include(admin.site.urls)),
-                        (r'^openid/', include('django_openid_auth.urls')),
-                        (r'^openid_logout/$', 'django.contrib.auth.views.logout'),
-                        (r'^openid_private/$', "pages.views.require_authentication"),
-                        (r'^openid_index$', "pages.views.openid_index"),
-#                        (r'^facebook/', include('django_facebook.urls')),
-#                        (r'^accounts/', include('django_facebook.auth_urls'))
-#                        url(r'^facebooksample$', 'pages.views.facebooksample'),
-#                        url(r'^facebook/login$', 'facebook.views.login'),
+urlpatterns += [
+                        url(r'^robots.txt/$', TemplateView.as_view(template_name='web/robots.txt'))
+    ]
+urlpatterns += [
+                        url(r'djangoadmin/',    include(admin.site.urls)),
+                        url(r'^openid/', include('django_openid_auth.urls')),
+                        url(r'^openid_logout/$', auth_views.logout),
+                        url(r'^openid_private/$', pages_views.require_authentication),
+                        url(r'^openid_index$', pages_views.openid_index),
+#                        url(r'^facebook/', include('django_facebook.urls')),
+#                        url(r'^accounts/', include('django_facebook.auth_urls'))
+#                        url(r'^facebooksample$', pages_views.facebooksample),
+#                        url(r'^facebook/login$', 'facebook.views.login),
 #                        url(r'^facebook/authentication_callback$', 'facebook.views.authentication_callback'),
-                        url(r'^logout$', 'django.contrib.auth.views.logout'),
+                        url(r'^logout$', auth_views.logout),
+]
 
-
-
-)
 
 #embedded NB to annotate HTML:
-urlpatterns += patterns('',
-    (r'^embed_NB.js$', 'django.views.static.serve',
+urlpatterns += [
+    url(r'^embed_NB.js$', static.serve,
      {'document_root':  abspath("%s/../../content/" % (ROOTDIR, )), "path":"compiled/embed_NB.js" })
+]
 
-     )
 
 #this is short-circuited by apache when running as production: it's only useful when running from the debug server
-urlpatterns += patterns('',
-    (r'^content/(?P<path>.*)$', 'django.views.static.serve',
+urlpatterns += [
+    url(r'^content/(?P<path>.*)$', static.serve,
      {'document_root':  abspath("%s/../../content/" % (ROOTDIR, ))})
 
-     )
+     ]
 
 
 
