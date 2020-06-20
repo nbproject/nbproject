@@ -434,7 +434,7 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
 
     // Highlights the given tickmark the given color
     function highlightTick(tickmark, color) {
-      if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {
+      if (NB_vid.titleTicks[NB_vid.methods.tickNumFromElt(tickmark)]) {
         if (color.toLowerCase() === 'blue') {color = 'darkgray';}
 
         if (!(color.toLowerCase() === 'black' || color.toLowerCase() === 'darkgray')) {return;}
@@ -445,7 +445,7 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
 
     // Unhighlights a given tick
     function unhighlightTick(tickmark) {
-      if (NB_vid.titleTicks[NB_vid.methods.tickNumFromSelector(tickmark.selector)]) {
+      if (NB_vid.titleTicks[NB_vid.methods.tickNumFromElt(tickmark)]) {
         NB_vid.methods.changeTickCSS(tickmark, 'black', 'No Change', '1');
       } else {
         NB_vid.methods.changeTickCSS(tickmark, 'red', 'No Change', '.4');
@@ -565,9 +565,14 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
       return idStr.substr(8, idStr.length - 1);
     }
 
+      //.selector deprecated with jquery 3.0
     function tickNumFromSelector(selector) {
       return parseInt(selector.substr(9, selector.length - 1));
     }
+
+      function tickNumFromElt(jq) {
+	  return parseInt(jq.attr('id').substring(8));
+      }
 
     // Selects thread of given id
     function threadSelect(id) {
@@ -625,6 +630,7 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
       threadSelect: threadSelect,
       tickNumFromIdStr: tickNumFromIdStr,
       tickNumFromSelector: tickNumFromSelector,
+      tickNumFromElt: tickNumFromElt,
       tickClickListen: tickClickListen,
       tickMouseEnterListen: tickMouseEnterListen,
       tickMouseLeaveListen: tickMouseLeaveListen,
