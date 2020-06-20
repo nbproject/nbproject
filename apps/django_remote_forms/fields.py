@@ -1,7 +1,7 @@
 import datetime
 
 from django.conf import settings
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict
 
 from django_remote_forms import logger, widgets
 
