@@ -1,9 +1,9 @@
 import json
 from django.core import serializers
-import models as M
+from . import models as M
 import datetime
 import psycopg2.extensions
-import db
+from . import db
 import math
 
 def get_num_annotations_stats(sid):
@@ -229,8 +229,8 @@ def gather_time_stats(sid):
 			t.session_id=i.session_id and t.t1<i.t1 and t.t2>i.t2;
 			"""
 		c.execute(qry)
-	except Exception, e:
-		print e.pgerror
+	except Exception as e:
+		print(e.pgerror)
 	finally:
 		c.close()
 

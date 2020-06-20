@@ -2,7 +2,7 @@
 # MIT License (cf. MIT-LICENSE.txt or http://www.opensource.org/licenses/mit-license.php)
 
 from django.conf.urls import  url, include
-import views
+from . import views
 
 urlpatterns = [
      url(r'consent$', views.consent,),

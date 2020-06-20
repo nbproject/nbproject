@@ -1,5 +1,5 @@
 from django.contrib import admin
-import models as M
+from . import models as M
 
 #The list below was obtained from the models.py file, using the following: 
 #egrep '^class' models.py | sed 's|^class \(\w*\)(.*|admin.site.register(M.\1)|'

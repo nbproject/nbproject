@@ -11,7 +11,7 @@ from base import auth, models as M, signals
 from upload.views import process_page
 from os.path import dirname, abspath
 
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_img_%s.log' % ( id_log,), filemode='a')
 
 def on_file_download(sender, **payload): 
@@ -107,7 +107,7 @@ def add_allcomments_sheet(source_id, workbook):
     col+=1
     s_c.write(row, col,"BODY")
     #Data Rows: 
-    for j in xrange(0, len(comments)):
+    for j in range(0, len(comments)):
         rec = comments[j]
         ctime = rec.ctime.replace(tzinfo=None)-epoch
         row+=1
@@ -148,12 +148,12 @@ def add_labeledcomments_sheet(uid, id_ensemble, workbook):
         s_lc.write(row, col,"AUTHOR_ID")
         col+=1
         s_lc.write(row, col,"BODY")
-        for i in xrange(0,len(lcs)):
+        for i in range(0,len(lcs)):
             col+=1
             s_lc.write(row, col,"%s - [0:%s]" %(lcs[i].name, lcs[i].pointscale))       
         #Data Rows: 
         previous_comment_id=0
-        for j in xrange(0, len(cls)):
+        for j in range(0, len(cls)):
             rec = cls[j]
             if previous_comment_id == rec.comment.id:
                 #We just need to complete the data that we missed on the previous row. 
@@ -285,7 +285,7 @@ def spreadsheet_cluster(req, id_ensemble):
     s = workbook.add_sheet("information")
     row=0
     col=0
-    for i in xrange(0, len(clusters)): 
+    for i in range(0, len(clusters)): 
         cluster = clusters[i]
         s.write(row, col, "cluster")
         col +=1
@@ -312,7 +312,7 @@ def spreadsheet_cluster(req, id_ensemble):
         s.write(row, col+4, "lastname")
         s.write(row, col+5, "email")
         row+=1
-        for j in xrange(0, len(cluster["buddylists"])):
+        for j in range(0, len(cluster["buddylists"])):
             for user_id in cluster["buddylists"][j]:
                 user = M.User.objects.get(pk=user_id)
                 s.write(row, col+1, j)
@@ -323,7 +323,7 @@ def spreadsheet_cluster(req, id_ensemble):
                 row+=1
         row+=1
     ##data sheets:
-    for i in xrange(0, len(clusters)):
+    for i in range(0, len(clusters)):
         data = a[i] 
         cluster = clusters[i]
         user_ids = []

@@ -14,10 +14,10 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 import datetime, time, os, re, json
 import dateutil.parser
-import models as M
-import auth
-import constants as CST
-import utils_response as UR #, utils_format as UF
+from . import models as M
+from . import auth
+from . import constants as CST
+from . import utils_response as UR #, utils_format as UF
 from django.template import Template
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -274,7 +274,7 @@ def get_sections(uid, payload):
     return UR.qs2dict(my_sections, names, "ID")
 
 def get_file_stats(uid, payload):
-    import db
+    from . import db
     id_ensemble = payload["id_ensemble"]
     names = {
         "id": "source_id",
@@ -413,7 +413,7 @@ def get_class_settings(uid, payload):
 
 
 def get_stats_ensemble(payload):
-    import db
+    from . import db
     id_ensemble = payload["id_ensemble"]
     enforce_deadline = payload.get("enforce_deadline", False)
     names = {
@@ -440,7 +440,7 @@ def get_stats_ensemble(payload):
 
 def get_social_interactions(id_ensemble):
     # Generate how many times each student communicated with another student for a given group.
-    import db
+    from . import db
     names = {
         "cnt":None,
         "id": None
@@ -624,7 +624,7 @@ def getLocationsTaggedIn(uid):
     loc_set = {}
     for comment in comments:
         loc_set[comment.location.id] = None
-    return M.Location.objects.filter(id__in=loc_set.keys())
+    return M.Location.objects.filter(id__in=list(loc_set.keys()))
 
 def getCommentsByFile(id_source, uid, after):
     names_location = __NAMES["location_v_comment2"]
@@ -665,7 +665,7 @@ def getCommentsByFile(id_source, uid, after):
     tag_dict = UR.qs2dict(tags, __NAMES["tag"], "ID")
     #Anonymous comments
     ensembles_im_admin_ids = [o.id for o in ensembles_im_admin]
-    for k,c in comments_dict.iteritems():
+    for k,c in comments_dict.items():
         if not c["signed"] and not (locations_dict[c["ID_location"]]["id_ensemble"] in  ensembles_im_admin_ids or uid==c["id_author"]):
             c["fullname"]="Anonymous"
             c["id_author"]=0
@@ -689,7 +689,7 @@ def get_comments_collection(uid, P):
     output["html5locations"] = UR.qs2dict( html5locations, __NAMES["html5locations"], "ID")
     comments_dict =  UR.qs2dict( comments, __NAMES["comment2"] , "ID")
     #Anonymous comments
-    for k,c in comments_dict.iteritems():
+    for k,c in comments_dict.items():
         if c["type"] < 3:
             c["fullname"]="Anonymous"
             c["id_author"]=0
@@ -724,7 +724,7 @@ def get_comments_auth(uid, P):
     output["locations"] = UR.qs2dict( comments, __NAMES["location_v_comment2"], "ID")
     comments_dict =  UR.qs2dict( comments, __NAMES["comment2"] , "ID")
     #Anonymous comments
-    for k,c in comments_dict.iteritems():
+    for k,c in comments_dict.items():
         if c["type"] < 3:
             c["fullname"]="Anonymous"
             c["id_author"]=0
@@ -795,7 +795,7 @@ def getPublicCommentsByFile(id_source):
     locations_dict = UR.qs2dict(comments, names_location, "ID")
     comments_dict =  UR.qs2dict(comments, names_comment, "ID")
     #Anonymous comments
-    for k,c in comments_dict.iteritems():
+    for k,c in comments_dict.items():
         if c["type"] < 3:
             c["fullname"]="Anonymous"
             c["id_author"]=0
@@ -904,9 +904,9 @@ def addNote(payload):
         location.w = payload["w"]
         location.h = payload["h"]
         location.page = payload["page"]
-	# Duration for YouTube comments
-    	if "duration" in payload:
-    		location.duration = payload["duration"]
+        # Duration for YouTube comments
+        if "duration" in payload:
+                location.duration = payload["duration"]
         if "pause" in payload and auth.canPauseComment(author.id, location.source.id):
             location.pause = payload["pause"]
         if "title" in payload:
@@ -1186,7 +1186,7 @@ def create_ensemble(uid, P): #name, description, uid, allow_staffonly, allow_ano
         ensemble.allow_ondemand = P["allow_ondemand"]
     if "default_pause" in P:
         ensemble.default_pause = P["default_pause"]
-    ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+    ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,50)])
     ensemble.save()
     id = ensemble.pk
     membership = M.Membership(ensemble_id=id, user_id=uid, admin=1)
@@ -1363,7 +1363,7 @@ def addOwnership(id_source, id_ensemble, id_folder=None):
 
 def markIdle(uid, id_session, o):
     for id in o:
-        t1= datetime.datetime.fromtimestamp(long(id)/1000)
+        t1= datetime.datetime.fromtimestamp(int(id)/1000)
         t2= datetime.datetime.fromtimestamp(o[id]/1000)
         x = M.Idle(session_id=id_session, t1=t1, t2=t2)
         x.save()
@@ -1393,7 +1393,7 @@ def register_session(uid, p):
 def register_user(uid, P):
     import random, string
     #we need to change confkey, so that the access from the confkey that user had gotten as guest can't work anymore.
-    new_confkey = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,20)])
+    new_confkey = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,20)])
     u = M.User.objects.get(pk=uid)
     u.firstname = P["firstname"]
     u.lastname = P["lastname"]

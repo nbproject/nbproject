@@ -19,9 +19,9 @@ from django.conf import settings
 from django.template.loader import render_to_string
 import logging, random, string
 from random import choice
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_rpc_%s.log' % ( id_log,), filemode='a')
 SLEEPTIME = 0.2
 #The functions that are allowed to be called from a http client
@@ -159,10 +159,10 @@ def sendInvites(payload, req):
         user = auth.user_from_email(email)
         password=""
         if user is None:
-            ckey = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,32)])
-            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
+            ckey = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,32)])
+            password = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,4)])
             user = auth.addUser(email, password, ckey)
-        invite_key      = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+        invite_key      = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,50)])
         auth.addInvite(invite_key, user.id, id_ensemble, id_section, admin)
         link = "http://%s/confirm_invite?invite_key=%s" % (settings.HOSTNAME, invite_key,)
 
@@ -222,7 +222,7 @@ def login_user(P,req):
     if user is None:
         return UR.prepare_response({"ckey": None})
     try: 
-        u_in = json.loads(urllib.unquote(req.COOKIES.userinfo)).ckey
+        u_in = json.loads(urllib.parse.unquote(req.COOKIES.userinfo)).ckey
         if u_in != user.confKey:
             #log that there's been an identity change
             auth.log_guest_login(u_in, user.id)
@@ -231,7 +231,7 @@ def login_user(P,req):
     user_dict = {"ckey": user.confkey, "email": user.email, 
                  "firstname": user.firstname, "lastname": user.lastname,
                  "guest": user.guest, "valid": user.valid, "id": user.id}
-    user_dict["userinfo"] = urllib.quote(json.dumps(user_dict))
+    user_dict["userinfo"] = urllib.parse.quote(json.dumps(user_dict))
     return UR.prepare_response(user_dict) #this is what's needed for the client to set a cookie and be authenticated as the new user !
 
 def on_delete_session(payload, s):
@@ -606,10 +606,10 @@ def __send_email(recipients, msg):
     time.sleep(SLEEPTIME)
     if smtpresult:
         errstr = ""
-        for recip in smtpresult.keys():
+        for recip in list(smtpresult.keys()):
             errstr = """Could not delivery mail to: %s Server said: %s %s %s""" % (recip, smtpresult[recip][0], smtpresult[recip][1], errstr)
             logging.error(errstr)
-        raise smtplib.SMTPException, errstr
+        raise smtplib.SMTPException(errstr)
 
 def rename_file(P, req):
     #this method is used to rename both files and folders.
@@ -878,7 +878,7 @@ def promote_location_by_copy(P, req):
 
 @csrf_exempt
 def other(req):
-    print "nb django doesn't have an URLconf for this yet: %s" % req.method
+    print("nb django doesn't have an URLconf for this yet: %s" % req.method)
 
 @csrf_exempt
 def run(req):

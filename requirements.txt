@@ -1,4 +1,4 @@
-Django>=1.7.3,<1.9
+Django>=1.8,<=1.11
 django-openid-auth>=0.7
 numpy>=1.8.2
 psycopg2>=2.4.5

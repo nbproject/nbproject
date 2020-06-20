@@ -7,8 +7,8 @@ License
     
 $ Id: $    
 """
-import json, urllib
-import auth as auth
+import json, urllib.request, urllib.parse, urllib.error
+from . import auth as auth
 from django.template import Template, Context
 
 CID = 0;
@@ -55,7 +55,7 @@ def getUserId(req):
 
 def getUserInfo(req, allow_guest=False, extra_confkey_getter=None): 
     try:
-        u_in        = json.loads(urllib.unquote(req.COOKIES.get("userinfo", urllib.quote("{}")))) or {}
+        u_in        = json.loads(urllib.parse.unquote(req.COOKIES.get("userinfo", urllib.parse.quote("{}")))) or {}
     except:
         u_in        = {}
     ckey        = req.GET.get("ckey") or req.COOKIES.get("ckey", None) or (u_in["ckey"] if "ckey" in u_in else None) or (extra_confkey_getter(req) if extra_confkey_getter is not None else None)
@@ -99,7 +99,7 @@ def model2dict(data, names=None, pk=None):
             if hasattr(o[k], "isoformat"): #needed to serialize datetimes 
                 o[k] = o[k].isoformat()
     else: 
-        for (k,v) in names.iteritems():
+        for (k,v) in names.items():
             if v is None: 
                 o[k] = getattr(data, k)
             elif isinstance(v,Expression): 
@@ -129,7 +129,7 @@ def extractIndexedObjects(objs_in, names, pk):
     for i in objs_in: 
         o = objs_in[i]
         o_out = {}
-        for (k,v) in names.iteritems(): 
+        for (k,v) in names.items(): 
             o_out[k] = o[k if v is None else v]
         objs_out[o[pk]] = o_out
     return objs_out

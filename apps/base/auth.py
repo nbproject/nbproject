@@ -8,7 +8,7 @@ License
 $ Id: $
 """
 
-import models as M
+from . import models as M
 import random, string
 
 def confirmInvite(id):
@@ -163,9 +163,9 @@ def addInvite(key, id_user, id_ensemble, id_section, admin):
     o.save()
 
 def createGuest():
-    key                 = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,20)])
+    key                 = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,20)])
     email               = "guest_%s@nb.test" % (key, )
-    passwd              = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,4)])
+    passwd              = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,4)])
     return addUser(email,passwd, key, 0, 1)
 
 def getGuestCkey():

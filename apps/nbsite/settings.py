@@ -8,13 +8,13 @@ def msg_credentials():
     return "\n\n%s\n%s\n%s\n\n" %(stars, msg, stars)
 
 try:
-    import settings_credentials
+    from . import settings_credentials
 except ImportError:
     from os.path import dirname, abspath
     import shutil
     thisdir = dirname(abspath(__file__))
     shutil.copy2("%s/%s.skel" % (thisdir, FN_CREDENTIALS), "%s/%s" % (thisdir, FN_CREDENTIALS))
-    print msg_credentials()
+    print(msg_credentials())
     exit(1)
 
 DEBUG = settings_credentials.__dict__.get("DEBUG", False)
@@ -32,7 +32,7 @@ GOOGLE_DEVELOPER_KEY =  settings_credentials.__dict__.get("GOOGLE_DEVELOPER_KEY"
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATABASES["default"]["PASSWORD"]=="":
-    print msg_credentials()
+    print(msg_credentials())
     exit(1)
 
 

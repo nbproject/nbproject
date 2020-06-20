@@ -21,7 +21,7 @@ import os
 import random, string
 from django.template.loader import render_to_string
 from django.core.mail.message import EmailMessage
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log', filemode='a')
 
 def insert_pdf_metadata(id, pdf_dir):
@@ -37,7 +37,7 @@ def insert_pdf_metadata(id, pdf_dir):
     try: 
         pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
         if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
-            print "PDF file encrypted with non-empty password: %s" % (filename,)
+            print("PDF file encrypted with non-empty password: %s" % (filename,))
             return False
         numpages = pdf_object.getNumPages()
         p = pdf_object.getPage(0)
@@ -56,10 +56,10 @@ def insert_pdf_metadata(id, pdf_dir):
             x0 = box.getLowerLeft_x()
             y0 = box.getLowerLeft_y()
     except pyPdf.utils.PdfReadError: 
-        print "PdfReadError for %s ! Aborting !!!" % (filename,)
+        print("PdfReadError for %s ! Aborting !!!" % (filename,))
         return False
     except: 
-        print "OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
+        print("OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] ))
         return False
     s = M.Source.objects.get(pk=id)
     s.numpages = numpages
@@ -126,7 +126,7 @@ def upload(req):
         source = ownership.source
         #bug? before it was %s/%s which produced //
         REPOSITORY_DIR = "%s%s" % (settings.HTTPD_MEDIA, "/pdf/repository")
-        print REPOSITORY_DIR
+        print(REPOSITORY_DIR)
         f2 = open("%s/%s" % (REPOSITORY_DIR, id_source,),"wb")    
         f2.write(f.read())
         f2.close()                 
@@ -185,7 +185,7 @@ def update(req):
         o = M.Ownership.objects.get(source=s)
         sv = M.SourceVersion(title=s.title, submittedby=s.submittedby, numpages=s.numpages, w=s.w, h=s.h, rotation=s.rotation, version=s.version, published=o.published)         
         sv.save()
-        tmpfile_name =  "/tmp/update_%s" % ("".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,8)]),)
+        tmpfile_name =  "/tmp/update_%s" % ("".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,8)]),)
         f2 = open(tmpfile_name,"wb")    
         f2.write(f.read())
         f2.close()

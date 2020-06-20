@@ -29,10 +29,10 @@ from base import utils, models as M, annotations, utils_response as UR
 import glob, json,   pyPdf, shutil, re, random, string, logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 htmlParser=HTMLParser()
 
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_processing_pdf_%s.log' % ( id_log,), filemode='a')
 
 
@@ -53,7 +53,7 @@ def process_file(id_source):
         os.symlink(repfile, srcfile)
     pdf       = PdfFileReader(file(srcfile, "rb"))
     if pdf.isEncrypted and pdf.decrypt("")==0:
-        print "PDF file encrypted with non-empty password: %s" % (srcfile,)
+        print("PDF file encrypted with non-empty password: %s" % (srcfile,))
         return False
     trim_box  = pdf.pages[0].trimBox # Sacha's coordinate system now uses this box
     crop_box  = pdf.pages[0].cropBox  # ConTeXt's page inclusion uses this box
@@ -120,7 +120,7 @@ def process_file(id_source):
         else:
             me = 0
         msg = '\n'+r'\comment{note-%s}{%d}{%s}{%d}{%d}' % (n, levels, texify(htmlParser.unescape(strip_tags(body))), me, int(n))
-        OUTPUT.append(unicode(msg).encode("ascii", "ignore"))
+        OUTPUT.append(str(msg).encode("ascii", "ignore"))
         if levels == 0 and page != 0:  # a root comment not on page 0 needs callout
             root = roots[n]
             # Sacha's coords are from top left corner, relative to TrimBox
@@ -187,7 +187,7 @@ def generate_file(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if len(args)==0:  
-            print "Missing id_source"
+            print("Missing id_source")
             return 
         id_source = args[0]
         process_file(id_source)

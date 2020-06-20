@@ -23,12 +23,12 @@ from django.db.models import Max
 
 def do_pending(t_args):
     when = datetime.datetime.now()
-    print """
+    print("""
 
 
----------------------- pending NOTIFICATIONS FOR %s -----------------""" % (when, )
+---------------------- pending NOTIFICATIONS FOR %s -----------------""" % (when, ))
     do_pending_msg()
-    print "--------------- END OF pending NOTIFICATIONS FOR %s -----------------" % (when, )
+    print("--------------- END OF pending NOTIFICATIONS FOR %s -----------------" % (when, ))
    
 
 def do_pending_msg():
@@ -54,7 +54,7 @@ def do_pending_msg():
             (r.user.email, ), 
             (settings.EMAIL_BCC, ))
             email.send()
-            print "[%s] sent email to %s %s <%s>" % (o.ensemble.name, r.user.firstname, r.user.lastname, r.user.email)
+            print("[%s] sent email to %s %s <%s>" % (o.ensemble.name, r.user.firstname, r.user.lastname, r.user.email))
     msgs.update(sent=datetime.datetime.now())            
                 
 if __name__ == "__main__" :

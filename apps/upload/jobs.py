@@ -22,7 +22,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from os.path import dirname, abspath
 
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_utils_pdf_%s.log' % ( id_log,), filemode='a')
 
 
@@ -38,7 +38,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
     try: 
         pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
         if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
-            print "PDF file encrypted with non-empty password: %s" % (filename,)
+            print("PDF file encrypted with non-empty password: %s" % (filename,))
             return False
         numpages = pdf_object.getNumPages()
         p = pdf_object.getPage(0)
@@ -56,10 +56,10 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
             w = wt
             h = ht
     except pyPdf.utils.PdfReadError: 
-        print "PdfReadError for %s ! Aborting !!!" % (filename,)
+        print("PdfReadError for %s ! Aborting !!!" % (filename,))
         return False
     except: 
-        print "OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
+        print("OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] ))
         return False
     s = M.Source.objects.get(pk=id)
     s.numpages = numpages
@@ -71,7 +71,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
     #if "100" not in scales:
     #    assert False, "100 should be in scales for resolution %s, which only contains %s " % (res,scales)
     d_ref = 72
-    for i in xrange(0,numpages):
+    for i in range(0,numpages):
         for scale in scales: 
             pageno = fmt % (i,)
             density = (int(res)*int(scale))/100   
@@ -84,7 +84,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
             #cmd = "nice convert -quality 100  %s  -density %s %s/%s[%s] %s/%s/%s/%s_%s.png" % (crop_cmd, density,  pdf_dir, id,i, img_dir, res,scale,  id, pageno)            
             cmd_crop =  "echo" if crop_params=="" else "nice convert -quality 100  %s  -density %s %s/%s %s/%s" % (crop_params, density,output_dir, output_file, output_dir, output_file)
             cmd = "(%s) && (%s)" % (cmd_rasterize, cmd_crop)
-            print cmd
+            print(cmd)
             retval =  os.system(cmd)
     return True        
 
@@ -97,20 +97,20 @@ def regenerate_pdf_metadata(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if (len(args)<1): 
-            print "usage: utils_pdf metadata start_at_id [alternate_pdf_dir] "
+            print("usage: utils_pdf metadata start_at_id [alternate_pdf_dir] ")
             return
         start_at_id  =  args[0]
         rep_dir =  args[1] if len(args)==2 else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
         if not os.path.exists(rep_dir): 
-            print "this repository dir doesn't exist: %s" % (rep_dir,)
+            print("this repository dir doesn't exist: %s" % (rep_dir,))
             return 
-        import views
+        from . import views
         sources = M.Source.objects.filter(id__gte=int(start_at_id))
         for source in sources: 
-            print "BEGIN metadata id=%s" %(source.id,)
+            print("BEGIN metadata id=%s" %(source.id,))
             views.insert_pdf_metadata(source.id, rep_dir)
-            print "END metadata id=%s" %(source.id,)
-        print "ALL DONE."
+            print("END metadata id=%s" %(source.id,))
+        print("ALL DONE.")
 
 
 def update_rotation(*t_args):
@@ -124,13 +124,13 @@ def update_rotation(*t_args):
         args=t_args[0]
         DB = db.Db()
         if (len(args)<1): 
-            print "usage: utils_pdf update_rotation start_at_id [alternate_pdf_dir] "
+            print("usage: utils_pdf update_rotation start_at_id [alternate_pdf_dir] ")
             return
         start_at_id  =  args[0] if len(args)>=1 else 1
         rep_dir =  args[1] if len(args)==2 else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
 
         if not os.path.exists(rep_dir): 
-            print "this repository dir doesn't exist: %s" % (rep_dir,)
+            print("this repository dir doesn't exist: %s" % (rep_dir,))
             return 
         rows = DB.getRows("select id from source where id >= ? order by id", (start_at_id, ))
         for r in rows: 
@@ -140,20 +140,20 @@ def update_rotation(*t_args):
                 try: 
                     pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
                     if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
-                        print "PDF file encrypted with non-empty password: %s" % (filename,)
+                        print("PDF file encrypted with non-empty password: %s" % (filename,))
                         return False
                     p = pdf_object.getPage(0)
                     if ROTATE_KEY in p: 
                         r = int(p[ROTATE_KEY])
                         #print "found rotation=%d in %s" % (r, id)
                         DB.doTransaction("update pdf_data set  rotation=? where id_source = ?", (r, id))
-                        print id, 
+                        print(id, end=' ') 
                 except pyPdf.utils.PdfReadError: 
-                    print "\nPdfReadError for %s - Skipping" % (filename,)
+                    print("\nPdfReadError for %s - Skipping" % (filename,))
                 except: 
-                    print "\nOTHER ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] )
+                    print("\nOTHER ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] ))
             else: 
-                print "\n%s not in repository" %(filename, )
+                print("\n%s not in repository" %(filename, ))
 
 def update_dims(*t_args):
     """
@@ -161,19 +161,19 @@ def update_dims(*t_args):
     usage: utils_pdf update_dims  start_at_id [alternate_repository_dir] 
     NOTE: This only takes media_box into consideration (so that we keep the compatibility w/ existing annotations)
     """
-    print "DO NOT USE w/ pdfs uploaded after 20111117, as this will break the compatibility w/ existing annotations (since we've switched between mediabox and trimbox on 20111117)"
+    print("DO NOT USE w/ pdfs uploaded after 20111117, as this will break the compatibility w/ existing annotations (since we've switched between mediabox and trimbox on 20111117)")
     return
     if len(t_args)>0:
         args=t_args[0]
         DB = db.Db()
         if (len(args)<1): 
-            print "usage: utils_pdf update_dims  start_at_id [alternate_pdf_dir] "
+            print("usage: utils_pdf update_dims  start_at_id [alternate_pdf_dir] ")
             return
         start_at_id  =  args[0] if len(args)>=1 else 1
         rep_dir =  args[1] if len(args)==2 else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR)
 
         if not os.path.exists(rep_dir): 
-            print "this repository dir doesn't exist: %s" % (rep_dir,)
+            print("this repository dir doesn't exist: %s" % (rep_dir,))
             return 
         rows = DB.getRows("select id from source where id >= ? order by id", (start_at_id, ))
         for r in rows: 
@@ -183,7 +183,7 @@ def update_dims(*t_args):
                 try: 
                     pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
                     if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
-                        print "PDF file encrypted with non-empty password: %s" % (filename,)
+                        print("PDF file encrypted with non-empty password: %s" % (filename,))
                         return False
                     p = pdf_object.getPage(0)
                     box = p.trimBox
@@ -192,13 +192,13 @@ def update_dims(*t_args):
                     h = int(p.mediaBox.getUpperRight_y())
                     w = int(p.mediaBox.getUpperRight_x())
                     DB.doTransaction("update pdf_data set  nrows=? ,ncols=? where id_source = ?", (h, w, id))
-                    print id, 
+                    print(id, end=' ') 
                 except pyPdf.utils.PdfReadError: 
-                    print "\nPdfReadError for %s - Skipping" % (filename,)
+                    print("\nPdfReadError for %s - Skipping" % (filename,))
                 except: 
-                    print "\nOTHER ERROR for %s - Skipping" % (filename, )
+                    print("\nOTHER ERROR for %s - Skipping" % (filename, ))
             else: 
-                print "\n%s not in repository" %(filename, )
+                print("\n%s not in repository" %(filename, ))
 
 def file_update(*t_args):
     """
@@ -207,7 +207,7 @@ def file_update(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if len(args)<2:  
-            print "usage: utils_pdf file_update id_source filename"
+            print("usage: utils_pdf file_update id_source filename")
             return 
         id_source = args[0]
         filename = args[1]
@@ -230,7 +230,7 @@ def split_chapters(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if len(args)<1:  
-            print "usage: utils_pdf split_chapters configfile"
+            print("usage: utils_pdf split_chapters configfile")
             return 
         from pyPdf import PdfFileWriter, PdfFileReader
         f = open(args[0])
@@ -239,7 +239,7 @@ def split_chapters(*t_args):
         input = PdfFileReader(file(P["source"], "rb"))
         i0 =  P["first_chapter_index"]
         ends = P["chapters_ends"]
-        for i in xrange(0, len(ends)): 
+        for i in range(0, len(ends)): 
             ch_num = i0+i
             fmt = P["chapter_fmt"] % (ch_num, )
             output = PdfFileWriter()
@@ -247,12 +247,12 @@ def split_chapters(*t_args):
                 os.mkdir( P["outputdir"])
             fn_out = "%s/%s%s" % (P["outputdir"], P["chapter_prefix"], fmt)
             j0 = P["firstpage"] if i==0 else ends[i-1]
-            for j in xrange(j0, ends[i]): 
+            for j in range(j0, ends[i]): 
                 output.addPage(input.getPage(j))
             outputStream = file(fn_out, "wb")
             output.write(outputStream)
             outputStream.close()
-            print "wrote %s" % (fn_out,)
+            print("wrote %s" % (fn_out,))
                 
         
 def upload_chapters(*t_args):
@@ -262,7 +262,7 @@ def upload_chapters(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if len(args)<1:  
-            print "usage: utils_pdf upload_chapters configfile"
+            print("usage: utils_pdf upload_chapters configfile")
             return 
         DB = db.Db()
         f = open(args[0])
@@ -274,7 +274,7 @@ def upload_chapters(*t_args):
         resolutions = P["RESOLUTIONS"] if "RESOLUTIONS" in P else settings.RESOLUTIONS
         rep_dir =  "%s/%s" % (settings.HTTPD_MEDIA,settings.RESTRICTED_REPOSITORY_DIR) if P["restricted"] else "%s/%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) 
         cache_dir =  "%s/%s" % (settings.HTTPD_MEDIA_CACHE,settings.CACHE_DIR)
-        for i in xrange(0, len(ends)): 
+        for i in range(0, len(ends)): 
             ch_num = i0+i
             fmt = P["chapter_fmt"] % (ch_num, )
             title = "%s%s" % ( P["chapter_prefix"], fmt)
@@ -285,9 +285,9 @@ def upload_chapters(*t_args):
             shutil.copy2(fn,"%s/%s" % (rep_dir, id_source))
             for res in resolutions:
                 if process_file(id_source, res, resolutions[res],rep_dir, cache_dir, fmt2, DB): 
-                    print "%s: success ! " % (id_source, )
+                    print("%s: success ! " % (id_source, ))
                 else: 
-                    print "%s: failed ! " % (id_source, )
+                    print("%s: failed ! " % (id_source, ))
                    
 def process_next(args=[]):     
     #are there any running tasks ?    
@@ -296,7 +296,7 @@ def process_next(args=[]):
         #get 1st task that needs to be run
         tasks = M.Processqueue.objects.filter(started=None)
         if tasks.count()==0:  
-            print "process_next - nothing to do"
+            print("process_next - nothing to do")
             return
         task = tasks[0]
         task.started=datetime.datetime.now()
@@ -316,9 +316,9 @@ def process_next(args=[]):
             for scale in resolutions[res]:
                 if  not os.path.exists( "%s/%s/%s" % (cache_dir, res, scale)):
                     os.mkdir( "%s/%s/%s" % (cache_dir, res, scale))
-            print "about to regenerate %s" %(id_source,)
+            print("about to regenerate %s" %(id_source,))
             if not process_file(id_source, res, resolutions[res],rep_dir, cache_dir, fmt): 
-                print "Error happened with pdf: deleting %d from records " %(id_source,)
+                print("Error happened with pdf: deleting %d from records " %(id_source,))
                 V = {"reply_to": settings.SMTP_REPLY_TO,
                      "email": task.source.submittedby.email,
                      "source_id": task.source.id,
@@ -338,7 +338,7 @@ def process_next(args=[]):
                                      (V["email"], settings.SMTP_CC_PDFERROR ), 
                                      (settings.EMAIL_BCC, ))
                 email.send()
-                print msg                
+                print(msg)                
                 return 
         #mark that processing is done:
         task.completed = datetime.datetime.now()
@@ -364,9 +364,9 @@ def process_next(args=[]):
             (settings.EMAIL_BCC, ))
         email.send()
         try: 
-            print msg
+            print(msg)
         except UnicodeEncodeError: 
-            print "not displaying msg b/c of unicode issues"                   
+            print("not displaying msg b/c of unicode issues")                   
         #are there still tasks needing to be run ?
         tasks = M.Processqueue.objects.filter(started=None)        
         if tasks.count() != 0:  
@@ -376,9 +376,9 @@ def process_next(args=[]):
             logging.info(cmd)
             os.system(cmd)                       
         else: 
-            print "PDF queue is now empty"
+            print("PDF queue is now empty")
     else: 
-        print "PDF task already running (%s)." % (in_process[0].id, )
+        print("PDF task already running (%s)." % (in_process[0].id, ))
 
 def regenerate_file(*t_args):
     """
@@ -387,7 +387,7 @@ def regenerate_file(*t_args):
     if len(t_args)>0:
         args=t_args[0]
         if len(args)==0:  
-            print "Missing id_source"
+            print("Missing id_source")
             return
                  
         id_source = args[0]

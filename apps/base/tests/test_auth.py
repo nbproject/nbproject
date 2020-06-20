@@ -22,10 +22,10 @@ class TestConfirmInvite(TestCase):
     def test_confirm_invite(self):
         # self.assertEqual(expected, confirmInvite(id))
 #        assert False # TODO: implement your test here
-        self.failUnlessEqual(auth.confirmInvite('617-555-1212'), None)
+        self.assertEqual(auth.confirmInvite('617-555-1212'), None)
         
         invite = auth.confirmInvite('hQFyCu91Z1Lj1tdarrG3eUkbLcHuktnM4FurHiXV7m7wdOwJPf')
-        self.failUnlessEqual(invite.id, 3214) 
+        self.assertEqual(invite.id, 3214) 
 
 class TestInvite2uid(TestCase):
     fixtures = ['Invite', 'User', ]

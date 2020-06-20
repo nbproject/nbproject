@@ -25,7 +25,7 @@ from django.db.models.deletion import Collector
 from django.db.utils import IntegrityError
 from django.db import transaction
 from django.utils.html import strip_tags
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 htmlParser=HTMLParser()
 
 VISIBILITY = {1: "Myself", 2: "Staff", 3: "Class", 4: "Private to Tags"}
@@ -34,7 +34,7 @@ pending_inserts = []
 def extract_obj(o, from_class, cut_at):
     #inspired from from  http://stackoverflow.com/a/2315053/768104
     extracted = {}
-    print "pulling objects related to %s" % (o,)
+    print("pulling objects related to %s" % (o,))
     links = [rel.get_accessor_name() for rel in o._meta.get_all_related_objects()]
     for link in links:
         rel_objects = getattr(o, link).all()
@@ -51,7 +51,7 @@ def duplicate(objs, using_src, using_dest, special_handlers):
     collector = Collector(using_src)
     collector.collect(objs)
     collector.sort()
-    related_models = collector.data.keys()
+    related_models = list(collector.data.keys())
     duplicate_order = reversed(related_models)
     extracted = {}
     for model in duplicate_order:
@@ -83,7 +83,7 @@ def duplicate(objs, using_src, using_dest, special_handlers):
                     obj.save(using=using_dest)            
                 except IntegrityError as e: 
                     pending_inserts.append(obj)
-        print "%s done TOTAL objects written: %s " % (model.__name__, sum([len(extracted[i]) for i in extracted]))        
+        print("%s done TOTAL objects written: %s " % (model.__name__, sum([len(extracted[i]) for i in extracted])))        
     do_pending_inserts(using_dest)
 
 def do_pending_inserts(using):
@@ -107,7 +107,7 @@ def do_extract(t_args):
             c = c.parent
         for c2 in reversed(ancestors):
             c2.save(using=using_dest)        
-        print "Special Comment case: inserted %s parent comments" % (len(ancestors),)
+        print("Special Comment case: inserted %s parent comments" % (len(ancestors),))
     duplicate(objs_src, "default", "sel", {M.Comment: insert_parent_comments})
     objs_dest = [o[0].objects.using("sel").get(pk=o[1]) for o in objs]  
     
@@ -168,39 +168,39 @@ def do_dumpensemble(t_args):
 
 def do_watchdog(t_args):
     when = datetime.datetime.now()
-    print """
+    print("""
 
 
----------------------- WATCHDOG NOTIFICATIONS FOR %s -----------------""" % (when, )
+---------------------- WATCHDOG NOTIFICATIONS FOR %s -----------------""" % (when, ))
     do_watchdog_longpdfprocess()
     do_watchdog_notstartedpdfprocess()
-    print "--------------- END OF WATCHDOG NOTIFICATIONS FOR %s -----------------" % (when, )
+    print("--------------- END OF WATCHDOG NOTIFICATIONS FOR %s -----------------" % (when, ))
    
 
 def do_immediate(t_args):
     when = datetime.datetime.now()
-    print """
+    print("""
 
 
----------------------- IMMEDIATE NOTIFICATIONS FOR %s -----------------""" % (when, )
+---------------------- IMMEDIATE NOTIFICATIONS FOR %s -----------------""" % (when, ))
     do_auth_immediate()
     do_reply_immediate()
     ##do_answerplease_immediate()
     ##do_unclear_immediate()
     do_all_immediate()
-    print "--------------- END OF IMMEDIATE NOTIFICATIONS FOR %s -----------------" % (when, )
+    print("--------------- END OF IMMEDIATE NOTIFICATIONS FOR %s -----------------" % (when, ))
    
 
 def do_digest(t_args):
     when = datetime.datetime.now()
-    print """
+    print("""
 
----------------------- DIGEST NOTIFICATIONS FOR %s -----------------""" % (when, )
+---------------------- DIGEST NOTIFICATIONS FOR %s -----------------""" % (when, ))
     #do_auth_digest()
     #do_reply_digest()
     ##do_answerplease_digest()
     ##do_unclear_digest()
-    print "--------------- END OF DIGEST NOTIFICATIONS FOR %s -----------------" % (when, )
+    print("--------------- END OF DIGEST NOTIFICATIONS FOR %s -----------------" % (when, ))
 
 def do_auth_immediate():
     latestCtime = M.Comment.objects.all().aggregate(Max("ctime"))["ctime__max"]
@@ -220,23 +220,23 @@ def do_auth_immediate():
                              (settings.EMAIL_BCC, ))
         email.send(fail_silently=True)
         try: 
-            print msg
+            print(msg)
         except UnicodeEncodeError: 
-            print "not displaying msg b/c of unicode issues"
+            print("not displaying msg b/c of unicode issues")
     latestNotif.atime = latestCtime
     latestNotif.save()
 
 # Multiplies all durations by 100 to switch scaling
 def do_duration_update(t_args):
-    print "------------ UPDATING DURATIONS ------------"
+    print("------------ UPDATING DURATIONS ------------")
     for location in M.Location.objects.all():
         if location.duration != None:
             location.duration = location.duration*100
             location.save()
-    print "------------ DURATION UPDATE FINISHED ------------"
+    print("------------ DURATION UPDATE FINISHED ------------")
 
 def do_tag_reminders(t_args):
-    print "------------ SENDING TAG REMINDERS ------------"
+    print("------------ SENDING TAG REMINDERS ------------")
     users = M.User.objects.all()
     all_tags = M.Tag.objects.all()
 
@@ -272,7 +272,7 @@ def do_tag_reminders(t_args):
         tag.last_reminder = datetime.datetime.now()
         tag.save()
 
-    print "------------ TAG REMINDERS COMPLETE ------------"
+    print("------------ TAG REMINDERS COMPLETE ------------")
     
 def do_all_immediate():
     #send email to for all new msg in group where I'm an admin
@@ -295,9 +295,9 @@ def do_all_immediate():
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
             try: 
-                print msg
+                print(msg)
             except UnicodeEncodeError: 
-                print "not displaying msg b/c of unicode issues"            
+                print("not displaying msg b/c of unicode issues")            
     latestNotif.atime = latestCtime
     latestNotif.save()
 
@@ -323,9 +323,9 @@ def do_reply_immediate():
                 msg, settings.EMAIL_FROM, (c.author.email, ),(settings.EMAIL_BCC, ))
                 email.send(fail_silently=True)
                 try: 
-                    print msg
+                    print(msg)
                 except UnicodeEncodeError: 
-                    print "not displaying msg b/c of unicode issues"                
+                    print("not displaying msg b/c of unicode issues")                
     latestNotif.atime = latestCtime
     latestNotif.save()
 
@@ -344,7 +344,7 @@ def do_watchdog_longpdfprocess():
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
-            print msg
+            print(msg)
         
 def do_watchdog_notstartedpdfprocess():
         minutes_ago = datetime.datetime.now() - datetime.timedelta(0, 20*60) # 20 minutes ago 
@@ -360,7 +360,7 @@ def do_watchdog_notstartedpdfprocess():
                                  recipients, 
                                  (settings.EMAIL_BCC, ))
             email.send(fail_silently=True)
-            print msg
+            print(msg)
     
 def do_auth_digest():
     latestCtime = DB.getVal("select max(ctime) from nb2_comment", ());
@@ -403,9 +403,9 @@ order by v.ctime""", ())
                 recipients.append(CC_EMAIL)
             smtpresult = session.sendmail(settings.SMTP_USER, recipients, msg)
         try: 
-            print msg
+            print(msg)
         except UnicodeEncodeError: 
-            print "not displaying msg b/c of unicode issues"
+            print("not displaying msg b/c of unicode issues")
         
 def do_reply_digest():
     latestCtime = DB.getVal("select max(ctime) from nb2_comment", ());
@@ -445,12 +445,12 @@ ds.name='email_confirmation_reply_author' and
                 recipients.append(CC_EMAIL)
             smtpresult = session.sendmail(settings.SMTP_USER, recipients, msg)
         try: 
-            print msg
+            print(msg)
         except UnicodeEncodeError: 
-            print "not displaying msg b/c of unicode issues"            
+            print("not displaying msg b/c of unicode issues")            
 
 def do_add_tag_email_setting(t_args):
-    print "------------ ADDING SETTINGS ------------"
+    print("------------ ADDING SETTINGS ------------")
     ds = M.DefaultSetting()
     ds.id = 6
     ds.name = "email_confirmation_tags"
@@ -471,7 +471,7 @@ def do_add_tag_email_setting(t_args):
 
     sl0.save()
     sl1.save()
-    print "------------ SETTINGS ADDED ------------"
+    print("------------ SETTINGS ADDED ------------")
 
 def do_upgrade(t_args):
     # We will see if we need to upgrade and call
@@ -501,17 +501,17 @@ def do_auth_salt_upgrade():
     #
     # The query can be run from manage.py dbshell
     usercount = 0
-    print "begin update..."
+    print("begin update...")
     for u in M.User.objects.filter(salt=None):        
         if usercount >0 and usercount%100 == 0:
-            print "updated a chunk of 100 users..."
+            print("updated a chunk of 100 users...")
         usercount+=1
         if u.password != None and u.saltedhash == None:
             u.set_password(u.password)
             # we will unset the password manually later
             # u.password = None
             u.save()
-    print "update done: success"
+    print("update done: success")
 
 if __name__ == "__main__" :
     ACTIONS = {

@@ -96,7 +96,7 @@ class Db:
 
         #build dict: 
         d = {}
-        for i in xrange(0, len(c.description)):
+        for i in range(0, len(c.description)):
             d[c.description[i][0]] = i
         rows = c.fetchall()
         for r in rows:
@@ -125,7 +125,7 @@ class Db:
             logging.info("[getIndexedObjects] "+ debug_query % args)
         connection = self.getNewConnection()
         c = self.execute(qry, args, connection)
-        for i in xrange(0, len(c.description)):
+        for i in range(0, len(c.description)):
             d[c.description[i][0]] = i
         rows = c.fetchall()
         for r in rows:

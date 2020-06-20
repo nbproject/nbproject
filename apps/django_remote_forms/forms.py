@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from sortedcontainers import SortedDict
 
 from django_remote_forms import fields, logger
 from django_remote_forms.utils import resolve_promise
@@ -46,7 +46,7 @@ class RemoteForm(object):
             if hasattr(self.form.fields, 'keyOrder'):
                 self.ordered_fields = self.form.fields.keyOrder
             else:
-                self.ordered_fields = self.form.fields.keys()
+                self.ordered_fields = list(self.form.fields.keys())
 
         self.fields = []
 
@@ -130,7 +130,7 @@ class RemoteForm(object):
             try:
                 remote_field_class = getattr(fields, remote_field_class_name)
                 remote_field = remote_field_class(field, form_initial_field_data, field_name=name)
-            except Exception, e:
+            except Exception as e:
                 logger.warning('Error serializing field %s: %s', remote_field_class_name, str(e))
                 field_dict = {}
             else:

@@ -1,7 +1,7 @@
 import datetime
 
 from django.utils.dates import MONTHS
-from collections import OrderedDict
+from sortedcontainers import SortedDict
 
 class RemoteWidget(object):
     def __init__(self, widget, field_name=None):
@@ -130,7 +130,7 @@ class RemoteDateInput(RemoteTimeInput):
             'data': [{'key': x, 'value': x} for x in range(1, 32)]
         }, {
             'title': 'month',
-            'data': [{'key': x, 'value': y} for (x, y) in MONTHS.items()]
+            'data': [{'key': x, 'value': y} for (x, y) in list(MONTHS.items())]
         }, {
             'title': 'year',
             'data': [{'key': x, 'value': x} for x in range(current_year - 100, current_year + 1)]

@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from base import auth
-from models import Consent, SurveyVisit
+from .models import Consent, SurveyVisit
 
 def consent(req): 
     ckey = req.GET.get("ckey", None)

@@ -3,7 +3,7 @@ import json
 import logging
 import random
 import string
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from random import choice
 
 from base import auth, signals, annotations, doc_analytics, utils_response as UR, models as M
@@ -20,8 +20,8 @@ from django.utils.html import escape
 import base.forms as forms
 from django_remote_forms.forms import RemoteForm
 
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
-id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
+id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_pages_%s.log' % ( id_log,), filemode='a')
 
 
@@ -62,7 +62,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
     signals.page_served.send("page", req=req, uid=user["id"])
 
     r = render_to_response(tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
-    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
+    r.set_cookie("userinfo", urllib.parse.quote(json.dumps(user)), 1e6)
     return r
 
 # o is a dictionary representing the variables
@@ -77,7 +77,7 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, con
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
     r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
-    r.set_cookie("userinfo", urllib.quote(json.dumps(user)), 1e6)
+    r.set_cookie("userinfo", urllib.parse.quote(json.dumps(user)), 1e6)
     return r
 
 def index(req):
@@ -104,9 +104,9 @@ def ondemand(req, ensemble_id):
                 return HttpResponse("No such ensemble: %s " % (ensemble_id,))
             if not ensemble.allow_ondemand:
                 return HttpResponse("ondemand uplaod not allowed for that ensemble: %s " % (ensemble_id,))
-            import urllib2
+            import urllib.request, urllib.error, urllib.parse
             from upload.views import insert_pdf_metadata
-            f = urllib2.urlopen(url)
+            f = urllib.request.urlopen(url)
             s = None
             try:
                 s = f.read()
@@ -183,13 +183,13 @@ def newsite(req):
     if auth_user is not None:
         return HttpResponseRedirect("/")
     if req.method == 'POST':
-        user            = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+        user            = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in range(0,32)]))
         ensemble        = M.Ensemble()
         user_form       = forms.UserForm(req.POST, instance=user)
         ensemble_form   = forms.EnsembleForm(req.POST, instance=ensemble)
         if user_form.is_valid() and ensemble_form.is_valid():
             user_form.save()
-            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,50)])
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
@@ -272,7 +272,7 @@ def add_html_doc(req, ensemble_id):
 def add_youtube_doc(req, ensemble_id):
     import base.models as M
     from apiclient.discovery import build
-    from urlparse import urlparse, parse_qs
+    from urllib.parse import urlparse, parse_qs
     import re
     re_iso8601 = re.compile("PT(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+)S)?")
     youtube = build("youtube", "v3", developerKey=settings.GOOGLE_DEVELOPER_KEY)
@@ -615,8 +615,8 @@ def subscribe_with_key(req):
                                                      "class_settings": UR.model2dict(e), "form": remote_form.as_dict()}))
     else:  # POST requests
         if auth_user is None:  # Guest subscribing to a class
-            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
-            req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+            user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in range(0,32)]))
+            req.POST = dict(iter(req.POST.items())) # Convert immutable object to mutable object
             user_form = forms.UserForm(req.POST, instance=user)
             if user_form.is_valid():
                 user_form.save()
@@ -662,14 +662,14 @@ def newsite_form(req):
         remote_class_form = RemoteForm(forms.EnsembleForm())
         return HttpResponse(UR.prepare_response({"user_form": remote_user_form.as_dict(), "class_form": remote_class_form.as_dict()}))
     else:
-        user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in xrange(0,32)]))
+        user = M.User(confkey="".join([choice(string.ascii_letters+string.digits) for i in range(0,32)]))
         ensemble = M.Ensemble()
-        req.POST = dict(req.POST.iteritems()) # Convert immutable object to mutable object
+        req.POST = dict(iter(req.POST.items())) # Convert immutable object to mutable object
         user_form       = forms.UserForm(req.POST, instance=user)
         ensemble_form   = forms.EnsembleForm(req.POST, instance=ensemble)
         if user_form.is_valid() and ensemble_form.is_valid():
             user_form.save()
-            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in xrange(0,50)])
+            ensemble.invitekey =  "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,50)])
             ensemble_form.save()
             m = M.Membership(user=user, ensemble=ensemble, admin=True)
             m.save()
