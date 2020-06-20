@@ -43,7 +43,7 @@ if "default" not in DATABASES or "PASSWORD" not in DATABASES["default"] or DATAB
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = None
+TIME_ZONE = 'America/New_York'
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
