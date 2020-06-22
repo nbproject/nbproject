@@ -244,7 +244,7 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble_sections', 'launch'],
     src_js: ['build_properties_ensemble_sections'],
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css',
+      addPrefix(LIB_DIR, ['jquery-ui/1.12.1/jquery-ui.theme.css',
       'DataTables-1.10.12/media/css/jquery.dataTables.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
@@ -454,7 +454,7 @@ module.exports = function (grunt) {
       CSS_TARGETS[i].servername = '//' + TARGETS[i].servername + '/';
     }
   }
-
+/*
   var ALL_TARGETS = {};
   for (i in JS_TARGETS) {
     ALL_TARGETS[i + '_js'] = JS_TARGETS[i];
@@ -463,7 +463,7 @@ module.exports = function (grunt) {
   for (i in CSS_TARGETS) {
     ALL_TARGETS[i + '_css'] = CSS_TARGETS[i];
   }
-
+*/
   var requirejsOptions = {};
   for (var key in JS_TARGETS) {
     var str = JS_TARGETS[key].src[0];
@@ -534,9 +534,9 @@ module.exports = function (grunt) {
     },
     copy: {
         files: {
-            cwd: 'content/lib/jquery-ui-1.12.1/images/',
+            cwd: 'content/lib/jquery-ui/1.12.1/images/',
             src: '**/*',
-            dest: 'content/compiled/images',
+            dest: 'content/compiled/images/',
             expand: true 
         }
     },
