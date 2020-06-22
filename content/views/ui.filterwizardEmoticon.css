@@ -16,29 +16,25 @@ div.filterWizardEmoticon .emoticonFilter {
     box-sizing: content-box;
 }
 
+div.filterWizardEmoticon .emoticon.discuss{content:url('/content/views/emoticons/discuss.png');}
+div.filterWizardEmoticon .emoticon.examable{content:url('/content/views/emoticons/examable.png');}
+div.filterWizardEmoticon .emoticon.learning-goal{content:url('/content/views/emoticons/learning-goal.png');}
+div.filterWizardEmoticon .emoticon.real-life{content:url('/content/views/emoticons/making-connections.png');}
+div.filterWizardEmoticon .emoticon.study-tool{content:url('/content/views/emoticons/study-tool.png');}
+div.filterWizardEmoticon .emoticon.curious{content:url('/content/views/emoticons/curious.png');}
+div.filterWizardEmoticon .emoticon.confused{content:url('/content/views/emoticons/confused.png');}
+div.filterWizardEmoticon .emoticon.useful{content:url('/content/views/emoticons/useful.png');}
+div.filterWizardEmoticon .emoticon.interested{content:url('/content/views/emoticons/interested.png');}
+div.filterWizardEmoticon .emoticon.frustrated{content:url('/content/views/emoticons/frustrated.png');}
+div.filterWizardEmoticon .emoticon.help{content:url('/content/views/emoticons/help.png');}
+div.filterWizardEmoticon .emoticon.question{content:url('/content/views/emoticons/question.png');}
+div.filterWizardEmoticon .emoticon.idea{content:url('/content/views/emoticons/idea.png');}
+div.filterWizardEmoticon .emoticon.examable{content:url('/content/views/emoticons/examable.png');}
+div.filterWizardEmoticon .emoticon.learning-goal{content:url('/content/views/emoticons/learning-goal.png');}
+div.filterWizardEmoticon .emoticon.study-tool{content:url('/content/views/emoticons/study-tool.png');}
+div.filterWizardEmoticon .emoticon.real-life{content:url('/content/views/emoticons/real-life.png');}
 
 
-div.filterWizardEmoticon .emoticon.curiousUnclicked{content:url('/content/views/emoticons/curious.png');}
-div.filterWizardEmoticon .emoticon.confusedUnclicked{content:url('/content/views/emoticons/confused.png');}
-div.filterWizardEmoticon .emoticon.usefulUnclicked{content:url('/content/views/emoticons/useful.png');}
-div.filterWizardEmoticon .emoticon.interestedUnclicked{content:url('/content/views/emoticons/interested.png');}
-div.filterWizardEmoticon .emoticon.frustratedUnclicked{content:url('/content/views/emoticons/frustrated.png');}
-div.filterWizardEmoticon .emoticon.helpUnclicked{content:url('/content/views/emoticons/help.png');}
-div.filterWizardEmoticon .emoticon.questionUnclicked{content:url('/content/views/emoticons/question.png');}
-div.filterWizardEmoticon .emoticon.ideaUnclicked{content:url('/content/views/emoticons/idea.png');}
-
-
-
-div.filterWizardEmoticon .emoticon.curiousClicked{
-	content:url('/content/views/emoticons/curious.png');
-	background-color: #ccc;
-}
-div.filterWizardEmoticon .emoticon.confusedClicked{content:url('/content/views/emoticons/confused.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.usefulClicked{content:url('/content/views/emoticons/useful.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.interestedClicked{content:url('/content/views/emoticons/interested.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.frustratedClicked{content:url('/content/views/emoticons/frustrated.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.helpClicked{content:url('/content/views/emoticons/help.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.questionClicked{content:url('/content/views/emoticons/question.png'); background-color: #ccc;}
-div.filterWizardEmoticon .emoticon.ideaClicked{content:url('/content/views/emoticons/idea.png'); background-color: #ccc;}
+div.filterWizardEmoticon .emoticon.clicked{background-color: #ccc;}
 
 

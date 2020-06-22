@@ -39,26 +39,26 @@ define(['concierge','view','jquery'],
       //  - $filterType : type of filter ["random", "reply", "students", "longest"]
 
       var $emot = [];
-      $emot.push($("<img>").attr("title","curious").attr("id","curious").attr("onClick","but_toggle(this);").addClass("emoticon curiousUnclicked"));
-      $emot.push($("<img>").attr("title","confused").attr("id","confused").attr("onClick","but_toggle(this);").addClass("emoticon confusedUnclicked"));
-      $emot.push($("<img>").attr("title","useful").attr("id","useful").attr("onClick","but_toggle(this);").addClass("emoticon usefulUnclicked"));
-      $emot.push($("<img>").attr("title","interested").attr("id","interested").attr("onClick","but_toggle(this);").addClass("emoticon interestedUnclicked"));
-      $emot.push($("<img>").attr("title","frustrated").attr("id","frustrated").attr("onClick","but_toggle(this);").addClass("emoticon frustratedUnclicked"));
-      $emot.push($("<img>").attr("title","help").attr("id","help").attr("onClick","but_toggle(this);").addClass("emoticon helpUnclicked"));
-      $emot.push($("<img>").attr("title","question").attr("id","question").attr("onClick","but_toggle(this);").addClass("emoticon questionUnclicked"));
-      $emot.push($("<img>").attr("title","idea").attr("id","idea").attr("onClick","but_toggle(this);").addClass("emoticon ideaUnclicked"));
-      var togg = "if(el.className.indexOf('Unclicked')>-1) {el.className=el.className.replace('Unclicked','Clicked');}" +
-        "else if(el.className.indexOf('Clicked')>-1) {el.className=el.className.replace('Clicked','Unclicked');} return;";
-      var fun = "<script> function but_toggle(el) {"+togg+"} </script>";
+
+	var but_toggle = () => {
+	    var e = $(this);
+	    if (e.hasClass('clicked')) {
+		e.removeClass('clicked').addClass('unclicked');
+	    } else {
+		e.removeClass('unclicked').addClass('clicked');
+	    }
+	}
+	['curious','confused','useful','interested','frustrated',
+	 'help','question','idea','discuss','examable','learning-goal',
+	 'real-life','study-tool'].forEach(tag => {
+	     $emot.push($("<img>").attr('title',tag).attr('id',tag).addClass('emoticon unclicked').addClass(tag).click(but_toggle));
+	 });
+	
 
       var $go = $("<input>").attr("type", "button").attr("value", "Go");
       var $cancel = $("<input>").attr("type", "button").attr("value", "Cancel");
 
-      $p.append(fun);
-      for(var i=0; i< $emot.length; i++)
-      {
-        $p.append($emot[i]);
-      }
+      $p.append($emot);	
 
       $p.append($go)
         .append($cancel);
@@ -77,10 +77,10 @@ define(['concierge','view','jquery'],
 
         for(var i=0; i< $emot.length; i++)
         {
-          if($emot[i].attr('class').indexOf("Clicked")>-1 && $emot[i].attr('class').indexOf("Unclicked")<0)
+          if ($emot[i].hasClass("clicked"))
           {
             chosenEmot.push($emot[i].attr("id"));
-            $emot[i].attr('class',$emot[i].attr('class').replace("Clicked","Unclicked"));
+            $emot[i].removeClass('clicked').addClass('unclicked');
             //$emot[i].toggleClass("filterClicked filterUnclicked");
             //var srcLen = $emot[i].attr("src").length;
             //var tmpsrc = $emot[i].attr("src").substring(0,srcLen-7);

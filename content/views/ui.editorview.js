@@ -279,7 +279,7 @@ define(function(require) {
 	    
 	    ['curious','confused','useful','interested','frustrated',
 	     'help','question','idea','discuss','examable','learning-goal',
-	     'real-life','study-tool'].forEach(tag => {
+	     'making-connections','study-tool'].forEach(tag => {
 		 icons.push($(
 		     `<img src="${Pers.server_url}/content/views/emoticons/${tag}.png" title="${tag}" class="emoticon"/>`
 		 ));
