@@ -63,6 +63,13 @@ module.exports = function (grunt) {
 				   'jquery-ui/1.12.1/jquery-ui.theme.css',
 				   'jquery-ui/1.12.1/jquery-ui.structure.css'])
   };
+  MODS.CORE = {
+      src_css: [].concat(
+          addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css','ui.view.css']),
+          'content/ui/classic/base.css',
+	  addPrefix(UI_DIR, ['template.css'])
+      )
+  };
   MODS.TREEVIEW = {
     src_css: [].concat(addPrefix(LIB_DIR, ['jstree/themes/default/style.css']),
                        addPrefix(VIEWS_DIR, ['ui.treeview.css'])),
@@ -151,14 +158,12 @@ module.exports = function (grunt) {
 
   TARGETS.EMBED = {
     include: ['buildEmbed'],
-    src_js: [].concat(['build_embed']),
+    src_js: ['build_embed'],
     dest_js: DEST_DIR + 'embed_NB.js',
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css']),
-      addPrefix(MODULE_DIR, ['ui.view.css', 'buildEmbed.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css']),
+      MODS.CORE.src_css,
+      addPrefix(MODULE_DIR, ['buildEmbed.css']),
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
       MODS.EDITORVIEW.src_css),
@@ -168,12 +173,10 @@ module.exports = function (grunt) {
 
   TARGETS.NEWSITE = {
     include: ['init_newsite', 'launch'],
-    src_js: [].concat(['build_newsite']),
+    src_js: ['build_newsite'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css']),
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -186,14 +189,11 @@ module.exports = function (grunt) {
   };
 
   TARGETS.DESKTOP = {
-      // MODS.BREADCRUMB.src_js
     include: ['init_desktop', 'launch'],
-    src_js: [].concat(['build_desktop']),
+    src_js: ['build_desktop'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css']),
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -208,12 +208,10 @@ module.exports = function (grunt) {
   TARGETS.PROPERTIES_ENSEMBLE_USERS = {
       // MODS.BREADCRUMB.src_js
     include: ['init_properties_ensemble_users', 'launch'],
-    src_js: [].concat(['build_properties_ensemble_users']),
+    src_js: ['build_properties_ensemble_users'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -227,12 +225,10 @@ module.exports = function (grunt) {
 
   TARGETS.PROPERTIES_ENSEMBLE = {
     include: ['init_properties_ensemble', 'launch'],
-    src_js: [].concat(['build_properties_ensemble']),
+    src_js: ['build_properties_ensemble'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -246,13 +242,10 @@ module.exports = function (grunt) {
 
   TARGETS.PROPERTIES_ENSEMBLE_SECTIONS = {
     include: ['init_properties_ensemble_sections', 'launch'],
-    src_js: [].concat(['build_properties_ensemble_sections']),
+    src_js: ['build_properties_ensemble_sections'],
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery-ui-1.12.1/jquery-ui.theme.css',
+      addPrefix(LIB_DIR, ['jquery-ui/1.12.1/jquery-ui.theme.css',
       'DataTables-1.10.12/media/css/jquery.dataTables.css']),
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -266,12 +259,10 @@ module.exports = function (grunt) {
 
   TARGETS.SUBSCRIBE = {
     include: ['init_subscribe', 'launch'],
-    src_js: [].concat(['build_subscribe']),
+    src_js: ['build_subscribe'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -285,12 +276,10 @@ module.exports = function (grunt) {
 
   TARGETS.ADD_NAVBAR = {
     include: ['init_add_navbar', 'launch'],
-    src_js: [].concat(['build_add_navbar']),
+    src_js: ['build_add_navbar'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
@@ -304,7 +293,7 @@ module.exports = function (grunt) {
 
   TARGETS.LOGIN = {
     include: ['login', 'launch'],
-    src_js: [].concat(['build_login']),
+    src_js: ['build_login'],
     src_css: [].concat(
       MODS.JQUI.src_css,
       addPrefix(UI_DIR, ['template.css']),
@@ -315,12 +304,10 @@ module.exports = function (grunt) {
 
   TARGETS.PDFVIEWER = {
     include: ['init_pdfviewer', 'launch'],
-    src_js: [].concat(['build_pdfviewer']),
+    src_js: ['build_pdfviewer'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.DOCVIEW.src_css,
       MODS.NOTEPANEVIEW_DOC.src_css,
       MODS.THREADVIEW.src_css,
@@ -331,25 +318,22 @@ module.exports = function (grunt) {
 
   TARGETS.DOCANALYTICS = {
     include: ['init_analytics', 'launch'],
-    src_js: [].concat(['build_analytics']),
+    src_js: ['build_analytics'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      addPrefix(VIEWS_DIR, ['ui.docAnalyticsView.css']),
-      'content/ui/classic/base.css'),
+      MODS.CORE.src_css,
+     addPrefix(VIEWS_DIR, ['ui.docAnalyticsView.css'])
+    ),
     dest_js: DEST_DIR + 'docanalytics_NB.js',
     dest_css: DEST_DIR + 'docanalytics.css',
   };
 
   TARGETS.YOUTUBEVIEWER = {
     include: ['init_youtubeviewer', 'launch'],
-    src_js: [].concat(['build_youtubeviewer']),
+    src_js: ['build_youtubeviewer'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.DOCVIEW_YOUTUBE.src_css,
       MODS.NOTEPANEVIEW_YOUTUBE.src_css,
       MODS.THREADVIEW.src_css,
@@ -360,11 +344,10 @@ module.exports = function (grunt) {
 
   TARGETS.COLLAGE = {
     include: ['init_collage', 'launch'],
-    src_js: [].concat(['build_collage']),
+    src_js: ['build_collage'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
+      MODS.CORE.src_css,
       MODS.DOCVIEW_COLLAGE.src_css,
       MODS.NOTEPANEVIEW_COLLAGE.src_css,
       MODS.THREADVIEW.src_css,
@@ -375,7 +358,7 @@ module.exports = function (grunt) {
 
   TARGETS.LOGOUT = {
     include: ['logout', 'launch'],
-    src_js: [].concat(['build_logout']),
+    src_js: ['build_logout'],
     src_css: [].concat(
       MODS.JQUI.src_css,
       addPrefix(UI_DIR, ['template.css']),
@@ -386,7 +369,7 @@ module.exports = function (grunt) {
 
   TARGETS.PASSWORD = {
     include: ['password_reminder', 'launch'],
-    src_js: [].concat(['build_passwordreminder']),
+    src_js: ['build_passwordreminder'],
     src_css: [].concat(
       MODS.JQUI.src_css,
       addPrefix(UI_DIR, ['template.css']),
@@ -397,12 +380,10 @@ module.exports = function (grunt) {
 
   TARGETS.SPREADSHEET = {
     include: ['init_spreadsheet', 'launch'],
-    src_js: [].concat(['build_spreadsheet']),
+    src_js: ['build_spreadsheet'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.menu.css', 'ui.view.css']),
-      addPrefix(UI_DIR, ['template.css']),
-      'content/ui/classic/base.css',
+      MODS.CORE.src_css,
       MODS.SPREADSHEETVIEW.src_css,
       MODS.NOTEPANEVIEW_SPREADSHEET.src_css,
       MODS.DOCVIEW_SPREADSHEET.src_css,
@@ -413,42 +394,40 @@ module.exports = function (grunt) {
 
   TARGETS.EMBEDOPENID = {
     include: ['embedopenid'],
-    src_js: [].concat(['build_embedopenid']),
+    src_js: ['build_embedopenid'],
     dest_js: DEST_DIR + 'embedopenid_NB.js',
   };
 
   TARGETS.SETTINGS = {
     include: ['your_settings', 'launch'],
-    src_js: [].concat(['build_yoursettings']),
+    src_js: ['build_yoursettings'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css', 'your_settings.css'])),
+      MODS.CORE.src_css,
+      addPrefix(UI_DIR, ['your_settings.css'])
+    ),
     dest_js: DEST_DIR + 'settings_NB.js',
     dest_css: DEST_DIR + 'settings.css',
   };
 
   TARGETS.ENTER_YOUR_NAME = {
     include: ['init_enteryourname', 'launch'],
-    src_js: [].concat(['build_enteryourname']),
+    src_js: ['build_enteryourname'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css'])),
+      MODS.CORE.src_css
+    ),
     dest_js: DEST_DIR + 'enteryourname_NB.js',
     dest_css: DEST_DIR + 'enteryourname.css',
   };
 
   TARGETS.CONFIRM_INVITE = {
     include: ['init_confirm_invite', 'launch'],
-    src_js: [].concat(['build_confirm_invite']),
+    src_js: ['build_confirm_invite'],
     src_css: [].concat(
       MODS.JQUI.src_css,
-      addPrefix(MODULE_DIR, ['ui.perspective.css', 'ui.viewport.css', 'ui.view.css']),
-      'content/ui/classic/base.css',
-      addPrefix(UI_DIR, ['template.css'])),
+      MODS.CORE.src_css
+    ),
     dest_js: DEST_DIR + 'confirm_invite_NB.js',
     dest_css: DEST_DIR + 'confirm_invite.css',
   };
@@ -475,7 +454,7 @@ module.exports = function (grunt) {
       CSS_TARGETS[i].servername = '//' + TARGETS[i].servername + '/';
     }
   }
-
+/*
   var ALL_TARGETS = {};
   for (i in JS_TARGETS) {
     ALL_TARGETS[i + '_js'] = JS_TARGETS[i];
@@ -484,7 +463,7 @@ module.exports = function (grunt) {
   for (i in CSS_TARGETS) {
     ALL_TARGETS[i + '_css'] = CSS_TARGETS[i];
   }
-
+*/
   var requirejsOptions = {};
   for (var key in JS_TARGETS) {
     var str = JS_TARGETS[key].src[0];
@@ -555,9 +534,9 @@ module.exports = function (grunt) {
     },
     copy: {
         files: {
-            cwd: 'content/lib/jquery-ui-1.12.1/images/',
+            cwd: 'content/lib/jquery-ui/1.12.1/images/',
             src: '**/*',
-            dest: 'content/compiled/images',
+            dest: 'content/compiled/images/',
             expand: true 
         }
     },
