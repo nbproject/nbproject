@@ -244,8 +244,9 @@ module.exports = function (grunt) {
     include: ['init_properties_ensemble_sections', 'launch'],
     src_js: ['build_properties_ensemble_sections'],
     src_css: [].concat(
-      addPrefix(LIB_DIR, ['jquery-ui/1.12.1/jquery-ui.theme.css',
-      'DataTables-1.10.12/media/css/jquery.dataTables.css']),
+      MODS.JQUI.src_css,
+      MODS.CORE.src_css,
+      addPrefix(LIB_DIR, ['DataTables-1.10.12/media/css/jquery.dataTables.css']),
       MODS.FILTERWIZARD.src_css,
       MODS.FILTERWIZARDEMOTICON.src_css,
       MODS.DUPLICATEWIZARD.src_css,
