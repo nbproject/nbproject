@@ -122,7 +122,7 @@ apidev:
 	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 prereqs:
-	apt-get install python imagemagick mupdf-tools context apache2 libapache2-mod-wsgi python-setuptools g++ python-pip nodejs npm 
+	apt-get install python3 imagemagick mupdf-tools context apache2 libapache2-mod-wsgi-py3 python-setuptools libpq-dev g++ nodejs npm 
 	easy_install pytz
 
 upgrade:
