@@ -62,7 +62,7 @@ urlpatterns = [
                        url(r'^r/(\d+)$' , pages_views.comment),
                        url(r'^d/(\d+)$' , pages_views.ondemand),
                        url(r'^settings$' , pages_views.your_settings,),
-                       url(r'^embedopenid$' , pages_views.embedopenid,),
+#                       url(r'^embedopenid$' , pages_views.embedopenid,),
                        url(r'^invite$', pages_views.invite),
                        url(r'^logout$', TemplateView.as_view(template_name='web/logout.html')),
                        url(r'^membership_from_invite$', pages_views.membership_from_invite),
@@ -92,10 +92,10 @@ urlpatterns += [
     ]
 urlpatterns += [
                         url(r'djangoadmin/',    include(admin.site.urls)),
-                        url(r'^openid/', include('django_openid_auth.urls')),
-                        url(r'^openid_logout/$', auth_views.logout),
-                        url(r'^openid_private/$', pages_views.require_authentication),
-                        url(r'^openid_index$', pages_views.openid_index),
+#                        url(r'^openid/', include('django_openid_auth.urls')),
+#                        url(r'^openid_logout/$', auth_views.logout),
+#                        url(r'^openid_private/$', pages_views.require_authentication),
+#                        url(r'^openid_index$', pages_views.openid_index),
 #                        url(r'^facebook/', include('django_facebook.urls')),
 #                        url(r'^accounts/', include('django_facebook.auth_urls'))
 #                        url(r'^facebooksample$', pages_views.facebooksample),
