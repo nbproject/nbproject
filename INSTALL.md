@@ -254,7 +254,7 @@ Follow any instructions in the terminal for other migrations that may need to be
     pg_restore -U nbadmin -h localhost -d nb3 YOUR_NB_BACKUP_FILE
 
 ## Questions
-For questions (including how to install NB on other linux distributions), use our forum at https://groups.google.com/forum/?#!forum/nbusers or email nbusers@googlegroups.com
+For questions (including how to install NB on other linux distributions), use our forum at https://groups.google.com/d/forum/nbusers or email nbusers@googlegroups.com
 
 ## VIDEO ANNOTATOR UPDATE
 Changes to the database can now be handled with Django migrations!

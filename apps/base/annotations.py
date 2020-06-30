@@ -1334,7 +1334,7 @@ def parsePage(s):
     else:
         dn = m2.group(1)
         port = m2.group(2)
-    if path_and_query is not "":    #need to get path and query from dn
+    if path_and_query != "":    #need to get path and query from dn
         r = re.compile('([^\?]*)\?(.*)')
         m3 = r.match(path_and_query)
         if m3 is not None:
