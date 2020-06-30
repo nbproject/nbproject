@@ -153,7 +153,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    "django_openid_auth",
+#    "django_openid_auth",
     'corsheaders',
    # 'django_facebook',
 #    'facebook',

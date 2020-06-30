@@ -130,7 +130,7 @@ On Mac, you will also need to do the following:
     
     sudo pip install django-cors-headers
    
-If, after setting everything up, you have trouble uploading a pdf with permission denied error, run:
+If, after setting everything up, you have trouble uploading a pdf with permission denied error,check the permissions on the directories specifying HTTPD_MEDIA and HTTPD_MEDIA_CACHE in your settings_credentials.py file.  For example,
     
     chmod ugo+rwx /var/local/nb/pdf/repository
     chmod ugo+rwx /var/local/nb/pdf/cache2
@@ -143,13 +143,10 @@ http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the op
       npm install grunt
       sudo npm install -g grunt-cli
       sudo npm install -g grunt-init
-      npm install grunt-contrib-jshint  --save-dev
-      npm install grunt-contrib-concat  --save-dev
-      npm install grunt-contrib-cssmin  --save-dev
-      npm install grunt-contrib-requirejs --save-dev
-      npm install grunt-css --save-dev
-      npm install grunt-contrib-copy --save-dev
-      
+      npm install --save-dev
+
+The final line will install all dependencies in `package.json`
+
 ### [optional] Enable mod_rewrite
  If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
  
