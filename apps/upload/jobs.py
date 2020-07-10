@@ -17,7 +17,7 @@ if "DJANGO_SETTINGS_MODULE" not in os.environ:
 from django import setup
 from django.conf import settings
 from base import utils, models as M
-import glob, json,   pyPdf, shutil, re, random, string, logging
+import glob, json,   PyPDF2, shutil, re, random, string, logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from os.path import dirname, abspath
@@ -36,7 +36,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
     do_crop = True
     ROTATE_KEY = "/Rotate"
     try: 
-        pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+        pdf_object = PyPDF2.PdfFileReader(file(filename, "rb"))
         if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
             print("PDF file encrypted with non-empty password: %s" % (filename,))
             return False
@@ -55,7 +55,7 @@ def process_file(id, res, scales, pdf_dir, img_dir, fmt):
         else: #seems ok to use trimbox
             w = wt
             h = ht
-    except pyPdf.utils.PdfReadError: 
+    except PyPDF2.utils.PdfReadError: 
         print("PdfReadError for %s ! Aborting !!!" % (filename,))
         return False
     except: 
@@ -138,7 +138,7 @@ def update_rotation(*t_args):
             filename = "%s/%s" % (rep_dir, id)
             if os.path.exists(filename): 
                 try: 
-                    pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+                    pdf_object = PyPDF2.PdfFileReader(file(filename, "rb"))
                     if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
                         print("PDF file encrypted with non-empty password: %s" % (filename,))
                         return False
@@ -148,7 +148,7 @@ def update_rotation(*t_args):
                         #print "found rotation=%d in %s" % (r, id)
                         DB.doTransaction("update pdf_data set  rotation=? where id_source = ?", (r, id))
                         print(id, end=' ') 
-                except pyPdf.utils.PdfReadError: 
+                except PyPDF2.utils.PdfReadError: 
                     print("\nPdfReadError for %s - Skipping" % (filename,))
                 except: 
                     print("\nOTHER ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] ))
@@ -181,7 +181,7 @@ def update_dims(*t_args):
             filename = "%s/%s" % (rep_dir, id)
             if os.path.exists(filename): 
                 try: 
-                    pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+                    pdf_object = PyPDF2.PdfFileReader(file(filename, "rb"))
                     if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
                         print("PDF file encrypted with non-empty password: %s" % (filename,))
                         return False
@@ -193,7 +193,7 @@ def update_dims(*t_args):
                     w = int(p.mediaBox.getUpperRight_x())
                     DB.doTransaction("update pdf_data set  nrows=? ,ncols=? where id_source = ?", (h, w, id))
                     print(id, end=' ') 
-                except pyPdf.utils.PdfReadError: 
+                except PyPDF2.utils.PdfReadError: 
                     print("\nPdfReadError for %s - Skipping" % (filename,))
                 except: 
                     print("\nOTHER ERROR for %s - Skipping" % (filename, ))
@@ -232,7 +232,7 @@ def split_chapters(*t_args):
         if len(args)<1:  
             print("usage: utils_pdf split_chapters configfile")
             return 
-        from pyPdf import PdfFileWriter, PdfFileReader
+        from PyPDF2 import PdfFileWriter, PdfFileReader
         f = open(args[0])
         P = json.loads(f.read())
         f.close()

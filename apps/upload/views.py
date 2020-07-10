@@ -25,7 +25,7 @@ id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in ra
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log', filemode='a')
 
 def insert_pdf_metadata(id, pdf_dir):
-    import pyPdf, sys
+    import PyPDF2, sys
     #insert metadata if not there: 
     filename = "%s/%s" % (pdf_dir, id)
     #this is where we test for good PDF: 
@@ -35,7 +35,7 @@ def insert_pdf_metadata(id, pdf_dir):
     ROTATE_KEY = "/Rotate"
     x0=y0=0
     try: 
-        pdf_object = pyPdf.PdfFileReader(file(filename, "rb"))
+        pdf_object = PyPDF2.PdfFileReader(open(filename, "rb"))
         if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
             print("PDF file encrypted with non-empty password: %s" % (filename,))
             return False
@@ -55,7 +55,7 @@ def insert_pdf_metadata(id, pdf_dir):
             h = ht
             x0 = box.getLowerLeft_x()
             y0 = box.getLowerLeft_y()
-    except pyPdf.utils.PdfReadError: 
+    except PyPDF2.utils.PdfReadError: 
         print("PdfReadError for %s ! Aborting !!!" % (filename,))
         return False
     except: 
