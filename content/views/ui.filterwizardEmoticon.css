@@ -21,11 +21,12 @@ div.filterWizardEmoticon .emoticon.examable{content:url('/content/views/emoticon
 div.filterWizardEmoticon .emoticon.learning-goal{content:url('/content/views/emoticons/learning-goal.png');}
 div.filterWizardEmoticon .emoticon.real-life{content:url('/content/views/emoticons/making-connections.png');}
 div.filterWizardEmoticon .emoticon.study-tool{content:url('/content/views/emoticons/study-tool.png');}
-div.filterWizardEmoticon .emoticon.curious{content:url('/content/views/emoticons/curious.png');}
-div.filterWizardEmoticon .emoticon.confused{content:url('/content/views/emoticons/confused.png');}
-div.filterWizardEmoticon .emoticon.useful{content:url('/content/views/emoticons/useful.png');}
+div.filterWizardEmoticon .emoticon.just-curious{content:url('/content/views/emoticons/just-curious.png');}
+div.filterWizardEmoticon .emoticon.lost{content:url('/content/views/emoticons/lost.png');}
+div.filterWizardEmoticon .emoticon.understood{content:url('/content/views/emoticons/understood.png');}
 div.filterWizardEmoticon .emoticon.interested{content:url('/content/views/emoticons/interested.png');}
 div.filterWizardEmoticon .emoticon.frustrated{content:url('/content/views/emoticons/frustrated.png');}
+div.filterWizardEmoticon .emoticon.surprised{content:url('/content/views/emoticons/surprised.png');}
 div.filterWizardEmoticon .emoticon.help{content:url('/content/views/emoticons/help.png');}
 div.filterWizardEmoticon .emoticon.question{content:url('/content/views/emoticons/question.png');}
 div.filterWizardEmoticon .emoticon.idea{content:url('/content/views/emoticons/idea.png');}
@@ -33,6 +34,7 @@ div.filterWizardEmoticon .emoticon.examable{content:url('/content/views/emoticon
 div.filterWizardEmoticon .emoticon.learning-goal{content:url('/content/views/emoticons/learning-goal.png');}
 div.filterWizardEmoticon .emoticon.study-tool{content:url('/content/views/emoticons/study-tool.png');}
 div.filterWizardEmoticon .emoticon.real-life{content:url('/content/views/emoticons/real-life.png');}
+div.filterWizardEmoticon .emoticon.thanks{content:url('/content/views/emoticons/thanks.png');}
 
 
 div.filterWizardEmoticon .emoticon.clicked{background-color: #ccc;}

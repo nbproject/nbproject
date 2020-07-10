@@ -48,9 +48,9 @@ define(['concierge','view','jquery'],
 		e.removeClass('unclicked').addClass('clicked');
 	    }
 	}
-	['curious','confused','useful','interested','frustrated',
-	 'help','question','idea','discuss','examable','learning-goal',
-	 'real-life','study-tool'].forEach(tag => {
+	['interested','understood','surprised','just-curious','lost',
+	     'question','idea','discuss','examable','learning-goal',
+	     'making-connections','study-tool','thanks'].forEach(tag => {
 	     $emot.push($("<img>").attr('title',tag).attr('id',tag).addClass('emoticon unclicked').addClass(tag).click(but_toggle));
 	 });
 	

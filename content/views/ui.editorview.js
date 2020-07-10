@@ -277,9 +277,9 @@ define(function(require) {
 	var makeIconList = function() {
 	    var icons=[];
 	    
-	    ['curious','confused','useful','interested','frustrated',
-	     'help','question','idea','discuss','examable','learning-goal',
-	     'making-connections','study-tool'].forEach(tag => {
+	    ['interested','understood','surprised','just-curious','lost',
+	     'question','idea','discuss','examable','learning-goal',
+	     'making-connections','study-tool','thanks'].forEach(tag => {
 		 icons.push($(
 		     `<img src="${Pers.server_url}/content/views/emoticons/${tag}.png" title="${tag}" class="emoticon"/>`
 		 ));
