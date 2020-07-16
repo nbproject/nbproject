@@ -187,20 +187,20 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
    * Log in as someone who has postgres create role and create database privileges, such as postgres (one way is to do 'su' and then 'su postgres', or sudo -i -u postgres)
 
         ```
-        createuser nbadmin -P #important to setup as superuser since only superusers can create a language (used for plpythonu)
+        createuser <YOUR_POSTGRES_USER> -P # replace <YOUR_POSTGRES_USER> by the user name you wish to create. Note that it's important to set it up as superuser since only superusers can create a language (used for plpythonu)
         ```
 
    * Then, filling in <YOUR_POSTGRES_USER> with the superuser from before:
 
         ```
-        createdb -U <YOUR_POSTGRES_USER> -h localhost <dbname>
+        createdb -U <YOUR_POSTGRES_USER> -h localhost <YOUR_DB_NAME>
         ```
 
    * Alternatively, in psql (while logged in to the postgres user), do:
 
         ```
-        CREATE DATABASE <dbname>;
-        GRANT ALL PRIVILEGES ON DATABASE <dbname> to nbadmin;
+        CREATE DATABASE <YOUR_DB_NAME>;
+        GRANT ALL PRIVILEGES ON DATABASE <YOUR_DB_NAME> to <YOUR_POSTGRES_USER>;
         ```
 
    * Exit from the database
@@ -228,8 +228,8 @@ Follow any instructions in the terminal for other migrations that may need to be
    * if you make a mistake:
  
  ```
-    dropdb  -U nbadmin -h localhost notabene
-    createdb -U nbadmin -h localhost notabene
+    dropdb  -U <YOUR_POSTGRES_USER> -h localhost <YOUR_DB_NAME>
+    createdb -U <YOUR_POSTGRES_USER> -h localhost <YOUR_DB_NAME>
 ```
     At this point you can try your installation using the Django debug server (but never use this in production...): 
 * From the apps directory: ```./manage.py runserver```
@@ -242,16 +242,16 @@ Follow any instructions in the terminal for other migrations that may need to be
   A sample crontab generated as part of the 'make django'. You just need to add it to your crontab for it to take effect
 
 ### 6 - Backup 
-  - **Database:**  use the pg_dump command, for instance, if NB was installed on host example.com, that the DB belonged to postgres used nbuser, and that the DB was called notabene, you'd use the following: 
-    -pg_dump -U nbuser -h example.com -Fc notabene > nb.backup.YYYYMMDD
+  - **Database:**  use the pg_dump command: 
+    -pg_dump -U <YOUR_POSTGRES_USER> -h <YOUR_DB_HOST> -Fc -f <YOUR_NB_BACKUP_FILENAME> <YOUR_DB_NAME> 
   
   - **Uploaded PDF files:** Use your favorite file backup technique (tar, rdiff-backup, unison etc...) to backup the directory: 
     "%s%s" % (settings.HTTPD_MEDIA,settings.REPOSITORY_DIR) (cf your settings.py files for actual values). 
 
-### 7 - Restore (change localhost to your server name if it's not on loacalhost)
-    dropdb  -U nbadmin -h localhost notabene
-    createdb -U nbadmin -h localhost notabene
-    pg_restore -U nbadmin -h localhost -d nb3 YOUR_NB_BACKUP_FILE
+### 7 - Restore
+    dropdb  -U <YOUR_POSTGRES_USER> -h <YOUR_DB_HOST> <YOUR_DB_NAME>
+    createdb -U <YOUR_POSTGRES_USER> -h <YOUR_DB_HOST> <YOUR_DB_NAME>
+    pg_restore -U <YOUR_POSTGRES_USER> -h <YOUR_DB_HOST> -d <YOUR_DB_NAME> <YOUR_NB_BACKUP_FILENAME>
 
 ## Questions
 For questions (including how to install NB on other linux distributions), use our forum at https://groups.google.com/d/forum/nbusers or email nbusers@googlegroups.com
