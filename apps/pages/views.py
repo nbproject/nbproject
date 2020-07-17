@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.core.mail.message import EmailMessage
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.html import escape
 
@@ -41,7 +41,7 @@ if settings.MONITOR.get("PAGE_SERVED", False):
 
 
 def __extra_confkey_getter(req):
-    if req.user.is_authenticated():
+    if req.user.is_authenticated:
         try:
             o = M.User.objects.get(email=req.user.email)
             return o.confkey
@@ -61,7 +61,7 @@ def __serve_page(req, tpl, allow_guest=False, nologin_url=None, content_type=Non
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
 
-    r = render_to_response(tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
+    r = render(req, tpl, {"o": o}, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.parse.quote(json.dumps(user)), 1e6)
     return r
 
@@ -76,7 +76,7 @@ def __serve_page_with_vars(req, tpl, o, allow_guest=False, nologin_url=None, con
         return HttpResponseRedirect("/enteryourname?ckey=%s" % (user.confkey,))
     user = UR.model2dict(user, {"ckey": "confkey", "email": None, "firstname": None, "guest": None, "id": None, "lastname": None, "password": None, "valid": None})
     signals.page_served.send("page", req=req, uid=user["id"])
-    r = render_to_response(tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
+    r = render(req, tpl, o, content_type=('application/xhtml+xml' if content_type is None else content_type))
     r.set_cookie("userinfo", urllib.parse.quote(json.dumps(user)), 1e6)
     return r
 
@@ -210,7 +210,7 @@ def newsite(req):
     else:
         user_form       = forms.UserForm()
         ensemble_form   = forms.EnsembleForm()
-    return render_to_response("web/newsite.html", {"user_form": user_form, "ensemble_form": ensemble_form})
+    return render(req, "web/newsite.html", {"user_form": user_form, "ensemble_form": ensemble_form})
 
 
 def user_name_form(req):
@@ -267,7 +267,7 @@ def add_html_doc(req, ensemble_id):
             info.url = addform.cleaned_data['url'].partition("#")[0].rstrip("/")
             info.save();
             return HttpResponseRedirect("/")
-    return render_to_response("web/add_html_doc.html", {"form": addform})
+    return render(req, "web/add_html_doc.html", {"form": addform})
 
 def add_youtube_doc(req, ensemble_id):
     import base.models as M
@@ -328,7 +328,7 @@ def add_youtube_doc(req, ensemble_id):
             #addform.cleaned_data['title']
 
             return HttpResponseRedirect("/")
-    return render_to_response("web/add_youtube_doc.html", {"form": addform})
+    return render(req, "web/add_youtube_doc.html", {"form": addform})
 
 def comment(req, id_comment):
     #id_comment = int(id_comment)
@@ -375,7 +375,7 @@ def membership_from_invite(req):
 
 @ensure_csrf_cookie
 def subscribe(req):
-    return render_to_response("web/subscribe.html")
+    return render(req, "web/subscribe.html")
 
 
 def properties_ensemble(req, id):
@@ -392,7 +392,7 @@ def properties_ensemble(req, id):
             ensemble_form.save()
             return HttpResponseRedirect('/')
     else:
-        return render_to_response("web/properties_ensemble.html")
+        return render(req, "web/properties_ensemble.html")
 
 
 def properties_ensemble_users(req, id):
@@ -447,7 +447,7 @@ def properties_ensemble_users(req, id):
                 m.save()
                 return HttpResponseRedirect(req.path)
 
-    return render_to_response("web/properties_ensemble_users.html")
+    return render(req, "web/properties_ensemble_users.html")
 
 def properties_ensemble_sections(req, id):
     user = UR.getUserInfo(req)
@@ -544,7 +544,7 @@ def properties_ensemble_sections(req, id):
     if err or "json" in req.GET:
         return HttpResponse(json.dumps({"error_message": err}), content_type="application/json")
     else:
-        return render_to_response("web/properties_ensemble_sections.html")
+        return render(req, "web/properties_ensemble_sections.html")
 
 
 def spreadsheet(req):

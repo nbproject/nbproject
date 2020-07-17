@@ -19,3 +19,4 @@ apps/testwrite
 .DS_Store
 db_dumps/
 .idea/
+.vagrant/

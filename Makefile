@@ -17,24 +17,24 @@ OLD_DB		= notabene
 NEW_DB		= nb3
 CONF_LOCAL	= content/ui/admin/conf_local.js
 SETTINGSFILE	= $(SITEDIR)/settings.py
-DBNAME		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["NAME"])')
-DBUSER		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["USER"])')
-DBPASS		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["PASSWORD"])')
-DBHOST		= $(shell python -c 'from  $(SITEDIR_DOT).settings import DATABASES;a=DATABASES["default"]["HOST"];a="localhost" if a=="" else a;print(a)')
-CRON_EMAIL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import CRON_EMAIL;print(CRON_EMAIL)')
+DBNAME		= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["NAME"])')
+DBUSER		= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["USER"])')
+DBPASS		= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import DATABASES;print (DATABASES["default"]["PASSWORD"])')
+DBHOST		= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import DATABASES;a=DATABASES["default"]["HOST"];a="localhost" if a=="" else a;print(a)')
+CRON_EMAIL	= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import CRON_EMAIL;print(CRON_EMAIL)')
 CONTENTDIR	= $(PWD)/content
-HTTPD_MEDIA_DIR = $(shell python -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA;print(HTTPD_MEDIA)')
-HTTPD_MEDIA_CACHE_DIR = $(shell python -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA_CACHE;print(HTTPD_MEDIA_CACHE)')
-NB_STATIC_MEDIA_DIR= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_ROOT;print(STATIC_ROOT)')
-NB_STATICURL	= $(shell python -c 'from  $(SITEDIR_DOT).settings import STATIC_URL;print(STATIC_URL)')
+HTTPD_MEDIA_DIR = $(shell python3 -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA;print(HTTPD_MEDIA)')
+HTTPD_MEDIA_CACHE_DIR = $(shell python3 -c 'from  $(SITEDIR_DOT).settings import HTTPD_MEDIA_CACHE;print(HTTPD_MEDIA_CACHE)')
+NB_STATIC_MEDIA_DIR= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import STATIC_ROOT;print(STATIC_ROOT)')
+NB_STATICURL	= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import STATIC_URL;print(STATIC_URL)')
 HTTPD_PDF_DIR	= $(HTTPD_MEDIA_DIR)/pdf
 HTTPD_REP_DIR	= $(HTTPD_PDF_DIR)/repository
 HTTPD_ANNOTATED_DIR =  $(HTTPD_PDF_DIR)/annotated
 HTTPD_RESTRICTED_REP_DIR	= $(HTTPD_PDF_DIR)/restricted_repository
 HTTPD_CACHE_DIR = $(HTTPD_MEDIA_CACHE_DIR)/pdf/cache2
-SERVER_USERNAME = $(shell python -c 'from  $(SITEDIR_DOT).settings import SERVER_USERNAME;print(SERVER_USERNAME)')
-NB_SERVERNAME  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_SERVERNAME;print(NB_SERVERNAME)')
-NB_HTTP_PORT  	= $(shell python -c 'from  $(SITEDIR_DOT).settings import NB_HTTP_PORT;print(NB_HTTP_PORT)')
+SERVER_USERNAME = $(shell python3 -c 'from  $(SITEDIR_DOT).settings import SERVER_USERNAME;print(SERVER_USERNAME)')
+NB_SERVERNAME  	= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import NB_SERVERNAME;print(NB_SERVERNAME)')
+NB_HTTP_PORT  	= $(shell python3 -c 'from  $(SITEDIR_DOT).settings import NB_HTTP_PORT;print(NB_HTTP_PORT)')
 NB		= nb
 NB_ARCHIVE	= nb_stats_`date`_.tgz
 SCROLL_LOGFILE	= $(SITEDIR)/scrolling.log
@@ -45,7 +45,7 @@ check_settings:
 	echo '* Please edit your DB connections parameters in $(SITEDIR)/settings_credentials.py, if needed *'
 	echo '********************************************************************************************'
 	echo '' 
-	$(shell python -c 'import $(SITEDIR_DOT).settings')
+	$(shell python3 -c 'import $(SITEDIR_DOT).settings')
 
 
 create_dirs: 
@@ -122,8 +122,7 @@ apidev:
 	for i in $(DESKTOP_FILES); do cat $$i >> $(DESKTOP_DEST) ; done
 
 prereqs:
-	apt-get install python3 imagemagick mupdf-tools context apache2 libapache2-mod-wsgi-py3 python-setuptools libpq-dev g++ nodejs npm 
-	easy_install pytz
+	apt-get update && apt-get install -y python3 imagemagick mupdf-tools context apache2 libapache2-mod-wsgi-py3 python-setuptools libpq-dev g++ nodejs npm python3-pip
 
 upgrade:
 	(cd ./apps ; python -m 'base.jobs' upgrade )

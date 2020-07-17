@@ -12,8 +12,6 @@ import pages.views as pages_views
 import django.contrib.auth.views as auth_views
 import django.views.static as static
 
-admin.autodiscover()
-
 ROOTDIR = dirname(abspath(__file__))
 import sys
 if ROOTDIR not in sys.path:
@@ -91,17 +89,8 @@ urlpatterns += [
                         url(r'^robots.txt/$', TemplateView.as_view(template_name='web/robots.txt'))
     ]
 urlpatterns += [
-                        url(r'djangoadmin/',    include(admin.site.urls)),
-#                        url(r'^openid/', include('django_openid_auth.urls')),
-#                        url(r'^openid_logout/$', auth_views.logout),
-#                        url(r'^openid_private/$', pages_views.require_authentication),
-#                        url(r'^openid_index$', pages_views.openid_index),
-#                        url(r'^facebook/', include('django_facebook.urls')),
-#                        url(r'^accounts/', include('django_facebook.auth_urls'))
-#                        url(r'^facebooksample$', pages_views.facebooksample),
-#                        url(r'^facebook/login$', 'facebook.views.login),
-#                        url(r'^facebook/authentication_callback$', 'facebook.views.authentication_callback'),
-                        url(r'^logout$', auth_views.logout),
+                        url(r'djangoadmin/',    admin.site.urls),
+                        url(r'^logout$', auth_views.LogoutView),
 ]
 
 

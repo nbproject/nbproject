@@ -1,6 +1,5 @@
 # Create your views here.
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
 import  os, sys, logging, string, random
 from django.conf import settings
 from django.views.static import serve

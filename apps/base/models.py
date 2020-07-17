@@ -96,16 +96,16 @@ class Ensemble(models.Model):                                                   
     class Meta:
         ordering = ["id"]
 
-class Folder(models.Model):                                                     # old: folder
-    parent              = ForeignKey("self", null=True)                         # old: id_parent integer
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
+class Folder(models.Model):
+    parent              = ForeignKey("self", on_delete=models.CASCADE, null=True)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
     name                = CharField(max_length=255)                             # old: name text
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
 class Section(models.Model):
     name                = CharField(max_length=255)
-    ensemble            = ForeignKey(Ensemble)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.name)
 
@@ -113,11 +113,11 @@ class Section(models.Model):
 ### TODO: Would be nice to remember the invite text and when it was sent.
 class Invite(models.Model):                                                     # old: invite
     key                 = CharField(max_length=255)                             # old: id
-    user                = ForeignKey(User)                                      # old: id_user
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
+    user                = ForeignKey(User, on_delete=models.CASCADE)            # old: id_user
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
     admin               = BooleanField(default=False)                           # old: admin integer
     ctime               = DateTimeField(null=True, default=datetime.now, db_index=True)
-    section             = ForeignKey(Section, null=True)
+    section             = ForeignKey(Section, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
@@ -125,9 +125,9 @@ class Invite(models.Model):                                                     
 
 ### TODO: port id_grader functionality (i.e. class sections)
 class Membership(models.Model):                                                 # old: membership
-    user                = ForeignKey(User)                                      # old: id_user
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble
-    section             = ForeignKey(Section, null=True)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
+    section             = ForeignKey(Section, null=True, on_delete=models.SET_NULL)
     admin               = BooleanField(default=False)                           # old: admin integer
     deleted             = BooleanField(default=False)
     guest               = BooleanField(default=False)                           # Adding guest membership to remember section_id.
@@ -142,7 +142,7 @@ class Source(models.Model):
     TYPE_HTML5          = 4
     TYPES               = ((TYPE_PDF, "PDF"), (TYPE_YOUTUBE, "YOUTUBE"), (TYPE_HTML5VIDEO, "HTML5VIDEO"), (TYPE_HTML5, "HTML5"))
     title               = CharField(max_length=255, default="untitled")         # old: title text
-    submittedby         = ForeignKey(User, blank=True, null=True)               # old: submittedby integer
+    submittedby         = ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     numpages            = IntegerField(default=0)
     w                   = IntegerField(default=0)                               # old: ncols integer
     h                   = IntegerField(default=0)                               # old: nrows integer
@@ -156,27 +156,27 @@ class Source(models.Model):
     #FIXME Note: To preserve compatibility w/ previous production DB, I also added a default=1 at the SQL level for the 'type' field , so that we don't create null records if using the old framework
 
 class YoutubeInfo(models.Model):
-    source              = OneToOneField(Source)
+    source              = OneToOneField(Source, on_delete=models.CASCADE)
     key                 = CharField(max_length=255,blank=True, null=True)
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.key)
 
 class HTML5Info(models.Model):
-    source              = OneToOneField(Source)
+    source              = OneToOneField(Source, on_delete=models.CASCADE)
     url                 = CharField(max_length=2048,blank=True, null=True)
     def __unicode__(self):
         return "%s %s: %s" % (self.__class__.__name__,self.id,  self.url)
 
 class OnDemandInfo(models.Model):
-    ensemble            = ForeignKey(Ensemble)
-    source              = OneToOneField(Source)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
+    source              = OneToOneField(Source, on_delete=models.CASCADE)
     url                 = CharField(max_length=2048,blank=True, null=True)
 
 ### TODO: port history feature, so we can restore a file is an admin erases it by mistake.
 class Ownership(models.Model):                                                  # old: ownership
-    source              = ForeignKey(Source)                                    # old: id_source integer
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
-    folder              = ForeignKey(Folder, null=True)                         # old: id_folder integer
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
+    folder              = ForeignKey(Folder, null=True, on_delete=models.SET_NULL)
     published           = DateTimeField(default=datetime.now, db_index=True)    # old: published timestamp without time zone DEFAULT now()
     deleted             = BooleanField(default=False)
     assignment          = BooleanField(default=False)
@@ -185,10 +185,10 @@ class Ownership(models.Model):                                                  
         return "%s %s: source %s in ensemble %s" % (self.__class__.__name__,self.id,  self.source_id, self.ensemble_id)
 
 class Location(models.Model):                                                   # old: nb2_location
-    source              = ForeignKey(Source)                                    # old: id_source integer
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
     version             = IntegerField(default=1)
-    ensemble            = ForeignKey(Ensemble)                                  # old: id_ensemble integer
-    section             = ForeignKey(Section, null=True)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
+    section             = ForeignKey(Section, null=True, on_delete=models.SET_NULL)
     x                   = IntegerField()
     y                   = IntegerField()
     w                   = IntegerField()
@@ -201,7 +201,7 @@ class Location(models.Model):                                                   
         return "%s %s: on source %s - page %s " % (self.__class__.__name__,self.id,  self.source_id, self.page)
 
 class HTML5Location(models.Model):
-    location              = OneToOneField(Location)
+    location              = OneToOneField(Location, on_delete=models.CASCADE)
     path1                 = CharField(max_length=2048,blank=True, null=True)
     path2                 = CharField(max_length=2048,blank=True, null=True)
     offset1               = IntegerField()
@@ -209,9 +209,9 @@ class HTML5Location(models.Model):
 
 class Comment(models.Model):                                                    # old: nb2_comment
     TYPES               = ((1, "Private"), (2, "Staff"), (3, "Class"), (4, "Tag Private"))
-    location            = ForeignKey(Location)                                  # old: id_location integer
-    parent              = ForeignKey('self', null=True)                         # old: id_parent integer
-    author              = ForeignKey(User)                                      # old: id_author integer,
+    location            = ForeignKey(Location, on_delete=models.CASCADE)
+    parent              = ForeignKey('self', null=True, on_delete=models.SET_NULL)
+    author              = ForeignKey(User, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now, db_index=True)    # old: ctime timestamp
     body                = TextField(blank=True, null=True)
     type                = IntegerField(choices=TYPES)
@@ -232,8 +232,8 @@ class Comment(models.Model):                                                    
 class Tag(models.Model):
     TYPES               = ((1, "Individual"),)
     type                = IntegerField(choices=TYPES)
-    individual          = ForeignKey(User, null=True)
-    comment		= ForeignKey(Comment)
+    individual          = ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    comment		= ForeignKey(Comment, on_delete=models.CASCADE)
     last_reminder	= DateTimeField(null=True)
 
 ### Those aren't used anymore (threadmarks are used instead)
@@ -241,17 +241,17 @@ class Mark(models.Model):                                                       
     TYPES               = ((1, "answerplease"), (3, "approve"), (5, "reject"), (7, "favorite"), (9, "hide"))
     type                = IntegerField(choices=TYPES)                           # old: id_type integer NOT NULL
     ctime               = DateTimeField(default=datetime.now)                   # old: ctime timestamp
-    comment             = ForeignKey(Comment)                                   # old: id_ann integer NOT NULL
-    user                = ForeignKey(User)                                      # old: id_user integer NOT NULL
+    comment             = ForeignKey(Comment, on_delete=models.CASCADE)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
 
 class ThreadMark(models.Model):
     TYPES               = ((1, "question"), (2, "star"), (3, "summarize"))
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
     ctime               = DateTimeField(default=datetime.now, db_index=True)
-    location            = ForeignKey(Location)
-    comment             = ForeignKey(Comment, null=True)                        #this is optional
-    user                = ForeignKey(User)
+    location            = ForeignKey(Location, on_delete=models.CASCADE)
+    comment             = ForeignKey(Comment, null=True, on_delete=models.SET_NULL)     # this is optional
+    user                = ForeignKey(User, on_delete=models.CASCADE)
     def resolved(self):
         return self.replyrating_set.filter(status__gt=ReplyRating.TYPE_UNRESOLVED).exists()
 
@@ -261,8 +261,8 @@ class ReplyRating(models.Model):
     TYPE_RESOLVED       = 2
     TYPE_THANKS         = 3
     TYPES               = ((TYPE_UNRESOLVED, "unresolved"), (TYPE_RESOLVED, "resolved"), (TYPE_THANKS, "thanks"))
-    threadmark          = ForeignKey(ThreadMark)
-    comment             = ForeignKey(Comment)
+    threadmark          = ForeignKey(ThreadMark, on_delete=models.CASCADE)
+    comment             = ForeignKey(Comment, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now, db_index=True)
     status              = IntegerField(choices=TYPES)
 
@@ -271,13 +271,13 @@ class ThreadMarkHistory(models.Model):
     type                = IntegerField(choices=TYPES)
     active              = BooleanField(default=True)
     ctime               = DateTimeField(default=datetime.now)
-    location            = ForeignKey(Location)
-    user                = ForeignKey(User)
-    comment             = ForeignKey(Comment, null=True)                        #this is optional
+    location            = ForeignKey(Location, on_delete=models.CASCADE)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
+    comment             = ForeignKey(Comment, null=True, on_delete=models.SET_NULL)     # this is optional
 
 
 class Processqueue(models.Model):                                               # old: nb2_processqueue
-    source              = ForeignKey(Source, null=True)                                    # old: id_source integer,
+    source              = ForeignKey(Source, null=True, on_delete=models.CASCADE)
     submitted           = DateTimeField(default=datetime.now)                   # old: submitted timestamp without time zone DEFAULT now(),
     started             = DateTimeField(null=True)                              # old: started timestamp without time zone,
     completed           = DateTimeField(null=True)                              # old: completed timestamp without time zone
@@ -285,39 +285,39 @@ class Processqueue(models.Model):                                               
 
 #TODO: Continue migratedbscript from here.
 class Session(models.Model):
-    user                = ForeignKey(User)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now)
     lastactivity        = DateTimeField(default=datetime.now, null=True)
     ip                  = CharField(max_length=63, blank=True, null=True)
     clienttime          = DateTimeField(blank=True, null=True)
 
 class CommentSeen(models.Model):
-    comment             = ForeignKey(Comment)
-    session             = ForeignKey(Session, null=True)
-    user                = ForeignKey(User) #duplicate (cf session) but inlined for performance
+    comment             = ForeignKey(Comment, on_delete=models.CASCADE)
+    session             = ForeignKey(Session, null=True, on_delete=models.SET_NULL)
+    user                = ForeignKey(User, on_delete=models.CASCADE) #duplicate (cf session) but inlined for performance
     ctime               = DateTimeField(default=datetime.now)
 
 class PageSeen(models.Model):
-    source              = ForeignKey(Source)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
     page                = IntegerField()
-    session             = ForeignKey(Session, null=True)
-    user                = ForeignKey(User, null=True) #duplicate (cf session) but inlined for performance
+    session             = ForeignKey(Session, null=True, on_delete=models.SET_NULL)
+    user                = ForeignKey(User, null=True, on_delete=models.SET_NULL) #duplicate (cf session) but inlined for performance
     ctime               = DateTimeField(default=datetime.now)
 
 class AnalyticsVisit(models.Model):
-    source              = ForeignKey(Source)
-    user                = ForeignKey(User, null=True)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
+    user                = ForeignKey(User, null=True, on_delete=models.SET_NULL)
     ctime               = DateTimeField(default=datetime.now)
 
 class AnalyticsClick(models.Model):
-    source              = ForeignKey(Source)
-    user                = ForeignKey(User, null=True)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
+    user                = ForeignKey(User, null=True, on_delete=models.SET_NULL)
     ctime               = DateTimeField(default=datetime.now)
     control             = CharField(max_length=30)
     value               = CharField(max_length=30)
 
 class Landing(models.Model):
-    user                = ForeignKey(User)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now)
     ip                  = CharField(max_length=63, blank=True, null=True)
     client              = CharField(max_length=1023, blank=True, null=True)
@@ -325,7 +325,7 @@ class Landing(models.Model):
     path                = CharField(max_length=1023, blank=True, null=True)
 
 class Idle(models.Model):
-    session             = ForeignKey(Session)
+    session             = ForeignKey(Session, on_delete=models.CASCADE)
     t1                  = DateTimeField()
     t2                  = DateTimeField()
 
@@ -336,19 +336,19 @@ class DefaultSetting(models.Model):
     value               = IntegerField()
 
 class SettingLabel(models.Model):
-    setting             = ForeignKey(DefaultSetting)
+    setting             = ForeignKey(DefaultSetting, on_delete=models.CASCADE)
     value               = IntegerField()
     label               = TextField()
 
 class UserSetting(models.Model):
-    user                = ForeignKey(User)
-    setting             = ForeignKey(DefaultSetting)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
+    setting             = ForeignKey(DefaultSetting, on_delete=models.CASCADE)
     value               = IntegerField()
     ctime               = DateTimeField(default=datetime.now)
 
 class SourceVersion(models.Model):
     title               = CharField(max_length=255, default="untitled")
-    submittedby         = ForeignKey(User, blank=True, null=True)
+    submittedby         = ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     numpages            = IntegerField(default=0)
     w                   = IntegerField(default=0)
     h                   = IntegerField(default=0)
@@ -358,8 +358,8 @@ class SourceVersion(models.Model):
 
 class FileDownload(models.Model):
     ctime               = DateTimeField(default=datetime.now)
-    user                = ForeignKey(User)
-    source              = ForeignKey(Source)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
     annotated           = BooleanField(default=False)
 
 class Notification(models.Model):
@@ -370,7 +370,7 @@ class GuestHistory(models.Model):
     """
     Records the period during which a user was a guest. t_end gets populated if the user ever converts their guest account into a regular account by registering (not using SSO).
     """
-    user                = ForeignKey(User)
+    user                = ForeignKey(User, on_delete=models.CASCADE)
     t_start             = DateTimeField(null=True, default=datetime.now)
     t_end               = DateTimeField(null=True)
 
@@ -378,23 +378,23 @@ class GuestLoginHistory(models.Model):
     """
     Records the transition between a login as guest account and login as a exising  account. This data supplements the one in GuestHistory. i.e. for the cases where we have a transition from a guest to a existing user. Note that SSO (i.e. Google ID) users are always considered "existing" even if they weren't in the DB before (since their guest account id doesn't get recycled), so they appear here.
     """
-    guest               = ForeignKey(User, related_name="u1")
-    user                = ForeignKey(User, related_name="u2")
+    guest               = ForeignKey(User, related_name="u1", on_delete=models.CASCADE)
+    user                = ForeignKey(User, related_name="u2", on_delete=models.CASCADE)
     ctime               = DateTimeField(null=True, default=datetime.now)
 
 class AssignmentGrade(models.Model):
-    user                = ForeignKey(User, related_name="u_grade")
-    grader              = ForeignKey(User, related_name="g_grade")
+    user                = ForeignKey(User, related_name="u_grade", on_delete=models.CASCADE)
+    grader              = ForeignKey(User, related_name="g_grade", on_delete=models.PROTECT)
     ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
-    source              = ForeignKey(Source)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
 
 class AssignmentGradeHistory(models.Model):
-    user                = ForeignKey(User, related_name="u_grade_h")
-    grader              = ForeignKey(User, related_name="g_grade_h")
+    user                = ForeignKey(User, related_name="u_grade_h", on_delete=models.CASCADE)
+    grader              = ForeignKey(User, related_name="g_grade_h", on_delete=models.PROTECT)
     ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
-    source              = ForeignKey(Source)
+    source              = ForeignKey(Source, on_delete=models.CASCADE)
 
 class LabelCategory(models.Model):
     TYPE_USER           = 1
@@ -408,24 +408,24 @@ class LabelCategory(models.Model):
     scope               = IntegerField(choices=TYPES_SCOPE, default=TYPE_COMMENT)
     pointscale          = IntegerField()
     name                = CharField(max_length=1024)
-    ensemble            = ForeignKey(Ensemble)
+    ensemble            = ForeignKey(Ensemble, on_delete=models.CASCADE)
 
 class LabelCategoryCaption(models.Model):
-    category       = ForeignKey(LabelCategory)
+    category            = ForeignKey(LabelCategory,  on_delete=models.CASCADE)
     grade               = IntegerField()
     caption             = CharField(max_length=127)
 
 class CommentLabel(models.Model):
     """Used for finer grain grading or categorizing comments or threads"""
-    grader              = ForeignKey(User)
+    grader              = ForeignKey(User, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
-    category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post.
-    comment             = ForeignKey(Comment)
+    category            = ForeignKey(LabelCategory, on_delete=models.CASCADE) # so we can grade different dimensions of a post.
+    comment             = ForeignKey(Comment, on_delete=models.CASCADE)
 
 class CommentLabelHistory(models.Model):
-    grader              = ForeignKey(User)
+    grader              = ForeignKey(User, on_delete=models.CASCADE)
     ctime               = DateTimeField(default=datetime.now)
     grade               = IntegerField()
-    category            = ForeignKey(LabelCategory) #so we can grade different dimensions of a post.
-    comment             = ForeignKey(Comment)
+    category            = ForeignKey(LabelCategory, on_delete=models.CASCADE) #so we can grade different dimensions of a post.
+    comment             = ForeignKey(Comment, on_delete=models.CASCADE)

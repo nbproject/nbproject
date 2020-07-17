@@ -119,12 +119,12 @@ Start postfix (to enable sending mail if faced with "Connection refused"):
 You will need to enable mod_headers on apache2. Do the following (you may need to use sudo):
 
     a2enmod headers
-    apachectl restart
+    apache2ctl restart
 
 ### Pip installations
 
     cd nbproject #(or whatever name you may have choosen for the root NB code directory).
-    sudo pip install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
+    sudo pip3 install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
 
 On Mac, you will also need to do the following:
     
@@ -136,19 +136,10 @@ If, after setting everything up, you have trouble uploading a pdf with permissio
     chmod ugo+rwx /var/local/nb/pdf/cache2
     
 ### grunt
-As of March 2016 we have been using grunt 0.4.X.
-For questions on getting NB to work wit grunt 0.3.X, please refer to
-http://gruntjs.com/upgrading-from-0.3-to-0.4, and follow the procedure in the opposite way.
-
-      npm install grunt
       sudo npm install -g grunt-cli
-      sudo npm install -g grunt-init
-      npm install --save-dev
-
-The final line will install all dependencies in `package.json`
 
 ### [optional] Enable mod_rewrite
- If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by runnning:
+ If you wish to use the embedded JavaScript file or NB bookmarklet on external sites, you may not see the font-awesome icons in the NB sidebar unless you enable mod_rewrite on your Apache server to ensure it responds to CORS requests. You can do that by running:
  
        sudo a2enmod rewrite
 

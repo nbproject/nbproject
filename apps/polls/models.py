@@ -7,17 +7,17 @@ from datetime import datetime
 from django.dispatch import receiver
 
 class Consent(models.Model):
-    user            = ForeignKey(User)
+    user            = ForeignKey(User, on_delete=models.CASCADE)
     approved        = BooleanField(default=False)
     ctime           = DateTimeField(default=datetime.now)
     _active         = BooleanField(default=True)
 
 class SurveyVisit(models.Model):
-    user         = ForeignKey(User)
+    user         = ForeignKey(User, on_delete=models.CASCADE)
     ctime           = DateTimeField(default=datetime.now)
 
 class Message(models.Model):
-    ensemble        = ForeignKey(Ensemble)
+    ensemble        = ForeignKey(Ensemble, on_delete=models.CASCADE)
     author          = CharField(max_length=255, default="The NB Team<nbnotifications@csail.mit.edu>")
     title           = CharField(max_length=512, default="untitled")
     body            = TextField()
