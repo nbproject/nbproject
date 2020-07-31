@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('type', models.IntegerField(choices=[(1, b'Individual')])),
                 ('last_reminder', models.DateTimeField(null=True)),
-                ('comment', models.ForeignKey(to='base.Comment')),
-                ('individual', models.ForeignKey(to='base.User', null=True)),
+                ('comment', models.ForeignKey(to='base.Comment', on_delete=models.CASCADE)),
+                ('individual', models.ForeignKey(to='base.User', null=True, on_delete=models.SET_NULL)),
             ],
             options={
             },
