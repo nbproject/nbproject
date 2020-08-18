@@ -293,11 +293,10 @@ group by source_id) as v1"""
 
 # Get members of an ensemble
 def get_members(eid):
-    memberships = M.Membership.objects.filter(ensemble__id=eid, deleted=False)
+    memberships = M.Membership.objects.select_related("user").filter(ensemble__id=eid, deleted=False)
     users = {}
     for membership in memberships:
-        user = M.User.objects.get(id=membership.user.id)
-        user_entry = UR.model2dict(user)
+        user_entry = UR.model2dict(membership.user)
 
         # Remove unnecessary fields
         del user_entry["guest"]
@@ -314,7 +313,7 @@ def get_members(eid):
             user_entry["section"] = membership.section.id
 
         # Add user dictionary to users
-        users[user.id] = user_entry
+        users[membership.user.id] = user_entry
     return users
 
 
@@ -326,11 +325,11 @@ def get_all_members(uid, payload):
     """
     eid = payload["id_ensemble"]
     ensemble = M.Ensemble.objects.get(pk=eid)
-    memberships = M.Membership.objects.filter(ensemble=ensemble)
+    memberships = M.Membership.objects.select_related("user").filter(ensemble=ensemble)
     pendingconfirmations = memberships.filter(user__in=M.User.objects.filter(valid=False), deleted=False)
     real_memberships = memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=False)
     deleted_memberships =  memberships.filter(user__in=M.User.objects.filter(valid=True), deleted=True)
-    pendinginvites = M.Invite.objects.filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
+    pendinginvites = M.Invite.objects.select_related("user").filter(ensemble=ensemble).exclude(user__id__in=real_memberships.values("user_id"))
 
     pendingconfirmations_list = __memberships_to_users_list(pendingconfirmations)
     real_memberships_list = __memberships_to_users_list(real_memberships)
@@ -346,10 +345,11 @@ def get_all_members(uid, payload):
     return users
 
 def __memberships_to_users_list(memberships):
+    # Optimization: pass to this methods memberships that have a select_related("user"), so that django doesn't have to issue one DB query per user when fetching the user details. 
     result = []
+    
     for membership in memberships:
-        user = M.User.objects.get(id=membership.user.id)
-        user_entry = UR.model2dict(user)
+        user_entry = UR.model2dict(membership.user)
 
         # Remove unnecessary fields
         del user_entry["guest"]
@@ -363,7 +363,7 @@ def __memberships_to_users_list(memberships):
         if membership.section == None:
             user_entry["section"] = None
         else:
-            user_entry["section"] = membership.section.name
+            user_entry["section"] = membership.section.id
 
         # Add admin status
         if membership.admin:
