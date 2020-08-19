@@ -477,7 +477,7 @@ define(function(require) {
         autoresize_bottom_margin: "2",
         autoresize_min_height: 50,
         toolbar: 'styleselect | bold italic | link | numlist bullist indent outdent',
-        skin_url: 'http://stevendevooght.github.io/tinyMCE-mention/stylesheets/tinymce/skins/light',
+        skin_url: '//stevendevooght.github.io/tinyMCE-mention/stylesheets/tinymce/skins/light',
         mentions: {
           render: function(item) {
             // Callback to set the HTML of an item in the autocomplete dropdown.
