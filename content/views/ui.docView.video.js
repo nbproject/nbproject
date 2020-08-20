@@ -180,7 +180,28 @@ var ytMetadataCallbacks = jQuery.Deferred();
       onReady: onYouTubePlayerReady,
     },
   });
-  if (ytplayer) {console.log('ytplayer defined!');}  else {console.log('ytplayer definition failed');}
+	    if (ytplayer) {
+		let container=$('.videoView').parent();
+		console.log('ytplayer defined!');
+
+		new ResizeObserver(entries => {
+		    let width = container.width()-5, //margin on videoView
+			height = container.height()
+			-60  //bottom controls
+			-25  //title
+		        -25  //top offset
+		        -10  //margins
+		    ; 
+
+		    if (width > height*16/9) {
+			width = height * 16/9;
+		    } else {
+			height = width * 9/16;
+		    }
+		    ytplayer.setSize(width,height);
+		    $('.videoView').css("--player-width",width+'px');
+		}).observe(container.get(0));
+	    }  else {console.log('ytplayer definition failed');}
         }
 
         function videoLocSort(a, b) {
@@ -972,17 +993,13 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
           NB_vid.methods.updateProgressbar();
           var cur_page = self.SEC_MULT_FACTOR * ytplayer.getCurrentTime();
           var cur_locs = self._get_in_range_locs(cur_page);
-          var last_title = self._get_last_title(cur_page);
+          var last_title = self._get_last_title(cur_page) || self._model.o.file[self._id_source].title;
 
-          if (last_title === null) {
             $('.titleContainer').each(function (index, element) {
-              element.innerHTML = self._model.o.file[self._id_source].title;
-            });
-          } else {
-            $('.titleContainer').each(function (index, element) {
-              element.innerHTML = last_title;
-            });
-          }
+		if (element.innerHTML != last_title)
+		    element.innerHTML = last_title;
+	    });
+
 
           if (cur_locs.is_empty()) {
             $.concierge.trigger({ type: 'deselect_all_threads' });
@@ -1024,7 +1041,10 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
         self._generate_contents();
         self._render();
         $('.titleContainer').each(function (index, element) {
-          element.innerHTML = self._model.o.file[self._id_source].title;
+	    let next = self._model.o.file[self._id_source].title;
+	    if (element.innerHTML != next) {
+		element.innerHTML = next;
+	    }
         });
 
         if (init_event) {
