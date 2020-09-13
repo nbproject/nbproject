@@ -6,5 +6,5 @@ from . import views
 
 urlpatterns = [
      url(r'^$', views.upload,), 
-     url(r'^/update$', views.update,),          
+     url(r'^update$', views.update,),          
 ]
