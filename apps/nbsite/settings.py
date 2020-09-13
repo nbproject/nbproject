@@ -213,9 +213,9 @@ LOGGING = {
     }
 
 AUTHENTICATION_BACKENDS = (
-    'django_openid_auth.auth.OpenIDBackend',
+#    'django_openid_auth.auth.OpenIDBackend',
 #    'django_facebook.auth_backends.FacebookBackend',
-    'facebook.backend.FacebookBackend',
+#    'facebook.backend.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
