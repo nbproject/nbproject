@@ -85,7 +85,7 @@ django: check_settings
 	echo 'Copy the file $(APACHEFILE) into your apache configuration. Typically this can be done with the following sequence:'
 	echo 'sudo cp conf/nb_apache.conf /etc/apache2/sites-available/'
 	echo 'cd /etc/apache2/sites-enabled'
-	echo 'sudo ln -s ../sites-available/nb_apache.conf.'
+	echo 'sudo ln -s ../sites-available/nb_apache.conf'
 	echo ''
 	echo '--------- Crontab file -------------------------'
 	echo 'If you have not done it already, please update your crontab file with the contents of:'
@@ -95,6 +95,17 @@ django: check_settings
 	echo ''
 	echo 'Replacing grunt-css with our customized version'
 	cp lib/grunt-css.js node_modules/grunt-css/tasks/ 
+
+confapache:  check_settings
+  cp conf/nb_apache.conf /etc/apache2/sites-available/
+  cd /etc/apache2/sites-enabled
+  ln -s ../sites-available/nb_apache.conf
+
+installgrunt:  check_settings
+	npm install -i grunt-cli
+
+rungrunt:  check_settings
+	./node_modules/.bin/grunt
 
 migratedb: 
 	sed -e 's|@@OLD_DB@@|$(OLD_DB)|g' -e 's|@@NEW_DB@@|$(NEW_DB)|g' $(MIGRATEDBSKEL)   > $(MIGRATEDBFILE)
