@@ -59,6 +59,11 @@ if [[ ! -e ${MILESTONE} ]]; then
     touch ${MILESTONE}
 fi
 
+MILESTONE=/milestones/make_installgrunt
+if [[ ! -e ${MILESTONE} ]]; then
+    su vagrant -c 'make installgrunt'
+    touch ${MILESTONE}
+fi
 MILESTONE=/milestones/make_rungrunt
 if [[ ! -e ${MILESTONE} ]]; then
     su vagrant -c 'make rungrunt'

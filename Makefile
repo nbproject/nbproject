@@ -97,9 +97,9 @@ django: check_settings
 	cp lib/grunt-css.js node_modules/grunt-css/tasks/ 
 
 confapache:  check_settings
-  cp conf/nb_apache.conf /etc/apache2/sites-available/
-  cd /etc/apache2/sites-enabled
-  ln -s ../sites-available/nb_apache.conf
+	cp conf/nb_apache.conf /etc/apache2/sites-available/
+	cd /etc/apache2/sites-enabled
+	ln -s ../sites-available/nb_apache.conf .
 
 installgrunt:  check_settings
 	npm install -i grunt-cli
