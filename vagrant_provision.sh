@@ -24,7 +24,7 @@ fi
 
 MILESTONE=/milestones/pip_requirements
 if [[ ! -e ${MILESTONE} ]]; then
-    su vagrant -c 'pip3 install -r requirements.txt'
+    pip3 install -r requirements.txt
     touch ${MILESTONE}
 fi
 
@@ -55,7 +55,7 @@ fi
 
 MILESTONE=/milestones/make_createdirs
 if [[ ! -e ${MILESTONE} ]]; then
-    make createdirs
+    make create_dirs
     touch ${MILESTONE}
 fi
 

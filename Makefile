@@ -94,12 +94,11 @@ django: check_settings
 	echo '--------- End of make messages -----------------'
 	echo ''
 	echo 'Replacing grunt-css with our customized version'
-	cp lib/grunt-css.js node_modules/grunt-css/tasks/ 
+	cp lib/grunt-css.js node_modules/grunt-css/tasks/
 
 confapache:  check_settings
 	cp conf/nb_apache.conf /etc/apache2/sites-available/
-	cd /etc/apache2/sites-enabled
-	ln -s ../sites-available/nb_apache.conf .
+	(cd /etc/apache2/sites-enabled; ln -s ../sites-available/nb_apache.conf .)
 
 installgrunt:  check_settings
 	npm install -i grunt-cli
@@ -107,23 +106,23 @@ installgrunt:  check_settings
 rungrunt:  check_settings
 	./node_modules/.bin/grunt
 
-migratedb: 
+migratedb:
 	sed -e 's|@@OLD_DB@@|$(OLD_DB)|g' -e 's|@@NEW_DB@@|$(NEW_DB)|g' $(MIGRATEDBSKEL)   > $(MIGRATEDBFILE)
 	chmod u+x $(MIGRATEDBFILE)
 
-newstats: 	
+newstats:
 	./stats nb2_notes
 	unison -batch -ui text  nb_stats2
 
 clean:
 	- find . -name '*~' | xargs rm
-	- find . -name '*.pyc' | xargs rm 
+	- find . -name '*.pyc' | xargs rm
 	- rm content/compiled/*
 
-tgz: 
+tgz:
 	(cd ~ ; tar cz $(NB) > $(NB_ARCHIVE) )
 
-apidev: 
+apidev:
 	mkdir -p $(COMPILED_DIR)
 	touch content/ui/admin/conf_local.js
 	echo '' > $(APIDEV_DEST)

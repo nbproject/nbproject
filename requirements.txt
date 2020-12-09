@@ -1,10 +1,8 @@
-Django>=1.11.29
-django-openid-auth>=0.7
+django==3.1.2
 numpy>=1.8.2
-psycopg2>=2.4.5
+psycopg2==2.8.6
 pyPdf>=1.13
 python-dateutil>=2.4.2
-python-openid>=2.2.5
 pytz>=2014.4
 xlwt>=0.7.5
 google-api-python-client>=1.5
