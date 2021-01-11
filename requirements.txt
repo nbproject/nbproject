@@ -1,7 +1,7 @@
 django==3.1.2
 numpy>=1.8.2
 psycopg2==2.8.6
-pyPdf>=1.13
+PyPDF2>=1.26
 python-dateutil>=2.4.2
 pytz>=2014.4
 xlwt>=0.7.5

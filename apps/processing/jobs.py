@@ -1,4 +1,4 @@
-"""
+h"""
 jobs.py - pdf processing
 
 Author 
@@ -26,7 +26,7 @@ django.setup()
 from django.conf import settings
 from django.utils.html import strip_tags
 from base import utils, models as M, annotations, utils_response as UR
-import glob, json,   pyPdf, shutil, re, random, string, logging
+import glob, json,   PyPDF2, shutil, re, random, string, logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from html.parser import HTMLParser
@@ -38,7 +38,7 @@ logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(mess
 
 def process_file(id_source): 
     from processing.tex_template import tex_header
-    from pyPdf import PdfFileReader
+    from PyPDF2 import PdfFileReader
     from numpy import array
     logging.info("begin %s" % (id_source, ))
     OUTPUT = []

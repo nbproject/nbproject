@@ -124,7 +124,7 @@ You will need to enable mod_headers on apache2. Do the following (you may need t
 ### Pip installations
 
     cd nbproject #(or whatever name you may have choosen for the root NB code directory).
-    sudo pip3 install -r requirements.txt # To install additional required dependencies such as django, pyPdf, etc
+    sudo pip3 install -r requirements.txt # To install additional required dependencies such as django, PyPDF2, etc
 
 On Mac, you will also need to do the following:
     
