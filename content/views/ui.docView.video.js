@@ -45,9 +45,17 @@ var ytMetadataCallbacks = jQuery.Deferred();
         function updatePlayerInfo() {
   // Also check that at least one function exists since when IE unloads the
   // page, it will destroy the SWF before clearing the interval.
+	    let rates, currentRate, selected, options="";
   if (ytplayer && ytplayer.getDuration) {
     NB_vid.methods.updateHTML('videoTimeDisplay', NB_vid.methods.calculateTime(ytplayer.getCurrentTime())); //seen under progressbar
     NB_vid.methods.updateHTML('videoTotalTimeDisplay', NB_vid.methods.calculateTime(ytplayer.getDuration()));
+      rates = ytplayer.getAvailablePlaybackRates() || [1];
+      currentRate = ytplayer.getPlaybackRate() || 1;
+      rates.forEach(r => {
+	  selected = (r==currentRate) ? ' selected':'';
+	  options += `<option${selected}>${r}</option>` ;
+      });
+      NB_vid.methods.updateHTML("playerRate",options);
   }
         }
 
@@ -278,6 +286,7 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
                                 '</div>',
                         '</div>',
                         '<div class = "muteORunmute_holder"><img class = "muteORunmute" src = "/content/data/images/volume_up.png"></div>',
+                        '<div><select id="playerRate"></select>',
                 '</div>',
                 '<div class = "enlargedTickContainer">',
                         '<div class = "enlargedTickStart">--:--</div>',
@@ -754,6 +763,9 @@ define(['concierge','view','jquery','jquery_ui','drawable'],function(concierge,v
 
       ytApiCallbacks.done(NB_vid.define);
       self._attachListeners();
+
+	$('#playerRate').change(
+	    () => ytplayer.setPlaybackRate(parseFloat($('#playerRate').val())));
     },
 
     _playORpause: function () {
