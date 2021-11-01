@@ -71,7 +71,7 @@ def serve_doc(req, id_source, annotated=False):
         #  filename is part of the response headers and that HTTP response headers can only contain ascii characters. 
         filename = ""
         try:
-            filename = M.Source.objects.get(pk=id_source).title.partition(".pdf")[0].encode("ascii").replace(" ", "_")
+            filename = M.Source.objects.get(pk=id_source).title.partition(".pdf")[0].replace(" ", "_").encode('ascii').decode('ascii')
         except UnicodeEncodeError: 
             filename = id_source
         filename = "%s%s%s" % (filename, qual, ".pdf")        
