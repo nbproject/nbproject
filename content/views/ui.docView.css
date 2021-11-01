@@ -8,6 +8,7 @@ div.docView
     overflow-y: auto;
 
     background-color: #e6e6e6 !important;
+
 }
 
 div.docView > div.util
@@ -272,6 +273,9 @@ div.pagenumberbottom
     height: 25px;
 }
 
+.videoView {
+    --player-width: 752px;
+}
 .videoView,
 .commentsView,
 .videoInfo,
@@ -287,7 +291,7 @@ div.pagenumberbottom
 .videoInfo,
 .videoMenu
 {
-    width: 752px;
+    width: var(--player-width);
 }
 
 .tagListContainer
@@ -297,18 +301,18 @@ div.pagenumberbottom
 
 .videoContainer
 {
-    max-height: 423px;
+/*    max-height: calc(var(--player-width) * 9/16);*/
 }
 
 #videoCover
 {
     position: absolute;
-    top: 0;
+    top: 25px;
 
     overflow: hidden;
 
     width: 100%;
-    height: 423px;
+    height: calc(var(--player-width) * 9/16);
 }
 
 #drawnRect
@@ -339,7 +343,7 @@ div.pagenumberbottom
 }
 .videoMenu
 {
-    max-width: 742px;
+    max-width: calc(var(--player-width) - 10px);
     height: 55px;
     padding: 5px;
 
@@ -381,11 +385,19 @@ div.pagenumberbottom
     margin-left: 4px;
 }
 
-.progressbar_container,
-#dragRangeContainer,
+.progressbar_container
+{
+    width: calc(100% - 125px);
+}
+
+#dragRangeContainer
+{
+    width: 100%;
+}
+
 .tickmark_holder
 {
-    width: 610px;
+    width: 100%;
 }
 
 
