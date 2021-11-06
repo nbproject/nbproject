@@ -198,7 +198,8 @@ If you include a Youtube video URL as a class resource, nb will not be able to r
 
 ```
     cd apps
-    ./manage.py makemigrations # to create the database migrations files
+    ./manage.py makemigrations base
+    ./manage.py makemigrations polls # to create the database migrations files
     ./manage.py migrate # To create the database tables from the migrations files
     ./manage.py sqlcustom base | ./manage.py dbshell # to create custom views. If this throws an error, you could simply log in to your postgres database and run the query contained in https://github.com/nbproject/nbproject/blob/dev/apps/base/sql/ensemble.sql 
 ```
