@@ -1,8 +1,8 @@
-from django.conf.urls.defaults import *
+from django.urls import include, re_path
 from django.contrib import admin
 admin.autodiscover()
 urlpatterns = [
-                       url(r'admin/',    include(admin.site.urls)),
+                       re_path(r'admin/',    include(admin.site.urls)),
 ]
 
 

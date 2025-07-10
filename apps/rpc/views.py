@@ -767,7 +767,7 @@ def get_location_info(payload, req):
     retval={}
     retval["locations"], retval["html5locations"] = annotations.getLocation(id)
     if "org" in payload:
-        annotations.logDirectURL(uid, id, payload["org"])
+        annotations.logDirectre_path(uid, id, payload["org"])
     return UR.prepare_response(retval)
 
 
@@ -782,7 +782,7 @@ def get_comment_info(payload, req):
     #print retval["comments"]
     retval["locations"] , retval["html5locations"] = annotations.getLocation( id_location)
     if "org" in payload:
-        annotations.logDirectURL(uid, id, payload["org"])
+        annotations.logDirectre_path(uid, id, payload["org"])
     return UR.prepare_response(retval)
 
 

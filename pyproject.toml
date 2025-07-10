@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "nbproject"
+version = "0.1"
+description = "NB – annotation web application"
+authors = ["see AUTHORS.txt"]
+license = "MIT"
+readme = "README"
+packages = [{ include = "*", from = "apps" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+Django = "5.2.3"
+numpy = "^1.26"
+psycopg2-binary = "^2.9"
+pypdf = "^5.6"  
+python-dateutil = "^2.9"
+pytz = "^2024.1"
+xlwt = "^1.3"
+google-api-python-client = "^2.124"
+django-cors-headers = "^4.3"
+sortedcontainers = "^2.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2"
+pytest-django = "^4.8"
+black = "^24.4"
+ruff = "^0.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+

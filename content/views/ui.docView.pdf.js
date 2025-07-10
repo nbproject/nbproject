@@ -545,7 +545,7 @@ define(['concierge','view','jquery','drawable'],
       var w        = self._w;
       var h        = self._h;
       var style    = 'width: ' + w + 'px;height: ' + h + 'px';
-      var src_pref    = self.options.img_server + '/pdf/cache2/' + res + '/' + scale + '/' + id_source + '?ckey=' + $.concierge.get_component('get_userinfo')().ckey + '&amp;page=';
+      var src_pref    = self.options.img_server + '/pdf/cache2/' + res + '/' + scale + '/' + id_source + '?ckey=' + $.concierge.get_component('get_userinfo')().ckey + '&page=';
       $('>div.contents>div.material[page=' + page + ']', self.element).each(function (j) {
         var $this    = $(this);
         var i        = $this.attr('page');

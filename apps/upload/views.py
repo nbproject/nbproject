@@ -18,53 +18,65 @@ from django.utils.datastructures import MultiValueDictKeyError
 from base import auth, annotations, models as M
 from os.path import dirname, abspath
 import os
+import sys
 import random, string
 from django.template.loader import render_to_string
 from django.core.mail.message import EmailMessage
+from pypdf import PdfReader 
 id_log = "".join([ random.choice(string.ascii_letters+string.digits) for i in range(0,10)])
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/nb_upload.log', filemode='a')
 
+
 def insert_pdf_metadata(id, pdf_dir):
-    import PyPDF2, sys
-    #insert metadata if not there: 
-    filename = "%s/%s" % (pdf_dir, id)
-    #this is where we test for good PDF: 
+    """ insert metadata if not there """
+    filename = f"{pdf_dir}/{id}"
+
     numpages = 0
     h = 0
     w = 0
+    x0 = y0 = 0
     ROTATE_KEY = "/Rotate"
-    x0=y0=0
-    try: 
-        pdf_object = PyPDF2.PdfFileReader(open(filename, "rb"))
-        if pdf_object.isEncrypted and pdf_object.decrypt("")==0:
-            print("PDF file encrypted with non-empty password: %s" % (filename,))
-            return False
-        numpages = pdf_object.getNumPages()
-        p = pdf_object.getPage(0)
-        box = p.trimBox
-        hm = int(p.mediaBox.getUpperRight_y())
-        wm = int(p.mediaBox.getUpperRight_x())
-        ht = int(box.getUpperRight_y() - box.getLowerLeft_y())
-        wt = int(box.getUpperRight_x() - box.getLowerLeft_x())
-        rotation = 0 if ROTATE_KEY not in p else int(p[ROTATE_KEY]) 
-        if wm<=wt or hm<=ht: #we have a doubt: use media_box         
+
+    try:
+        pdf_reader = PdfReader(open(filename, "rb"))
+        if pdf_reader.is_encrypted:
+            try:
+                pdf_reader.decrypt("")  # Try blank password
+            except Exception:
+                print(f"PDF file encrypted with non-empty password: {filename}")
+                return False
+
+        numpages = len(pdf_reader.pages)
+        p = pdf_reader.pages[0]
+
+        box = p.trimbox
+        media_box = p.mediabox
+
+        hm = int(media_box.upper_right[1])
+        wm = int(media_box.upper_right[0])
+
+        ht = int(box.upper_right[1] - box.lower_left[1])
+        wt = int(box.upper_right[0] - box.lower_left[0])
+
+        rotation = int(p.get("/Rotate", 0))
+
+        if wm <= wt or hm <= ht: #we have a doubt: use media_box
             w = wm
             h = hm
-        else: #seems ok to use trimbox
+        else: # seems ok to use trimbox
             w = wt
             h = ht
-            x0 = box.getLowerLeft_x()
-            y0 = box.getLowerLeft_y()
-    except PyPDF2.utils.PdfReadError: 
-        print("PdfReadError for %s ! Aborting !!!" % (filename,))
+            x0 = box.lower_left[0]
+            y0 = box.lower_left[1]
+
+    except Exception as e:
+        print(f"PDF ERROR for {filename} - Skipping\nDetails: {e}")
         return False
-    except: 
-        print("OTHER PDF ERROR for %s - Skipping\nDetails: %s" % (filename,sys.exc_info()[0] ))
-        return False
+
     s = M.Source.objects.get(pk=id)
     s.numpages = numpages
-    s.w = w 
-    s.h = h 
+    s.w = w
+    s.h = h
     s.rotation = rotation
     s.x0 = x0
     s.y0 = y0

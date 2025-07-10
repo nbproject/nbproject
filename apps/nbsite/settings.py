@@ -307,7 +307,7 @@ MONITOR = {"PAGE_SERVED": True,
            "FILE_DOWNLOAD": True
            }
 REDIRECT = False
-REDIRECT_URL = "https://nb.mit.edu"
+REDIRECT_URL = "https://nb1.mit.edu"
 
 
 #OPENID SSO:
@@ -331,6 +331,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 #Without that, when DEBUG=False,  Django 1.5 threw a SuspiciousOperation: Invalid HTTP_HOST header (you may need to set ALLOWED_HOSTS).
 ALLOWED_HOSTS =  settings_credentials.__dict__.get("ALLOWED_HOSTS", ["*"])
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CUSTOM_DUMPS = {

@@ -63,7 +63,14 @@ define(['require','auth','dom','conf','models','concierge','jquery','jquery_ui',
   Pers.first_connection = true;
   Pers.connection_T = 1000;  // in msec
   var server_info =  Pers.currentScript.src.match(/([^:]*):\/\/([^\/]*)/);
+  if (server_info[2] == "nb.mit.edu"){  //20220904 hardcode URL
+    server_info[2] = "nb1.mit.edu";
+  }
   Pers.server_url = server_info[1] + '://' + server_info[2];
+  $(function(){if (window.location.hostname=='nb.mit.edu'){
+alert("In a few days, this site (currently NB 1.0) will be switched to NB 2.0. We encourage you to create a new account on NB 2.0, currently at https://nb2.csail.mit.edu, so that your workflow doesn't get disrupted. From now on and after the switch, you will be able to access your NB 1.0 account and information at https://nb1.mit.edu");
+        }
+});
   Pers.call = function (fctname, dict, callback, errback) {
     if ((!Pers.first_connection) && Pers.connection_id === 0) {
       // we haven't received a reply yet so put this function to wait for a while
@@ -95,6 +102,9 @@ define(['require','auth','dom','conf','models','concierge','jquery','jquery_ui',
     };
 
     var auth_str = Conf.userinfo.guest ? 'guest=1' : 'ckey=' + Conf.userinfo.ckey;
+    if (Conf.servers.rpc == "https://nb.mit.edu"){
+      Conf.servers.rpc = "https://nb1.mit.edu";
+    }
     $.post(Conf.servers.rpc + '/pdf4/rpc?' + auth_str, { cid: Pers.connection_id, f: fctname, a: JSON.stringify(dict) }, cb, 'json');
   };
 

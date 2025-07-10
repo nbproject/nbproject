@@ -10,6 +10,6 @@ License
 """
 from django.dispatch import Signal
 
-register_session    = Signal(providing_args=["payload"])
-page_served         = Signal(providing_args=["payload"])
-file_downloaded     = Signal(providing_args=["payload"])
+register_session    = Signal()
+page_served         = Signal()
+file_downloaded     = Signal()
